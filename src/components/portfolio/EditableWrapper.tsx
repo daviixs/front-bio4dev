@@ -54,7 +54,7 @@ export function EditableWrapper({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white shadow-lg z-10 border border-slate-200 rounded-full"
+          className="absolute top-2 right-2 bg-white/90 hover:bg-white shadow-lg z-10 border border-slate-200 rounded-full"
           onClick={(e) => {
             e.stopPropagation();
             setTempValue(value);
