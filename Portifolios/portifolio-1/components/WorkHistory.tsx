@@ -1,55 +1,51 @@
 import React from 'react';
 import { Briefcase, Calendar } from 'lucide-react';
+import { WorkExperience } from '@/types';
 
-interface WorkItem {
-  company: string;
-  period: string;
-  summary: string;
-  technologies: string[];
-  responsibilities: string[];
-  impact: string;
+interface WorkHistoryProps {
+  workHistory?: WorkExperience[];
 }
 
-const workHistory: WorkItem[] = [
-  {
-    company: "Empresa de E-commerce XPTO",
-    period: "2023 - Atual",
-    summary: "Desenvolvimento de plataforma de e-commerce escalável para mais de 100 mil usuários ativos. Refatoração completa do frontend para melhorar performance e experiência do usuário.",
-    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "AWS", "Docker"],
-    responsibilities: [
-      "Desenvolvimento de componentes reutilizáveis e escaláveis",
-      "Implementação de testes unitários e integração contínua",
-      "Otimização de performance e SEO"
-    ],
-    impact: "Redução de 40% no tempo de carregamento e aumento de 25% na taxa de conversão."
-  },
-  {
-    company: "StartUp FinTech ABC",
-    period: "2022 - 2023",
-    summary: "Criação de dashboard financeiro para gestão de investimentos e análise de carteiras. Integração com múltiplas APIs bancárias e de mercado financeiro.",
-    technologies: ["React", "Next.js", "Tailwind CSS", "GraphQL", "MongoDB"],
-    responsibilities: [
-      "Arquitetura e desenvolvimento do frontend da aplicação",
-      "Integração com APIs de terceiros e tratamento de dados financeiros",
-      "Desenvolvimento de gráficos e visualizações de dados em tempo real"
-    ],
-    impact: "Aplicação lançada com sucesso, atendendo mais de 5 mil usuários nos primeiros 3 meses."
-  },
-  {
-    company: "Agência Digital Criativa",
-    period: "2021 - 2022",
-    summary: "Desenvolvimento de sites institucionais e landing pages para diversos clientes. Foco em responsividade, acessibilidade e otimização de performance.",
-    technologies: ["HTML5", "CSS3", "JavaScript", "WordPress", "Sass", "Git"],
-    responsibilities: [
-      "Transformação de designs (Figma/Adobe XD) em código responsivo",
-      "Implementação de animações e interações complexas",
-      "Garantia de compatibilidade cross-browser e acessibilidade"
-    ],
-    impact: "Entrega de mais de 15 projetos dentro do prazo e orçamento, com taxa de satisfação de clientes acima de 95%."
-  }
-];
+export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
+  const displayWorkHistory = apiWorkHistory?.length ? apiWorkHistory : [
+    {
+      company: "Empresa de E-commerce XPTO",
+      period: "2023 - Atual",
+      summary: "Desenvolvimento de plataforma de e-commerce escalável para mais de 100 mil usuários ativos. Refatoração completa do frontend para melhorar performance e experiência do usuário.",
+      technologies: [{ technology: "React" }, { technology: "TypeScript" }, { technology: "Node.js" }, { technology: "PostgreSQL" }, { technology: "AWS" }, { technology: "Docker" }],
+      responsibilities: [
+        { responsibility: "Desenvolvimento de componentes reutilizáveis e escaláveis" },
+        { responsibility: "Implementação de testes unitários e integração contínua" },
+        { responsibility: "Otimização de performance e SEO" }
+      ],
+      impact: "Redução de 40% no tempo de carregamento e aumento de 25% na taxa de conversão."
+    },
+    {
+      company: "StartUp FinTech ABC",
+      period: "2022 - 2023",
+      summary: "Criação de dashboard financeiro para gestão de investimentos e análise de carteiras. Integração com múltiplas APIs bancárias e de mercado financeiro.",
+      technologies: [{ technology: "React" }, { technology: "Next.js" }, { technology: "Tailwind CSS" }, { technology: "GraphQL" }, { technology: "MongoDB" }],
+      responsibilities: [
+        { responsibility: "Arquitetura e desenvolvimento do frontend da aplicação" },
+        { responsibility: "Integração com APIs de terceiros e tratamento de dados financeiros" },
+        { responsibility: "Desenvolvimento de gráficos e visualizações de dados em tempo real" }
+      ],
+      impact: "Aplicação lançada com sucesso, atendendo mais de 5 mil usuários nos primeiros 3 meses."
+    },
+    {
+      company: "Agência Digital Criativa",
+      period: "2021 - 2022",
+      summary: "Desenvolvimento de sites institucionais e landing pages para diversos clientes. Foco em responsividade, acessibilidade e otimização de performance.",
+      technologies: [{ technology: "HTML5" }, { technology: "CSS3" }, { technology: "JavaScript" }, { technology: "WordPress" }, { technology: "Sass" }, { technology: "Git" }],
+      responsibilities: [
+        { responsibility: "Transformação de designs (Figma/Adobe XD) em código responsivo" },
+        { responsibility: "Implementação de animações e interações complexas" },
+        { responsibility: "Garantia de compatibilidade cross-browser e acessibilidade" }
+      ],
+      impact: "Entrega de mais de 15 projetos dentro do prazo e orçamento, com taxa de satisfação de clientes acima de 95%."
+    }
+  ];
 
-export function WorkHistory() {
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-6xl mx-auto">
@@ -70,7 +66,7 @@ export function WorkHistory() {
 
           {/* Items da timeline */}
           <div className="space-y-12">
-            {workHistory.map((work, index) => (
+            {displayWorkHistory.map((work: any, index: number) => (
               <div
                 key={index}
                 className={`relative flex flex-col md:flex-row gap-8 items-center ${
@@ -100,12 +96,12 @@ export function WorkHistory() {
                     <div className="mb-4">
                       <h4 className="text-sm text-gray-900 mb-2">Tecnologias:</h4>
                       <div className={`flex flex-wrap gap-2 ${index % 2 === 0 ? '' : 'md:justify-end'}`}>
-                        {work.technologies.map((tech, techIndex) => (
+                        {work.technologies.map((tech: any, techIndex: number) => (
                           <span
                             key={techIndex}
                             className="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 rounded-full text-sm"
                           >
-                            {tech}
+                            {typeof tech === 'string' ? tech : tech.technology}
                           </span>
                         ))}
                       </div>
@@ -115,10 +111,10 @@ export function WorkHistory() {
                     <div className="mb-4">
                       <h4 className="text-sm text-gray-900 mb-2">Responsabilidades:</h4>
                       <ul className={`space-y-1 text-sm text-gray-700 ${index % 2 === 0 ? 'list-disc list-inside' : 'md:list-none'}`}>
-                        {work.responsibilities.map((resp, respIndex) => (
+                        {work.responsibilities.map((resp: any, respIndex: number) => (
                           <li key={respIndex} className="leading-relaxed">
                             {index % 2 !== 0 && <span className="md:inline hidden">• </span>}
-                            {resp}
+                            {typeof resp === 'string' ? resp : resp.responsibility}
                           </li>
                         ))}
                       </ul>

@@ -23,6 +23,7 @@ export interface Profile {
 export interface Legenda {
   id: string;
   profileId: string;
+  greeting?: string;
   legendaFoto: string;
   nome: string;
   titulo: string;
@@ -48,7 +49,7 @@ export interface Page {
   createdAt: string;
 }
 
-export type PlataformaSocial = 'instagram' | 'tiktok' | 'youtube' | 'github';
+export type PlataformaSocial = 'instagram' | 'tiktok' | 'youtube' | 'github' | 'linkedin' | 'twitter';
 
 export interface Social {
   id: string;
@@ -63,18 +64,77 @@ export interface Projeto {
   profileId: string;
   nome: string;
   descricao: string;
+  demoLink?: string;
+  codeLink?: string;
+  ordem: number;
   gif: string;
   createdAt: string;
 }
 
 // Perfil completo com todos os relacionamentos
 export interface ProfileComplete extends Profile {
-  legenda?: Legenda;
+  legendas?: Legenda[];
+  social?: Social[];
   config?: Config;
-  pages?: Page[];
-  socials?: Social[];
   projetos?: Projeto[];
+  techStack?: TechStack;
+  workHistory?: WorkExperience[];
+  footer?: Footer;
   user?: User;
+}
+
+export interface TechStack {
+  id: string;
+  profileId: string;
+  title: string;
+  subtitle: string;
+  technologies: Technology[];
+}
+
+export interface Technology {
+  id: string;
+  techStackId: string;
+  name: string;
+  icon: string;
+  color: string;
+  ordem: number;
+}
+
+export interface WorkExperience {
+  id: string;
+  profileId: string;
+  company: string;
+  period: string;
+  summary: string;
+  impact?: string;
+  ordem: number;
+  technologies: WorkTechnology[];
+  responsibilities: WorkResponsibility[];
+}
+
+export interface WorkTechnology {
+  id: string;
+  workExperienceId: string;
+  technology: string;
+}
+
+export interface WorkResponsibility {
+  id: string;
+  workExperienceId: string;
+  responsibility: string;
+  ordem: number;
+}
+
+export interface Footer {
+  id: string;
+  profileId: string;
+  title: string;
+  subtitle: string;
+  email?: string;
+  github?: string;
+  linkedin?: string;
+  twitter?: string;
+  copyrightName: string;
 }
 
 // DTOs para criação/atualização
