@@ -1,6 +1,6 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from 'sonner';
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
 import {
   LandingPage,
   Home,
@@ -12,6 +12,7 @@ import {
   DashboardOverview,
   AdminDashboard,
   BioPage,
+  BioEditPage,
   AnalyticsPage,
   AdminSettingsPage,
   PublicProfilePage,
@@ -22,8 +23,8 @@ import {
   AppearanceEdit,
   SettingsPage,
   PortfolioEditorPage,
-} from './pages';
-import { AdminLayoutWrapper } from './components/admin/AdminLayoutWrapper';
+} from "./pages";
+import { AdminLayoutWrapper } from "./components/admin/AdminLayoutWrapper";
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -40,22 +41,22 @@ export default function App() {
   return (
     <BrowserRouter>
       {/* Toast Notifications */}
-      <Toaster 
-        position="top-right" 
+      <Toaster
+        position="top-right"
         toastOptions={{
           style: {
-            background: '#1a1a2e',
-            border: '1px solid rgba(255,255,255,0.1)',
-            color: '#fff',
+            background: "#1a1a2e",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "#fff",
           },
         }}
       />
-      
+
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/old-landing" element={<LandingPage />} />
-        
+
         {/* Auth Routes */}
         <Route
           path="/login"
@@ -73,11 +74,11 @@ export default function App() {
             </AuthRoute>
           }
         />
-        
+
         {/* Profile Creation */}
         <Route path="/profile/create" element={<CreateProfilePage />} />
         <Route path="/setup" element={<SetupWizardPage />} />
-        
+
         {/* Portfolio Editor */}
         <Route
           path="/dashboard/portfolio/:portfolioId"
@@ -87,7 +88,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        
+
         {/* Dashboard Routes - Admin Dashboard */}
         <Route
           path="/dashboard"
@@ -99,10 +100,11 @@ export default function App() {
         >
           <Route index element={<AdminDashboard />} />
           <Route path="bio" element={<BioPage />} />
+          <Route path="bio/:id" element={<BioEditPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
         </Route>
-        
+
         {/* Old Dashboard Routes - kept for backward compatibility */}
         <Route
           path="/dashboard-old"
@@ -120,10 +122,10 @@ export default function App() {
           <Route path="appearance" element={<AppearanceEdit />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
-        
+
         {/* Public Profile - must be last due to dynamic route */}
         <Route path="/:username" element={<PublicProfilePage />} />
-        
+
         {/* 404 - Redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

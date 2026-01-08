@@ -1,39 +1,56 @@
-import React, { useState } from 'react';
-import { TextInput } from './TextInput';
-import { RememberMe } from './RememberMe';
-import { SocialLoginButton } from './SocialLoginButton';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { TextInput } from "./TextInput";
+import { RememberMe } from "./RememberMe";
+import { SocialLoginButton } from "./SocialLoginButton";
+import { useAuthStore } from "@/stores/authStore";
+import { toast } from "sonner";
 
 export function LoginForm() {
+  const navigate = useNavigate();
+  const { login, isLoading, error, clearError } = useAuthStore();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     rememberMe: false,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
   const handleRememberMeChange = (checked: boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       rememberMe: checked,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de login será implementada depois
-    console.log('Login submitted:', formData);
+    try {
+      clearError();
+      const { hasProfile } = await login(formData.email, formData.password);
+      toast.success("Login realizado com sucesso!");
+
+      // Redirecionar para setup se não tiver perfil, senão para dashboard
+      if (!hasProfile) {
+        navigate("/setup");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Erro ao fazer login");
+    }
   };
 
   const handleGoogleLogin = () => {
     // Lógica de login com Google será implementada depois
-    console.log('Google login clicked');
+    console.log("Google login clicked");
   };
 
   return (
@@ -65,6 +82,13 @@ export function LoginForm() {
           required
         />
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+          {error}
+        </div>
+      )}
 
       {/* Campo Senha */}
       <div className="mb-4">
@@ -98,6 +122,7 @@ export function LoginForm() {
       {/* Botão Sign In */}
       <button
         type="submit"
+        disabled={isLoading}
         className="
           w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800
           text-white font-semibold py-3 px-4 rounded-lg
@@ -105,9 +130,10 @@ export function LoginForm() {
           focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2
           shadow-sm hover:shadow-md
           mb-6
+          disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
         "
       >
-        Sign in
+        {isLoading ? "Signing in..." : "Sign in"}
       </button>
 
       {/* Divisor horizontal */}
@@ -127,9 +153,9 @@ export function LoginForm() {
 
       {/* Sign Up Link */}
       <div className="text-center text-sm text-gray-600">
-        Don't have an account?{' '}
+        Don't have an account?{" "}
         <a
-          href="#"
+          href="/signup"
           className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
         >
           Sign up now

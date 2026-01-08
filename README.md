@@ -43,7 +43,7 @@ src/
 ├── pages/          # Páginas da aplicação
 │   ├── dashboard/  # Páginas do dashboard
 │   ├── LandingPage.tsx
-│   ├── LoginPage.tsx
+│   ├── Login.tsx
 │   ├── SignupPage.tsx
 │   └── ...
 ├── stores/         # Estados Zustand
@@ -65,21 +65,21 @@ src/
 
 ## 📱 Páginas
 
-| Rota | Descrição |
-|------|-----------|
-| `/` | Landing Page |
-| `/login` | Login de usuário |
-| `/signup` | Cadastro de usuário |
-| `/profile/create` | Criação de perfil |
-| `/setup` | Wizard de configuração |
-| `/dashboard` | Painel administrativo |
-| `/dashboard/profile` | Editar informações |
-| `/dashboard/projects` | Gerenciar projetos |
-| `/dashboard/socials` | Gerenciar redes sociais |
-| `/dashboard/pages` | Gerenciar páginas |
-| `/dashboard/appearance` | Escolher template |
-| `/dashboard/settings` | Configurações |
-| `/:username` | Página pública do usuário |
+| Rota                    | Descrição                 |
+| ----------------------- | ------------------------- |
+| `/`                     | Landing Page              |
+| `/login`                | Login de usuário          |
+| `/signup`               | Cadastro de usuário       |
+| `/profile/create`       | Criação de perfil         |
+| `/setup`                | Wizard de configuração    |
+| `/dashboard`            | Painel administrativo     |
+| `/dashboard/profile`    | Editar informações        |
+| `/dashboard/projects`   | Gerenciar projetos        |
+| `/dashboard/socials`    | Gerenciar redes sociais   |
+| `/dashboard/pages`      | Gerenciar páginas         |
+| `/dashboard/appearance` | Escolher template         |
+| `/dashboard/settings`   | Configurações             |
+| `/:username`            | Página pública do usuário |
 
 ## 🔌 API Endpoints
 
@@ -88,37 +88,44 @@ O frontend se comunica com o backend em `http://localhost:3000`.
 ### Endpoints Necessários no Backend:
 
 **Users:**
+
 - `POST /users` - Criar usuário
 - `POST /auth/login` - Login
 - `GET /users/:id` - Buscar usuário
 
 **Profile:**
+
 - `POST /profile` - Criar perfil
 - `POST /profile/:id` - Atualizar perfil
 - `GET /profile/:id/complete` - Perfil completo
 - `GET /profile/username/:username` - Perfil público
 
 **Legenda:**
+
 - `POST /legenda` - Criar legenda
 - `PATCH /legenda/:id` - Atualizar legenda
 
 **Config:**
+
 - `POST /config` - Criar config
 - `POST /config/:id` - Atualizar config
 
 **Social:**
+
 - `POST /social` - Criar rede social
 - `GET /social/profile/:profileId` - Listar redes
 - `PATCH /social/:id` - Atualizar
 - `DELETE /social/:id` - Deletar
 
 **Projetos:**
+
 - `POST /projetos` - Criar projeto
 - `GET /projetos/profile/:profileId` - Listar
 - `PATCH /projetos/:id` - Atualizar
 - `DELETE /projetos/:id` - Deletar
 
 **Pages:**
+
 - `POST /pages` - Criar página
 - `GET /pages/profile/:profileId` - Listar
 - `PATCH /pages/:id` - Atualizar
