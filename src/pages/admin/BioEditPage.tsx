@@ -1,47 +1,30 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Save, Eye, Loader2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { profileApi } from "@/lib/api";
-import type { Profile } from "@/types";
+import type { ProfileComplete } from "@/types";
+import { EditablePortfolio1 } from "@/components/portfolio/EditablePortfolio1";
 
 export default function BioEditPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
+  const [profile, setProfile] = useState<ProfileComplete | null>(null);
 
-  const [formData, setFormData] = useState({
-    username: "",
-    bio: "",
-    avatarUrl: "",
-    published: false,
-    templateType: "template_01" as
-      | "template_01"
-      | "template_02"
-      | "template_03",
-  });
-
-  // Carregar dados da bio
+  // Carregar dados completos da bio
   useEffect(() => {
     const loadBio = async () => {
       if (!id) return;
 
       try {
         setIsLoading(true);
-        const profile = await profileApi.getById(id);
-        setFormData({
-          username: profile.username || "",
-          bio: profile.bio || "",
-          avatarUrl: profile.avatarUrl || "",
-          published: profile.published || false,
-          templateType: profile.templateType || "template_01",
-        });
+        const profileData = await profileApi.getComplete(id);
+        setProfile(profileData);
       } catch (error) {
         console.error("Erro ao carregar bio:", error);
         toast.error("Erro ao carregar dados da bio");
@@ -53,47 +36,76 @@ export default function BioEditPage() {
     loadBio();
   }, [id]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSwitchChange = (checked: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      published: checked,
-    }));
-  };
-
-  const handleSave = async () => {
-    if (!id) return;
+  const handleSwitchChange = async (checked: boolean) => {
+    if (!id || !profile) return;
 
     try {
-      setIsSaving(true);
-      await profileApi.update(id, formData);
-      toast.success("Bio atualizada com sucesso!");
+      await profileApi.update(id, { published: checked });
+      setProfile({ ...profile, published: checked });
+      toast.success(checked ? "Portfólio publicado!" : "Portfólio despublicado");
     } catch (error) {
-      console.error("Erro ao salvar bio:", error);
-      toast.error("Erro ao salvar alterações");
-    } finally {
-      setIsSaving(false);
+      console.error("Erro ao atualizar status:", error);
+      toast.error("Erro ao atualizar status");
     }
   };
 
-  const handlePreview = () => {
-    if (!formData.username) {
+  const handleProfileUpdate = async () => {
+    // Recarregar perfil após atualização
+    if (!id) return;
+    try {
+      const updatedProfile = await profileApi.getComplete(id);
+      setProfile(updatedProfile);
+    } catch (error) {
+      console.error("Erro ao recarregar perfil:", error);
+    }
+  };
+
+  const handlePreview = async () => {
+    if (!profile?.username) {
       toast.error(
         "Por favor, adicione um username antes de visualizar o preview"
       );
       return;
     }
-    // Abrir preview da bio em nova aba
-    window.open(`/${formData.username}`, "_blank");
+
+    if (!id) {
+      toast.error("ID do perfil não encontrado");
+      return;
+    }
+
+    try {
+      setIsGeneratingPreview(true);
+
+      // Gerar token temporário de preview usando a lógica do backend
+      const { token, expiresAt } = await profileApi.generatePreviewToken(id);
+
+      // Calcula tempo de expiração
+      const expiresDate = new Date(expiresAt);
+      const hours = Math.round(
+        (expiresDate.getTime() - Date.now()) / (1000 * 60 * 60)
+      );
+
+      // Abre preview em nova aba com token
+      const previewUrl = `/${profile.username}?preview=${token}`;
+      window.open(previewUrl, "_blank");
+
+      toast.success(`Preview aberto! Token expira em ${hours}h`, {
+        description: "O link funciona mesmo com o perfil não publicado",
+      });
+    } catch (error: any) {
+      console.error("Erro ao gerar preview:", error);
+      
+      // Se falhar, mostrar erro específico
+      if (error.response?.status === 404) {
+        toast.error("Endpoint de preview não encontrado no backend");
+      } else if (error.response?.status === 401 || error.response?.status === 403) {
+        toast.error("Sem permissão para gerar preview");
+      } else {
+        toast.error("Erro ao gerar token de preview. Verifique se o backend está rodando.");
+      }
+    } finally {
+      setIsGeneratingPreview(false);
+    }
   };
 
   if (isLoading) {
@@ -104,10 +116,23 @@ export default function BioEditPage() {
     );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <p className="text-slate-600 mb-4">Perfil não encontrado</p>
+          <Button onClick={() => navigate("/dashboard/bio")} variant="outline">
+            Voltar
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Por enquanto, apenas suporta template_01
+  if (profile.templateType !== "template_01") {
+    return (
+      <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -118,161 +143,78 @@ export default function BioEditPage() {
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Button>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-              Editar Bio
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Personalize seu portfólio
-            </p>
-          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={handlePreview} className="gap-2">
-            <Eye className="h-4 w-4" />
-            Preview
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="gap-2 bg-emerald-600 hover:bg-emerald-700"
-          >
-            {isSaving ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Save className="h-4 w-4" />
-            )}
-            Salvar
-          </Button>
+        <div className="rounded-xl border bg-card shadow-sm p-6 text-center">
+          <p className="text-slate-600">
+            Edição inline disponível apenas para o Portfólio 1. 
+            Outros templates serão suportados em breve.
+          </p>
         </div>
       </div>
+    );
+  }
 
-      {/* Form */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Form */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-xl border bg-card shadow-sm p-6 space-y-6">
+  return (
+    <div className="space-y-6">
+      {/* Header Fixo */}
+      <div className="sticky top-0 z-50 bg-white border-b shadow-sm p-4">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/dashboard/bio")}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Voltar
+            </Button>
             <div>
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">
-                Informações Básicas
-              </h2>
-
-              {/* Username */}
-              <div className="space-y-2 mb-4">
-                <Label htmlFor="username">Username</Label>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">
-                    bio4dev.com/
-                  </span>
-                  <Input
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    placeholder="seu-username"
-                    className="flex-1"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Este será o endereço público do seu portfólio
-                </p>
-              </div>
-
-              {/* Bio */}
-              <div className="space-y-2 mb-4">
-                <Label htmlFor="bio">Bio</Label>
-                <Textarea
-                  id="bio"
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleInputChange}
-                  placeholder="Conte um pouco sobre você..."
-                  rows={4}
-                  className="resize-none"
-                />
-                <p className="text-xs text-muted-foreground">
-                  {formData.bio.length}/500 caracteres
-                </p>
-              </div>
-
-              {/* Avatar URL */}
-              <div className="space-y-2">
-                <Label htmlFor="avatarUrl">Avatar URL</Label>
-                <Input
-                  id="avatarUrl"
-                  name="avatarUrl"
-                  value={formData.avatarUrl}
-                  onChange={handleInputChange}
-                  placeholder="https://exemplo.com/avatar.jpg"
-                  type="url"
-                />
-                {formData.avatarUrl && (
-                  <div className="mt-2">
-                    <img
-                      src={formData.avatarUrl}
-                      alt="Avatar preview"
-                      className="w-20 h-20 rounded-full object-cover border-2 border-slate-200"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                Editar Bio
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Clique nos campos para editar
+              </p>
             </div>
           </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Publish Status */}
-          <div className="rounded-xl border bg-card shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">
-              Status
-            </h2>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-slate-900">Publicado</p>
-                <p className="text-sm text-muted-foreground">
-                  {formData.published
-                    ? "Visível publicamente"
-                    : "Modo rascunho"}
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={handlePreview}
+              disabled={isGeneratingPreview}
+              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+            >
+              {isGeneratingPreview ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                <>
+                  <Eye className="h-4 w-4" />
+                  PREVIEW
+                </>
+              )}
+            </Button>
+            <div className="flex items-center gap-3 px-4 py-2 rounded-lg border bg-card">
+              <span className="text-sm text-slate-700">Publicado</span>
               <Switch
-                checked={formData.published}
+                checked={profile.published}
                 onCheckedChange={handleSwitchChange}
               />
             </div>
           </div>
-
-          {/* Preview Card */}
-          <div className="rounded-xl border bg-card shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">
-              Preview
-            </h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Veja como seu portfólio ficará para os visitantes
-            </p>
-            <Button
-              onClick={handlePreview}
-              variant="outline"
-              className="w-full gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Visualizar Preview
-            </Button>
-          </div>
-
-          {/* Info Card */}
-          <div className="rounded-xl border bg-blue-50 border-blue-200 p-6">
-            <h3 className="font-semibold text-blue-900 mb-2">💡 Dica</h3>
-            <p className="text-sm text-blue-700">
-              Salve suas alterações regularmente. O preview mostrará como seu
-              portfólio aparecerá após publicado.
-            </p>
-          </div>
         </div>
+      </div>
+
+      {/* Portfolio Editável */}
+      <div className="bg-white">
+        {profile && (
+          <EditablePortfolio1 
+            profile={profile} 
+            onProfileUpdate={handleProfileUpdate}
+          />
+        )}
       </div>
     </div>
   );

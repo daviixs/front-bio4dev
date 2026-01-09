@@ -8,14 +8,18 @@ export interface User {
   updatedAt?: string;
 }
 
+export type Colors = "LIGHT" | "DARK";
+export type TemplateType = "template_01" | "template_02" | "template_03";
+
 export interface Profile {
   id: string;
   userId: string;
   username: string;
   bio?: string;
   avatarUrl?: string;
-  themeId?: number;
-  templateType: 'template_01' | 'template_02' | 'template_03';
+  theme: Colors;
+  mainColor?: string;
+  templateType: TemplateType;
   published: boolean;
   createdAt: string;
 }
@@ -49,7 +53,13 @@ export interface Page {
   createdAt: string;
 }
 
-export type PlataformaSocial = 'instagram' | 'tiktok' | 'youtube' | 'github' | 'linkedin' | 'twitter';
+export type PlataformaSocial =
+  | "instagram"
+  | "tiktok"
+  | "youtube"
+  | "github"
+  | "linkedin"
+  | "twitter";
 
 export interface Social {
   id: string;
@@ -134,7 +144,10 @@ export interface Footer {
   github?: string;
   linkedin?: string;
   twitter?: string;
+  instagram?: string;
   copyrightName: string;
+  madeWith: string;
+  resumeUrl?: string;
 }
 
 // DTOs para criação/atualização
@@ -150,7 +163,7 @@ export interface CreateProfileDTO {
   bio?: string;
   avatarUrl?: string;
   themeId?: number;
-  templateType: 'template_01' | 'template_02' | 'template_03';
+  templateType: "template_01" | "template_02" | "template_03";
   published?: boolean;
 }
 
@@ -158,13 +171,15 @@ export interface UpdateProfileDTO {
   username?: string;
   bio?: string;
   avatarUrl?: string;
-  themeId?: number;
-  templateType?: 'template_01' | 'template_02' | 'template_03';
+  theme?: Colors;
+  mainColor?: string;
+  templateType?: TemplateType;
   published?: boolean;
 }
 
 export interface CreateLegendaDTO {
   profileId: string;
+  greeting?: string;
   legendaFoto: string;
   nome: string;
   titulo: string;
@@ -192,12 +207,62 @@ export interface CreateSocialDTO {
   ordem: number;
 }
 
+export interface UpdateSocialDTO extends Partial<Omit<CreateSocialDTO, 'profileId'>> {}
+
 export interface CreateProjetoDTO {
   profileId: string;
   nome: string;
   descricao: string;
+  demoLink?: string;
+  codeLink?: string;
   gif: string;
+  ordem?: number;
 }
+
+export interface UpdateProjetoDTO extends Partial<Omit<CreateProjetoDTO, 'profileId'>> {}
+
+export interface CreateTechStackDTO {
+  profileId?: string;
+  title: string;
+  subtitle: string;
+  technologies: CreateTechnologyDTO[];
+}
+
+export interface CreateTechnologyDTO {
+  name: string;
+  icon: string;
+  color: string;
+  ordem: number;
+}
+
+export interface CreateWorkExperienceDTO {
+  profileId: string;
+  company: string;
+  period: string;
+  summary: string;
+  impact?: string;
+  ordem: number;
+  technologies: { technology: string }[];
+  responsibilities: { responsibility: string; ordem: number }[];
+}
+
+export interface UpdateWorkExperienceDTO extends Partial<Omit<CreateWorkExperienceDTO, 'profileId'>> {}
+
+export interface CreateFooterDTO {
+  profileId: string;
+  title: string;
+  subtitle: string;
+  email?: string;
+  github?: string;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
+  copyrightName: string;
+  madeWith: string;
+  resumeUrl?: string;
+}
+
+export interface UpdateFooterDTO extends Partial<Omit<CreateFooterDTO, 'profileId'>> {}
 
 // Respostas da API
 export interface ApiResponse<T> {
@@ -216,4 +281,3 @@ export interface AuthResponse {
   user: User;
   token?: string;
 }
-

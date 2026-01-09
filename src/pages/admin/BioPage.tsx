@@ -41,6 +41,9 @@ import {
   Trash2,
   ExternalLink,
   Loader2,
+  Eye,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { cn } from "@/components/ui/utils";
 import { toast } from "sonner";
@@ -76,8 +79,10 @@ interface Bio {
   name: string;
   template: string;
   status: string;
+  published: boolean;
   lastUpdated: string;
   url: string;
+  username?: string;
 }
 
 export default function BioPage() {
@@ -91,6 +96,8 @@ export default function BioPage() {
   const [selectedPortfolio, setSelectedPortfolio] = useState<number | null>(
     null
   );
+  const [previewLoading, setPreviewLoading] = useState<string | null>(null);
+  const [publishLoading, setPublishLoading] = useState<string | null>(null);
 
   // Buscar bios/perfis do usuário
   useEffect(() => {
@@ -109,8 +116,10 @@ export default function BioPage() {
         const mappedBios = userBios.map((profile: any) => ({
           id: profile.id,
           name: profile.username || "Sem nome",
+          username: profile.username,
           template: profile.templateType || "template_01",
           status: profile.published ? "Published" : "Draft",
+          published: !!profile.published,
           lastUpdated: new Date(
             profile.updatedAt || profile.createdAt
           ).toLocaleDateString(),
@@ -135,8 +144,166 @@ export default function BioPage() {
   };
 
   const handleEditClick = (bio: Bio) => {
-    // Redirecionar para a página de edição da bio
-    navigate(`/dashboard/bio/${bio.id}`);
+    // Redirecionar para o editor com canetas (PortfolioEditorPage)
+    navigate(`/dashboard/portfolio/${bio.id}`);
+  };
+
+  const handleCreateBio = async () => {
+    if (!selectedPortfolio || !user) {
+      toast.error("Erro ao criar portfólio");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // Mapear portfolioId para templateType
+      const templateMap: Record<
+        number,
+        "template_01" | "template_02" | "template_03"
+      > = {
+        1: "template_01",
+        2: "template_02",
+        3: "template_03",
+      };
+
+      const templateType = templateMap[selectedPortfolio] || "template_01";
+
+      // Verificar se usuário já tem perfil
+      const allProfiles = await profileApi.getAll();
+      const existingProfile = allProfiles.find(
+        (profile: any) => profile.userId === user.id
+      );
+
+      let profileId: string;
+
+      if (existingProfile) {
+        // Se já existe, apenas atualiza o template
+        await profileApi.update(existingProfile.id, {
+          templateType,
+        });
+        profileId = existingProfile.id;
+        toast.success("Template atualizado com sucesso!");
+      } else {
+        // Se não existe, cria novo perfil
+        const baseUsername =
+          (user as any).nome?.toLowerCase().replace(/\s+/g, "") || "user";
+        const timestamp = Date.now();
+        const username = `${baseUsername}${timestamp}`;
+
+        const response = await profileApi.create({
+          userId: user.id,
+          username,
+          templateType,
+          published: false,
+        });
+        profileId = response.profile.id;
+        toast.success("Portfólio criado com sucesso!");
+      }
+
+      // Redirecionar para a página de edição
+      navigate(`/dashboard/bio/${profileId}`);
+      setCreateBioDialogOpen(false);
+      setSelectedPortfolio(null);
+
+      // Recarregar lista de bios
+      const updatedProfiles = await profileApi.getAll();
+      const userBios = updatedProfiles.filter(
+        (profile: any) => profile.userId === user.id
+      );
+
+    const mappedBios = userBios.map((profile: any) => ({
+      id: profile.id,
+      name: profile.username || "Sem nome",
+      username: profile.username,
+      template: profile.templateType || "template_01",
+      status: profile.published ? "Published" : "Draft",
+      published: !!profile.published,
+      lastUpdated: new Date(
+        profile.updatedAt || profile.createdAt
+      ).toLocaleDateString(),
+      url: `bio4dev.com/${profile.username}`,
+    }));
+
+      setBios(mappedBios);
+    } catch (error: any) {
+      console.error("Erro ao criar portfólio:", error);
+      toast.error(error.response?.data?.message || "Erro ao criar portfólio");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePreviewClick = async (bio: Bio) => {
+    if (!bio.username) {
+      toast.error("Username não encontrado para este perfil");
+      return;
+    }
+
+    try {
+      setPreviewLoading(bio.id);
+
+      // Gerar token temporário de preview usando a lógica do backend
+      const { token, expiresAt } = await profileApi.generatePreviewToken(
+        bio.id
+      );
+
+      // Calcula tempo de expiração
+      const expiresDate = new Date(expiresAt);
+      const hours = Math.round(
+        (expiresDate.getTime() - Date.now()) / (1000 * 60 * 60)
+      );
+
+      // Abre preview em nova aba com token
+      const previewUrl = `/${bio.username}?preview=${token}`;
+      window.open(previewUrl, "_blank");
+
+      toast.success(`Preview aberto! Token expira em ${hours}h`, {
+        description: "O link funciona mesmo com o perfil não publicado",
+      });
+    } catch (error: any) {
+      console.error("Erro ao gerar preview:", error);
+
+      // Se falhar, mostrar erro específico
+      if (error.response?.status === 404) {
+        toast.error("Endpoint de preview não encontrado no backend");
+      } else if (
+        error.response?.status === 401 ||
+        error.response?.status === 403
+      ) {
+        toast.error("Sem permissão para gerar preview");
+      } else {
+        toast.error(
+          "Erro ao gerar token de preview. Verifique se o backend está rodando."
+        );
+      }
+    } finally {
+      setPreviewLoading(null);
+    }
+  };
+
+  const handleTogglePublish = async (bio: Bio) => {
+    try {
+      setPublishLoading(bio.id);
+      
+      const newStatus = !bio.published;
+      await profileApi.update(bio.id, {
+        published: newStatus
+      });
+
+      setBios(prevBios => prevBios.map(b => 
+        b.id === bio.id 
+          ? { ...b, published: newStatus, status: newStatus ? "Published" : "Draft" } 
+          : b
+      ));
+
+      toast.success(newStatus ? "Página publicada com sucesso!" : "Página desativada");
+    } catch (error: any) {
+      console.error("Erro ao alterar status:", error);
+      toast.error("Erro ao alterar status da página");
+    } finally {
+      setPublishLoading(null);
+    }
   };
 
   const handleDeleteConfirm = async () => {
@@ -252,6 +419,43 @@ export default function BioPage() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          onClick={() => handlePreviewClick(bio)}
+                          disabled={previewLoading === bio.id}
+                          className="h-8 gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        >
+                          {previewLoading === bio.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                          <span className="hidden sm:inline">Preview</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleTogglePublish(bio)}
+                          disabled={publishLoading === bio.id}
+                          className={cn(
+                            "h-8 gap-2",
+                            bio.published 
+                              ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50" 
+                              : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                          )}
+                        >
+                          {publishLoading === bio.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : bio.published ? (
+                            <XCircle className="h-4 w-4" />
+                          ) : (
+                            <CheckCircle className="h-4 w-4" />
+                          )}
+                          <span className="hidden sm:inline">
+                            {bio.published ? "Unpublish" : "Publish"}
+                          </span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleEditClick(bio)}
                           className="h-8 gap-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                         >
@@ -307,10 +511,13 @@ export default function BioPage() {
       <Dialog open={createBioDialogOpen} onOpenChange={setCreateBioDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Selecione um Portfólio</DialogTitle>
+            <DialogTitle>
+              {bios.length > 0 ? "Trocar Template" : "Selecione um Portfólio"}
+            </DialogTitle>
             <DialogDescription>
-              Escolha um dos modelos de portfólio abaixo para começar. Você pode
-              personalizar depois.
+              {bios.length > 0
+                ? "Você já tem um portfólio. Escolha um novo template para atualizá-lo."
+                : "Escolha um dos modelos de portfólio abaixo para começar. Você pode personalizar depois."}
             </DialogDescription>
           </DialogHeader>
           <div className="mt-6 relative px-16">
@@ -375,20 +582,20 @@ export default function BioPage() {
                 Cancelar
               </Button>
               <Button
-                onClick={() => {
-                  if (selectedPortfolio) {
-                    // Redirecionar para a página de edição do portfólio
-                    navigate(`/dashboard/portfolio/${selectedPortfolio}`);
-                    setCreateBioDialogOpen(false);
-                    setSelectedPortfolio(null);
-                  } else {
-                    toast.error("Por favor, selecione um portfólio");
-                  }
-                }}
-                disabled={!selectedPortfolio}
+                onClick={handleCreateBio}
+                disabled={!selectedPortfolio || isLoading}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
-                Criar Bio
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    {bios.length > 0 ? "Atualizando..." : "Criando..."}
+                  </>
+                ) : bios.length > 0 ? (
+                  "Atualizar Template"
+                ) : (
+                  "Criar Bio"
+                )}
               </Button>
             </div>
           </div>

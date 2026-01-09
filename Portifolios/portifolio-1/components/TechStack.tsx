@@ -1,36 +1,22 @@
-import React from 'react';
-import { Code2, FileCode, Palette, Database, GitBranch, Github, Terminal, Settings } from 'lucide-react';
 import { TechStack as TechStackType } from '@/types';
+import { TechIcon } from '@/components/portfolio/TechIcon';
 
 interface TechStackProps {
   techStack?: TechStackType;
 }
 
-const iconMap: Record<string, React.ReactNode> = {
-  'HTML5': <Code2 size={40} />,
-  'CSS3': <Palette size={40} />,
-  'JavaScript': <FileCode size={40} />,
-  'React': <FileCode size={40} />,
-  'Node.js': <Terminal size={40} />,
-  'Tailwind CSS': <Palette size={40} />,
-  'Git': <GitBranch size={40} />,
-  'GitHub': <Github size={40} />,
-  'VS Code': <Settings size={40} />,
-  'Database': <Database size={40} />,
-};
-
 export function TechStack({ techStack }: TechStackProps) {
   const technologies = techStack?.technologies || [
-    { name: 'HTML5', icon: 'HTML5', color: 'text-orange-600' },
-    { name: 'CSS3', icon: 'CSS3', color: 'text-blue-600' },
-    { name: 'JavaScript', icon: 'JavaScript', color: 'text-yellow-500' },
-    { name: 'React', icon: 'React', color: 'text-cyan-500' },
-    { name: 'Node.js', icon: 'Node.js', color: 'text-green-600' },
-    { name: 'Tailwind CSS', icon: 'Tailwind CSS', color: 'text-teal-500' },
-    { name: 'Git', icon: 'Git', color: 'text-orange-700' },
-    { name: 'GitHub', icon: 'GitHub', color: 'text-gray-800' },
-    { name: 'VS Code', icon: 'VS Code', color: 'text-blue-500' },
-    { name: 'Database', icon: 'Database', color: 'text-purple-600' },
+    { name: 'HTML5', icon: 'logos:html-5', color: 'text-orange-600' },
+    { name: 'CSS3', icon: 'logos:css-3', color: 'text-blue-600' },
+    { name: 'JavaScript', icon: 'logos:javascript', color: 'text-yellow-500' },
+    { name: 'React', icon: 'logos:react', color: 'text-cyan-500' },
+    { name: 'Node.js', icon: 'logos:nodejs-icon', color: 'text-green-600' },
+    { name: 'Tailwind CSS', icon: 'logos:tailwindcss-icon', color: 'text-teal-500' },
+    { name: 'Git', icon: 'logos:git-icon', color: 'text-orange-700' },
+    { name: 'GitHub', icon: 'logos:github-icon', color: 'text-gray-800' },
+    { name: 'VS Code', icon: 'logos:visual-studio-code', color: 'text-blue-500' },
+    { name: 'Database', icon: 'logos:postgresql', color: 'text-purple-600' },
   ];
 
   return (
@@ -54,7 +40,7 @@ export function TechStack({ techStack }: TechStackProps) {
               className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-110 hover:-translate-y-2 cursor-pointer group"
             >
               <div className={`${tech.color} mb-3 group-hover:scale-110 transition-transform`}>
-                {iconMap[tech.icon] || <Terminal size={40} />}
+                <TechIcon icon={tech.icon} size={40} />
               </div>
               <span className="text-gray-700">{tech.name}</span>
             </div>

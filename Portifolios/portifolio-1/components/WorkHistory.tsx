@@ -7,7 +7,7 @@ interface WorkHistoryProps {
 }
 
 export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
-  const displayWorkHistory = apiWorkHistory?.length ? apiWorkHistory : [
+  const displayWorkHistory = apiWorkHistory || [
     {
       company: "Empresa de E-commerce XPTO",
       period: "2023 - Atual",

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Github, Instagram, Youtube, Mail, ExternalLink, Code2, Star, Rocket, Heart } from 'lucide-react';
+import { Github, Instagram, Youtube, Mail, ExternalLink, Code2, Star, Rocket, Heart, Briefcase, GraduationCap } from 'lucide-react';
+import { TechIcon } from '@/components/portfolio/TechIcon';
 import type { ProfileComplete } from '@/types';
 
 interface TemplateProps {
@@ -19,7 +19,9 @@ const socialIcons: Record<string, React.ReactNode> = {
 
 // Template Creative - Design artístico e único
 export function Template03({ profile }: TemplateProps) {
-  const { legenda, socials, projetos, config } = profile;
+  const legenda = profile.legendas?.[0];
+  const socials = profile.social;
+  const { projetos, config } = profile;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-fuchsia-950 to-pink-950 text-white">
@@ -157,6 +159,113 @@ export function Template03({ profile }: TemplateProps) {
         </div>
       </section>
 
+      {/* Tech Stack Section */}
+      {profile.techStack?.technologies && profile.techStack.technologies.length > 0 && (
+        <section className="py-24 px-6 relative overflow-hidden">
+          {/* Decorative Background for Section */}
+          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
+          
+          <div className="max-w-6xl mx-auto relative z-10">
+            <div className="text-center mb-16">
+              <span className="text-5xl mb-4 block animate-bounce">⚡</span>
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-400 bg-clip-text text-transparent">
+                Minhas Ferramentas
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+              {profile.techStack.technologies.map((tech, index) => (
+                <div
+                  key={index}
+                  className="group relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all opacity-0 group-hover:opacity-100" />
+                  <div className="relative p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 flex flex-col items-center justify-center gap-4 hover:-translate-y-2 transition-all duration-500">
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500/10 to-pink-500/10">
+                      <TechIcon icon={tech.icon} size={32} className="text-pink-400" />
+                    </div>
+                    <span className="text-sm font-bold text-white/70 group-hover:text-white">
+                      {tech.name}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Journey/Experience Section */}
+      {profile.workHistory && profile.workHistory.length > 0 && (
+        <section className="py-24 px-6 relative">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <span className="text-5xl mb-4 block">🧗</span>
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-400 bg-clip-text text-transparent">
+                Minha Jornada
+              </h2>
+            </div>
+
+            <div className="space-y-12">
+              {profile.workHistory.map((work, index) => (
+                <div
+                  key={index}
+                  className="relative group lg:flex gap-8 group"
+                >
+                  {/* Timeline element */}
+                  <div className="hidden lg:block w-32 pt-2 text-right">
+                    <span className="text-sm font-bold text-pink-400/60 uppercase tracking-widest block">
+                      {work.period}
+                    </span>
+                  </div>
+
+                  <div className="relative flex-1">
+                    {/* Floating Glow */}
+                    <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                    
+                    <div className="relative p-8 rounded-[2rem] bg-white/5 backdrop-blur-md border border-white/10 hover:border-pink-500/30 transition-colors">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white shrink-0">
+                          <Briefcase className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-white leading-tight">
+                            {work.summary}
+                          </h3>
+                          <div className="flex items-center gap-2 text-pink-400 font-medium">
+                            <span>{work.company}</span>
+                            <span className="lg:hidden text-white/30">• {work.period}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {work.impact && (
+                        <p className="text-white/60 mb-6 leading-relaxed">
+                          {work.impact}
+                        </p>
+                      )}
+
+                      {work.technologies && work.technologies.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {work.technologies.map((tech: any, i: number) => (
+                            <span
+                              key={i}
+                              className="px-3 py-1 rounded-full text-xs font-bold border border-white/10 bg-white/5 text-white/60"
+                            >
+                              {tech.technology}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Projects Section */}
       {projetos && projetos.length > 0 && (
         <section className="py-20 px-6 relative">
@@ -219,17 +328,53 @@ export function Template03({ profile }: TemplateProps) {
       )}
 
       {/* Footer */}
-      <footer className="py-12 px-6 relative">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-              <Code2 className="w-5 h-5 text-white" />
+      <footer className="py-24 px-6 relative overflow-hidden">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] -z-10" />
+        
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col items-center text-center">
+            <div className="inline-flex items-center gap-3 mb-8">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center shadow-xl shadow-purple-500/20 animate-float">
+                <Code2 className="w-7 h-7 text-white" />
+              </div>
+              <span className="font-bold text-3xl tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                {legenda?.nome || profile.username}
+              </span>
             </div>
-            <span className="font-bold text-xl">{legenda?.nome || 'Bio4Dev'}</span>
+
+            {profile.footer && (
+              <div className="mb-16 max-w-2xl">
+                <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  {profile.footer.title}
+                </h3>
+                <p className="text-white/60 text-lg mb-8 leading-relaxed">
+                  {profile.footer.subtitle}
+                </p>
+                {profile.footer.email && (
+                  <a
+                    href={`mailto:${profile.footer.email}`}
+                    className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-purple-950 font-bold hover:scale-105 transition-all duration-300 shadow-xl shadow-white/10"
+                  >
+                    <Mail className="w-5 h-5" />
+                    Entrar em Contato
+                    <div className="absolute inset-0 rounded-2xl bg-white blur-md -z-10 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                )}
+              </div>
+            )}
+
+            <div className="w-full pt-12 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-2 text-white/40 text-sm">
+                <span>© {new Date().getFullYear()}</span>
+                <span>•</span>
+                <span>{profile.footer?.copyrightName || legenda?.nome || profile.username}</span>
+              </div>
+              
+              <p className="text-white/40 text-sm flex items-center gap-2">
+                <span>{profile.footer?.madeWith || 'Feito com 💜 usando Bio4Dev'}</span>
+              </p>
+            </div>
           </div>
-          <p className="text-white/40 text-sm">
-            Feito com 💜 usando Bio4Dev • © {new Date().getFullYear()}
-          </p>
         </div>
       </footer>
 

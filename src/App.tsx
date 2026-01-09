@@ -42,7 +42,7 @@ export default function App() {
     <BrowserRouter>
       {/* Toast Notifications */}
       <Toaster
-        position="top-right"
+        position="bottom-right"
         toastOptions={{
           style: {
             background: "#1a1a2e",

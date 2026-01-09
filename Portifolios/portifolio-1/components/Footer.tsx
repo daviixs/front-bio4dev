@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Linkedin, Mail, Twitter, Coffee, Instagram, Youtube } from 'lucide-react';
+import { Github, Linkedin, Mail, Twitter, Coffee, Instagram, Youtube, FileDown } from 'lucide-react';
 import { Footer as FooterType, Social } from '@/types';
 
 interface FooterProps {
@@ -8,12 +8,12 @@ interface FooterProps {
 }
 
 const socialIconMap: Record<string, React.ReactNode> = {
-  github: <Github size={24} />,
-  linkedin: <Linkedin size={24} />,
-  twitter: <Twitter size={24} />,
-  instagram: <Instagram size={24} />,
+  github: <Github size={24} /> as any,
+  linkedin: <Linkedin size={24} /> as any,
+  twitter: <Twitter size={24} /> as any,
+  instagram: <Instagram size={24} /> as any,
   tiktok: <span className="font-bold text-xl">d</span>,
-  youtube: <Youtube size={24} />,
+  youtube: <Youtube size={24} /> as any,
 };
 
 export function Footer({ footer, socials }: FooterProps) {
@@ -31,16 +31,29 @@ export function Footer({ footer, socials }: FooterProps) {
             {footer?.subtitle || "Estou sempre aberto a novos projetos e oportunidades"}
           </p>
 
-          {/* Email de contato */}
-          {footer?.email && (
-            <a
-              href={`mailto:${footer.email}`}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              <Mail size={20} />
-              {footer.email}
-            </a>
-          )}
+          {/* Email de contato / Currículo */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {footer?.email && (
+              <a
+                href={`mailto:${footer.email}`}
+                className="inline-flex items-center gap-2 px-8 py-3 border border-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all shadow-md"
+              >
+                <Mail size={20} />
+                {footer.email}
+              </a>
+            )}
+            {footer?.resumeUrl && (
+              <a
+                href={footer.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <FileDown size={20} />
+                Baixe aqui meu Currículo
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Redes sociais */}
@@ -75,9 +88,13 @@ export function Footer({ footer, socials }: FooterProps) {
 
             {/* Frase com emoji */}
             <p className="text-gray-400 flex items-center gap-2">
-              Feito com <span className="text-blue-500">💙</span> e
-              <Coffee size={18} className="text-yellow-600" />
-              café
+              {footer?.madeWith || (
+                <>
+                  Feito com <span className="text-blue-500">💙</span> e
+                  <Coffee size={18} className="text-yellow-600" />
+                  café
+                </>
+              )}
             </p>
           </div>
         </div>

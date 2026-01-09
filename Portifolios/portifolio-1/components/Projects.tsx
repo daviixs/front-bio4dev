@@ -7,7 +7,7 @@ interface ProjectsProps {
 }
 
 export function Projects({ projects: apiProjects }: ProjectsProps) {
-  const projects = apiProjects && apiProjects.length > 0 ? apiProjects : [
+  const projects = apiProjects || [
     {
       nome: 'E-commerce Moderno',
       descricao:

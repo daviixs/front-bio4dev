@@ -15,8 +15,17 @@ import type {
   CreateConfigDTO,
   CreatePageDTO,
   CreateSocialDTO,
+  UpdateSocialDTO,
   CreateProjetoDTO,
+  UpdateProjetoDTO,
+  CreateTechStackDTO,
+  CreateTechnologyDTO,
+  CreateWorkExperienceDTO,
+  UpdateWorkExperienceDTO,
+  CreateFooterDTO,
+  UpdateFooterDTO,
   LoginDTO,
+  Footer,
 } from "@/types";
 
 const API_BASE_URL = "http://localhost:5000";
@@ -85,15 +94,23 @@ export const profileApi = {
     return response.data;
   },
 
-  getByUsername: async (username: string) => {
-    const response = await api.get<ProfileComplete>(
-      `/profile/username/${username}`
-    );
+  getByUsername: async (username: string, previewToken?: string) => {
+    const url = previewToken
+      ? `/profile/username/${username}?preview=${previewToken}`
+      : `/profile/username/${username}`;
+    const response = await api.get<ProfileComplete>(url);
     return response.data;
   },
 
   getComplete: async (id: string) => {
     const response = await api.get<ProfileComplete>(`/profile/${id}/complete`);
+    return response.data;
+  },
+
+  generatePreviewToken: async (id: string) => {
+    const response = await api.post<{ token: string; expiresAt: string }>(
+      `/profile/${id}/preview-token`
+    );
     return response.data;
   },
 };
@@ -108,7 +125,10 @@ export const legendaApi = {
     return response.data;
   },
 
-  update: async (id: string, data: Partial<CreateLegendaDTO>) => {
+  update: async (
+    id: string,
+    data: Partial<Omit<CreateLegendaDTO, "profileId">> & { greeting?: string }
+  ) => {
     const response = await api.patch<{ message: string; legenda: Legenda }>(
       `/legenda/${id}`,
       data
@@ -143,7 +163,7 @@ export const configApi = {
   },
 
   update: async (id: string, data: Partial<CreateConfigDTO>) => {
-    const response = await api.post<{ message: string; config: Config }>(
+    const response = await api.patch<{ message: string; config: Config }>(
       `/config/${id}`,
       data
     );
@@ -215,7 +235,7 @@ export const socialApi = {
     return response.data;
   },
 
-  update: async (id: string, data: Partial<CreateSocialDTO>) => {
+  update: async (id: string, data: UpdateSocialDTO) => {
     const response = await api.patch<{ message: string; social: Social }>(
       `/social/${id}`,
       data
@@ -243,32 +263,119 @@ export const socialApi = {
 export const projetosApi = {
   create: async (data: CreateProjetoDTO) => {
     const response = await api.post<{ message: string; projeto: Projeto }>(
-      "/projetos",
+      "/projects",
       data
     );
     return response.data;
   },
 
-  update: async (id: string, data: Partial<CreateProjetoDTO>) => {
+  update: async (id: string, data: UpdateProjetoDTO) => {
     const response = await api.patch<{ message: string; projeto: Projeto }>(
-      `/projetos/${id}`,
+      `/projects/${id}`,
       data
     );
     return response.data;
   },
 
   getById: async (id: string) => {
-    const response = await api.get<Projeto>(`/projetos/${id}`);
+    const response = await api.get<Projeto>(`/projects/${id}`);
     return response.data;
   },
 
   getByProfileId: async (profileId: string) => {
-    const response = await api.get<Projeto[]>(`/projetos/profile/${profileId}`);
+    const response = await api.get<Projeto[]>(`/projects/profile/${profileId}`);
     return response.data;
   },
 
   delete: async (id: string) => {
-    const response = await api.delete(`/projetos/${id}`);
+    const response = await api.delete(`/projects/${id}`);
+    return response.data;
+  },
+};
+
+// ============ TECH STACK ============
+export const techStackApi = {
+  create: async (profileId: string, data: CreateTechStackDTO) => {
+    const response = await api.post(`/techstack/profile/${profileId}`, data);
+    return response.data;
+  },
+
+  update: async (profileId: string, data: CreateTechStackDTO) => {
+    const response = await api.put(`/techstack/profile/${profileId}`, data);
+    return response.data;
+  },
+
+  getByProfileId: async (profileId: string) => {
+    const response = await api.get(`/techstack/profile/${profileId}`);
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete(`/techstack/${id}`);
+    return response.data;
+  },
+};
+
+// ============ WORK EXPERIENCE ============
+export const workExperienceApi = {
+  create: async (data: CreateWorkExperienceDTO) => {
+    const response = await api.post(`/workexperience`, data);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdateWorkExperienceDTO) => {
+    const response = await api.put(`/workexperience/${id}`, data);
+    return response.data;
+  },
+
+  getByProfileId: async (profileId: string) => {
+    const response = await api.get(`/workexperience/profile/${profileId}`);
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete(`/workexperience/${id}`);
+    return response.data;
+  },
+};
+
+// ============ FOOTER ============
+export const footerApi = {
+  create: async (data: CreateFooterDTO) => {
+    const response = await api.post(`/footer`, data);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdateFooterDTO) => {
+    const response = await api.put(`/footer/${id}`, data);
+    return response.data;
+  },
+
+  getByProfileId: async (profileId: string) => {
+    const response = await api.get(`/footer/profile/${profileId}`);
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete(`/footer/${id}`);
+    return response.data;
+  },
+};
+
+// ============ UPLOAD ============
+export const uploadApi = {
+  uploadResume: async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post<{ url: string; message: string }>(
+      "/upload/resume",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     return response.data;
   },
 };

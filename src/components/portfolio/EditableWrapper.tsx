@@ -1,23 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Pencil } from 'lucide-react';
+import React, { useState } from 'react';
+import { Pencil, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
+import { uploadApi } from '@/lib/api';
 
 interface EditableWrapperProps {
   children: React.ReactNode;
   value: string;
   onChange: (newValue: string) => void;
-  type?: 'text' | 'image' | 'gif';
-  label?: string;
+  type?: 'text' | 'textarea' | 'image' | 'file';
+  label: string;
   className?: string;
 }
 
@@ -26,42 +28,58 @@ export function EditableWrapper({
   value,
   onChange,
   type = 'text',
-  label = 'Editar',
+  label,
   className = '',
 }: EditableWrapperProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [tempValue, setTempValue] = useState(value);
-
-  // Sincronizar o valor quando mudar externamente
-  useEffect(() => {
-    setTempValue(value);
-  }, [value]);
+  const [tempValue, setTempValue] = useState(value || '');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleSave = () => {
     onChange(tempValue);
     setIsEditing(false);
+    toast.success('Alteração aplicada!');
   };
 
-  const handleCancel = () => {
-    setTempValue(value);
-    setIsEditing(false);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      setUploadProgress(10);
+      
+      const response = await uploadApi.uploadResume(file);
+      
+      setUploadProgress(100);
+      onChange(response.url);
+      setTempValue(response.url);
+      setIsEditing(false);
+      toast.success('Arquivo enviado com sucesso!');
+    } catch (error) {
+      console.error('Erro no upload:', error);
+      toast.error('Erro ao enviar arquivo. Tente novamente.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <>
       <div className={`relative group ${className}`}>
-        <div className="w-full">{children}</div>
+        <div>{children}</div>
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-2 right-2 bg-white/90 hover:bg-white shadow-lg z-10 border border-slate-200 rounded-full"
-          onClick={(e) => {
+          className="absolute -top-2 -right-2 bg-white hover:bg-slate-50 shadow-sm z-10 border border-slate-200 rounded-full w-6 h-6 p-0 transition-transform group-hover:scale-110"
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
-            setTempValue(value);
+            setTempValue(value || '');
             setIsEditing(true);
           }}
         >
-          <Pencil className="w-4 h-4 text-slate-700" />
+          <Pencil className="w-3 h-3 text-slate-700" />
         </Button>
       </div>
 
@@ -69,62 +87,90 @@ export function EditableWrapper({
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{label}</DialogTitle>
-            <DialogDescription>
-              {type === 'text' && 'Edite o texto abaixo'}
-              {type === 'image' && 'Insira a URL da imagem'}
-              {type === 'gif' && 'Insira a URL do GIF'}
-            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 mt-4">
-            {type === 'text' ? (
-              <div>
-                <Label>Texto</Label>
-                <Textarea
-                  value={tempValue}
-                  onChange={(e) => setTempValue(e.target.value)}
-                  className="mt-2 min-h-[100px]"
-                />
-              </div>
-            ) : (
-              <div>
-                <Label>URL</Label>
+
+          <div className="space-y-4 py-4">
+            {type === 'text' && (
+              <div className="space-y-2">
+                <Label>{label}</Label>
                 <Input
                   value={tempValue}
                   onChange={(e) => setTempValue(e.target.value)}
-                  placeholder={
-                    type === 'image'
-                      ? 'https://exemplo.com/imagem.jpg'
-                      : 'https://exemplo.com/animation.gif'
-                  }
-                  className="mt-2"
+                  placeholder={`Digite o ${label.toLowerCase()}`}
+                  autoFocus
                 />
-                {(type === 'image' || type === 'gif') && tempValue && (
-                  <div className="mt-4">
-                    <Label>Preview</Label>
-                    <div className="mt-2 rounded-lg overflow-hidden border">
-                      <img
-                        src={tempValue}
-                        alt="Preview"
-                        className="w-full h-auto max-h-64 object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '';
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
             )}
-            <div className="flex justify-end gap-2 pt-4">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancelar
-              </Button>
-              <Button onClick={handleSave}>Salvar</Button>
-            </div>
+
+            {type === 'textarea' && (
+              <div className="space-y-2">
+                <Label>{label}</Label>
+                <Textarea
+                  value={tempValue}
+                  onChange={(e) => setTempValue(e.target.value)}
+                  placeholder={`Digite o ${label.toLowerCase()}`}
+                  className="min-h-[100px]"
+                  autoFocus
+                />
+              </div>
+            )}
+
+            {type === 'image' && (
+              <div className="space-y-2">
+                <Label>URL da Imagem</Label>
+                <Input
+                  value={tempValue}
+                  onChange={(e) => setTempValue(e.target.value)}
+                  placeholder="https://exemplo.com/imagem.jpg"
+                  autoFocus
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Dica: Você pode usar URLs do Unsplash ou DiceBear para testes.
+                </p>
+              </div>
+            )}
+
+            {type === 'file' && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Arquivo atual (URL)</Label>
+                  <Input
+                    value={tempValue}
+                    onChange={(e) => setTempValue(e.target.value)}
+                    placeholder="URL do arquivo..."
+                  />
+                </div>
+                
+                <div className="relative pt-4 border-t">
+                  <Label className="block mb-2 text-sm font-bold">Ou fazer upload de novo arquivo</Label>
+                  <Input
+                    type="file"
+                    onChange={handleFileUpload}
+                    className="cursor-pointer"
+                    accept=".pdf,.doc,.docx"
+                    disabled={isUploading}
+                  />
+                  {isUploading && (
+                    <div className="mt-2 flex items-center gap-2 text-sm text-blue-600 animate-pulse">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Fazendo upload...
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditing(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSave} disabled={isUploading}>
+              Salvar Alterações
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
   );
 }
-
