@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { EditableHero } from "./EditableHero";
+import { EditableResumeButton } from "./EditableResumeButton";
 import { TechStack } from "../../../Portifolios/portifolio-1/components/TechStack";
 import { WorkHistory } from "../../../Portifolios/portifolio-1/components/WorkHistory";
 import { Projects } from "../../../Portifolios/portifolio-1/components/Projects";
 import { Footer } from "../../../Portifolios/portifolio-1/components/Footer";
-import { profileApi, legendaApi } from "@/lib/api";
+import { profileApi, legendaApi, footerApi } from "@/lib/api";
 import type { ProfileComplete, Legenda } from "@/types";
 import { toast } from "sonner";
 
@@ -28,7 +29,7 @@ export function EditablePortfolio1({
 
     try {
       await legendaApi.update(legenda.id, { [field]: value });
-      
+
       // Atualizar estado local
       setLocalProfile((prev) => {
         if (!prev.legendas || prev.legendas.length === 0) return prev;
@@ -60,7 +61,7 @@ export function EditablePortfolio1({
 
     try {
       await profileApi.update(localProfile.id, { avatarUrl: url });
-      
+
       setLocalProfile((prev) => ({
         ...prev,
         avatarUrl: url,
@@ -75,11 +76,51 @@ export function EditablePortfolio1({
     }
   };
 
+  const handleResumeUpdate = async (url: string) => {
+    if (!localProfile.footer?.id) {
+      toast.error("Footer não encontrado");
+      return;
+    }
+
+    try {
+      await footerApi.update(localProfile.footer.id, { resumeUrl: url });
+
+      setLocalProfile((prev) => ({
+        ...prev,
+        footer: prev.footer
+          ? {
+              ...prev.footer,
+              resumeUrl: url,
+            }
+          : undefined,
+      }));
+
+      toast.success("Currículo atualizado com sucesso!");
+      onProfileUpdate?.();
+    } catch (error) {
+      console.error("Erro ao atualizar currículo:", error);
+      toast.error("Erro ao atualizar currículo");
+      throw error;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Botão de Currículo Editável - Fixo no Topo */}
+      <EditableResumeButton
+        resumeUrl={localProfile.footer?.resumeUrl}
+        onResumeUpdate={handleResumeUpdate}
+      />
+
+      {/* Teste: Indicador sempre visível para debug */}
+      <div className="fixed top-40 left-6 z-[100] bg-green-500 text-white px-4 py-2 rounded text-xs">
+        EDIT MODE - Footer: {localProfile.footer ? "YES" : "NO"}
+        {localProfile.footer?.resumeUrl && ` - URL EXISTS`}
+      </div>
+
       {/* Seção Hero/Inicial */}
-      <EditableHero 
-        profile={localProfile} 
+      <EditableHero
+        profile={localProfile}
         legenda={legenda}
         onLegendaUpdate={handleLegendaUpdate}
         onAvatarUpdate={handleAvatarUpdate}
@@ -99,4 +140,3 @@ export function EditablePortfolio1({
     </div>
   );
 }
-

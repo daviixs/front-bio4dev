@@ -621,14 +621,40 @@ export function PortfolioEditorPage() {
                   })) || [],
               },
               workHistory:
-                profile.workHistory?.map((exp: any) => ({
-                  company: exp.company,
-                  period: exp.period,
-                  summary: exp.summary,
-                  technologies: exp.technologies || [],
-                  responsibilities: exp.responsibilities || [],
-                  impact: exp.impact || "",
-                })) || [],
+                profile.workHistory?.map((exp: any) => {
+                  const technologies = Array.isArray(exp.technologies)
+                    ? exp.technologies
+                        .map((tech: any) =>
+                          typeof tech === "string"
+                            ? tech
+                            : typeof tech?.technology === "string"
+                            ? tech.technology
+                            : null
+                        )
+                        .filter(Boolean)
+                    : [];
+
+                  const responsibilities = Array.isArray(exp.responsibilities)
+                    ? exp.responsibilities
+                        .map((resp: any) =>
+                          typeof resp === "string"
+                            ? resp
+                            : typeof resp?.responsibility === "string"
+                            ? resp.responsibility
+                            : null
+                        )
+                        .filter(Boolean)
+                    : [];
+
+                  return {
+                    company: exp.company,
+                    period: exp.period,
+                    summary: exp.summary,
+                    technologies,
+                    responsibilities,
+                    impact: exp.impact || "",
+                  };
+                }) || [],
               projects:
                 profile.projetos?.map((proj: any) => ({
                   id: proj.id,

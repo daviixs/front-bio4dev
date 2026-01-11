@@ -1,6 +1,19 @@
-import { Github, Instagram, Youtube, Mail, ExternalLink, Code2, Star, Rocket, Heart, Briefcase, GraduationCap } from 'lucide-react';
-import { TechIcon } from '@/components/portfolio/TechIcon';
-import type { ProfileComplete } from '@/types';
+import {
+  Github,
+  Instagram,
+  Youtube,
+  Mail,
+  ExternalLink,
+  Code2,
+  Star,
+  Rocket,
+  Heart,
+  Briefcase,
+  GraduationCap,
+} from "lucide-react";
+import { TechIcon } from "@/components/portfolio/TechIcon";
+import { ResumeButton } from "@/components/portfolio/ResumeButton";
+import type { ProfileComplete } from "@/types";
 
 interface TemplateProps {
   profile: ProfileComplete;
@@ -12,7 +25,7 @@ const socialIcons: Record<string, React.ReactNode> = {
   youtube: <Youtube className="w-5 h-5" />,
   tiktok: (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
     </svg>
   ),
 };
@@ -25,6 +38,11 @@ export function Template03({ profile }: TemplateProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-fuchsia-950 to-pink-950 text-white">
+      {/* Botão de Download do Currículo - Fixo no Topo */}
+      <ResumeButton
+        resumeUrl={profile.footer?.resumeUrl}
+        className="from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+      />
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-full">
@@ -33,7 +51,7 @@ export function Template03({ profile }: TemplateProps) {
           <div className="absolute top-1/3 right-1/3 w-72 h-72 bg-pink-500/30 rounded-full blur-[100px] animate-blob animation-delay-2000" />
           <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-fuchsia-500/30 rounded-full blur-[100px] animate-blob animation-delay-4000" />
         </div>
-        
+
         {/* Stars Effect */}
         <div className="absolute inset-0">
           {[...Array(50)].map((_, i) => (
@@ -61,7 +79,7 @@ export function Template03({ profile }: TemplateProps) {
                 <div className="absolute inset-0 rounded-full border-2 border-purple-500/30 animate-spin-slow" />
                 <div className="absolute inset-4 rounded-full border-2 border-pink-500/30 animate-spin-slow-reverse" />
                 <div className="absolute inset-8 rounded-full border border-fuchsia-500/30" />
-                
+
                 {/* Main Image */}
                 <div className="absolute inset-12 rounded-full overflow-hidden bg-gradient-to-br from-purple-600 to-pink-600 p-1">
                   <div className="w-full h-full rounded-full overflow-hidden">
@@ -78,7 +96,7 @@ export function Template03({ profile }: TemplateProps) {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Floating Icons */}
                 <div className="absolute top-4 right-4 w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30 animate-float">
                   <Star className="w-6 h-6 text-white" />
@@ -98,12 +116,12 @@ export function Template03({ profile }: TemplateProps) {
 
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-400 bg-clip-text text-transparent">
-                  {legenda?.nome || 'Seu Nome'}
+                  {legenda?.nome || "Seu Nome"}
                 </span>
               </h1>
 
               <p className="text-2xl text-white/70 mb-4">
-                {legenda?.titulo || 'Desenvolvedor'}
+                {legenda?.titulo || "Desenvolvedor"}
               </p>
 
               {legenda?.subtitulo && (
@@ -122,9 +140,13 @@ export function Template03({ profile }: TemplateProps) {
               {config && (
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-8">
                   {[
-                    { value: config.stacks, label: 'Stacks', emoji: '💻' },
-                    { value: config.projetos, label: 'Projetos', emoji: '🚀' },
-                    { value: projetos?.length || 0, label: 'Destaques', emoji: '⭐' },
+                    { value: config.stacks, label: "Stacks", emoji: "💻" },
+                    { value: config.projetos, label: "Projetos", emoji: "🚀" },
+                    {
+                      value: projetos?.length || 0,
+                      label: "Destaques",
+                      emoji: "⭐",
+                    },
                   ].map((stat, i) => (
                     <div
                       key={i}
@@ -160,40 +182,42 @@ export function Template03({ profile }: TemplateProps) {
       </section>
 
       {/* Tech Stack Section */}
-      {profile.techStack?.technologies && profile.techStack.technologies.length > 0 && (
-        <section className="py-24 px-6 relative overflow-hidden">
-          {/* Decorative Background for Section */}
-          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
-          
-          <div className="max-w-6xl mx-auto relative z-10">
-            <div className="text-center mb-16">
-              <span className="text-5xl mb-4 block animate-bounce">⚡</span>
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-400 bg-clip-text text-transparent">
-                Minhas Ferramentas
-              </h2>
-            </div>
+      {profile.techStack?.technologies &&
+        profile.techStack.technologies.length > 0 && (
+          <section className="py-24 px-6 relative overflow-hidden">
+            {/* Decorative Background for Section */}
+            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
-              {profile.techStack.technologies.map((tech, index) => (
-                <div
-                  key={index}
-                  className="group relative"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all opacity-0 group-hover:opacity-100" />
-                  <div className="relative p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 flex flex-col items-center justify-center gap-4 hover:-translate-y-2 transition-all duration-500">
-                    <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500/10 to-pink-500/10">
-                      <TechIcon icon={tech.icon} size={32} className="text-pink-400" />
+            <div className="max-w-6xl mx-auto relative z-10">
+              <div className="text-center mb-16">
+                <span className="text-5xl mb-4 block animate-bounce">⚡</span>
+                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-fuchsia-400 bg-clip-text text-transparent">
+                  Minhas Ferramentas
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                {profile.techStack.technologies.map((tech, index) => (
+                  <div key={index} className="group relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all opacity-0 group-hover:opacity-100" />
+                    <div className="relative p-8 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 flex flex-col items-center justify-center gap-4 hover:-translate-y-2 transition-all duration-500">
+                      <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500/10 to-pink-500/10">
+                        <TechIcon
+                          icon={tech.icon}
+                          size={32}
+                          className="text-pink-400"
+                        />
+                      </div>
+                      <span className="text-sm font-bold text-white/70 group-hover:text-white">
+                        {tech.name}
+                      </span>
                     </div>
-                    <span className="text-sm font-bold text-white/70 group-hover:text-white">
-                      {tech.name}
-                    </span>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
       {/* Journey/Experience Section */}
       {profile.workHistory && profile.workHistory.length > 0 && (
@@ -208,10 +232,7 @@ export function Template03({ profile }: TemplateProps) {
 
             <div className="space-y-12">
               {profile.workHistory.map((work, index) => (
-                <div
-                  key={index}
-                  className="relative group lg:flex gap-8 group"
-                >
+                <div key={index} className="relative group lg:flex gap-8 group">
                   {/* Timeline element */}
                   <div className="hidden lg:block w-32 pt-2 text-right">
                     <span className="text-sm font-bold text-pink-400/60 uppercase tracking-widest block">
@@ -222,7 +243,7 @@ export function Template03({ profile }: TemplateProps) {
                   <div className="relative flex-1">
                     {/* Floating Glow */}
                     <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                    
+
                     <div className="relative p-8 rounded-[2rem] bg-white/5 backdrop-blur-md border border-white/10 hover:border-pink-500/30 transition-colors">
                       <div className="flex items-center gap-4 mb-4">
                         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white shrink-0">
@@ -234,7 +255,9 @@ export function Template03({ profile }: TemplateProps) {
                           </h3>
                           <div className="flex items-center gap-2 text-pink-400 font-medium">
                             <span>{work.company}</span>
-                            <span className="lg:hidden text-white/30">• {work.period}</span>
+                            <span className="lg:hidden text-white/30">
+                              • {work.period}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -276,21 +299,21 @@ export function Template03({ profile }: TemplateProps) {
                 Meus Projetos
               </h2>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-8">
               {projetos.map((projeto, index) => (
                 <div
                   key={projeto.id}
                   className={`group relative rounded-3xl overflow-hidden ${
-                    index % 2 === 0 ? 'md:translate-y-8' : ''
+                    index % 2 === 0 ? "md:translate-y-8" : ""
                   }`}
                 >
                   {/* Background Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 group-hover:from-purple-600/30 group-hover:to-pink-600/30 transition-all duration-500" />
-                  
+
                   {/* Border Glow */}
                   <div className="absolute inset-0 rounded-3xl border border-white/10 group-hover:border-purple-500/50 transition-colors duration-500" />
-                  
+
                   {/* Image */}
                   <div className="h-56 overflow-hidden relative">
                     {projeto.gif ? (
@@ -306,7 +329,7 @@ export function Template03({ profile }: TemplateProps) {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-purple-950 via-purple-950/50 to-transparent" />
                   </div>
-                  
+
                   {/* Content */}
                   <div className="relative p-6 -mt-12">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-sm mb-3">
@@ -330,7 +353,7 @@ export function Template03({ profile }: TemplateProps) {
       {/* Footer */}
       <footer className="py-24 px-6 relative overflow-hidden">
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] -z-10" />
-        
+
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col items-center text-center">
             <div className="inline-flex items-center gap-3 mb-8">
@@ -367,11 +390,17 @@ export function Template03({ profile }: TemplateProps) {
               <div className="flex items-center gap-2 text-white/40 text-sm">
                 <span>© {new Date().getFullYear()}</span>
                 <span>•</span>
-                <span>{profile.footer?.copyrightName || legenda?.nome || profile.username}</span>
+                <span>
+                  {profile.footer?.copyrightName ||
+                    legenda?.nome ||
+                    profile.username}
+                </span>
               </div>
-              
+
               <p className="text-white/40 text-sm flex items-center gap-2">
-                <span>{profile.footer?.madeWith || 'Feito com 💜 usando Bio4Dev'}</span>
+                <span>
+                  {profile.footer?.madeWith || "Feito com 💜 usando Bio4Dev"}
+                </span>
               </p>
             </div>
           </div>
@@ -413,4 +442,3 @@ export function Template03({ profile }: TemplateProps) {
     </div>
   );
 }
-

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { profileApi } from "@/lib/api";
 import type { ProfileComplete } from "@/types";
 import { EditablePortfolio1 } from "@/components/portfolio/EditablePortfolio1";
+import { EditablePortfolio2 } from "@/components/portfolio/EditablePortfolio2";
 
 export default function BioEditPage() {
   const navigate = useNavigate();
@@ -42,7 +43,9 @@ export default function BioEditPage() {
     try {
       await profileApi.update(id, { published: checked });
       setProfile({ ...profile, published: checked });
-      toast.success(checked ? "Portfólio publicado!" : "Portfólio despublicado");
+      toast.success(
+        checked ? "Portfólio publicado!" : "Portfólio despublicado"
+      );
     } catch (error) {
       console.error("Erro ao atualizar status:", error);
       toast.error("Erro ao atualizar status");
@@ -94,14 +97,19 @@ export default function BioEditPage() {
       });
     } catch (error: any) {
       console.error("Erro ao gerar preview:", error);
-      
+
       // Se falhar, mostrar erro específico
       if (error.response?.status === 404) {
         toast.error("Endpoint de preview não encontrado no backend");
-      } else if (error.response?.status === 401 || error.response?.status === 403) {
+      } else if (
+        error.response?.status === 401 ||
+        error.response?.status === 403
+      ) {
         toast.error("Sem permissão para gerar preview");
       } else {
-        toast.error("Erro ao gerar token de preview. Verifique se o backend está rodando.");
+        toast.error(
+          "Erro ao gerar token de preview. Verifique se o backend está rodando."
+        );
       }
     } finally {
       setIsGeneratingPreview(false);
@@ -129,8 +137,11 @@ export default function BioEditPage() {
     );
   }
 
-  // Por enquanto, apenas suporta template_01
-  if (profile.templateType !== "template_01") {
+  // Suporta template_01 e template_02
+  if (
+    profile.templateType !== "template_01" &&
+    profile.templateType !== "template_02"
+  ) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
@@ -146,8 +157,8 @@ export default function BioEditPage() {
         </div>
         <div className="rounded-xl border bg-card shadow-sm p-6 text-center">
           <p className="text-slate-600">
-            Edição inline disponível apenas para o Portfólio 1. 
-            Outros templates serão suportados em breve.
+            Edição inline disponível para os Portfólios 1 e 2. Outros templates
+            serão suportados em breve.
           </p>
         </div>
       </div>
@@ -208,12 +219,26 @@ export default function BioEditPage() {
       </div>
 
       {/* Portfolio Editável */}
-      <div className="bg-white">
+      <div
+        className={
+          profile.templateType === "template_02" ? "bg-[#050505]" : "bg-white"
+        }
+      >
         {profile && (
-          <EditablePortfolio1 
-            profile={profile} 
-            onProfileUpdate={handleProfileUpdate}
-          />
+          <>
+            {profile.templateType === "template_01" && (
+              <EditablePortfolio1
+                profile={profile}
+                onProfileUpdate={handleProfileUpdate}
+              />
+            )}
+            {profile.templateType === "template_02" && (
+              <EditablePortfolio2
+                profile={profile}
+                onProfileUpdate={handleProfileUpdate}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

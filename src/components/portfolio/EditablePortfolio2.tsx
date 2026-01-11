@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   MapPin,
   User,
@@ -14,7 +14,9 @@ import {
   Facebook,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
-import { ResumeButton } from "@/components/portfolio/ResumeButton";
+import { EditableResumeButton } from "./EditableResumeButton";
+import { toast } from "sonner";
+import { footerApi } from "@/lib/api";
 import type {
   ProfileComplete,
   Social,
@@ -23,7 +25,7 @@ import type {
   Technology,
 } from "@/types";
 
-interface TemplateProps {
+interface EditablePortfolio2Props {
   profile: ProfileComplete;
 }
 
@@ -83,10 +85,8 @@ const getSocialIcon = (platform: string): React.ReactNode => {
 
 // Componente SocialCard - EXATAMENTE como portifolio-2/components/SocialCard.tsx
 const SocialCard = ({ social }: { social: Social }) => {
-  // Adaptando para o formato do Social do backend
   const platform = social.plataforma.toLowerCase();
 
-  // Mapear cores por plataforma
   const getColorClass = (plat: string): string => {
     const colors: Record<string, string> = {
       github: "bg-[#18181b]",
@@ -285,20 +285,50 @@ const TechStack = ({ technologies }: { technologies?: Technology[] }) => {
   );
 };
 
-// ============= COMPONENTE PRINCIPAL - EXATAMENTE COMO PORTIFOLIO-2/App.tsx =============
+// ============= COMPONENTE PRINCIPAL EDITÁVEL =============
 
-export function Template02({ profile }: TemplateProps) {
-  const legenda = profile.legendas?.[0];
-  const socials = profile.social || [];
-  const projects = profile.projetos || [];
-  const workHistory = profile.workHistory || [];
-  const techStack = profile.techStack;
+export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
+  const [currentProfile, setCurrentProfile] = useState(profile);
+
+  const legenda = currentProfile.legendas?.[0];
+  const socials = currentProfile.social || [];
+  const projects = currentProfile.projetos || [];
+  const workHistory = currentProfile.workHistory || [];
+  const techStack = currentProfile.techStack;
+
+  // Handler para atualizar o currículo
+  const handleResumeUpdate = async (resumeUrl: string) => {
+    try {
+      if (!currentProfile.footer) {
+        throw new Error("Footer não encontrado");
+      }
+
+      await footerApi.update(currentProfile.footer.id, {
+        ...currentProfile.footer,
+        resumeUrl,
+      });
+
+      setCurrentProfile({
+        ...currentProfile,
+        footer: {
+          ...currentProfile.footer,
+          resumeUrl,
+        },
+      });
+
+      toast.success("Currículo atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar currículo:", error);
+      toast.error("Erro ao atualizar currículo");
+    }
+  };
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-[#050505] overflow-x-hidden text-slate-200">
-      {/* Botão de Download do Currículo */}
-      <ResumeButton
-        resumeUrl={profile.footer?.resumeUrl}
+      {/* Botão Editável de Upload do Currículo */}
+      <EditableResumeButton
+        resumeUrl={currentProfile.footer?.resumeUrl}
+        onResumeUpdate={handleResumeUpdate}
         className="from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
       />
 
@@ -311,7 +341,7 @@ export function Template02({ profile }: TemplateProps) {
               <Avatar
                 src={
                   legenda?.legendaFoto ||
-                  profile.avatarUrl ||
+                  currentProfile.avatarUrl ||
                   "https://api.dicebear.com/7.x/avataaars/svg?seed=Default&backgroundColor=fbbf24"
                 }
                 alt={legenda?.nome || "Profile"}
@@ -330,8 +360,8 @@ export function Template02({ profile }: TemplateProps) {
                 {legenda?.subtitulo && (
                   <InfoRow icon={User} text={legenda.subtitulo} />
                 )}
-                {profile.footer?.email && (
-                  <InfoRow icon={Mail} text={profile.footer.email} />
+                {currentProfile.footer?.email && (
+                  <InfoRow icon={Mail} text={currentProfile.footer.email} />
                 )}
               </div>
 
@@ -378,11 +408,11 @@ export function Template02({ profile }: TemplateProps) {
         )}
 
         {/* Footer */}
-        {profile.footer && (
+        {currentProfile.footer && (
           <footer className="text-center py-8 text-gray-500 text-sm border-t border-white/5 mt-8">
-            <p>{profile.footer.copyrightName}</p>
-            {profile.footer.madeWith && (
-              <p className="mt-2">{profile.footer.madeWith}</p>
+            <p>{currentProfile.footer.copyrightName}</p>
+            {currentProfile.footer.madeWith && (
+              <p className="mt-2">{currentProfile.footer.madeWith}</p>
             )}
           </footer>
         )}

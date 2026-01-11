@@ -1,6 +1,15 @@
-import React from 'react';
-import { Github, Linkedin, Mail, Twitter, Coffee, Instagram, Youtube, FileDown } from 'lucide-react';
-import { Footer as FooterType, Social } from '@/types';
+import React from "react";
+import {
+  Github,
+  Linkedin,
+  Mail,
+  Twitter,
+  Coffee,
+  Instagram,
+  Youtube,
+  FileDown,
+} from "lucide-react";
+import { Footer as FooterType, Social } from "@/types";
 
 interface FooterProps {
   footer?: FooterType;
@@ -8,35 +17,57 @@ interface FooterProps {
 }
 
 const socialIconMap: Record<string, React.ReactNode> = {
-  github: <Github size={24} /> as any,
-  linkedin: <Linkedin size={24} /> as any,
-  twitter: <Twitter size={24} /> as any,
-  instagram: <Instagram size={24} /> as any,
+  github: <Github size={24} />,
+  linkedin: <Linkedin size={24} />,
+  twitter: <Twitter size={24} />,
+  instagram: <Instagram size={24} />,
   tiktok: <span className="font-bold text-xl">d</span>,
-  youtube: <Youtube size={24} /> as any,
+  youtube: <Youtube size={24} />,
 };
 
 export function Footer({ footer, socials }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
-  return (
-    <footer id="contato" className="bg-gray-900 text-white py-12 px-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Seção de contato */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl mb-4">
-            {footer?.title || "Vamos trabalhar juntos?"}
-          </h2>
-          <p className="text-gray-400 mb-8">
-            {footer?.subtitle || "Estou sempre aberto a novos projetos e oportunidades"}
-          </p>
+  // Prefer links set in the footer (what the user edits in the editor)
+  const footerSocials = [
+    footer?.github && { href: footer.github, label: "GitHub", icon: <Github size={24} /> },
+    footer?.linkedin && { href: footer.linkedin, label: "LinkedIn", icon: <Linkedin size={24} /> },
+    footer?.twitter && { href: footer.twitter, label: "Twitter", icon: <Twitter size={24} /> },
+    footer?.email && { href: `mailto:${footer.email}`, label: "Email", icon: <Mail size={24} /> },
+  ].filter(Boolean) as Array<{ href: string; label: string; icon: React.ReactNode }>;
 
-          {/* Email de contato / Currículo */}
+  // Fallback to legacy socials list if footer links aren't set
+  const legacySocials =
+    socials?.map((social) => ({
+      href: social.url,
+      label: social.plataforma,
+      icon: socialIconMap[social.plataforma] || <Mail size={24} />,
+      id: social.id,
+    })) || [];
+
+  const socialLinks = footerSocials.length > 0 ? footerSocials : legacySocials;
+
+  return (
+    <footer
+      id="contato"
+      className="py-12 px-6 transition-colors duration-300"
+      style={{
+        backgroundColor: "#09090b",
+        color: "#ffffff",
+      }}
+    >
+      <div className="max-w-6xl mx-auto">
+        {/* Contact section */}
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl mb-4">{footer?.title || "Vamos trabalhar juntos?"}</h2>
+          <p className="text-gray-400 mb-8">{footer?.subtitle || "Estou sempre aberto a novos projetos e oportunidades"}</p>
+
+          {/* Contact email / Resume */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {footer?.email && (
               <a
                 href={`mailto:${footer.email}`}
-                className="inline-flex items-center gap-2 px-8 py-3 border border-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all shadow-md"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-lg"
               >
                 <Mail size={20} />
                 {footer.email}
@@ -56,29 +87,45 @@ export function Footer({ footer, socials }: FooterProps) {
           </div>
         </div>
 
-        {/* Redes sociais */}
+        {/* Social links */}
         <div className="flex justify-center gap-6 mb-8">
-          {socials?.map((social) => (
+          {socialLinks.map((social) => (
             <a
-              key={social.id}
-              href={social.url}
+              key={social.label}
+              href={social.href}
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors hover:scale-110"
-              aria-label={social.plataforma}
+              aria-label={social.label}
             >
-              {socialIconMap[social.plataforma] || <Mail size={24} />}
+              {social.icon}
             </a>
           ))}
-          {!socials?.length && (
+          {!socialLinks.length && (
             <>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors h-110" aria-label="GitHub"><Github size={24} /></a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors h-110" aria-label="LinkedIn"><Linkedin size={24} /></a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors hover:scale-110"
+                aria-label="GitHub"
+              >
+                <Github size={24} />
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors hover:scale-110"
+                aria-label="LinkedIn"
+              >
+                <Linkedin size={24} />
+              </a>
             </>
           )}
         </div>
 
-        {/* Divisor */}
+        {/* Divider */}
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
@@ -86,11 +133,11 @@ export function Footer({ footer, socials }: FooterProps) {
               © {currentYear} {footer?.copyrightName || "João Silva"}. Todos os direitos reservados.
             </p>
 
-            {/* Frase com emoji */}
+            {/* Made with */}
             <p className="text-gray-400 flex items-center gap-2">
               {footer?.madeWith || (
                 <>
-                  Feito com <span className="text-blue-500">💙</span> e
+                  Feito com <span className="text-blue-500">❤️</span> e
                   <Coffee size={18} className="text-yellow-600" />
                   café
                 </>
