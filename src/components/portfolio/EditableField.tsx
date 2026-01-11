@@ -152,7 +152,7 @@ export function EditableField({
         )}>
           {value || placeholder || "Clique para editar"}
         </span>
-        <Pencil className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+        <Pencil className="h-4 w-4 text-gray-400 opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0" />
       </div>
     </div>
   );

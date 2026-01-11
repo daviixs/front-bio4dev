@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Code2, Loader2, AlertCircle, ArrowLeft, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { profileApi } from "@/lib/api";
-import { Template01, Template02, Template03 } from "@/templates";
+import { Template02, Template03 } from "@/templates";
 import type { ProfileComplete } from "@/types";
 
 export function PublicProfilePage() {
@@ -111,7 +111,7 @@ export function PublicProfilePage() {
   const renderTemplate = () => {
     switch (profile.templateType) {
       case "template_01":
-        return <Template01 profile={profile} />;
+        return <Template02 profile={profile} />;
       case "template_02":
         return <Template02 profile={profile} />;
       case "template_03":
