@@ -89,6 +89,16 @@ export default function App() {
           }
         />
 
+        {/* Bio Editor - Without sidebar */}
+        <Route
+          path="/dashboard/bio/:id"
+          element={
+            <ProtectedRoute>
+              <BioEditPage />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Dashboard Routes - Admin Dashboard */}
         <Route
           path="/dashboard"
@@ -100,7 +110,6 @@ export default function App() {
         >
           <Route index element={<AdminDashboard />} />
           <Route path="bio" element={<BioPage />} />
-          <Route path="bio/:id" element={<BioEditPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
         </Route>

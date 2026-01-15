@@ -885,15 +885,17 @@ export function PortfolioEditorPage() {
                   "https://api.dicebear.com/7.x/avataaars/svg",
               },
               socialLinks:
-                profile.social?.map((social: any, index: number) => ({
-                  id: social.platform.toLowerCase(),
-                  name: social.platform,
-                  handle: social.url,
-                  url: social.url,
-                  colorClass:
-                    "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
-                  colSpan: index === 0 ? 2 : 1,
-                })) || [],
+                profile.social
+                  ?.filter((social: any) => social.platform)
+                  ?.map((social: any, index: number) => ({
+                    id: (social.platform || "link").toLowerCase(),
+                    name: social.platform || "Link",
+                    handle: social.url || "",
+                    url: social.url || "",
+                    colorClass:
+                      "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
+                    colSpan: index === 0 ? 2 : 1,
+                  })) || [],
               experience:
                 profile.workHistory?.map((exp: any, index: number) => ({
                   id: String(index + 1),
@@ -1148,13 +1150,19 @@ export function PortfolioEditorPage() {
           for (let i = 0; i < data.projects.length; i++) {
             const project = data.projects[i];
 
+            // Validar dados do projeto
+            if (!project.title || !project.description) {
+              console.warn(`Projeto inválido na posição ${i}:`, project);
+              continue; // Pular este item inválido
+            }
+
             if (project.id) {
               // Update - sem profileId
               await projetosApi.update(project.id, {
                 nome: project.title,
                 descricao: project.description,
-                demoLink: project.demoUrl,
-                codeLink: project.githubUrl,
+                demoLink: project.demoUrl || "",
+                codeLink: project.githubUrl || "",
                 gif: project.imageUrl || "",
                 ordem: i,
               });
@@ -1164,8 +1172,8 @@ export function PortfolioEditorPage() {
                 profileId: profileId,
                 nome: project.title,
                 descricao: project.description,
-                demoLink: project.demoUrl,
-                codeLink: project.githubUrl,
+                demoLink: project.demoUrl || "",
+                codeLink: project.githubUrl || "",
                 gif: project.imageUrl || "",
                 ordem: i,
               });
@@ -1235,26 +1243,32 @@ export function PortfolioEditorPage() {
 
         // 2. Salvar Tech Stack
         if (data.techStack && Array.isArray(data.techStack)) {
-          const techStackData = {
-            title: "Tech Stack",
-            subtitle: "Technologies I work with",
-            technologies: data.techStack.map(
-              (
-                tech: { name: string; icon: string; color?: string },
-                index: number
-              ) => ({
-                name: tech.name,
-                icon: tech.icon,
-                color: tech.color || "#FFFFFF",
-                ordem: index,
-              })
-            ),
-          };
+          const validTechStack = data.techStack.filter(
+            (tech: any) => tech && tech.name && tech.icon
+          );
 
-          if (currentProfile.techStack) {
-            await techStackApi.update(profileId, techStackData);
-          } else {
-            await techStackApi.create(profileId, techStackData);
+          if (validTechStack.length > 0) {
+            const techStackData = {
+              title: "Tech Stack",
+              subtitle: "Technologies I work with",
+              technologies: validTechStack.map(
+                (
+                  tech: { name: string; icon: string; color?: string },
+                  index: number
+                ) => ({
+                  name: tech.name,
+                  icon: tech.icon,
+                  color: tech.color || "#FFFFFF",
+                  ordem: index,
+                })
+              ),
+            };
+
+            if (currentProfile.techStack) {
+              await techStackApi.update(profileId, techStackData);
+            } else {
+              await techStackApi.create(profileId, techStackData);
+            }
           }
         }
 
@@ -1277,11 +1291,17 @@ export function PortfolioEditorPage() {
           for (let i = 0; i < data.experience.length; i++) {
             const exp = data.experience[i];
 
+            // Validar dados da experiência
+            if (!exp.company || !exp.description) {
+              console.warn(`Experiência inválida na posição ${i}:`, exp);
+              continue; // Pular este item inválido
+            }
+
             if (exp.id) {
               // Update - sem profileId
               await workExperienceApi.update(exp.id, {
                 company: exp.company,
-                period: exp.date,
+                period: exp.date || "",
                 summary: exp.description,
                 impact: "",
                 ordem: i,
@@ -1293,7 +1313,7 @@ export function PortfolioEditorPage() {
               await workExperienceApi.create({
                 profileId: profileId,
                 company: exp.company,
-                period: exp.date,
+                period: exp.date || "",
                 summary: exp.description,
                 impact: "",
                 ordem: i,
@@ -1363,6 +1383,12 @@ export function PortfolioEditorPage() {
           for (let i = 0; i < data.socialLinks.length; i++) {
             const social = data.socialLinks[i];
 
+            // Validar dados do social link
+            if (!social.name || !social.url) {
+              console.warn(`Social link inválido na posição ${i}:`, social);
+              continue; // Pular este item inválido
+            }
+
             if (social.id) {
               // Update - sem profileId
               await socialApi.update(social.id, {
@@ -1386,7 +1412,33 @@ export function PortfolioEditorPage() {
       }
     } catch (error: any) {
       console.error("Erro ao salvar:", error);
-      toast.error(error.response?.data?.message || "Erro ao salvar portfólio");
+      console.error("Detalhes do erro:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url,
+      });
+
+      // Tentar extrair uma mensagem mais específica
+      let errorMessage = "Erro ao salvar portfólio";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.status === 400) {
+        errorMessage = "Dados inválidos enviados para o servidor";
+      } else if (error.response?.status === 401) {
+        errorMessage = "Não autorizado. Faça login novamente";
+      } else if (error.response?.status === 403) {
+        errorMessage = "Acesso negado";
+      } else if (error.response?.status === 404) {
+        errorMessage = "Recurso não encontrado";
+      } else if (error.response?.status >= 500) {
+        errorMessage = "Erro interno do servidor";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }

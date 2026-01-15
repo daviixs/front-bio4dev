@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Save, Eye, Loader2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { profileApi } from "@/lib/api";
@@ -37,29 +36,19 @@ export default function BioEditPage() {
     loadBio();
   }, [id]);
 
-  const handleSwitchChange = async (checked: boolean) => {
-    if (!id || !profile) return;
-
-    try {
-      await profileApi.update(id, { published: checked });
-      setProfile({ ...profile, published: checked });
-      toast.success(
-        checked ? "Portfólio publicado!" : "Portfólio despublicado"
-      );
-    } catch (error) {
-      console.error("Erro ao atualizar status:", error);
-      toast.error("Erro ao atualizar status");
-    }
-  };
-
   const handleProfileUpdate = async () => {
     // Recarregar perfil após atualização
     if (!id) return;
     try {
+      setIsSaving(true);
       const updatedProfile = await profileApi.getComplete(id);
       setProfile(updatedProfile);
+      toast.success("Alterações salvas com sucesso!");
     } catch (error) {
       console.error("Erro ao recarregar perfil:", error);
+      toast.error("Erro ao salvar alterações");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -191,6 +180,32 @@ export default function BioEditPage() {
           </div>
           <div className="flex items-center gap-3">
             <Button
+              onClick={handleProfileUpdate}
+              disabled={isSaving}
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  Salvar Alterações
+                </>
+              )}
+            </Button>
+            {profile.published && (
+              <Button
+                onClick={() => window.open(`/${profile.username}`, "_blank")}
+                className="gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Visualizar Portfólio
+              </Button>
+            )}
+            <Button
               onClick={handlePreview}
               disabled={isGeneratingPreview}
               className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
@@ -207,13 +222,6 @@ export default function BioEditPage() {
                 </>
               )}
             </Button>
-            <div className="flex items-center gap-3 px-4 py-2 rounded-lg border bg-card">
-              <span className="text-sm text-slate-700">Publicado</span>
-              <Switch
-                checked={profile.published}
-                onCheckedChange={handleSwitchChange}
-              />
-            </div>
           </div>
         </div>
       </div>

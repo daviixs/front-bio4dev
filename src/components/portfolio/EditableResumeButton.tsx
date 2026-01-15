@@ -59,43 +59,39 @@ export function EditableResumeButton({
 
   return (
     <>
-      {/* Botão Fixo com Indicador de Edição */}
-      <div className={cn("fixed top-24 left-6 z-[100] group", className)}>
+      {/* Botão Inline dentro do Card */}
+      <div className={cn("w-full", className)}>
         {resumeUrl ? (
           <a
             href={resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "inline-flex items-center gap-2 px-6 py-3",
+              "inline-flex items-center justify-center gap-2 px-4 py-2 w-full",
               "bg-gradient-to-r from-blue-600 to-purple-600",
-              "text-white font-semibold rounded-lg",
+              "text-white font-semibold rounded-lg text-sm",
               "hover:from-blue-700 hover:to-purple-700",
               "transition-all duration-300",
-              "shadow-lg hover:shadow-xl hover:scale-105",
-              "backdrop-blur-sm"
+              "shadow-md hover:shadow-lg"
             )}
           >
-            <FileDown size={20} />
-            <span className="hidden sm:inline">Download CV</span>
-            <span className="sm:hidden">CV</span>
+            <FileDown size={16} />
+            <span>Download CV</span>
           </a>
         ) : (
           <button
             onClick={() => setIsEditing(true)}
             className={cn(
-              "inline-flex items-center gap-2 px-6 py-3",
+              "inline-flex items-center justify-center gap-2 px-4 py-2 w-full",
               "bg-gradient-to-r from-gray-400 to-gray-500",
-              "text-white font-semibold rounded-lg",
+              "text-white font-semibold rounded-lg text-sm",
               "hover:from-gray-500 hover:to-gray-600",
               "transition-all duration-300",
-              "shadow-lg hover:shadow-xl",
-              "backdrop-blur-sm opacity-50"
+              "shadow-md hover:shadow-lg"
             )}
           >
-            <Upload size={20} />
-            <span className="hidden sm:inline">Adicionar CV</span>
-            <span className="sm:hidden">CV</span>
+            <Upload size={16} />
+            <span>Adicionar CV</span>
           </button>
         )}
 

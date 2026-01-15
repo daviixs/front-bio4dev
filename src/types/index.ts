@@ -59,7 +59,14 @@ export type PlataformaSocial =
   | "youtube"
   | "github"
   | "linkedin"
-  | "twitter";
+  | "twitter"
+  | "facebook"
+  | "figma"
+  | "devto"
+  | "email"
+  | "behance"
+  | "dribbble"
+  | "medium";
 
 export interface Social {
   id: string;
@@ -78,6 +85,7 @@ export interface Projeto {
   codeLink?: string;
   ordem: number;
   gif: string;
+  tags?: string[];
   createdAt: string;
 }
 
@@ -207,7 +215,8 @@ export interface CreateSocialDTO {
   ordem: number;
 }
 
-export interface UpdateSocialDTO extends Partial<Omit<CreateSocialDTO, 'profileId'>> {}
+export interface UpdateSocialDTO
+  extends Partial<Omit<CreateSocialDTO, "profileId">> {}
 
 export interface CreateProjetoDTO {
   profileId: string;
@@ -219,7 +228,8 @@ export interface CreateProjetoDTO {
   ordem?: number;
 }
 
-export interface UpdateProjetoDTO extends Partial<Omit<CreateProjetoDTO, 'profileId'>> {}
+export interface UpdateProjetoDTO
+  extends Partial<Omit<CreateProjetoDTO, "profileId">> {}
 
 export interface CreateTechStackDTO {
   profileId?: string;
@@ -246,7 +256,8 @@ export interface CreateWorkExperienceDTO {
   responsibilities: { responsibility: string; ordem: number }[];
 }
 
-export interface UpdateWorkExperienceDTO extends Partial<Omit<CreateWorkExperienceDTO, 'profileId'>> {}
+export interface UpdateWorkExperienceDTO
+  extends Partial<Omit<CreateWorkExperienceDTO, "profileId">> {}
 
 export interface CreateFooterDTO {
   profileId: string;
@@ -262,7 +273,8 @@ export interface CreateFooterDTO {
   resumeUrl?: string;
 }
 
-export interface UpdateFooterDTO extends Partial<Omit<CreateFooterDTO, 'profileId'>> {}
+export interface UpdateFooterDTO
+  extends Partial<Omit<CreateFooterDTO, "profileId">> {}
 
 // Respostas da API
 export interface ApiResponse<T> {

@@ -15,9 +15,10 @@ import {
   FolderGit2,
   ExternalLink,
   Cpu,
+  FileDown,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
-import { ResumeButton } from "@/components/portfolio/ResumeButton";
+import { TechIcon } from "@/components/portfolio/TechIcon";
 import type {
   ProfileComplete,
   Social,
@@ -75,11 +76,7 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt }) => {
     <div className="relative group">
       {/* Main Container - Removed Glow */}
       <div className="relative w-40 h-40 mx-auto bg-[#fbbf24] rounded-full border-4 border-[#121318] overflow-hidden shadow-xl">
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover pt-2"
-        />
+        <img src={src} alt={alt} className="w-full h-full object-cover pt-2" />
       </div>
     </div>
   );
@@ -200,9 +197,7 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({ data }) => {
             {/* Dot on timeline */}
             <span
               className={`absolute -left-[1.95rem] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-[#121318] ${
-                item.current
-                  ? "bg-yellow-500 animate-pulse"
-                  : "bg-gray-600"
+                item.current ? "bg-yellow-500 animate-pulse" : "bg-gray-600"
               }`}
             ></span>
 
@@ -272,9 +267,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 };
 
 // --- TechStack.tsx ---
-// Adapted to accept data as prop
+// Adapted to accept Technology objects with icons
 interface TechStackProps {
-  data: string[];
+  data: Technology[];
 }
 
 const TechStack: React.FC<TechStackProps> = ({ data }) => {
@@ -287,14 +282,21 @@ const TechStack: React.FC<TechStackProps> = ({ data }) => {
         Tech Stack
       </h2>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-4">
         {data.map((tech) => (
-          <span
-            key={tech}
-            className="px-4 py-2 bg-[#18181b] hover:bg-[#202025] text-gray-300 font-medium rounded-xl border border-white/5 hover:border-yellow-500/30 hover:text-yellow-500 transition-all cursor-default text-sm"
+          <div
+            key={tech.id}
+            className="flex flex-col items-center gap-2 p-3 bg-[#18181b] hover:bg-[#202025] rounded-xl border border-white/5 hover:border-yellow-500/30 transition-all cursor-default group"
           >
-            {tech}
-          </span>
+            <TechIcon
+              icon={tech.icon}
+              size={32}
+              className="text-gray-300 group-hover:text-yellow-500 transition-colors"
+            />
+            <span className="text-xs text-gray-400 group-hover:text-gray-300 font-medium">
+              {tech.name}
+            </span>
+          </div>
         ))}
       </div>
     </div>
@@ -341,16 +343,16 @@ const convertToSocialLink = (social: Social): SocialLink => {
   return {
     id: social.id?.toString() || platform,
     name: social.plataforma,
-    handle: social.url.replace("https://", "").replace("http://", ""),
+    handle: social.url
+      ? social.url.replace("https://", "").replace("http://", "")
+      : social.plataforma,
     icon: getIcon(platform),
-    url: social.url,
+    url: social.url || `https://${platform}.com`,
     colorClass: getColorClass(platform),
     textColorClass: platform === "dev" ? "text-black" : undefined,
     colSpan: platform === "github" ? 2 : 1,
   };
 };
-
-
 
 // ... types and components remain the same ...
 
@@ -360,106 +362,271 @@ const convertToSocialLink = (social: Social): SocialLink => {
 
 const DEMO_SOCIAL_LINKS: SocialLink[] = [
   {
-    id: 'github',
-    name: 'GitHub',
-    handle: '@m-aqsam',
+    id: "github",
+    name: "GitHub",
+    handle: "@m-aqsam",
     icon: Github,
-    url: 'https://github.com',
-    colorClass: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800', 
-    colSpan: 2
+    url: "https://github.com",
+    colorClass: "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
+    colSpan: 2,
   },
   {
-    id: 'email',
-    name: 'Email',
-    handle: 'maqsam1155@gmail.com',
+    id: "email",
+    name: "Email",
+    handle: "maqsam1155@gmail.com",
     icon: Mail,
-    url: 'mailto:maqsam1155@gmail.com',
-    colorClass: 'bg-[#1e293b] hover:bg-[#263345]', 
-    colSpan: 1
-  },
-  {
-    id: 'facebook',
-    name: 'Facebook',
-    handle: '@m_aqsam',
-    icon: Facebook,
-    url: 'https://facebook.com',
-    colorClass: 'bg-[#3b82f6] hover:bg-[#2563eb]', 
-    colSpan: 1
-  },
-  {
-    id: 'figma',
-    name: 'Figma',
-    handle: '@maqsam',
-    icon: Figma,
-    url: 'https://figma.com',
-    colorClass: 'bg-[#1e1e1e] hover:bg-[#2d2d2d]', 
+    url: "mailto:maqsam1155@gmail.com",
+    colorClass: "bg-[#1e293b] hover:bg-[#263345]",
     colSpan: 1,
   },
   {
-    id: 'dev',
-    name: 'DEV',
-    handle: '@maqsam',
+    id: "facebook",
+    name: "Facebook",
+    handle: "@m_aqsam",
+    icon: Facebook,
+    url: "https://facebook.com",
+    colorClass: "bg-[#3b82f6] hover:bg-[#2563eb]",
+    colSpan: 1,
+  },
+  {
+    id: "figma",
+    name: "Figma",
+    handle: "@maqsam",
+    icon: Figma,
+    url: "https://figma.com",
+    colorClass: "bg-[#1e1e1e] hover:bg-[#2d2d2d]",
+    colSpan: 1,
+  },
+  {
+    id: "dev",
+    name: "DEV",
+    handle: "@maqsam",
     icon: Code2,
-    url: 'https://dev.to',
-    colorClass: 'bg-white hover:bg-gray-100', 
-    textColorClass: 'text-black',
-    colSpan: 1
-  }
+    url: "https://dev.to",
+    colorClass: "bg-white hover:bg-gray-100",
+    textColorClass: "text-black",
+    colSpan: 1,
+  },
 ];
 
-const DEMO_TECH_STACK = [
-  "React", "TypeScript", "Next.js", "Tailwind CSS", "Node.js", "Figma", "Git", "PostgreSQL", "Framer Motion", "Prisma"
+const DEMO_TECH_STACK: Technology[] = [
+  {
+    id: "1",
+    techStackId: "demo",
+    name: "React",
+    icon: "logos:react",
+    color: "#61DAFB",
+    ordem: 1,
+  },
+  {
+    id: "2",
+    techStackId: "demo",
+    name: "TypeScript",
+    icon: "logos:typescript-icon",
+    color: "#3178C6",
+    ordem: 2,
+  },
+  {
+    id: "3",
+    techStackId: "demo",
+    name: "Next.js",
+    icon: "logos:nextjs-icon",
+    color: "#000000",
+    ordem: 3,
+  },
+  {
+    id: "4",
+    techStackId: "demo",
+    name: "Tailwind CSS",
+    icon: "logos:tailwindcss-icon",
+    color: "#06B6D4",
+    ordem: 4,
+  },
+  {
+    id: "5",
+    techStackId: "demo",
+    name: "Node.js",
+    icon: "logos:nodejs-icon",
+    color: "#339933",
+    ordem: 5,
+  },
+  {
+    id: "6",
+    techStackId: "demo",
+    name: "Figma",
+    icon: "logos:figma",
+    color: "#F24E1E",
+    ordem: 6,
+  },
+  {
+    id: "7",
+    techStackId: "demo",
+    name: "Git",
+    icon: "logos:git-icon",
+    color: "#F05032",
+    ordem: 7,
+  },
+  {
+    id: "8",
+    techStackId: "demo",
+    name: "PostgreSQL",
+    icon: "logos:postgresql",
+    color: "#4169E1",
+    ordem: 8,
+  },
+  {
+    id: "9",
+    techStackId: "demo",
+    name: "Framer Motion",
+    icon: "logos:framer",
+    color: "#0055FF",
+    ordem: 9,
+  },
+  {
+    id: "10",
+    techStackId: "demo",
+    name: "Prisma",
+    icon: "logos:prisma",
+    color: "#2D3748",
+    ordem: 10,
+  },
+  {
+    id: "11",
+    techStackId: "demo",
+    name: "Python",
+    icon: "logos:python",
+    color: "#3776AB",
+    ordem: 11,
+  },
+  {
+    id: "12",
+    techStackId: "demo",
+    name: "Django",
+    icon: "logos:django-icon",
+    color: "#092E20",
+    ordem: 12,
+  },
+  {
+    id: "13",
+    techStackId: "demo",
+    name: "FastAPI",
+    icon: "logos:fastapi-icon",
+    color: "#009688",
+    ordem: 13,
+  },
+  {
+    id: "14",
+    techStackId: "demo",
+    name: "Docker",
+    icon: "logos:docker-icon",
+    color: "#2496ED",
+    ordem: 14,
+  },
+  {
+    id: "15",
+    techStackId: "demo",
+    name: "Kubernetes",
+    icon: "logos:kubernetes",
+    color: "#326CE5",
+    ordem: 15,
+  },
+  {
+    id: "16",
+    techStackId: "demo",
+    name: "AWS",
+    icon: "logos:aws",
+    color: "#FF9900",
+    ordem: 16,
+  },
+  {
+    id: "17",
+    techStackId: "demo",
+    name: "MongoDB",
+    icon: "logos:mongodb-icon",
+    color: "#47A248",
+    ordem: 17,
+  },
+  {
+    id: "18",
+    techStackId: "demo",
+    name: "Redis",
+    icon: "logos:redis",
+    color: "#DC382D",
+    ordem: 18,
+  },
+  {
+    id: "19",
+    techStackId: "demo",
+    name: "GraphQL",
+    icon: "logos:graphql",
+    color: "#E10098",
+    ordem: 19,
+  },
+  {
+    id: "20",
+    techStackId: "demo",
+    name: "Jest",
+    icon: "logos:jest",
+    color: "#C21325",
+    ordem: 20,
+  },
 ];
 
 const DEMO_EXPERIENCE_DATA: Experience[] = [
   {
-    id: '1',
+    id: "1",
     role: "Senior Product Designer",
     company: "TechFlow Solutions",
     date: "2023 - Present",
-    description: "Leading the design system initiative and overseeing product UX for enterprise clients.",
-    current: true
+    description:
+      "Leading the design system initiative and overseeing product UX for enterprise clients.",
+    current: true,
   },
   {
-    id: '2',
+    id: "2",
     role: "Frontend Developer",
     company: "Creative Digital",
     date: "2021 - 2023",
-    description: "Developed responsive web applications using React and TypeScript. Collaborated closely with UI designers.",
-    current: false
+    description:
+      "Developed responsive web applications using React and TypeScript. Collaborated closely with UI designers.",
+    current: false,
   },
   {
-    id: '3',
+    id: "3",
     role: "UI/UX Intern",
     company: "StartUp Inc",
     date: "2020 - 2021",
-    description: "Assisted in wireframing and prototyping mobile applications. Conducted user research interviews.",
-    current: false
-  }
+    description:
+      "Assisted in wireframing and prototyping mobile applications. Conducted user research interviews.",
+    current: false,
+  },
 ];
 
 const DEMO_PROJECTS_DATA: Project[] = [
   {
-    id: 'p1',
+    id: "p1",
     title: "E-Commerce Dashboard",
-    description: "A comprehensive analytics dashboard for online retailers featuring real-time data visualization.",
+    description:
+      "A comprehensive analytics dashboard for online retailers featuring real-time data visualization.",
     tags: ["React", "Tailwind", "Recharts"],
-    link: "#"
+    link: "#",
   },
   {
-    id: 'p2',
+    id: "p2",
     title: "HealthTrack App",
-    description: "Mobile-first fitness tracking application focusing on simplicity and user retention.",
+    description:
+      "Mobile-first fitness tracking application focusing on simplicity and user retention.",
     tags: ["Figma", "UX Research", "Prototyping"],
-    link: "#"
+    link: "#",
   },
   {
-    id: 'p3',
+    id: "p3",
     title: "Finance AI",
-    description: "Personal finance assistant powered by generative AI to help users save money.",
+    description:
+      "Personal finance assistant powered by generative AI to help users save money.",
     tags: ["TypeScript", "OpenAI API", "Node.js"],
-    link: "#"
-  }
+    link: "#",
+  },
 ];
 
 // ==========================================
@@ -473,16 +640,18 @@ interface TemplateProps {
 export function Template02({ profile }: TemplateProps) {
   const legenda = profile.legendas?.[0];
 
-  // Map Socials (Fallback to DEMO if empty)
-  const mappedSocials = (profile.social || []).map(convertToSocialLink);
-  const socials = mappedSocials.length > 0 ? mappedSocials : DEMO_SOCIAL_LINKS;
+  // Map Socials (Filter only those with valid data, no fallback to DEMO)
+  const mappedSocials = (profile.social || [])
+    .filter((social) => social.plataforma) // Only require platform name
+    .map(convertToSocialLink);
+  const socials = mappedSocials;
 
   // Map Experience (Fallback to DEMO if empty)
   const mappedExperience: Experience[] = (profile.workHistory || []).map(
     (work) => ({
       id: work.id,
-      role: work.company, 
-      company: "", 
+      role: work.company,
+      company: "",
       date: work.period,
       description: work.summary,
       current:
@@ -490,29 +659,34 @@ export function Template02({ profile }: TemplateProps) {
         work.period.toLowerCase().includes("atua"),
     })
   );
-  const experienceData = mappedExperience.length > 0 ? mappedExperience : DEMO_EXPERIENCE_DATA;
+  const experienceData =
+    mappedExperience.length > 0 ? mappedExperience : DEMO_EXPERIENCE_DATA;
 
   // Map Projects (Fallback to DEMO if empty)
   const mappedProjects: Project[] = (profile.projetos || []).map((p) => ({
     id: p.id,
     title: p.nome,
     description: p.descricao,
-    tags: [], 
+    tags: [],
     link: p.demoLink || p.codeLink,
-    image: p.gif, 
+    image: p.gif,
   }));
-  const projectsData = mappedProjects.length > 0 ? mappedProjects : DEMO_PROJECTS_DATA;
+  const projectsData =
+    mappedProjects.length > 0 ? mappedProjects : DEMO_PROJECTS_DATA;
 
   // Map Tech Stack (Fallback to DEMO if empty)
-  const mappedTechStack: string[] =
-    profile.techStack?.technologies?.map((t) => t.name) || [];
-  const techStackData = mappedTechStack.length > 0 ? mappedTechStack : DEMO_TECH_STACK;
+  const mappedTechStack: Technology[] = profile.techStack?.technologies || [];
+  const techStackData =
+    mappedTechStack.length > 0 ? mappedTechStack : DEMO_TECH_STACK;
 
   return (
     <>
-        {/* Inject Font strictly for this template */}
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        <style>{`
+      {/* Inject Font strictly for this template */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+      />
+      <style>{`
             .portfolio-2-scope {
                 font-family: 'Plus Jakarta Sans', sans-serif;
             }
@@ -521,96 +695,124 @@ export function Template02({ profile }: TemplateProps) {
                 background: transparent;
             }
         `}</style>
-        
-        <div className="portfolio-2-scope min-h-screen w-full flex justify-center bg-[#050505] overflow-x-hidden text-slate-200">
-            {/* Resume Button */}
-            <ResumeButton
-                resumeUrl={profile.footer?.resumeUrl}
-                className="from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-            />
 
-            {/* Main Container */}
-            <main className="w-full max-w-md md:max-w-xl lg:max-w-2xl z-10 px-6 py-10 flex flex-col gap-6">
-                {/* Profile Card */}
-                <div className="bg-[#121318] rounded-[2rem] p-6 sm:p-8 border border-white/5 shadow-sm">
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                    <div className="flex-shrink-0">
-                    <Avatar
-                        src={
-                        legenda?.legendaFoto ||
-                        profile.avatarUrl ||
-                        (profile.social?.length ? "https://api.dicebear.com/7.x/avataaars/svg?seed=Default&backgroundColor=fbbf24" : "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=fbbf24&clothing=hoodie&clothingColor=3c4f5c")
-                        }
-                        alt={legenda?.nome || "Profile"}
+      <div className="portfolio-2-scope min-h-screen w-full flex justify-center bg-[#050505] overflow-x-hidden text-slate-200">
+        {/* Main Container */}
+        <main className="w-full max-w-md md:max-w-xl lg:max-w-2xl z-10 px-6 py-10 flex flex-col gap-6">
+          {/* Profile Card */}
+          <div className="bg-[#121318] rounded-[2rem] p-6 sm:p-8 border border-white/5 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              <div className="flex-shrink-0">
+                <Avatar
+                  src={
+                    legenda?.legendaFoto ||
+                    profile.avatarUrl ||
+                    (profile.social?.length
+                      ? "https://api.dicebear.com/7.x/avataaars/svg?seed=Default&backgroundColor=fbbf24"
+                      : "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=fbbf24&clothing=hoodie&clothingColor=3c4f5c")
+                  }
+                  alt={legenda?.nome || "Profile"}
+                />
+              </div>
+
+              <div className="flex-1 text-center sm:text-left mt-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">
+                  {legenda?.nome || "Muhammad Aqsam"}
+                </h1>
+                <p className="text-yellow-500 font-medium text-sm mb-4">
+                  {legenda?.titulo || "Product Designer & Developer"}
+                </p>
+
+                <div className="flex flex-col gap-2 mb-4">
+                  {legenda?.subtitulo ? (
+                    <InfoRow icon={User} text={legenda.subtitulo} />
+                  ) : (
+                    <InfoRow
+                      icon={User}
+                      text={"Building digital products that matter."}
                     />
-                    </div>
-
-                    <div className="flex-1 text-center sm:text-left mt-2">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">
-                        {legenda?.nome || "Muhammad Aqsam"}
-                    </h1>
-                    <p className="text-yellow-500 font-medium text-sm mb-4">
-                        {legenda?.titulo || "Product Designer & Developer"}
-                    </p>
-
-                    <div className="flex flex-col gap-2 mb-4">
-                        {legenda?.subtitulo ? (
-                        <InfoRow icon={User} text={legenda.subtitulo} />
-                        ) : (
-                          <InfoRow icon={User} text={"Building digital products that matter."} />
-                        )}
-                        {profile.footer?.email ? (
-                        <InfoRow icon={MapPin} text={profile.footer.email} /> 
-                        ) : (
-                          <InfoRow icon={MapPin} text={"Bahawalpur, Pakistan"} />
-                        )}
-                    </div>
-
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-400 text-xs font-medium rounded-full border border-green-500/20">
-                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        Open to work
-                    </div>
-                    </div>
-                </div>
+                  )}
+                  {profile.footer?.email ? (
+                    <InfoRow icon={MapPin} text={profile.footer.email} />
+                  ) : (
+                    <InfoRow icon={MapPin} text={"Bahawalpur, Pakistan"} />
+                  )}
                 </div>
 
-                {/* Social Links Section */}
-                <section className="grid grid-cols-2 gap-4">
-                {socials.map((link) => (
-                    <SocialCard key={link.id} item={link} />
-                ))}
-                </section>
-
-                {/* Experience Section */}
-                <ExperienceTimeline data={experienceData} />
-
-                {/* Projects Section */}
-                <section>
-                <div className="flex items-center gap-2 mb-4 px-2">
-                    <span className="w-2 h-6 bg-yellow-500 rounded-full inline-block"></span>
-                    <h2 className="text-xl font-bold text-white">Featured Projects</h2>
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-400 text-xs font-medium rounded-full border border-green-500/20">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  Open to work
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {projectsData.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
-                    ))}
-                </div>
-                </section>
 
-                {/* Tech Stack Section */}
-                <TechStack data={techStackData} />
-
-                {/* Footer */}
-                {profile.footer && (
-                    <footer className="text-center py-8 text-gray-500 text-sm border-t border-white/5 mt-8">
-                        <p>{profile.footer.copyrightName}</p>
-                        {profile.footer.madeWith && (
-                        <p className="mt-2">{profile.footer.madeWith}</p>
-                        )}
-                    </footer>
+                {/* Resume Button - Inline within profile card */}
+                {profile.footer?.resumeUrl ? (
+                  <div className="mt-4">
+                    <a
+                      href={profile.footer.resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg text-sm hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                    >
+                      <FileDown size={16} />
+                      <span>Download CV</span>
+                    </a>
+                  </div>
+                ) : (
+                  <div className="mt-4">
+                    <button
+                      disabled
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 w-full bg-gray-400 text-gray-200 font-semibold rounded-lg text-sm cursor-not-allowed opacity-50"
+                    >
+                      <FileDown size={16} />
+                      <span>Currículo não disponível</span>
+                    </button>
+                  </div>
                 )}
-            </main>
-        </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Links Section */}
+          {socials.length > 0 && (
+            <section className="grid grid-cols-2 gap-4">
+              {socials.map((link) => (
+                <SocialCard key={link.id} item={link} />
+              ))}
+            </section>
+          )}
+
+          {/* Experience Section */}
+          <ExperienceTimeline data={experienceData} />
+
+          {/* Projects Section */}
+          <section>
+            <div className="flex items-center gap-2 mb-4 px-2">
+              <span className="w-2 h-6 bg-yellow-500 rounded-full inline-block"></span>
+              <h2 className="text-xl font-bold text-white">
+                Featured Projects
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {projectsData.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          </section>
+
+          {/* Tech Stack Section */}
+          <TechStack data={techStackData} />
+
+          {/* Footer */}
+          {profile.footer && (
+            <footer className="text-center py-8 text-gray-500 text-sm border-t border-white/5 mt-8">
+              <p>{profile.footer.copyrightName}</p>
+              {profile.footer.madeWith && (
+                <p className="mt-2">{profile.footer.madeWith}</p>
+              )}
+            </footer>
+          )}
+        </main>
+      </div>
     </>
   );
 }

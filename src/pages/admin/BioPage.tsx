@@ -212,18 +212,18 @@ export default function BioPage() {
         (profile: any) => profile.userId === user.id
       );
 
-    const mappedBios = userBios.map((profile: any) => ({
-      id: profile.id,
-      name: profile.username || "Sem nome",
-      username: profile.username,
-      template: profile.templateType || "template_01",
-      status: profile.published ? "Published" : "Draft",
-      published: !!profile.published,
-      lastUpdated: new Date(
-        profile.updatedAt || profile.createdAt
-      ).toLocaleDateString(),
-      url: `bio4dev.com/${profile.username}`,
-    }));
+      const mappedBios = userBios.map((profile: any) => ({
+        id: profile.id,
+        name: profile.username || "Sem nome",
+        username: profile.username,
+        template: profile.templateType || "template_01",
+        status: profile.published ? "Published" : "Draft",
+        published: !!profile.published,
+        lastUpdated: new Date(
+          profile.updatedAt || profile.createdAt
+        ).toLocaleDateString(),
+        url: `bio4dev.com/${profile.username}`,
+      }));
 
       setBios(mappedBios);
     } catch (error: any) {
@@ -285,19 +285,27 @@ export default function BioPage() {
   const handleTogglePublish = async (bio: Bio) => {
     try {
       setPublishLoading(bio.id);
-      
+
       const newStatus = !bio.published;
       await profileApi.update(bio.id, {
-        published: newStatus
+        published: newStatus,
       });
 
-      setBios(prevBios => prevBios.map(b => 
-        b.id === bio.id 
-          ? { ...b, published: newStatus, status: newStatus ? "Published" : "Draft" } 
-          : b
-      ));
+      setBios((prevBios) =>
+        prevBios.map((b) =>
+          b.id === bio.id
+            ? {
+                ...b,
+                published: newStatus,
+                status: newStatus ? "Published" : "Draft",
+              }
+            : b
+        )
+      );
 
-      toast.success(newStatus ? "Página publicada com sucesso!" : "Página desativada");
+      toast.success(
+        newStatus ? "Página publicada com sucesso!" : "Página desativada"
+      );
     } catch (error: any) {
       console.error("Erro ao alterar status:", error);
       toast.error("Erro ao alterar status da página");
@@ -384,7 +392,18 @@ export default function BioPage() {
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                           {bio.url}
-                          <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <ExternalLink
+                            className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                            onClick={() =>
+                              window.open(
+                                `http://localhost:3000/${bio.url
+                                  .split("/")
+                                  .slice(1)
+                                  .join("/")}`,
+                                "_blank"
+                              )
+                            }
+                          />
                         </span>
                       </div>
                     </TableCell>
@@ -437,8 +456,8 @@ export default function BioPage() {
                           disabled={publishLoading === bio.id}
                           className={cn(
                             "h-8 gap-2",
-                            bio.published 
-                              ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50" 
+                            bio.published
+                              ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
                               : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
                           )}
                         >
