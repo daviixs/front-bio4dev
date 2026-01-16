@@ -1,28 +1,44 @@
-import React, { useState } from 'react';
-import { Plus, Trash2, Edit, Save, X, Loader2, ExternalLink, Briefcase } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { useProfileStore } from '@/stores/profileStore';
-import type { Projeto } from '@/types';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import {
+  Plus,
+  Trash2,
+  Edit,
+  Save,
+  X,
+  Loader2,
+  ExternalLink,
+  Briefcase,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useProfileStore } from "@/stores/profileStore";
+import type { Projeto } from "@/types";
+import { toast } from "sonner";
 
 export function ProjectsEdit() {
-  const { profile, createProjeto, updateProjeto, deleteProjeto } = useProfileStore();
+  const { profile, createProjeto, updateProjeto, deleteProjeto } =
+    useProfileStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Projeto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
-    nome: '',
-    descricao: '',
-    gif: '',
+    nome: "",
+    descricao: "",
+    gif: "",
   });
 
   const resetForm = () => {
-    setFormData({ nome: '', descricao: '', gif: '' });
+    setFormData({ nome: "", descricao: "", gif: "" });
     setEditingProject(null);
   };
 
@@ -43,41 +59,49 @@ export function ProjectsEdit() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.nome || !formData.descricao) {
-      toast.error('Preencha todos os campos obrigatórios');
+      toast.error("Preencha todos os campos obrigatórios");
       return;
     }
 
     setIsLoading(true);
     try {
+      const dataToSend = {
+        profileId: profile!.id,
+        nome: formData.nome,
+        descricao: formData.descricao,
+        gif: formData.gif || undefined, // Envia undefined se estiver vazio
+      };
+
       if (editingProject) {
-        await updateProjeto(editingProject.id, formData);
-        toast.success('Projeto atualizado!');
-      } else {
-        await createProjeto({
-          profileId: profile!.id,
-          ...formData,
+        await updateProjeto(editingProject.id, {
+          nome: formData.nome,
+          descricao: formData.descricao,
+          gif: formData.gif || undefined,
         });
-        toast.success('Projeto criado!');
+        toast.success("Projeto atualizado!");
+      } else {
+        await createProjeto(dataToSend);
+        toast.success("Projeto criado!");
       }
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
-      toast.error('Erro ao salvar projeto');
+      toast.error("Erro ao salvar projeto");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este projeto?')) return;
-    
+    if (!confirm("Tem certeza que deseja excluir este projeto?")) return;
+
     try {
       await deleteProjeto(id);
-      toast.success('Projeto excluído!');
+      toast.success("Projeto excluído!");
     } catch (error) {
-      toast.error('Erro ao excluir projeto');
+      toast.error("Erro ao excluir projeto");
     }
   };
 
@@ -89,7 +113,7 @@ export function ProjectsEdit() {
           <h1 className="text-2xl font-bold mb-2">Projetos</h1>
           <p className="text-white/50">Gerencie seus projetos em destaque</p>
         </div>
-        
+
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button
@@ -100,30 +124,34 @@ export function ProjectsEdit() {
               Novo Projeto
             </Button>
           </DialogTrigger>
-          
+
           <DialogContent className="bg-[#0f0f17] border-white/10 text-white max-w-lg">
             <DialogHeader>
               <DialogTitle>
-                {editingProject ? 'Editar Projeto' : 'Novo Projeto'}
+                {editingProject ? "Editar Projeto" : "Novo Projeto"}
               </DialogTitle>
             </DialogHeader>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6 mt-4">
               <div className="space-y-2">
                 <Label className="text-white/70">Nome do Projeto *</Label>
                 <Input
                   value={formData.nome}
-                  onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nome: e.target.value })
+                  }
                   placeholder="Ex: E-commerce App"
                   className="bg-white/5 border-white/10 text-white"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label className="text-white/70">URL do GIF/Imagem</Label>
                 <Input
                   value={formData.gif}
-                  onChange={(e) => setFormData({ ...formData, gif: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, gif: e.target.value })
+                  }
                   placeholder="https://exemplo.com/preview.gif"
                   className="bg-white/5 border-white/10 text-white"
                 />
@@ -134,24 +162,26 @@ export function ProjectsEdit() {
                       alt="Preview"
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
+                        (e.target as HTMLImageElement).style.display = "none";
                       }}
                     />
                   </div>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label className="text-white/70">Descrição *</Label>
                 <Textarea
                   value={formData.descricao}
-                  onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, descricao: e.target.value })
+                  }
                   placeholder="Descreva seu projeto..."
                   rows={4}
                   className="bg-white/5 border-white/10 text-white resize-none"
                 />
               </div>
-              
+
               <div className="flex gap-3 justify-end">
                 <Button
                   type="button"
@@ -203,14 +233,14 @@ export function ProjectsEdit() {
                   </div>
                 )}
               </div>
-              
+
               {/* Content */}
               <div className="p-6">
                 <h3 className="text-lg font-semibold mb-2">{projeto.nome}</h3>
                 <p className="text-white/50 text-sm line-clamp-2 mb-4">
                   {projeto.descricao}
                 </p>
-                
+
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
@@ -253,4 +283,3 @@ export function ProjectsEdit() {
     </div>
   );
 }
-

@@ -317,12 +317,12 @@ export default function BioPage() {
   const handleDeleteConfirm = async () => {
     if (selectedBio) {
       try {
-        // TODO: Implementar delete na API
-        // await profileApi.delete(selectedBio.id);
+        await profileApi.delete(selectedBio.id);
         setBios(bios.filter((b) => b.id !== selectedBio.id));
         toast.success(`Bio "${selectedBio.name}" deletada com sucesso!`);
-      } catch (error) {
-        toast.error("Erro ao deletar bio");
+      } catch (error: any) {
+        console.error("Erro ao deletar bio:", error);
+        toast.error(error.response?.data?.message || "Erro ao deletar bio");
       } finally {
         setDeleteDialogOpen(false);
         setSelectedBio(null);
@@ -350,8 +350,7 @@ export default function BioPage() {
         </Button>
       </div>
 
-      <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="rounded-xl border bg-card shadow-sm overflow-hidden sm:overflow-visible">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
@@ -368,56 +367,27 @@ export default function BioPage() {
               </p>
             </div>
           ) : (
-            <Table className="min-w-[640px]">
-              <TableHeader>
-                <TableRow className="bg-muted/50 hover:bg-muted/50">
-                  <TableHead className="min-w-[200px] sm:w-[300px]">
-                    Bio Name
-                  </TableHead>
-                  <TableHead className="min-w-[120px]">Template</TableHead>
-                  <TableHead className="min-w-[100px]">Status</TableHead>
-                  <TableHead className="min-w-[120px]">Last Updated</TableHead>
-                  <TableHead className="text-right min-w-[140px] sm:min-w-[180px]">
-                    Actions
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              <div className="grid gap-4 p-4 sm:hidden">
                 {bios.map((bio) => (
-                  <TableRow key={bio.id} className="group">
-                    <TableCell className="font-medium">
-                      <div className="flex flex-col">
-                        <span className="text-base text-slate-900">
+                  <div
+                    key={bio.id}
+                    className="rounded-lg border bg-background/50 p-4 shadow-sm space-y-3"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1">
+                        <p className="text-base font-semibold text-slate-900">
                           {bio.name}
-                        </span>
-                        <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                          {bio.url}
-                          <ExternalLink
-                            className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                            onClick={() =>
-                              window.open(
-                                `http://localhost:3000/${bio.url
-                                  .split("/")
-                                  .slice(1)
-                                  .join("/")}`,
-                                "_blank"
-                              )
-                            }
-                          />
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="size-6 rounded bg-slate-100 border flex items-center justify-center">
-                          <LayoutTemplate className="h-3 w-3 text-slate-500" />
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                          <span className="inline-flex items-center gap-1">
+                            <LayoutTemplate className="h-4 w-4 text-slate-500" />
+                            {bio.template}
+                          </span>
+                          <span className="h-1 w-1 rounded-full bg-slate-300" />
+                          <span>{bio.lastUpdated}</span>
                         </div>
-                        <span className="text-sm text-slate-700">
-                          {bio.template}
-                        </span>
                       </div>
-                    </TableCell>
-                    <TableCell>
                       <Badge
                         variant="outline"
                         className={cn(
@@ -429,75 +399,218 @@ export default function BioPage() {
                       >
                         {bio.status}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {bio.lastUpdated}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handlePreviewClick(bio)}
-                          disabled={previewLoading === bio.id}
-                          className="h-8 gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                        >
-                          {previewLoading === bio.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                          <span className="hidden sm:inline">Preview</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleTogglePublish(bio)}
-                          disabled={publishLoading === bio.id}
-                          className={cn(
-                            "h-8 gap-2",
-                            bio.published
-                              ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                              : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
-                          )}
-                        >
-                          {publishLoading === bio.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : bio.published ? (
-                            <XCircle className="h-4 w-4" />
-                          ) : (
-                            <CheckCircle className="h-4 w-4" />
-                          )}
-                          <span className="hidden sm:inline">
-                            {bio.published ? "Unpublish" : "Publish"}
-                          </span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditClick(bio)}
-                          className="h-8 gap-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                          <span className="hidden sm:inline">Edit</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteClick(bio)}
-                          className="h-8 gap-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          <span className="hidden sm:inline">Delete</span>
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        window.open(
+                          `http://localhost:3000/${bio.url
+                            .split("/")
+                            .slice(1)
+                            .join("/")}`,
+                          "_blank"
+                        )
+                      }
+                      className="w-full text-left text-sm text-blue-700 hover:text-blue-800 flex items-center gap-2"
+                      aria-label={`Abrir ${bio.url} em nova aba`}
+                    >
+                      {bio.url}
+                      <ExternalLink className="h-4 w-4" />
+                    </button>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePreviewClick(bio)}
+                        disabled={previewLoading === bio.id}
+                        className="h-11 w-full justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                      >
+                        {previewLoading === bio.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                        Preview
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTogglePublish(bio)}
+                        disabled={publishLoading === bio.id}
+                        className={cn(
+                          "h-11 w-full justify-center",
+                          bio.published
+                            ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                            : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                        )}
+                      >
+                        {publishLoading === bio.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : bio.published ? (
+                          <XCircle className="h-4 w-4" />
+                        ) : (
+                          <CheckCircle className="h-4 w-4" />
+                        )}
+                        {bio.published ? "Unpublish" : "Publish"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditClick(bio)}
+                        className="h-11 w-full justify-center text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                        Editar
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteClick(bio)}
+                        className="h-11 w-full justify-center"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+
+              <div className="hidden sm:block overflow-x-auto">
+                <Table className="min-w-[640px]">
+                  <TableHeader>
+                    <TableRow className="bg-muted/50 hover:bg-muted/50">
+                      <TableHead className="min-w-[200px] sm:w-[300px]">
+                        Bio Name
+                      </TableHead>
+                      <TableHead className="min-w-[120px]">Template</TableHead>
+                      <TableHead className="min-w-[100px]">Status</TableHead>
+                      <TableHead className="min-w-[120px]">
+                        Last Updated
+                      </TableHead>
+                      <TableHead className="text-right min-w-[140px] sm:min-w-[180px]">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {bios.map((bio) => (
+                      <TableRow key={bio.id} className="group">
+                        <TableCell className="font-medium">
+                          <div className="flex flex-col">
+                            <span className="text-base text-slate-900">
+                              {bio.name}
+                            </span>
+                            <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                              {bio.url}
+                              <ExternalLink
+                                className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                onClick={() =>
+                                  window.open(
+                                    `http://localhost:3000/${bio.url
+                                      .split("/")
+                                      .slice(1)
+                                      .join("/")}`,
+                                    "_blank"
+                                  )
+                                }
+                              />
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <div className="size-6 rounded bg-slate-100 border flex items-center justify-center">
+                              <LayoutTemplate className="h-3 w-3 text-slate-500" />
+                            </div>
+                            <span className="text-sm text-slate-700">
+                              {bio.template}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "font-normal",
+                              bio.status === "Published"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : "bg-slate-50 text-slate-600 border-slate-200"
+                            )}
+                          >
+                            {bio.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground text-sm">
+                          {bio.lastUpdated}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handlePreviewClick(bio)}
+                              disabled={previewLoading === bio.id}
+                              className="h-8 gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            >
+                              {previewLoading === bio.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Eye className="h-4 w-4" />
+                              )}
+                              <span className="hidden sm:inline">Preview</span>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleTogglePublish(bio)}
+                              disabled={publishLoading === bio.id}
+                              className={cn(
+                                "h-8 gap-2",
+                                bio.published
+                                  ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                                  : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                              )}
+                            >
+                              {publishLoading === bio.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : bio.published ? (
+                                <XCircle className="h-4 w-4" />
+                              ) : (
+                                <CheckCircle className="h-4 w-4" />
+                              )}
+                              <span className="hidden sm:inline">
+                                {bio.published ? "Unpublish" : "Publish"}
+                              </span>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditClick(bio)}
+                              className="h-8 gap-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                              <span className="hidden sm:inline">Edit</span>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteClick(bio)}
+                              className="h-8 gap-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span className="hidden sm:inline">Delete</span>
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
-        </div>
       </div>
 
       {/* Delete Confirmation Dialog */}

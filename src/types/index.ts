@@ -63,10 +63,19 @@ export type PlataformaSocial =
   | "facebook"
   | "figma"
   | "devto"
+  | "dev"
   | "email"
   | "behance"
   | "dribbble"
-  | "medium";
+  | "medium"
+  | "pinterest"
+  | "gitlab"
+  | "bitbucket"
+  | "stackoverflow"
+  | "codepen"
+  | "discord"
+  | "whatsapp"
+  | "telegram";
 
 export interface Social {
   id: string;
@@ -212,7 +221,7 @@ export interface CreateSocialDTO {
   profileId: string;
   plataforma: PlataformaSocial;
   url: string;
-  ordem: number;
+  ordem?: number;
 }
 
 export interface UpdateSocialDTO

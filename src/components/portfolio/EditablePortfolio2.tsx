@@ -1445,6 +1445,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     try {
       const newSocials = [...(currentProfile.social || [])];
 
+      // Normalize URL - add https:// if missing (except for mailto: and tel:)
+      let normalizedUrl = editUrl.trim();
+      if (
+        normalizedUrl &&
+        !normalizedUrl.match(/^(https?:\/\/|mailto:|tel:)/i)
+      ) {
+        normalizedUrl = "https://" + normalizedUrl;
+      }
+
       const existingIndex = newSocials.findIndex(
         (s) =>
           s.plataforma.toLowerCase() === editingSocial.name.toLowerCase() ||
@@ -1456,25 +1465,25 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         const existingSocial = newSocials[existingIndex];
         await socialApi.update(existingSocial.id, {
           plataforma: editingSocial.name.toLowerCase() as any,
-          url: editUrl,
+          url: normalizedUrl,
         });
         newSocials[existingIndex] = {
           ...newSocials[existingIndex],
           plataforma: editingSocial.name.toLowerCase() as any,
-          url: editUrl,
+          url: normalizedUrl,
         };
       } else {
         // Create new social
         const newSocial = await socialApi.create({
           profileId: currentProfile.id,
           plataforma: editingSocial.name.toLowerCase() as any,
-          url: editUrl,
+          url: normalizedUrl,
           ordem: newSocials.length,
         });
         newSocials.push({
           id: newSocial.id,
           plataforma: editingSocial.name.toLowerCase() as any,
-          url: editUrl,
+          url: normalizedUrl,
           profileId: currentProfile.id,
           ordem: newSocials.length,
         });
@@ -1790,22 +1799,32 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   };
 
   const handleSaveProj = async () => {
+    // Helper function to validate URL
+    const isValidUrl = (url: string) => {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
     // Create DTO payload - only include fields that have values
     const payload: any = {
       nome: projForm.title || "Project Title",
       descricao: projForm.description || "Project Description",
     };
 
-    // Only include optional fields if they have values
-    if (projForm.githubUrl?.trim()) {
+    // Only include optional URL fields if they have valid URLs
+    if (projForm.githubUrl?.trim() && isValidUrl(projForm.githubUrl.trim())) {
       payload.codeLink = projForm.githubUrl.trim();
     }
 
-    if (projForm.deployUrl?.trim()) {
+    if (projForm.deployUrl?.trim() && isValidUrl(projForm.deployUrl.trim())) {
       payload.demoLink = projForm.deployUrl.trim();
     }
 
-    if (projForm.thumbnail?.trim()) {
+    if (projForm.thumbnail?.trim() && isValidUrl(projForm.thumbnail.trim())) {
       payload.gif = projForm.thumbnail.trim();
     }
 
@@ -1814,13 +1833,9 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         await projetosApi.update(editingProj.id, payload);
         toast.success("Project updated");
       } else {
-        // For create, ensure gif has a valid URL
+        // For create, profileId is required
         const createPayload = { ...payload, profileId: currentProfile.id };
-        if (!createPayload.gif) {
-          // Use a default placeholder image if no thumbnail provided
-          createPayload.gif =
-            "https://via.placeholder.com/400x200/121318/ffffff?text=No+Image";
-        }
+        // Don't send gif field if it's empty - it's optional in the DTO
         await projetosApi.create(createPayload);
         toast.success("Project added");
       }
@@ -1850,8 +1865,14 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
 
       setCurrentProfile({ ...currentProfile, projetos: newProjsList });
       setIsProjModalOpen(false);
-    } catch (e) {
-      toast.error("Error saving project");
+    } catch (e: any) {
+      console.error("Error saving project:", e.response?.data || e);
+      const errorMessage = e.response?.data?.message;
+      if (Array.isArray(errorMessage)) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error(errorMessage || "Error saving project");
+      }
     }
   };
 

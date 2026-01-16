@@ -1156,14 +1156,21 @@ export function PortfolioEditorPage() {
               continue; // Pular este item inválido
             }
 
+            // URL padrão caso não tenha imagem
+            const defaultGifUrl =
+              "https://via.placeholder.com/400x300?text=Project";
+            const gifUrl = project.imageUrl?.trim()
+              ? project.imageUrl
+              : defaultGifUrl;
+
             if (project.id) {
               // Update - sem profileId
               await projetosApi.update(project.id, {
                 nome: project.title,
                 descricao: project.description,
-                demoLink: project.demoUrl || "",
-                codeLink: project.githubUrl || "",
-                gif: project.imageUrl || "",
+                demoLink: project.demoUrl?.trim() || undefined,
+                codeLink: project.githubUrl?.trim() || undefined,
+                gif: gifUrl,
                 ordem: i,
               });
             } else {
@@ -1172,9 +1179,9 @@ export function PortfolioEditorPage() {
                 profileId: profileId,
                 nome: project.title,
                 descricao: project.description,
-                demoLink: project.demoUrl || "",
-                codeLink: project.githubUrl || "",
-                gif: project.imageUrl || "",
+                demoLink: project.demoUrl?.trim() || undefined,
+                codeLink: project.githubUrl?.trim() || undefined,
+                gif: gifUrl,
                 ordem: i,
               });
             }
@@ -1341,14 +1348,33 @@ export function PortfolioEditorPage() {
           for (let i = 0; i < data.projects.length; i++) {
             const project = data.projects[i];
 
+            // Validar dados obrigatórios
+            if (!project.title || !project.description) {
+              console.warn(`Projeto inválido na posição ${i}:`, project);
+              toast.error(
+                `Projeto na posição ${
+                  i + 1
+                } está incompleto. Nome e descrição são obrigatórios.`
+              );
+              continue; // Pular este item inválido
+            }
+
+            // URL padrão caso não tenha imagem
+            const defaultImageUrl =
+              "https://via.placeholder.com/400x300?text=Projeto";
+            const gifUrl =
+              project.imageUrl && project.imageUrl.trim() !== ""
+                ? project.imageUrl
+                : defaultImageUrl;
+
             if (project.id) {
               // Update - sem profileId
               await projetosApi.update(project.id, {
                 nome: project.title,
                 descricao: project.description,
-                demoLink: project.demoUrl,
-                codeLink: project.githubUrl,
-                gif: project.imageUrl || "",
+                demoLink: project.demoUrl || undefined,
+                codeLink: project.githubUrl || undefined,
+                gif: gifUrl,
                 ordem: i,
               });
             } else {
@@ -1357,9 +1383,9 @@ export function PortfolioEditorPage() {
                 profileId: profileId,
                 nome: project.title,
                 descricao: project.description,
-                demoLink: project.demoUrl,
-                codeLink: project.githubUrl,
-                gif: project.imageUrl || "",
+                demoLink: project.demoUrl || undefined,
+                codeLink: project.githubUrl || undefined,
+                gif: gifUrl,
                 ordem: i,
               });
             }
@@ -3095,7 +3121,8 @@ function Portfolio2Editor({
                   id: `p${portfolioData.projects.length + 1}`,
                   title: "Novo Projeto",
                   description: "Descrição do projeto",
-                  imageUrl: "",
+                  imageUrl:
+                    "https://via.placeholder.com/400x300?text=Novo+Projeto",
                 };
                 setPortfolioData({
                   ...portfolioData,
@@ -3165,6 +3192,196 @@ function Portfolio2Editor({
           />
         </div>
       </main>
+
+      {/* Dialog para editar experiência profissional */}
+      <Dialog
+        open={editingExperienceIndex !== null}
+        onOpenChange={(open: boolean) =>
+          !open && setEditingExperienceIndex(null)
+        }
+      >
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar Experiência</DialogTitle>
+            <DialogDescription>
+              Edite as informações da sua experiência profissional.
+            </DialogDescription>
+          </DialogHeader>
+          {tempExperience && (
+            <div className="space-y-4 mt-4">
+              <div>
+                <Label>Cargo</Label>
+                <Input
+                  value={tempExperience.role}
+                  onChange={(e) =>
+                    setTempExperience({
+                      ...tempExperience,
+                      role: e.target.value,
+                    })
+                  }
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label>Empresa</Label>
+                <Input
+                  value={tempExperience.company}
+                  onChange={(e) =>
+                    setTempExperience({
+                      ...tempExperience,
+                      company: e.target.value,
+                    })
+                  }
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label>Data</Label>
+                <Input
+                  value={tempExperience.date}
+                  onChange={(e) =>
+                    setTempExperience({
+                      ...tempExperience,
+                      date: e.target.value,
+                    })
+                  }
+                  placeholder="Ex: 2023 - Presente"
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label>Descrição</Label>
+                <Textarea
+                  value={tempExperience.description}
+                  onChange={(e) =>
+                    setTempExperience({
+                      ...tempExperience,
+                      description: e.target.value,
+                    })
+                  }
+                  className="mt-2 min-h-[100px]"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="current"
+                  checked={tempExperience.current}
+                  onChange={(e) =>
+                    setTempExperience({
+                      ...tempExperience,
+                      current: e.target.checked,
+                    })
+                  }
+                  className="w-4 h-4"
+                />
+                <Label htmlFor="current">Trabalho atual</Label>
+              </div>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingExperienceIndex(null)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={() => {
+                    if (editingExperienceIndex !== null) {
+                      const newExp = [...portfolioData.experience];
+                      newExp[editingExperienceIndex] = tempExperience;
+                      setPortfolioData({
+                        ...portfolioData,
+                        experience: newExp,
+                      });
+                      setEditingExperienceIndex(null);
+                      toast.success("Experiência atualizada!");
+                    }
+                  }}
+                >
+                  Salvar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para editar projetos */}
+      <Dialog
+        open={editingProjectIndex !== null}
+        onOpenChange={(open: boolean) => !open && setEditingProjectIndex(null)}
+      >
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Editar Projeto</DialogTitle>
+            <DialogDescription>
+              Edite as informações do seu projeto.
+            </DialogDescription>
+          </DialogHeader>
+          {tempProject && (
+            <div className="space-y-4 mt-4">
+              <div>
+                <Label>Nome do Projeto</Label>
+                <Input
+                  value={tempProject.title}
+                  onChange={(e) =>
+                    setTempProject({ ...tempProject, title: e.target.value })
+                  }
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label>Descrição</Label>
+                <Textarea
+                  value={tempProject.description}
+                  onChange={(e) =>
+                    setTempProject({
+                      ...tempProject,
+                      description: e.target.value,
+                    })
+                  }
+                  className="mt-2 min-h-[100px]"
+                />
+              </div>
+              <div>
+                <Label>URL da Imagem</Label>
+                <Input
+                  value={tempProject.imageUrl || ""}
+                  onChange={(e) =>
+                    setTempProject({ ...tempProject, imageUrl: e.target.value })
+                  }
+                  placeholder="URL da imagem do projeto"
+                  className="mt-2"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingProjectIndex(null)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={() => {
+                    if (editingProjectIndex !== null) {
+                      const newProjects = [...portfolioData.projects];
+                      newProjects[editingProjectIndex] = tempProject;
+                      setPortfolioData({
+                        ...portfolioData,
+                        projects: newProjects,
+                      });
+                      setEditingProjectIndex(null);
+                      toast.success("Projeto atualizado!");
+                    }
+                  }}
+                >
+                  Salvar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

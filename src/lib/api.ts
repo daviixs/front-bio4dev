@@ -113,6 +113,11 @@ export const profileApi = {
     );
     return response.data;
   },
+
+  delete: async (id: string) => {
+    const response = await api.delete<{ message: string }>(`/profile/${id}`);
+    return response.data;
+  },
 };
 
 // ============ LEGENDA ============
@@ -228,18 +233,12 @@ export const pagesApi = {
 // ============ SOCIAL ============
 export const socialApi = {
   create: async (data: CreateSocialDTO) => {
-    const response = await api.post<{ message: string; social: Social }>(
-      "/social",
-      data
-    );
+    const response = await api.post<Social>("/social", data);
     return response.data;
   },
 
   update: async (id: string, data: UpdateSocialDTO) => {
-    const response = await api.patch<{ message: string; social: Social }>(
-      `/social/${id}`,
-      data
-    );
+    const response = await api.patch<Social>(`/social/${id}`, data);
     return response.data;
   },
 
@@ -283,7 +282,9 @@ export const projetosApi = {
   },
 
   getByProfileId: async (profileId: string) => {
-    const response = await api.get<Projeto[]>(`/projects/profile/${profileId}`);
+    const response = await api.get<Projeto[]>(
+      `/projects?profileId=${profileId}`
+    );
     return response.data;
   },
 
