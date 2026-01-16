@@ -4,6 +4,7 @@ export { default as Login } from "./Login";
 export { SignupPage } from "./SignupPage";
 export { CreateProfilePage } from "./CreateProfilePage";
 export { SetupWizardPage } from "./SetupWizardPage";
+export { default as UserTypeSelectionPage } from "./UserTypeSelectionPage";
 export { DashboardPage, DashboardOverview } from "./DashboardPage";
 export { default as AdminDashboard } from "./AdminDashboard";
 export { default as BioPage } from "./admin/BioPage";
@@ -12,6 +13,8 @@ export { default as AnalyticsPage } from "./admin/AnalyticsPage";
 export { default as AdminSettingsPage } from "./admin/SettingsPage";
 export { PublicProfilePage } from "./PublicProfilePage";
 export { PortfolioEditorPage } from "./PortfolioEditorPage";
+export { InfluencerEditorPage } from "./InfluencerEditorPage";
+export { default as InfluencerPreviewPage } from "./InfluencerPreviewPage";
 
 // Dashboard pages
 export { ProfileEdit } from "./dashboard/ProfileEdit";

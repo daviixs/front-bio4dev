@@ -37,12 +37,8 @@ export function LoginForm() {
       const { hasProfile } = await login(formData.email, formData.password);
       toast.success("Login realizado com sucesso!");
 
-      // Redirecionar para setup se não tiver perfil, senão para dashboard
-      if (!hasProfile) {
-        navigate("/setup");
-      } else {
-        navigate("/dashboard");
-      }
+      // Redirecionar para dashboard
+      navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Erro ao fazer login");
     }

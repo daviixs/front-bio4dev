@@ -1,96 +1,156 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  AtSign,
-  FileText,
-  Image,
-  ArrowRight,
-  Loader2,
-  Palette,
-  Zap,
-  Rocket,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Loader2, Palette, Zap, Rocket, Users } from "lucide-react";
 import { profileApi } from "@/lib/api";
 import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
-import portfolio1Img from "@/bio-exempleimages/Portifolio 1.png";
-import portfolio2Img from "@/bio-exempleimages/Portifolio 2.png";
-import portfolio3Img from "@/bio-exempleimages/Portifolio 3.png";
+import activistImg from "@/temas-lintree/preview-screenshots/activist.png";
+import altMusicImg from "@/temas-lintree/preview-screenshots/alt-music.png";
+import architectImg from "@/temas-lintree/preview-screenshots/architect.png";
+import artistImg from "@/temas-lintree/preview-screenshots/artist.png";
+import athleteImg from "@/temas-lintree/preview-screenshots/Athlete.png";
+import businessImg from "@/temas-lintree/preview-screenshots/business.png";
+import creatorImg from "@/temas-lintree/preview-screenshots/creator.png";
+import ecoFashionImg from "@/temas-lintree/preview-screenshots/eco-fashion.png";
+import gourmetImg from "@/temas-lintree/preview-screenshots/gourmet.png";
+import innovationImg from "@/temas-lintree/preview-screenshots/innovation.png";
+import streamerImg from "@/temas-lintree/preview-screenshots/streamer.png";
 
-const profileSchema = z.object({
-  username: z
-    .string()
-    .min(3, "Username deve ter pelo menos 3 caracteres")
-    .max(30, "Username deve ter no máximo 30 caracteres")
-    .regex(
-      /^[a-z0-9_-]+$/,
-      "Username só pode conter letras minúsculas, números, _ e -"
-    ),
-  bio: z.string().max(500, "Bio deve ter no máximo 500 caracteres").optional(),
-  avatarUrl: z.string().url("URL inválida").optional().or(z.literal("")),
-});
+// Image mapping for influencer previews (from preview-screenshots)
+const templateImages: Record<string, string> = {
+  activist: activistImg,
+  altmusic: altMusicImg,
+  architect: architectImg,
+  artist: artistImg,
+  athlete: athleteImg,
+  business: businessImg,
+  creator: creatorImg,
+  ecofashion: ecoFashionImg,
+  gourmet: gourmetImg,
+  innovation: innovationImg,
+  streamer: streamerImg,
+};
 
-type ProfileFormData = z.infer<typeof profileSchema>;
-
-const templates = [
+// Influencer templates
+const influencerTemplates = [
   {
-    id: "template_01",
-    name: "Minimal",
-    description: "Clean e profissional",
-    icon: <Palette className="w-6 h-6" />,
-    color: "bg-slate-600",
-    preview: "bg-slate-100",
-    image: portfolio1Img,
+    id: "activist",
+    name: "Ativista",
+    description: "Para causas e educação",
+    icon: <Users className="w-6 h-6" />,
+    color: "bg-green-600",
+    preview: "bg-green-50",
+    type: "influencer" as const,
   },
   {
-    id: "template_02",
-    name: "Neon",
-    description: "Moderno e vibrante",
+    id: "altmusic",
+    name: "Alt Music",
+    description: "Para músicos alternativos",
     icon: <Zap className="w-6 h-6" />,
-    color: "bg-blue-600",
-    preview: "bg-blue-50",
-    image: portfolio2Img,
-  },
-  {
-    id: "template_03",
-    name: "Creative",
-    description: "Criativo e único",
-    icon: <Rocket className="w-6 h-6" />,
     color: "bg-purple-600",
     preview: "bg-purple-50",
-    image: portfolio3Img,
+    type: "influencer" as const,
+  },
+  {
+    id: "architect",
+    name: "Arquiteto",
+    description: "Portfolio de arquitetura",
+    icon: <Palette className="w-6 h-6" />,
+    color: "bg-slate-700",
+    preview: "bg-slate-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "artist",
+    name: "Artista",
+    description: "Para artistas musicais",
+    icon: <Zap className="w-6 h-6" />,
+    color: "bg-pink-600",
+    preview: "bg-pink-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "athlete",
+    name: "Atleta",
+    description: "Para esportistas",
+    icon: <Rocket className="w-6 h-6" />,
+    color: "bg-blue-700",
+    preview: "bg-blue-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "business",
+    name: "Negócio",
+    description: "Para pequenos negócios",
+    icon: <Palette className="w-6 h-6" />,
+    color: "bg-amber-700",
+    preview: "bg-amber-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "creator",
+    name: "Criador",
+    description: "Para criadores de conteúdo",
+    icon: <Rocket className="w-6 h-6" />,
+    color: "bg-indigo-600",
+    preview: "bg-indigo-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "ecofashion",
+    name: "Eco Fashion",
+    description: "Moda sustentável",
+    icon: <Palette className="w-6 h-6" />,
+    color: "bg-teal-600",
+    preview: "bg-teal-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "gourmet",
+    name: "Gourmet",
+    description: "Para chefs e gastronomia",
+    icon: <Zap className="w-6 h-6" />,
+    color: "bg-orange-600",
+    preview: "bg-orange-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "innovation",
+    name: "Innovation",
+    description: "Tech e inovação",
+    icon: <Rocket className="w-6 h-6" />,
+    color: "bg-cyan-600",
+    preview: "bg-cyan-50",
+    type: "influencer" as const,
+  },
+  {
+    id: "streamer",
+    name: "Streamer",
+    description: "Para gamers e streamers",
+    icon: <Zap className="w-6 h-6" />,
+    color: "bg-violet-600",
+    preview: "bg-violet-50",
+    type: "influencer" as const,
   },
 ] as const;
 
 export function CreateProfilePage() {
   const navigate = useNavigate();
-  const { user, setProfile } = useAuthStore();
+  const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<
-    "template_01" | "template_02" | "template_03"
-  >("template_02");
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
-  });
+  // For onboarding we force influencer templates only
+  const templates = influencerTemplates;
 
-  const username = watch("username", "");
+  const handleCreate = async () => {
+    if (!selectedTemplate) {
+      toast.error("Selecione um tema para continuar.");
+      return;
+    }
 
-  const onSubmit = async (data: ProfileFormData) => {
     // Obter userId do localStorage (temporário) ou do user logado
     const userId = user?.id || localStorage.getItem("bio4dev_temp_user_id");
 
@@ -102,22 +162,75 @@ export function CreateProfilePage() {
 
     setIsLoading(true);
     try {
-      const response = await profileApi.create({
+      // Generate unique username with timestamp and random suffix
+      const timestamp = Date.now();
+      const randomSuffix = Math.floor(Math.random() * 1000);
+      const tempUsername = `user_${userId.slice(
+        -8
+      )}_${timestamp}_${randomSuffix}`;
+
+      console.log("Creating profile with:", {
         userId,
-        username: data.username,
-        bio: data.bio || undefined,
-        avatarUrl: data.avatarUrl || undefined,
-        templateType: selectedTemplate,
-        published: false,
+        username: tempUsername,
+        templateType: "template_02", // Use valid backend template
+        influencerTheme: selectedTemplate,
+        userType: "influencer",
       });
 
-      // Salvar profileId para usar no setup
-      localStorage.setItem("bio4dev_profile_id", response.profile.id);
+      // ============ MOCK DATA (while backend is being fixed) ============
+      // TODO: Replace with real API call when backend is ready
+      // const response = await profileApi.create({
+      //   userId,
+      //   username: tempUsername,
+      //   bio: undefined,
+      //   avatarUrl: undefined,
+      //   templateType: "template_02",
+      //   published: false,
+      // });
 
-      toast.success("Perfil criado com sucesso!");
-      navigate("/dashboard");
+      // Create mock profile
+      const mockProfileId = `mock_profile_${timestamp}_${randomSuffix}`;
+      const mockProfile = {
+        id: mockProfileId,
+        userId,
+        username: tempUsername,
+        bio: undefined,
+        avatarUrl: undefined,
+        templateType: "template_02",
+        published: false,
+        createdAt: new Date().toISOString(),
+        theme: "LIGHT",
+      };
+
+      // Save mock profile to localStorage
+      const existingProfiles = JSON.parse(
+        localStorage.getItem("bio4dev_mock_profiles") || "[]"
+      );
+      existingProfiles.push(mockProfile);
+      localStorage.setItem(
+        "bio4dev_mock_profiles",
+        JSON.stringify(existingProfiles)
+      );
+
+      console.log("Mock profile created successfully:", mockProfile);
+
+      // Save profile info and influencer theme for editor
+      localStorage.setItem("bio4dev_profile_id", mockProfileId);
+      localStorage.setItem(`bio4dev_theme_${mockProfileId}`, selectedTemplate);
+
+      toast.success("Perfil criado com sucesso! (modo offline)");
+
+      // Redirect to influencer editor with theme parameter
+      navigate(
+        `/dashboard/influencer/${mockProfileId}?theme=${selectedTemplate}`
+      );
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao criar perfil");
+      console.error("Error creating profile:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Erro ao criar perfil";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -129,223 +242,86 @@ export function CreateProfilePage() {
 
       <div className="flex-1 py-12 px-4 lg:px-6">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
-              Crie seu perfil
-            </h1>
-            <p className="text-slate-600 text-lg">
-              Escolha seu username e template para começar
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-            {/* Username e Bio */}
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                {/* Username */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="username"
-                    className="text-slate-700 flex items-center gap-2"
-                  >
-                    <AtSign className="w-4 h-4" />
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="seuusername"
-                    className="border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500 text-lg py-6"
-                    {...register("username")}
-                  />
-                  {errors.username && (
-                    <p className="text-sm text-red-600">
-                      {errors.username.message}
-                    </p>
-                  )}
-                  {username && !errors.username && (
-                    <p className="text-sm text-blue-600">
-                      Seu link: bio4dev.com/{username}
-                    </p>
-                  )}
-                </div>
-
-                {/* Avatar URL */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="avatarUrl"
-                    className="text-slate-700 flex items-center gap-2"
-                  >
-                    <Image className="w-4 h-4" />
-                    URL do Avatar (opcional)
-                  </Label>
-                  <Input
-                    id="avatarUrl"
-                    type="url"
-                    placeholder="https://exemplo.com/avatar.jpg"
-                    className="border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
-                    {...register("avatarUrl")}
-                  />
-                  {errors.avatarUrl && (
-                    <p className="text-sm text-red-600">
-                      {errors.avatarUrl.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Bio */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="bio"
-                    className="text-slate-700 flex items-center gap-2"
-                  >
-                    <FileText className="w-4 h-4" />
-                    Bio curta (opcional)
-                  </Label>
-                  <Textarea
-                    id="bio"
-                    placeholder="Uma breve descrição sobre você..."
-                    rows={4}
-                    className="border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500 resize-none"
-                    {...register("bio")}
-                  />
-                  {errors.bio && (
-                    <p className="text-sm text-red-600">{errors.bio.message}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Preview Card */}
-              <div className="flex items-center justify-center">
-                <div
-                  className={`w-full max-w-sm aspect-[3/4] rounded-2xl ${
-                    templates.find((t) => t.id === selectedTemplate)?.preview
-                  } p-6 border border-slate-200 shadow-sm`}
-                >
-                  <div className="h-full flex flex-col items-center justify-center text-center">
-                    <div className="w-20 h-20 rounded-full bg-slate-200 mb-4 overflow-hidden">
-                      {watch("avatarUrl") ? (
-                        <img
-                          src={watch("avatarUrl")}
-                          alt="Avatar"
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display =
-                              "none";
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-400">
-                          <Image className="w-8 h-8" />
-                        </div>
-                      )}
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">
-                      {username || "seuusername"}
-                    </h3>
-                    <p className="text-slate-600 text-sm line-clamp-3">
-                      {watch("bio") || "Sua bio aparecerá aqui..."}
-                    </p>
-                  </div>
-                </div>
-              </div>
+          <div className="space-y-10">
+            <div className="text-center space-y-3">
+              <h1 className="text-3xl lg:text-4xl font-extrabold text-slate-900">
+                Selecione um tema
+              </h1>
+              <p className="text-slate-500">
+                Escolha o visual e personalize depois
+              </p>
             </div>
 
-            {/* Template Selection */}
-            <div className="space-y-6">
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                  Escolha seu template
-                </h2>
-                <p className="text-slate-600">
-                  Você pode trocar depois a qualquer momento
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                {templates.map((template) => (
+            <div className="grid md:grid-cols-3 gap-6">
+              {templates.map((template) => {
+                const previewImage = templateImages[template.id];
+                return (
                   <button
                     key={template.id}
                     type="button"
                     onClick={() => setSelectedTemplate(template.id)}
-                    className={`relative rounded-2xl border-2 transition-all overflow-hidden ${
+                    className={`group relative overflow-hidden rounded-3xl border bg-white shadow-sm transition-all hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-200 ${
                       selectedTemplate === template.id
-                        ? "border-blue-500 ring-2 ring-blue-500/20"
-                        : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
-                    }`}
+                        ? "border-blue-500 ring-2 ring-blue-200"
+                        : "border-slate-200"
+                    } ${template.preview}`}
                   >
-                    {selectedTemplate === template.id && (
-                      <div className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-lg">
-                        <svg
-                          className="w-5 h-5 text-white"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
+                    {previewImage && (
+                      <div className="bg-white flex items-center justify-center px-6 pt-6 pb-4 rounded-2xl overflow-hidden">
+                        <img
+                          src={previewImage}
+                          alt="Preview do template"
+                          className="w-full max-h-[420px] object-contain"
+                        />
                       </div>
                     )}
 
-                    {/* Preview Image */}
-                    <div className="aspect-[4/3] bg-slate-50 overflow-hidden">
-                      <img
-                        src={template.image}
-                        alt={`Preview ${template.name}`}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
+                    <div className="p-6 flex flex-col gap-4">
+                      {/* Avatar placeholder */}
+                      <div className="flex justify-center">
+                        <div className="w-14 h-14 rounded-full bg-white/80 border border-white/40 shadow-sm" />
+                      </div>
 
-                    {/* Template Info */}
-                    <div className="p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div
-                          className={`w-10 h-10 rounded-lg ${template.color} flex items-center justify-center text-white flex-shrink-0`}
-                        >
-                          {template.icon}
-                        </div>
-                        <div className="text-left">
-                          <h3 className="text-base font-semibold text-slate-900">
-                            {template.name}
-                          </h3>
-                          <p className="text-xs text-slate-600">
-                            {template.description}
-                          </p>
-                        </div>
+                      {/* Social row placeholder */}
+                      <div className="flex items-center justify-center gap-2 text-slate-500/80 text-xs">
+                        <span className="w-3 h-3 rounded-full bg-white/70" />
+                        <span className="w-3 h-3 rounded-full bg-white/70" />
+                        <span className="w-3 h-3 rounded-full bg-white/70" />
+                      </div>
+
+                      {/* Link bars */}
+                      <div className="space-y-3">
+                        <div className="h-11 rounded-xl bg-white/85 shadow-sm" />
+                        <div className="h-11 rounded-xl bg-white/80 shadow-sm" />
+                        <div className="h-11 rounded-xl bg-white/75 shadow-sm" />
                       </div>
                     </div>
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
-
-            {/* Submit Button */}
-            <div className="flex justify-center">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-12 py-6 text-lg rounded-lg"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    Criar Perfil e Começar
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
+
+      {selectedTemplate && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 transform z-20">
+          <button
+            onClick={handleCreate}
+            disabled={isLoading}
+            className="rounded-full bg-blue-600 text-white shadow-xl px-6 py-3 flex items-center gap-2 hover:bg-blue-700 transition disabled:opacity-60"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Criando...
+              </>
+            ) : (
+              <>Criar com este tema</>
+            )}
+          </button>
+        </div>
+      )}
 
       <Footer />
     </div>

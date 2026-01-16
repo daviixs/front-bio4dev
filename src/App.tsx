@@ -6,6 +6,7 @@ import {
   Home,
   Login,
   SignupPage,
+  UserTypeSelectionPage,
   CreateProfilePage,
   SetupWizardPage,
   DashboardPage,
@@ -23,6 +24,8 @@ import {
   AppearanceEdit,
   SettingsPage,
   PortfolioEditorPage,
+  InfluencerEditorPage,
+  InfluencerPreviewPage,
 } from "./pages";
 import { AdminLayoutWrapper } from "./components/admin/AdminLayoutWrapper";
 
@@ -54,8 +57,8 @@ export default function App() {
 
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/old-landing" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<Home />} />
 
         {/* Auth Routes */}
         <Route
@@ -76,8 +79,8 @@ export default function App() {
         />
 
         {/* Profile Creation */}
+        <Route path="/profile/type" element={<UserTypeSelectionPage />} />
         <Route path="/profile/create" element={<CreateProfilePage />} />
-        <Route path="/setup" element={<SetupWizardPage />} />
 
         {/* Portfolio Editor */}
         <Route
@@ -85,6 +88,35 @@ export default function App() {
           element={
             <ProtectedRoute>
               <PortfolioEditorPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* Influencer Editor */}
+        <Route
+          path="/dashboard/influencer/:portfolioId"
+          element={
+            <ProtectedRoute>
+              <InfluencerEditorPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Influencer Preview */}
+        <Route
+          path="/preview/influencer/:portfolioId"
+          element={
+            <ProtectedRoute>
+              <InfluencerPreviewPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Setup Wizard */}
+        <Route
+          path="/setup"
+          element={
+            <ProtectedRoute>
+              <SetupWizardPage />
             </ProtectedRoute>
           }
         />
