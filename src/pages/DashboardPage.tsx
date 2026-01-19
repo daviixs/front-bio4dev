@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, Outlet, useLocation } from "react-router-dom";
 import {
   Code2,
   LayoutDashboard,
@@ -16,20 +16,20 @@ import {
   Menu,
   X,
   ChevronRight,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/stores/authStore';
-import { useProfileStore } from '@/stores/profileStore';
-import { toast } from 'sonner';
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/stores/authStore";
+import { useProfileStore } from "@/stores/profileStore";
+import { toast } from "sonner";
 
 const menuItems = [
-  { path: '/dashboard', label: 'Visão Geral', icon: LayoutDashboard },
-  { path: '/dashboard/profile', label: 'Informações', icon: User },
-  { path: '/dashboard/appearance', label: 'Aparência', icon: Palette },
-  { path: '/dashboard/socials', label: 'Redes Sociais', icon: Share2 },
-  { path: '/dashboard/projects', label: 'Projetos', icon: Briefcase },
-  { path: '/dashboard/pages', label: 'Páginas', icon: FileText },
-  { path: '/dashboard/settings', label: 'Configurações', icon: Settings },
+  { path: "/dashboard", label: "Visão Geral", icon: LayoutDashboard },
+  { path: "/dashboard/profile", label: "Informações", icon: User },
+  { path: "/dashboard/appearance", label: "Aparência", icon: Palette },
+  { path: "/dashboard/socials", label: "Redes Sociais", icon: Share2 },
+  { path: "/dashboard/projects", label: "Projetos", icon: Briefcase },
+  { path: "/dashboard/pages", label: "Páginas", icon: FileText },
+  { path: "/dashboard/settings", label: "Configurações", icon: Settings },
 ];
 
 export function DashboardPage() {
@@ -39,7 +39,7 @@ export function DashboardPage() {
   const { profile, loadProfile } = useProfileStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const profileId = localStorage.getItem('bio4dev_profile_id');
+  const profileId = localStorage.getItem("bio4dev_profile_id");
 
   useEffect(() => {
     if (profileId) {
@@ -49,20 +49,22 @@ export function DashboardPage() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
-    toast.success('Até logo! 👋');
+    navigate("/");
+    toast.success("Até logo! 👋");
   };
 
   const copyLink = () => {
-    if (profile?.username) {
-      navigator.clipboard.writeText(`${window.location.origin}/${profile.username}`);
-      toast.success('Link copiado!');
+    if (profile?.slug) {
+      navigator.clipboard.writeText(
+        `${window.location.origin}/${profile.slug}`,
+      );
+      toast.success("Link copiado!");
     }
   };
 
   const isActive = (path: string) => {
-    if (path === '/dashboard') {
-      return location.pathname === '/dashboard';
+    if (path === "/dashboard") {
+      return location.pathname === "/dashboard";
     }
     return location.pathname.startsWith(path);
   };
@@ -87,14 +89,22 @@ export function DashboardPage() {
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center overflow-hidden">
                 {profile.avatarUrl ? (
-                  <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                  <img
+                    src={profile.avatarUrl}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <User className="w-5 h-5 text-white/50" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{profile.legenda?.nome || user?.nome}</p>
-                <p className="text-xs text-emerald-400 truncate">@{profile.username}</p>
+                <p className="text-sm font-medium truncate">
+                  {profile.legenda?.nome || user?.nome}
+                </p>
+                <p className="text-xs text-emerald-400 truncate">
+                  @{profile.username}
+                </p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -107,7 +117,7 @@ export function DashboardPage() {
                 <Copy className="w-3 h-3 mr-1" />
                 Copiar Link
               </Button>
-              <Link to={`/${profile.username}`} target="_blank">
+              <Link to={`/${profile.slug}`} target="_blank">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -131,8 +141,8 @@ export function DashboardPage() {
                 to={item.path}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                   active
-                    ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-400 border border-emerald-500/20'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                    ? "bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-400 border border-emerald-500/20"
+                    : "text-white/60 hover:text-white hover:bg-white/5"
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -180,7 +190,11 @@ export function DashboardPage() {
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="text-white"
           >
-            {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isSidebarOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </Button>
         </div>
 
@@ -197,8 +211,8 @@ export function DashboardPage() {
                   onClick={() => setIsSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     active
-                      ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-400'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
+                      ? "bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 text-emerald-400"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -234,15 +248,25 @@ export function DashboardOverview() {
   const { user } = useAuthStore();
 
   const stats = [
-    { label: 'Projetos', value: profile?.projetos?.length || 0, icon: Briefcase },
-    { label: 'Redes Sociais', value: profile?.socials?.length || 0, icon: Share2 },
-    { label: 'Páginas', value: profile?.pages?.length || 0, icon: FileText },
+    {
+      label: "Projetos",
+      value: profile?.projetos?.length || 0,
+      icon: Briefcase,
+    },
+    {
+      label: "Redes Sociais",
+      value: profile?.socials?.length || 0,
+      icon: Share2,
+    },
+    { label: "Páginas", value: profile?.pages?.length || 0, icon: FileText },
   ];
 
   const copyLink = () => {
-    if (profile?.username) {
-      navigator.clipboard.writeText(`${window.location.origin}/${profile.username}`);
-      toast.success('Link copiado!');
+    if (profile?.slug) {
+      navigator.clipboard.writeText(
+        `${window.location.origin}/${profile.slug}`,
+      );
+      toast.success("Link copiado!");
     }
   };
 
@@ -256,13 +280,15 @@ export function DashboardOverview() {
         <p className="text-white/60 mb-6">
           Gerencie seu portfólio e acompanhe as estatísticas.
         </p>
-        
+
         <div className="flex flex-wrap gap-4">
-          {profile?.username && (
+          {profile?.slug && (
             <>
               <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg border border-white/10">
                 <span className="text-white/50">Seu link:</span>
-                <span className="text-emerald-400 font-mono">{window.location.origin}/{profile.username}</span>
+                <span className="text-emerald-400 font-mono">
+                  {window.location.origin}/{profile.slug}
+                </span>
               </div>
               <Button
                 onClick={copyLink}
@@ -272,7 +298,7 @@ export function DashboardOverview() {
                 <Copy className="w-4 h-4 mr-2" />
                 Copiar
               </Button>
-              <Link to={`/${profile.username}`} target="_blank">
+              <Link to={`/${profile.slug}`} target="_blank">
                 <Button
                   variant="outline"
                   className="border-white/10 text-white hover:bg-white/10"
@@ -314,10 +340,26 @@ export function DashboardOverview() {
         <h2 className="text-xl font-semibold">Ações Rápidas</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Editar Informações', icon: User, path: '/dashboard/profile' },
-            { label: 'Adicionar Projeto', icon: Briefcase, path: '/dashboard/projects' },
-            { label: 'Gerenciar Redes', icon: Share2, path: '/dashboard/socials' },
-            { label: 'Mudar Aparência', icon: Palette, path: '/dashboard/appearance' },
+            {
+              label: "Editar Informações",
+              icon: User,
+              path: "/dashboard/profile",
+            },
+            {
+              label: "Adicionar Projeto",
+              icon: Briefcase,
+              path: "/dashboard/projects",
+            },
+            {
+              label: "Gerenciar Redes",
+              icon: Share2,
+              path: "/dashboard/socials",
+            },
+            {
+              label: "Mudar Aparência",
+              icon: Palette,
+              path: "/dashboard/appearance",
+            },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
@@ -342,15 +384,17 @@ export function DashboardOverview() {
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className={`w-3 h-3 rounded-full ${profile.published ? 'bg-emerald-500' : 'bg-yellow-500'}`} />
+              <div
+                className={`w-3 h-3 rounded-full ${profile.published ? "bg-emerald-500" : "bg-yellow-500"}`}
+              />
               <div>
                 <p className="font-medium">
-                  Status: {profile.published ? 'Publicado' : 'Rascunho'}
+                  Status: {profile.published ? "Publicado" : "Rascunho"}
                 </p>
                 <p className="text-sm text-white/50">
                   {profile.published
-                    ? 'Seu portfólio está visível para todos'
-                    : 'Seu portfólio ainda não está público'}
+                    ? "Seu portfólio está visível para todos"
+                    : "Seu portfólio ainda não está público"}
                 </p>
               </div>
             </div>
@@ -369,4 +413,3 @@ export function DashboardOverview() {
     </div>
   );
 }
-

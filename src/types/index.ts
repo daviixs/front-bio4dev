@@ -9,12 +9,27 @@ export interface User {
 }
 
 export type Colors = "LIGHT" | "DARK";
-export type TemplateType = "template_01" | "template_02" | "template_03";
+export type TemplateType =
+  | "template_01"
+  | "template_02"
+  | "template_03"
+  | "template_04"
+  | "template_05"
+  | "template_06"
+  | "template_07"
+  | "template_08"
+  | "template_09"
+  | "template_10"
+  | "template_11"
+  | "template_12"
+  | "template_13"
+  | "template_14";
 
 export interface Profile {
   id: string;
   userId: string;
   username: string;
+  slug: string;
   bio?: string;
   avatarUrl?: string;
   theme: Colors;
@@ -98,12 +113,26 @@ export interface Projeto {
   createdAt: string;
 }
 
+// Link Button para templates de influenciadores
+export interface LinkButton {
+  id: string;
+  profileId: string;
+  label: string;
+  url: string;
+  subtext?: string;
+  icon?: string;
+  style?: string;
+  ordem: number;
+  ativo: boolean;
+}
+
 // Perfil completo com todos os relacionamentos
 export interface ProfileComplete extends Profile {
   legendas?: Legenda[];
   social?: Social[];
   config?: Config;
   projetos?: Projeto[];
+  linkButtons?: LinkButton[];
   techStack?: TechStack;
   workHistory?: WorkExperience[];
   footer?: Footer;
@@ -180,7 +209,7 @@ export interface CreateProfileDTO {
   bio?: string;
   avatarUrl?: string;
   themeId?: number;
-  templateType: "template_01" | "template_02" | "template_03";
+  templateType: TemplateType;
   published?: boolean;
 }
 
@@ -197,7 +226,7 @@ export interface UpdateProfileDTO {
 export interface CreateLegendaDTO {
   profileId: string;
   greeting?: string;
-  legendaFoto: string;
+  legendaFoto?: string;
   nome: string;
   titulo: string;
   subtitulo: string;
@@ -224,8 +253,9 @@ export interface CreateSocialDTO {
   ordem?: number;
 }
 
-export interface UpdateSocialDTO
-  extends Partial<Omit<CreateSocialDTO, "profileId">> {}
+export interface UpdateSocialDTO extends Partial<
+  Omit<CreateSocialDTO, "profileId">
+> {}
 
 export interface CreateProjetoDTO {
   profileId: string;
@@ -237,8 +267,9 @@ export interface CreateProjetoDTO {
   ordem?: number;
 }
 
-export interface UpdateProjetoDTO
-  extends Partial<Omit<CreateProjetoDTO, "profileId">> {}
+export interface UpdateProjetoDTO extends Partial<
+  Omit<CreateProjetoDTO, "profileId">
+> {}
 
 export interface CreateTechStackDTO {
   profileId?: string;
@@ -265,8 +296,9 @@ export interface CreateWorkExperienceDTO {
   responsibilities: { responsibility: string; ordem: number }[];
 }
 
-export interface UpdateWorkExperienceDTO
-  extends Partial<Omit<CreateWorkExperienceDTO, "profileId">> {}
+export interface UpdateWorkExperienceDTO extends Partial<
+  Omit<CreateWorkExperienceDTO, "profileId">
+> {}
 
 export interface CreateFooterDTO {
   profileId: string;
@@ -282,8 +314,9 @@ export interface CreateFooterDTO {
   resumeUrl?: string;
 }
 
-export interface UpdateFooterDTO
-  extends Partial<Omit<CreateFooterDTO, "profileId">> {}
+export interface UpdateFooterDTO extends Partial<
+  Omit<CreateFooterDTO, "profileId">
+> {}
 
 // Respostas da API
 export interface ApiResponse<T> {

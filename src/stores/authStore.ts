@@ -49,7 +49,7 @@ export const useAuthStore = create<AuthState>()(
             // Tentar buscar o perfil do usuário
             const profiles = await api.get(`/profile`);
             const userProfile = profiles.data.find(
-              (p: any) => p.userId === user.id
+              (p: any) => p.userId === user.id,
             );
 
             if (userProfile) {
@@ -58,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
             }
           } catch (profileError) {
             console.log(
-              "Perfil não encontrado - usuário será redirecionado para setup"
+              "Perfil não encontrado - usuário será redirecionado para setup",
             );
           }
 
@@ -90,8 +90,18 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           const response = await usersApi.create({ email, senha, nome });
-          set({ isLoading: false });
-          return response.user;
+
+          // Fazer login automático após criar a conta
+          const user = response.user;
+          localStorage.setItem("bio4dev_user", JSON.stringify(user));
+
+          set({
+            user,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+
+          return user;
         } catch (error: any) {
           set({
             error: error.response?.data?.message || "Erro ao criar conta",
@@ -137,6 +147,6 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );

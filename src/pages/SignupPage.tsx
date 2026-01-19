@@ -51,8 +51,7 @@ export function SignupPage() {
       clearError();
       const user = await signup(data.email, data.senha, data.nome);
       toast.success("Conta criada com sucesso!");
-      // Salvar userId temporariamente e redirecionar para seleção de tipo de usuário
-      localStorage.setItem("bio4dev_temp_user_id", user.id);
+      // Usuário já está logado automaticamente após signup
       navigate("/profile/type");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Erro ao criar conta");

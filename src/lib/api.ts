@@ -28,7 +28,8 @@ import type {
   Footer,
 } from "@/types";
 
-const API_BASE_URL = "http://localhost:5000";
+// Usa a variável de ambiente ou fallback para localhost:3000
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -42,7 +43,7 @@ export const usersApi = {
   create: async (data: CreateUserDTO) => {
     const response = await api.post<{ message: string; user: User }>(
       "/users/register",
-      data
+      data,
     );
     return response.data;
   },
@@ -71,7 +72,7 @@ export const profileApi = {
   create: async (data: CreateProfileDTO) => {
     const response = await api.post<{ message: string; profile: Profile }>(
       "/profile",
-      data
+      data,
     );
     return response.data;
   },
@@ -79,7 +80,7 @@ export const profileApi = {
   update: async (id: string, data: UpdateProfileDTO) => {
     const response = await api.post<{ message: string; profile: Profile }>(
       `/profile/${id}`,
-      data
+      data,
     );
     return response.data;
   },
@@ -109,7 +110,7 @@ export const profileApi = {
 
   generatePreviewToken: async (id: string) => {
     const response = await api.post<{ token: string; expiresAt: string }>(
-      `/profile/${id}/preview-token`
+      `/profile/${id}/preview-token`,
     );
     return response.data;
   },
@@ -125,18 +126,18 @@ export const legendaApi = {
   create: async (data: CreateLegendaDTO) => {
     const response = await api.post<{ message: string; legenda?: Legenda }>(
       "/legenda",
-      data
+      data,
     );
     return response.data;
   },
 
   update: async (
     id: string,
-    data: Partial<Omit<CreateLegendaDTO, "profileId">> & { greeting?: string }
+    data: Partial<Omit<CreateLegendaDTO, "profileId">> & { greeting?: string },
   ) => {
     const response = await api.patch<{ message: string; legenda: Legenda }>(
       `/legenda/${id}`,
-      data
+      data,
     );
     return response.data;
   },
@@ -162,7 +163,7 @@ export const configApi = {
   create: async (data: CreateConfigDTO) => {
     const response = await api.post<{ message: string; config: Config }>(
       "/config",
-      data
+      data,
     );
     return response.data;
   },
@@ -170,7 +171,7 @@ export const configApi = {
   update: async (id: string, data: Partial<CreateConfigDTO>) => {
     const response = await api.patch<{ message: string; config: Config }>(
       `/config/${id}`,
-      data
+      data,
     );
     return response.data;
   },
@@ -196,7 +197,7 @@ export const pagesApi = {
   create: async (data: CreatePageDTO) => {
     const response = await api.post<{ message: string; page: Page }>(
       "/pages",
-      data
+      data,
     );
     return response.data;
   },
@@ -204,7 +205,7 @@ export const pagesApi = {
   update: async (id: string, data: Partial<CreatePageDTO>) => {
     const response = await api.patch<{ message: string; page: Page }>(
       `/pages/${id}`,
-      data
+      data,
     );
     return response.data;
   },
@@ -263,7 +264,7 @@ export const projetosApi = {
   create: async (data: CreateProjetoDTO) => {
     const response = await api.post<{ message: string; projeto: Projeto }>(
       "/projects",
-      data
+      data,
     );
     return response.data;
   },
@@ -271,7 +272,7 @@ export const projetosApi = {
   update: async (id: string, data: UpdateProjetoDTO) => {
     const response = await api.patch<{ message: string; projeto: Projeto }>(
       `/projects/${id}`,
-      data
+      data,
     );
     return response.data;
   },
@@ -283,7 +284,7 @@ export const projetosApi = {
 
   getByProfileId: async (profileId: string) => {
     const response = await api.get<Projeto[]>(
-      `/projects?profileId=${profileId}`
+      `/projects?profileId=${profileId}`,
     );
     return response.data;
   },
@@ -375,8 +376,101 @@ export const uploadApi = {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
+    return response.data;
+  },
+};
+
+// ============ LINK BUTTONS ============
+export interface CreateLinkButtonDTO {
+  profileId: string;
+  label: string;
+  url: string;
+  subtext?: string;
+  icon?: string;
+  style?: string;
+  ordem?: number;
+  ativo?: boolean;
+}
+
+export interface UpdateLinkButtonDTO {
+  label?: string;
+  url?: string;
+  subtext?: string;
+  icon?: string;
+  style?: string;
+  ordem?: number;
+  ativo?: boolean;
+}
+
+export interface LinkButton {
+  id: string;
+  profileId: string;
+  label: string;
+  url: string;
+  subtext?: string;
+  icon?: string;
+  style?: string;
+  ordem: number;
+  ativo: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const linkButtonsApi = {
+  create: async (data: CreateLinkButtonDTO) => {
+    const response = await api.post<{
+      message: string;
+      linkButton: LinkButton;
+    }>("/link-buttons", data);
+    return response.data;
+  },
+
+  getAll: async () => {
+    const response = await api.get<LinkButton[]>("/link-buttons");
+    return response.data;
+  },
+
+  getByProfileId: async (profileId: string) => {
+    const response = await api.get<LinkButton[]>(
+      `/link-buttons/profile/${profileId}`,
+    );
+    return response.data;
+  },
+
+  getById: async (id: string) => {
+    const response = await api.get<LinkButton>(`/link-buttons/${id}`);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdateLinkButtonDTO) => {
+    const response = await api.patch<LinkButton>(`/link-buttons/${id}`, data);
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete<{ message: string }>(
+      `/link-buttons/${id}`,
+    );
+    return response.data;
+  },
+
+  deleteAllByProfileId: async (profileId: string) => {
+    const response = await api.delete<{ message: string }>(
+      `/link-buttons/profile/${profileId}`,
+    );
+    return response.data;
+  },
+
+  upsertMany: async (
+    profileId: string,
+    buttons: Omit<CreateLinkButtonDTO, "profileId">[],
+  ) => {
+    const response = await api.put<{
+      message: string;
+      linkButtons: LinkButton[];
+    }>(`/link-buttons/profile/${profileId}`, buttons);
     return response.data;
   },
 };

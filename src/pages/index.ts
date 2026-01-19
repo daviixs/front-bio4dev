@@ -13,8 +13,6 @@ export { default as AnalyticsPage } from "./admin/AnalyticsPage";
 export { default as AdminSettingsPage } from "./admin/SettingsPage";
 export { PublicProfilePage } from "./PublicProfilePage";
 export { PortfolioEditorPage } from "./PortfolioEditorPage";
-export { InfluencerEditorPage } from "./InfluencerEditorPage";
-export { default as InfluencerPreviewPage } from "./InfluencerPreviewPage";
 
 // Dashboard pages
 export { ProfileEdit } from "./dashboard/ProfileEdit";

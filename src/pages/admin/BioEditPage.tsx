@@ -55,7 +55,7 @@ export default function BioEditPage() {
   const handlePreview = async () => {
     if (!profile?.username) {
       toast.error(
-        "Por favor, adicione um username antes de visualizar o preview"
+        "Por favor, adicione um username antes de visualizar o preview",
       );
       return;
     }
@@ -74,11 +74,11 @@ export default function BioEditPage() {
       // Calcula tempo de expiração
       const expiresDate = new Date(expiresAt);
       const hours = Math.round(
-        (expiresDate.getTime() - Date.now()) / (1000 * 60 * 60)
+        (expiresDate.getTime() - Date.now()) / (1000 * 60 * 60),
       );
 
-      // Abre preview em nova aba com token
-      const previewUrl = `/${profile.username}?preview=${token}`;
+      // Abre preview em nova aba com token (usa slug que é o identificador da rota)
+      const previewUrl = `/${profile.slug}?preview=${token}`;
       window.open(previewUrl, "_blank");
 
       toast.success(`Preview aberto! Token expira em ${hours}h`, {
@@ -97,7 +97,7 @@ export default function BioEditPage() {
         toast.error("Sem permissão para gerar preview");
       } else {
         toast.error(
-          "Erro ao gerar token de preview. Verifique se o backend está rodando."
+          "Erro ao gerar token de preview. Verifique se o backend está rodando.",
         );
       }
     } finally {
@@ -198,7 +198,7 @@ export default function BioEditPage() {
             </Button>
             {profile.published && (
               <Button
-                onClick={() => window.open(`/${profile.username}`, "_blank")}
+                onClick={() => window.open(`/${profile.slug}`, "_blank")}
                 className="gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold"
               >
                 <ExternalLink className="h-4 w-4" />

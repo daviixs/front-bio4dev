@@ -24,8 +24,6 @@ import {
   AppearanceEdit,
   SettingsPage,
   PortfolioEditorPage,
-  InfluencerEditorPage,
-  InfluencerPreviewPage,
 } from "./pages";
 import { AdminLayoutWrapper } from "./components/admin/AdminLayoutWrapper";
 
@@ -82,31 +80,31 @@ export default function App() {
         <Route path="/profile/type" element={<UserTypeSelectionPage />} />
         <Route path="/profile/create" element={<CreateProfilePage />} />
 
-        {/* Portfolio Editor */}
+        {/* Portfolio Editor (legacy route) */}
         <Route
           path="/dashboard/portfolio/:portfolioId"
           element={
             <ProtectedRoute>
-              <PortfolioEditorPage />
+              <PortfolioEditorPage mode="edit" />
             </ProtectedRoute>
           }
         />
         {/* Influencer Editor */}
         <Route
-          path="/dashboard/influencer/:portfolioId"
+          path="/dashboard/influencer/:templateId/:profileId/edit"
           element={
             <ProtectedRoute>
-              <InfluencerEditorPage />
+              <PortfolioEditorPage mode="edit" />
             </ProtectedRoute>
           }
         />
 
         {/* Influencer Preview */}
         <Route
-          path="/preview/influencer/:portfolioId"
+          path="/dashboard/influencer/:templateId/:profileId/preview"
           element={
             <ProtectedRoute>
-              <InfluencerPreviewPage />
+              <PortfolioEditorPage mode="preview" />
             </ProtectedRoute>
           }
         />

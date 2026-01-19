@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Palette, Zap, Rocket, Users } from "lucide-react";
 import { profileApi } from "@/lib/api";
@@ -142,6 +142,16 @@ export function CreateProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
+  // Verificar se o usuário está logado ao montar o componente
+  useEffect(() => {
+    console.log("CreateProfilePage mounted, user:", user);
+    if (!user) {
+      console.warn("Nenhum usuário logado, redirecionando para login");
+      toast.error("Faça login para continuar");
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
   // For onboarding we force influencer templates only
   const templates = influencerTemplates;
 
@@ -151,12 +161,21 @@ export function CreateProfilePage() {
       return;
     }
 
-    // Obter userId do localStorage (temporário) ou do user logado
-    const userId = user?.id || localStorage.getItem("bio4dev_temp_user_id");
+    // Obter userId do usuário logado
+    const userId = user?.id;
 
-    if (!userId) {
-      toast.error("Usuário não encontrado. Crie uma conta primeiro.");
-      navigate("/signup");
+    console.log("User info:", {
+      user,
+      userId,
+      userType: typeof userId,
+      userStringified: JSON.stringify(user),
+    });
+
+    // Validação estrita do userId
+    if (!userId || userId === "undefined" || typeof userId !== "string") {
+      console.error("UserId inválido:", userId);
+      toast.error("Sessão inválida. Faça login novamente.");
+      navigate("/login");
       return;
     }
 
@@ -165,65 +184,107 @@ export function CreateProfilePage() {
       // Generate unique username with timestamp and random suffix
       const timestamp = Date.now();
       const randomSuffix = Math.floor(Math.random() * 1000);
-      const tempUsername = `user_${userId.slice(
-        -8
+      const tempUsername = `${selectedTemplate}_${userId.slice(
+        -8,
       )}_${timestamp}_${randomSuffix}`;
+
+      // Mapear o tema selecionado para templateType do backend (template_04 até template_11 são os 11 temas)
+      const templateMap: Record<string, string> = {
+        activist: "template_04",
+        altmusic: "template_05",
+        architect: "template_06",
+        artist: "template_07",
+        athlete: "template_08",
+        business: "template_09",
+        creator: "template_10",
+        ecofashion: "template_11",
+        gourmet: "template_12",
+        innovation: "template_13",
+        streamer: "template_14",
+      };
+
+      const templateType = templateMap[selectedTemplate] || "template_04";
 
       console.log("Creating profile with:", {
         userId,
         username: tempUsername,
-        templateType: "template_02", // Use valid backend template
+        templateType,
         influencerTheme: selectedTemplate,
-        userType: "influencer",
       });
 
-      // ============ MOCK DATA (while backend is being fixed) ============
-      // TODO: Replace with real API call when backend is ready
-      // const response = await profileApi.create({
-      //   userId,
-      //   username: tempUsername,
-      //   bio: undefined,
-      //   avatarUrl: undefined,
-      //   templateType: "template_02",
-      //   published: false,
-      // });
-
-      // Create mock profile
-      const mockProfileId = `mock_profile_${timestamp}_${randomSuffix}`;
-      const mockProfile = {
-        id: mockProfileId,
+      // Criar perfil no backend
+      const response = await profileApi.create({
         userId,
         username: tempUsername,
-        bio: undefined,
+        bio: `Perfil ${selectedTemplate}`,
         avatarUrl: undefined,
-        templateType: "template_02",
+        templateType: templateType,
         published: false,
-        createdAt: new Date().toISOString(),
-        theme: "LIGHT",
-      };
+      });
 
-      // Save mock profile to localStorage
-      const existingProfiles = JSON.parse(
-        localStorage.getItem("bio4dev_mock_profiles") || "[]"
+      console.log("Profile created successfully:", response);
+      console.log("Response structure:", {
+        hasProfile: !!response.profile,
+        profileId: response.profile?.id,
+        responseId: response.id,
+        responseKeys: Object.keys(response),
+        profileKeys: response.profile ? Object.keys(response.profile) : [],
+        fullResponse: JSON.stringify(response, null, 2),
+      });
+
+      // O backend retorna { message, profile: { id, ... } }
+      const profileId = response.profile?.id || response.id;
+
+      console.log("✅ Extracted profileId:", profileId);
+      console.log("✅ Type of profileId:", typeof profileId);
+      console.log(
+        "✅ Is valid UUID:",
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          profileId || "",
+        ),
       );
-      existingProfiles.push(mockProfile);
-      localStorage.setItem(
-        "bio4dev_mock_profiles",
-        JSON.stringify(existingProfiles)
-      );
 
-      console.log("Mock profile created successfully:", mockProfile);
+      // Validação rigorosa do profileId
+      if (
+        !profileId ||
+        typeof profileId !== "string" ||
+        profileId === "undefined" ||
+        profileId.trim() === ""
+      ) {
+        console.error("❌ Profile ID inválido na resposta:", {
+          profileId,
+          type: typeof profileId,
+          response,
+        });
+        toast.error(
+          "Erro: ID do perfil não foi retornado corretamente pelo servidor",
+        );
+        return;
+      }
 
-      // Save profile info and influencer theme for editor
-      localStorage.setItem("bio4dev_profile_id", mockProfileId);
-      localStorage.setItem(`bio4dev_theme_${mockProfileId}`, selectedTemplate);
+      // Validar se é um UUID válido
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(profileId)) {
+        console.error("❌ Profile ID não é um UUID válido:", profileId);
+        toast.error("Erro: ID do perfil está em formato inválido");
+        return;
+      }
 
-      toast.success("Perfil criado com sucesso! (modo offline)");
+      // Salvar informações do tema para o editor
+      localStorage.setItem("bio4dev_profile_id", profileId);
+      localStorage.setItem(`bio4dev_theme_${profileId}`, selectedTemplate);
 
-      // Redirect to influencer editor with theme parameter
-      navigate(
-        `/dashboard/influencer/${mockProfileId}?theme=${selectedTemplate}`
-      );
+      const navigationPath = `/dashboard/portfolio/${profileId}`;
+      console.log("🚀 Navigating to:", navigationPath);
+      console.log("🚀 Final profileId being used:", profileId);
+
+      toast.success("Perfil criado com sucesso!");
+
+      // Pequeno delay para garantir que o estado seja salvo
+      setTimeout(() => {
+        navigate(navigationPath);
+      }, 100);
     } catch (error: any) {
       console.error("Error creating profile:", error);
       const errorMessage =

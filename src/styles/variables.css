@@ -1,0 +1,98 @@
+:root {
+  /* Cores padrão do sistema */
+  --primary-color: #3b82f6;
+  --secondary-color: #1e293b;
+  --accent-color: #f59e0b;
+  --background-color: #f8fafc;
+  --text-color: #0f172a;
+
+  /* Theme mode */
+  --theme: light;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --background-color: #0f172a;
+  --text-color: #f8fafc;
+  --secondary-color: #1e293b;
+}
+
+/* Aplicar cor primária dinamicamente */
+.btn-primary {
+  background-color: var(--primary-color);
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.link-primary {
+  color: var(--primary-color);
+  transition: color 0.3s ease;
+}
+
+.link-primary:hover {
+  filter: brightness(1.2);
+}
+
+/* Backgrounds dinâmicos */
+.bg-primary {
+  background-color: var(--primary-color);
+}
+
+.bg-secondary {
+  background-color: var(--secondary-color);
+}
+
+.bg-accent {
+  background-color: var(--accent-color);
+}
+
+/* Textos dinâmicos */
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-secondary {
+  color: var(--secondary-color);
+}
+
+.text-accent {
+  color: var(--accent-color);
+}
+
+/* Borders dinâmicos */
+.border-primary {
+  border-color: var(--primary-color);
+}
+
+.border-secondary {
+  border-color: var(--secondary-color);
+}
+
+.border-accent {
+  border-color: var(--accent-color);
+}
+
+/* Gradientes dinâmicos */
+.gradient-primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--accent-color)
+  );
+}
+
+/* Animações suaves para mudanças de tema */
+* {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* Desabilitar transições em elementos específicos se necessário */
+.no-transition {
+  transition: none !important;
+}

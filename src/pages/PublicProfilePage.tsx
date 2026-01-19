@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Code2, Loader2, AlertCircle, ArrowLeft, Eye } from "lucide-react";
+import { Loader2, AlertCircle, ArrowLeft, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { profileApi } from "@/lib/api";
-import { Template02, Template03 } from "@/templates";
-import type { ProfileComplete } from "@/types";
+import { PortfolioService } from "../services/api/portfolio.service";
+import { TemplateRenderer } from "../components/templates";
+import type { PortfolioData } from "../services/api/types";
 
 export function PublicProfilePage() {
   const { username } = useParams<{ username: string }>();
-  const [profile, setProfile] = useState<ProfileComplete | null>(null);
+  const [profile, setProfile] = useState<PortfolioData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isPreview, setIsPreview] = useState(false);
@@ -26,41 +26,34 @@ export function PublicProfilePage() {
         const urlParams = new URLSearchParams(window.location.search);
         const previewToken = urlParams.get("preview");
 
-        const data = await profileApi.getByUsername(
+        // Usa o slug (username) para buscar o portfolio
+        const data = await PortfolioService.getBySlug(
           username,
-          previewToken || undefined
+          previewToken || undefined,
         );
 
         // Se tem token de preview, marca como preview
         if (previewToken) {
           setIsPreview(true);
-        } else if (!data.published) {
-          setError("Este perfil não está publicado");
-          setIsLoading(false);
-          return;
         }
 
         setProfile(data);
       } catch (err: any) {
         console.error("Erro ao carregar perfil:", err);
 
-        // Tratamento específico de erros
-        if (err.response?.status === 401 || err.message?.includes("Token")) {
+        // Tratamento específico de erros baseado nas mensagens do serviço
+        if (err.message === "INVALID_PREVIEW_TOKEN") {
           setError(
-            "Link de preview expirado ou inválido. Solicite um novo link."
+            "Link de preview expirado ou inválido. Solicite um novo link.",
           );
-        } else if (err.response?.status === 403) {
+        } else if (err.message === "PORTFOLIO_NOT_PUBLISHED") {
           setError(
-            "Este perfil não está publicado e você não tem permissão para visualizá-lo."
+            "Este perfil não está publicado e você não tem permissão para visualizá-lo.",
           );
-        } else if (err.response?.status === 404) {
+        } else if (err.message === "PORTFOLIO_NOT_FOUND") {
           setError("Perfil não encontrado.");
         } else {
-          setError(
-            err.response?.data?.message ||
-              err.message ||
-              "Erro ao carregar perfil"
-          );
+          setError("Erro ao carregar perfil. Tente novamente mais tarde.");
         }
       } finally {
         setIsLoading(false);
@@ -107,20 +100,7 @@ export function PublicProfilePage() {
     );
   }
 
-  // Render Template based on templateType
-  const renderTemplate = () => {
-    switch (profile.templateType) {
-      case "template_01":
-        return <Template02 profile={profile} />;
-      case "template_02":
-        return <Template02 profile={profile} />;
-      case "template_03":
-        return <Template03 profile={profile} />;
-      default:
-        return <Template02 profile={profile} />;
-    }
-  };
-
+  // Renderiza o template dinamicamente com base no templateType
   return (
     <>
       {/* Preview Banner */}
@@ -140,8 +120,10 @@ export function PublicProfilePage() {
           </div>
         </div>
       )}
-      {/* Add padding top when preview banner is shown */}
-      <div className={isPreview ? "pt-20" : ""}>{renderTemplate()}</div>
+      {/* TemplateRenderer renderiza automaticamente o template correto */}
+      <div className={isPreview ? "pt-20" : ""}>
+        <TemplateRenderer data={profile} previewMode={isPreview} />
+      </div>
     </>
   );
 }
