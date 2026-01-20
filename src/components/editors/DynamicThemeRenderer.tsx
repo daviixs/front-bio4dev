@@ -6,6 +6,8 @@ import {
   Youtube,
   Linkedin,
   Facebook,
+  AtSign,
+  Camera,
   Mail,
   Music,
   Video,
@@ -18,6 +20,7 @@ import {
   Globe,
   ShoppingBag,
   MapPin,
+  Pin,
   Phone,
   Star,
   Send,
@@ -98,12 +101,30 @@ export function DynamicThemeRenderer({
         return <Linkedin size={size} />;
       case "facebook":
         return <Facebook size={size} />;
+      case "x":
+        return <Twitter size={size} />;
+      case "threads":
+        return <AtSign size={size} />;
+      case "website":
+        return <Globe size={size} />;
       case "spotify":
         return <Music size={size} />;
+      case "soundcloud":
+        return <Radio size={size} />;
       case "tiktok":
         return <Video size={size} />;
       case "whatsapp":
         return <MessageCircle size={size} />;
+      case "snapchat":
+        return <Camera size={size} />;
+      case "patreon":
+        return <Heart size={size} />;
+      case "twitch":
+        return <Twitch size={size} />;
+      case "applemusic":
+        return <Disc size={size} />;
+      case "pinterest":
+        return <Pin size={size} />;
       default:
         return <Instagram size={size} />;
     }

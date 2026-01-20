@@ -42,7 +42,7 @@ src/
 │   └── api.ts      # Cliente Axios e endpoints
 ├── pages/          # Páginas da aplicação
 │   ├── dashboard/  # Páginas do dashboard
-│   ├── LandingPage.tsx
+│   ├── (landing components under `components/landing`)
 │   ├── Login.tsx
 │   ├── SignupPage.tsx
 │   └── ...

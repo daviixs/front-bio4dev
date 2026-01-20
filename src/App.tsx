@@ -2,13 +2,13 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import {
-  LandingPage,
   Home,
   Login,
   SignupPage,
   UserTypeSelectionPage,
   CreateProfilePage,
   SetupWizardPage,
+  InfluencerOnboardingPage,
   DashboardPage,
   DashboardOverview,
   AdminDashboard,
@@ -55,7 +55,7 @@ export default function App() {
 
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
 
         {/* Auth Routes */}
@@ -79,6 +79,14 @@ export default function App() {
         {/* Profile Creation */}
         <Route path="/profile/type" element={<UserTypeSelectionPage />} />
         <Route path="/profile/create" element={<CreateProfilePage />} />
+        <Route
+          path="/onboarding/:profileId"
+          element={
+            <ProtectedRoute>
+              <InfluencerOnboardingPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Portfolio Editor (legacy route) */}
         <Route

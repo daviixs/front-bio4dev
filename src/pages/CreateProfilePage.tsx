@@ -275,7 +275,7 @@ export function CreateProfilePage() {
       localStorage.setItem("bio4dev_profile_id", profileId);
       localStorage.setItem(`bio4dev_theme_${profileId}`, selectedTemplate);
 
-      const navigationPath = `/dashboard/portfolio/${profileId}`;
+      const navigationPath = `/onboarding/${profileId}`;
       console.log("🚀 Navigating to:", navigationPath);
       console.log("🚀 Final profileId being used:", profileId);
 

@@ -4,6 +4,7 @@ import { Code, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
+import { landingTheme } from "@/theme/landingTheme";
 
 export default function UserTypeSelectionPage() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function UserTypeSelectionPage() {
       title: "Desenvolvedor",
       description: "Portfólios técnicos com projetos, experiência e tech stack",
       icon: <Code className="w-12 h-12" />,
-      color: "bg-blue-600",
+      color: landingTheme.accentBg,
       features: [
         "GitHub Integration",
         "Projetos Open Source",
@@ -40,7 +41,7 @@ export default function UserTypeSelectionPage() {
       title: "Influenciador",
       description: "Bio links estilizados com links e redes sociais",
       icon: <Users className="w-12 h-12" />,
-      color: "bg-purple-600",
+      color: landingTheme.accentBg,
       features: [
         "Links Personalizados",
         "Redes Sociais",
@@ -74,13 +75,13 @@ export default function UserTypeSelectionPage() {
                 onClick={() => setSelectedType(type.id)}
                 className={`relative p-8 rounded-2xl border-2 transition-all text-left ${
                   selectedType === type.id
-                    ? "border-blue-500 ring-2 ring-blue-500/20 shadow-lg"
+                    ? `${landingTheme.accentBorder} ring-2 ${landingTheme.accentRing} shadow-lg`
                     : "border-slate-200 hover:border-slate-300 hover:shadow-md"
                 }`}
               >
                 {/* Selected Indicator */}
                 {selectedType === type.id && (
-                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                  <div className={`absolute top-4 right-4 w-8 h-8 rounded-full ${landingTheme.accentBg} flex items-center justify-center`}>
                     <svg
                       className="w-5 h-5 text-white"
                       fill="none"
@@ -144,7 +145,7 @@ export default function UserTypeSelectionPage() {
               onClick={handleContinue}
               disabled={!selectedType}
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-12 py-6 text-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`font-semibold px-12 py-6 text-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${landingTheme.buttonPrimary}`}
             >
               Continuar
               <ArrowRight className="w-5 h-5 ml-2" />

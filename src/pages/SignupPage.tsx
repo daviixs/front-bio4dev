@@ -11,6 +11,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
+import { landingTheme } from "@/theme/landingTheme";
 
 const signupSchema = z
   .object({
@@ -88,12 +89,14 @@ export function SignupPage() {
                   id="nome"
                   type="text"
                   placeholder="Seu nome"
-                  className="pl-10 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
+                  className={`pl-10 ${landingTheme.input}`}
                   {...register("nome")}
                 />
               </div>
               {errors.nome && (
-                <p className="text-sm text-red-600">{errors.nome.message}</p>
+                <p className={`text-sm ${landingTheme.errorText}`}>
+                  {errors.nome.message}
+                </p>
               )}
             </div>
 
@@ -108,12 +111,14 @@ export function SignupPage() {
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
-                  className="pl-10 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
+                  className={`pl-10 ${landingTheme.input}`}
                   {...register("email")}
                 />
               </div>
               {errors.email && (
-                <p className="text-sm text-red-600">{errors.email.message}</p>
+                <p className={`text-sm ${landingTheme.errorText}`}>
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -128,12 +133,14 @@ export function SignupPage() {
                   id="senha"
                   type="password"
                   placeholder="••••••••"
-                  className="pl-10 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
+                  className={`pl-10 ${landingTheme.input}`}
                   {...register("senha")}
                 />
               </div>
               {errors.senha && (
-                <p className="text-sm text-red-600">{errors.senha.message}</p>
+                <p className={`text-sm ${landingTheme.errorText}`}>
+                  {errors.senha.message}
+                </p>
               )}
 
               {/* Password Strength */}
@@ -148,7 +155,7 @@ export function SignupPage() {
                       <div
                         key={i}
                         className={`flex-1 h-1 rounded-full transition-colors ${
-                          valid ? "bg-blue-500" : "bg-slate-200"
+                          valid ? landingTheme.accentBg : "bg-slate-200"
                         }`}
                       />
                     ))}
@@ -157,7 +164,7 @@ export function SignupPage() {
                     <p
                       className={
                         passwordStrength.length
-                          ? "text-blue-600"
+                          ? landingTheme.accentText
                           : "text-slate-400"
                       }
                     >
@@ -179,12 +186,12 @@ export function SignupPage() {
                   id="confirmarSenha"
                   type="password"
                   placeholder="••••••••"
-                  className="pl-10 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
+                  className={`pl-10 ${landingTheme.input}`}
                   {...register("confirmarSenha")}
                 />
               </div>
               {errors.confirmarSenha && (
-                <p className="text-sm text-red-600">
+                <p className={`text-sm ${landingTheme.errorText}`}>
                   {errors.confirmarSenha.message}
                 </p>
               )}
@@ -192,7 +199,7 @@ export function SignupPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+              <div className={`p-3 rounded-lg text-sm ${landingTheme.errorBox}`}>
                 {error}
               </div>
             )}
@@ -201,7 +208,7 @@ export function SignupPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 rounded-lg"
+              className={`w-full font-semibold py-6 rounded-lg ${landingTheme.buttonPrimary}`}
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -226,7 +233,7 @@ export function SignupPage() {
             Já tem uma conta?{" "}
             <Link
               to="/login"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className={`${landingTheme.accentText} ${landingTheme.accentTextHover} font-medium`}
             >
               Fazer login
             </Link>
