@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
+import { landingTheme } from "@/theme/landingTheme";
 import activistImg from "@/temas-lintree/preview-screenshots/activist.png";
 import altMusicImg from "@/temas-lintree/preview-screenshots/alt-music.png";
 import architectImg from "@/temas-lintree/preview-screenshots/architect.png";
@@ -141,6 +142,23 @@ export function CreateProfilePage() {
   const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [slugError, setSlugError] = useState<string | null>(null);
+  const [slugValue, setSlugValue] = useState<string | null>(null);
+  const [hasPromptedForSlug, setHasPromptedForSlug] = useState(false);
+
+  const toSlug = (value: string) =>
+    value
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+  const slugPreview = toSlug(nameInput);
+  const hasInvalidChars = /[^a-zA-Z0-9-\s]/.test(nameInput);
 
   // Verificar se o usuário está logado ao montar o componente
   useEffect(() => {
@@ -152,10 +170,16 @@ export function CreateProfilePage() {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    if (hasPromptedForSlug || slugValue) return;
+    setIsSlugModalOpen(true);
+    setHasPromptedForSlug(true);
+  }, [hasPromptedForSlug, slugValue]);
+
   // For onboarding we force influencer templates only
   const templates = influencerTemplates;
 
-  const handleCreate = async () => {
+  const handleCreate = async (slugValue: string) => {
     if (!selectedTemplate) {
       toast.error("Selecione um tema para continuar.");
       return;
@@ -181,12 +205,7 @@ export function CreateProfilePage() {
 
     setIsLoading(true);
     try {
-      // Generate unique username with timestamp and random suffix
-      const timestamp = Date.now();
-      const randomSuffix = Math.floor(Math.random() * 1000);
-      const tempUsername = `${selectedTemplate}_${userId.slice(
-        -8,
-      )}_${timestamp}_${randomSuffix}`;
+      const tempUsername = slugValue;
 
       // Mapear o tema selecionado para templateType do backend (template_04 até template_11 são os 11 temas)
       const templateMap: Record<string, string> = {
@@ -297,6 +316,36 @@ export function CreateProfilePage() {
     }
   };
 
+  const handleOpenSlugModal = () => {
+    setSlugError(null);
+    setIsSlugModalOpen(true);
+  };
+
+  const handleCloseSlugModal = () => {
+    if (isLoading) return;
+    setIsSlugModalOpen(false);
+  };
+
+  const handleConfirmSlug = () => {
+    const trimmed = nameInput.trim();
+    if (!trimmed) {
+      setSlugError("Informe seu nome.");
+      return;
+    }
+    if (hasInvalidChars) {
+      setSlugError("Apenas letras, numeros e hifens.");
+      return;
+    }
+    if (!slugPreview) {
+      setSlugError("Informe um nome valido.");
+      return;
+    }
+
+    setSlugError(null);
+    setSlugValue(slugPreview);
+    setIsSlugModalOpen(false);
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header />
@@ -368,7 +417,9 @@ export function CreateProfilePage() {
       {selectedTemplate && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 transform z-20">
           <button
-            onClick={handleCreate}
+            onClick={() =>
+              slugValue ? handleCreate(slugValue) : handleOpenSlugModal()
+            }
             disabled={isLoading}
             className="rounded-full bg-blue-600 text-white shadow-xl px-6 py-3 flex items-center gap-2 hover:bg-blue-700 transition disabled:opacity-60"
           >
@@ -381,6 +432,69 @@ export function CreateProfilePage() {
               <>Criar com este tema</>
             )}
           </button>
+        </div>
+      )}
+
+      {isSlugModalOpen && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-slate-900/40 px-4 py-6">
+          <div
+            className={`w-full max-w-[400px] rounded-3xl p-6 shadow-2xl ${landingTheme.card}`}
+          >
+            <h2 className="text-xl font-semibold text-slate-900">
+              Escolha seu Nome
+            </h2>
+            <div className="mt-4 space-y-3">
+              <label
+                htmlFor="slug-name"
+                className="text-sm font-semibold text-slate-700"
+              >
+                Nome
+              </label>
+              <input
+                id="slug-name"
+                value={nameInput}
+                onChange={(event) => {
+                  setNameInput(event.target.value);
+                  setSlugError(null);
+                }}
+                placeholder="Digite seu nome"
+                disabled={isLoading}
+                className={`h-11 w-full rounded-xl border px-4 text-sm focus:outline-none focus:ring-2 ${landingTheme.input}`}
+              />
+              <p className={`text-xs ${landingTheme.textMuted}`}>
+                Este nome sera usado para gerar seu link personalizado:
+                bio4.dev/seunome
+              </p>
+              <p className={`text-sm ${landingTheme.textSecondary}`}>
+                Seu link sera:{" "}
+                <span className="font-semibold text-slate-900">
+                  bio4.dev/{slugPreview || "seunome"}
+                </span>
+              </p>
+              {slugError && (
+                <p className={`text-sm ${landingTheme.errorText}`}>
+                  {slugError}
+                </p>
+              )}
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={handleCloseSlugModal}
+                className={`rounded-full px-4 py-2 text-sm transition ${landingTheme.buttonSecondary}`}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmSlug}
+                disabled={isLoading}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition disabled:opacity-60 ${landingTheme.buttonPrimary}`}
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

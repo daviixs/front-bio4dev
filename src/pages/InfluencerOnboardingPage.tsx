@@ -202,7 +202,6 @@ const PLATFORM_SOCIAL_MAP: Record<PlatformId, string> = {
   applemusic: "applemusic",
 };
 
-
 const INITIAL_ADDITIONAL_LINKS: AdditionalLink[] = [
   { id: "additional-1", url: "" },
   { id: "additional-2", url: "" },
@@ -295,7 +294,10 @@ const normalizeSocialUrl = (platformId: PlatformId, value: string) => {
   return ensureProtocol(trimmed);
 };
 
-const trackOnboardingEvent = (event: string, payload: Record<string, unknown>) => {
+const trackOnboardingEvent = (
+  event: string,
+  payload: Record<string, unknown>,
+) => {
   const record = {
     event,
     payload,
@@ -364,9 +366,17 @@ const ProgressBar = ({
   );
 };
 
-const StepHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
+const StepHeader = ({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) => (
   <div className="space-y-3">
-    <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">{title}</h1>
+    <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
+      {title}
+    </h1>
     <p className="text-base text-slate-600">{subtitle}</p>
   </div>
 );
@@ -402,13 +412,17 @@ const PlatformCard = ({
         <Icon className="h-6 w-6" />
       </span>
       <div>
-        <p className="text-base font-semibold text-slate-900">{platform.label}</p>
+        <p className="text-base font-semibold text-slate-900">
+          {platform.label}
+        </p>
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
           {platform.type === "handle" ? "usuario" : platform.type}
         </p>
       </div>
       {isSelected && (
-        <span className={`absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full ${landingTheme.accentBg} text-xs font-semibold text-white`}>
+        <span
+          className={`absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full ${landingTheme.accentBg} text-xs font-semibold text-white`}
+        >
           {order}
         </span>
       )}
@@ -438,7 +452,9 @@ const SelectedPlatformInput = ({
             <Icon className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-sm font-semibold text-slate-900">{platform.label}</p>
+            <p className="text-sm font-semibold text-slate-900">
+              {platform.label}
+            </p>
             <p className="text-xs text-slate-500">{platform.placeholder}</p>
           </div>
         </div>
@@ -460,7 +476,9 @@ const SelectedPlatformInput = ({
         {error ? (
           <span className="text-rose-400">{error}</span>
         ) : showWarning ? (
-          <span className="text-amber-300">Opcional, mas recomendado para lancamento.</span>
+          <span className="text-amber-300">
+            Opcional, mas recomendado para lancamento.
+          </span>
         ) : (
           <span className="text-emerald-300">Parece correto.</span>
         )}
@@ -525,7 +543,11 @@ const AvatarCard = ({
     <div className="mt-4 flex flex-wrap items-center gap-4">
       <div className="h-24 w-24 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
         {avatarDataUrl ? (
-          <img src={avatarDataUrl} alt="Avatar preview" className="h-full w-full object-cover" />
+          <img
+            src={avatarDataUrl}
+            alt="Avatar preview"
+            className="h-full w-full object-cover"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-slate-500">
             <Image className="h-8 w-8" />
@@ -535,16 +557,17 @@ const AvatarCard = ({
       <div className="space-y-2">
         <label
           htmlFor="avatar-upload"
-          className={`inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${landingTheme.buttonSecondary}`}
+          className="text-sm font-semibold text-slate-700"
         >
-          Enviar imagem
+          Link da imagem
         </label>
-        <input
+        <Input
           id="avatar-upload"
-          type="file"
-          accept="image/png,image/jpeg"
+          type="url"
+          value={avatarDataUrl || ""}
           onChange={onChange}
-          className="hidden"
+          placeholder="https://exemplo.com/minha-foto.jpg"
+          className={`h-11 ${landingTheme.input}`}
         />
         {avatarDataUrl && (
           <button
@@ -555,7 +578,7 @@ const AvatarCard = ({
             Remover imagem
           </button>
         )}
-        <p className="text-xs text-slate-400">JPG ou PNG, ate 5MB.</p>
+        <p className="text-xs text-slate-400">Use um link publico de imagem.</p>
         {avatarError && <p className="text-xs text-rose-400">{avatarError}</p>}
       </div>
     </div>
@@ -583,7 +606,11 @@ const PreviewCard = ({
       <div className="flex items-center gap-4">
         <div className="h-16 w-16 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
           {avatarDataUrl ? (
-            <img src={avatarDataUrl} alt="Avatar preview" className="h-full w-full object-cover" />
+            <img
+              src={avatarDataUrl}
+              alt="Avatar preview"
+              className="h-full w-full object-cover"
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-slate-500">
               <Image className="h-6 w-6" />
@@ -601,7 +628,9 @@ const PreviewCard = ({
       </div>
       <div className="mt-6 space-y-3">
         {selectedPlatforms.slice(0, 3).map((platformId) => {
-          const platform = PLATFORM_OPTIONS.find((item) => item.id === platformId);
+          const platform = PLATFORM_OPTIONS.find(
+            (item) => item.id === platformId,
+          );
           if (!platform) return null;
           const Icon = platform.icon;
           return (
@@ -641,6 +670,9 @@ export function InfluencerOnboardingPage({
   const [resolvedTemplateId, setResolvedTemplateId] = React.useState<
     string | null
   >(templateIdProp || templateIdParam || null);
+  const [isResolvingTemplate, setIsResolvingTemplate] = React.useState(
+    !resolvedTemplateId && Boolean(profileId),
+  );
   const { save } = useSaveTemplate(resolvedTemplateId || undefined);
 
   React.useEffect(() => {
@@ -666,7 +698,10 @@ export function InfluencerOnboardingPage({
   React.useEffect(() => {
     if (!profileId) return;
     try {
-      localStorage.setItem(`bio4dev_onboarding_${profileId}`, JSON.stringify(state));
+      localStorage.setItem(
+        `bio4dev_onboarding_${profileId}`,
+        JSON.stringify(state),
+      );
     } catch {
       // Ignore storage quota errors.
     }
@@ -674,6 +709,7 @@ export function InfluencerOnboardingPage({
 
   React.useEffect(() => {
     if (!profileId || resolvedTemplateId) return;
+    setIsResolvingTemplate(true);
     profileApi
       .getComplete(profileId)
       .then((profile) => {
@@ -681,6 +717,9 @@ export function InfluencerOnboardingPage({
       })
       .catch(() => {
         setResolvedTemplateId(null);
+      })
+      .finally(() => {
+        setIsResolvingTemplate(false);
       });
   }, [profileId, resolvedTemplateId]);
 
@@ -694,7 +733,7 @@ export function InfluencerOnboardingPage({
   if (!resolvedTemplateId) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-500">
-        Template nao encontrado.
+        {isResolvingTemplate ? "Carregando template..." : null}
       </div>
     );
   }
@@ -716,25 +755,23 @@ export function InfluencerOnboardingPage({
     return acc;
   }, {});
 
-  const platformWarnings = state.selectedPlatforms.reduce<Record<string, boolean>>(
-    (acc, platformId) => {
-      acc[platformId] = !(state.platformLinks[platformId] || "").trim();
-      return acc;
-    },
-    {},
-  );
+  const platformWarnings = state.selectedPlatforms.reduce<
+    Record<string, boolean>
+  >((acc, platformId) => {
+    acc[platformId] = !(state.platformLinks[platformId] || "").trim();
+    return acc;
+  }, {});
 
-  const additionalErrors = state.additionalLinks.reduce<Record<string, string | null>>(
-    (acc, link) => {
-      acc[link.id] = link.url.trim()
-        ? isValidUrl(link.url)
-          ? null
-          : "URL invalida."
-        : null;
-      return acc;
-    },
-    {},
-  );
+  const additionalErrors = state.additionalLinks.reduce<
+    Record<string, string | null>
+  >((acc, link) => {
+    acc[link.id] = link.url.trim()
+      ? isValidUrl(link.url)
+        ? null
+        : "URL invalida."
+      : null;
+    return acc;
+  }, {});
 
   const hasInvalidLinks =
     Object.values(platformErrors).some((value) => value) ||
@@ -757,11 +794,14 @@ export function InfluencerOnboardingPage({
       : [...state.selectedPlatforms, id];
 
     updateState({ selectedPlatforms: nextPlatforms });
-    trackOnboardingEvent(alreadySelected ? "platform_removed" : "platform_selected", {
-      profileId,
-      platform: id,
-      count: nextPlatforms.length,
-    });
+    trackOnboardingEvent(
+      alreadySelected ? "platform_removed" : "platform_selected",
+      {
+        profileId,
+        platform: id,
+        count: nextPlatforms.length,
+      },
+    );
   };
 
   const handleAddAdditionalLink = () => {
@@ -784,27 +824,20 @@ export function InfluencerOnboardingPage({
   };
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-      setAvatarError("Envie uma imagem JPG ou PNG.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setAvatarError("O tamanho maximo e 5MB.");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      updateState({
-        avatarDataUrl: reader.result as string,
-        avatarFileName: file.name,
-      });
+    const value = event.target.value;
+    if (!value.trim()) {
+      updateState({ avatarDataUrl: "", avatarFileName: null });
       setAvatarError(null);
-    };
-    reader.readAsDataURL(file);
+      return;
+    }
+
+    if (!isValidUrl(value)) {
+      setAvatarError("Informe uma URL valida.");
+      return;
+    }
+
+    updateState({ avatarDataUrl: value.trim(), avatarFileName: null });
+    setAvatarError(null);
   };
 
   const saveSocialsFromPlatforms = async () => {
@@ -827,12 +860,14 @@ export function InfluencerOnboardingPage({
 
     for (let i = 0; i < selected.length; i += 1) {
       const item = selected[i];
-      await socialApi.create({
+      const data = {
         profileId,
         plataforma: item.platform as any,
         url: item.url,
-        ordem: i,
-      });
+        ordem: i + 1,
+      };
+      console.log("Sending social data:", data);
+      await socialApi.create(data);
     }
   };
 
@@ -843,7 +878,8 @@ export function InfluencerOnboardingPage({
       trackOnboardingEvent("links_saved", {
         profileId,
         selectedPlatforms: state.selectedPlatforms,
-        additionalLinks: state.additionalLinks.filter((link) => link.url.trim()).length,
+        additionalLinks: state.additionalLinks.filter((link) => link.url.trim())
+          .length,
       });
       updateState({ step: 3 });
     } catch {
@@ -940,7 +976,8 @@ export function InfluencerOnboardingPage({
                   {PLATFORM_OPTIONS.map((platform) => {
                     const isSelected = selectedSet.has(platform.id);
                     const disabled = !isSelected && !canSelectMore;
-                    const order = state.selectedPlatforms.indexOf(platform.id) + 1;
+                    const order =
+                      state.selectedPlatforms.indexOf(platform.id) + 1;
 
                     return (
                       <PlatformCard
@@ -988,7 +1025,8 @@ export function InfluencerOnboardingPage({
                     </h2>
                     {state.selectedPlatforms.length === 0 ? (
                       <div className="rounded-2xl border border-dashed border-slate-200 px-6 py-8 text-sm text-slate-500">
-                        Nenhuma plataforma selecionada. Voce ainda pode adicionar links personalizados abaixo.
+                        Nenhuma plataforma selecionada. Voce ainda pode
+                        adicionar links personalizados abaixo.
                       </div>
                     ) : (
                       <div className="space-y-4">
@@ -1041,8 +1079,11 @@ export function InfluencerOnboardingPage({
                           link={link}
                           error={additionalErrors[link.id]}
                           onChange={(nextValue) => {
-                            const nextLinks = state.additionalLinks.map((item) =>
-                              item.id === link.id ? { ...item, url: nextValue } : item,
+                            const nextLinks = state.additionalLinks.map(
+                              (item) =>
+                                item.id === link.id
+                                  ? { ...item, url: nextValue }
+                                  : item,
                             );
                             updateState({ additionalLinks: nextLinks });
                           }}
@@ -1089,11 +1130,19 @@ export function InfluencerOnboardingPage({
                       avatarDataUrl={state.avatarDataUrl}
                       avatarError={avatarError}
                       onChange={handleAvatarChange}
-                      onRemove={() => updateState({ avatarDataUrl: null, avatarFileName: null })}
+                      onRemove={() =>
+                        updateState({
+                          avatarDataUrl: null,
+                          avatarFileName: null,
+                        })
+                      }
                     />
 
                     <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                      <label className="text-sm font-semibold text-slate-900" htmlFor="display-name">
+                      <label
+                        className="text-sm font-semibold text-slate-900"
+                        htmlFor="display-name"
+                      >
                         Nome de exibicao
                       </label>
                       <Input
@@ -1101,7 +1150,9 @@ export function InfluencerOnboardingPage({
                         value={state.displayName}
                         maxLength={50}
                         onChange={(event) =>
-                          updateState({ displayName: event.target.value.slice(0, 50) })
+                          updateState({
+                            displayName: event.target.value.slice(0, 50),
+                          })
                         }
                         placeholder="Seu nome"
                         aria-invalid={!isDisplayNameValid}
@@ -1115,7 +1166,10 @@ export function InfluencerOnboardingPage({
                     </div>
 
                     <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                      <label className="text-sm font-semibold text-slate-900" htmlFor="bio">
+                      <label
+                        className="text-sm font-semibold text-slate-900"
+                        htmlFor="bio"
+                      >
                         Bio
                       </label>
                       <Textarea
