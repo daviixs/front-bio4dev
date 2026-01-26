@@ -27,13 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus,
   Edit2,
@@ -70,84 +64,98 @@ const portfolioExamples = [
     name: "Portfólio 1 - Dev/Tech",
     image: portfolio1Image,
     template: "template_01",
+    category: "dev",
   },
   {
     id: 2,
     name: "Portfólio 2 - Design",
     image: portfolio2Image,
     template: "template_02",
+    category: "influenciador",
   },
   {
     id: 3,
     name: "Portfólio 3 - Business",
     image: portfolio3Image,
     template: "template_03",
+    category: "influenciador",
   },
   {
     id: 4,
     name: "Ativista",
     image: activistImg,
     template: "template_04",
+    category: "influenciador",
   },
   {
     id: 5,
     name: "Alt Music",
     image: altMusicImg,
     template: "template_05",
+    category: "influenciador",
   },
   {
     id: 6,
     name: "Arquiteto",
     image: architectImg,
     template: "template_06",
+    category: "influenciador",
   },
   {
     id: 7,
     name: "Artista",
     image: artistImg,
     template: "template_07",
+    category: "influenciador",
   },
   {
     id: 8,
     name: "Atleta",
     image: athleteImg,
     template: "template_08",
+    category: "influenciador",
   },
   {
     id: 9,
     name: "Business",
     image: businessImg,
     template: "template_09",
+    category: "influenciador",
   },
   {
     id: 10,
     name: "Creator",
     image: creatorImg,
     template: "template_10",
+    category: "influenciador",
   },
   {
     id: 11,
     name: "Eco Fashion",
     image: ecoFashionImg,
     template: "template_11",
+    category: "influenciador",
   },
   {
     id: 12,
     name: "Gourmet",
     image: gourmetImg,
     template: "template_12",
+    category: "influenciador",
   },
   {
     id: 13,
     name: "Innovation",
     image: innovationImg,
     template: "template_13",
+    category: "influenciador",
   },
   {
     id: 14,
     name: "Streamer",
     image: streamerImg,
     template: "template_14",
+    category: "influenciador",
   },
 ];
 
@@ -174,6 +182,7 @@ export default function BioPage() {
   const [selectedPortfolio, setSelectedPortfolio] = useState<number | null>(
     null,
   );
+  const [selectedCategory, setSelectedCategory] = useState<string>("dev");
   const [previewLoading, setPreviewLoading] = useState<string | null>(null);
   const [publishLoading, setPublishLoading] = useState<string | null>(null);
 
@@ -718,33 +727,54 @@ export default function BioPage() {
                 : "Escolha um dos modelos de portfólio abaixo para começar. Você pode personalizar depois."}
             </DialogDescription>
           </DialogHeader>
-          <div className="mt-6 relative px-16">
-            <Carousel className="w-full" opts={{ align: "center", loop: true }}>
-              <CarouselContent className="-ml-0">
-                {portfolioExamples.map((portfolio) => (
-                  <CarouselItem key={portfolio.id} className="pl-0 basis-full">
-                    <div className="flex flex-col items-center gap-6 px-4">
+          <div className="mt-6">
+            <Tabs
+              value={selectedCategory}
+              onValueChange={(value) => {
+                setSelectedCategory(value);
+                setSelectedPortfolio(null);
+              }}
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="dev">Dev</TabsTrigger>
+                <TabsTrigger value="influenciador">Influenciador</TabsTrigger>
+              </TabsList>
+              <TabsContent value="dev" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {portfolioExamples
+                    .filter((p) => p.category === "dev")
+                    .map((portfolio) => (
                       <div
+                        key={portfolio.id}
                         className={cn(
-                          "relative w-full rounded-lg border-2 overflow-hidden cursor-pointer transition-all bg-slate-50",
+                          "relative rounded-lg border-2 overflow-hidden cursor-pointer transition-all bg-slate-50 hover:shadow-md",
                           selectedPortfolio === portfolio.id
                             ? "border-emerald-500 ring-2 ring-emerald-500/20 shadow-lg"
-                            : "border-slate-200 hover:border-slate-300 hover:shadow-md",
+                            : "border-slate-200 hover:border-slate-300",
                         )}
                         onClick={() => setSelectedPortfolio(portfolio.id)}
                       >
-                        <div className="flex items-center justify-center p-6 min-h-[70vh] max-h-[80vh]">
+                        <div className="aspect-video overflow-hidden">
                           <img
                             src={portfolio.image}
                             alt={portfolio.name}
-                            className="max-w-full max-h-full w-auto h-auto object-contain rounded"
+                            className="w-full h-full object-cover"
                           />
                         </div>
+                        <div className="p-4">
+                          <h3 className="font-semibold text-slate-900 mb-1">
+                            {portfolio.name}
+                          </h3>
+                          <p className="text-sm text-slate-600">
+                            Template profissional para desenvolvedores
+                          </p>
+                        </div>
                         {selectedPortfolio === portfolio.id && (
-                          <div className="absolute top-4 right-4 z-10">
-                            <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg">
+                          <div className="absolute top-2 right-2 z-10">
+                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg">
                               <svg
-                                className="w-5 h-5 text-white"
+                                className="w-4 h-4 text-white"
                                 fill="none"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -758,16 +788,61 @@ export default function BioPage() {
                           </div>
                         )}
                       </div>
-                      <p className="text-lg font-semibold text-slate-700">
-                        {portfolio.name}
-                      </p>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white border-slate-200 hover:bg-slate-50 shadow-lg z-10 w-10 h-10" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border-slate-200 hover:bg-slate-50 shadow-lg z-10 w-10 h-10" />
-            </Carousel>
+                    ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="influenciador" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {portfolioExamples
+                    .filter((p) => p.category === "influenciador")
+                    .map((portfolio) => (
+                      <div
+                        key={portfolio.id}
+                        className={cn(
+                          "relative rounded-lg border-2 overflow-hidden cursor-pointer transition-all bg-slate-50 hover:shadow-md",
+                          selectedPortfolio === portfolio.id
+                            ? "border-emerald-500 ring-2 ring-emerald-500/20 shadow-lg"
+                            : "border-slate-200 hover:border-slate-300",
+                        )}
+                        onClick={() => setSelectedPortfolio(portfolio.id)}
+                      >
+                        <div className="aspect-video overflow-hidden">
+                          <img
+                            src={portfolio.image}
+                            alt={portfolio.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-semibold text-slate-900 mb-1">
+                            {portfolio.name}
+                          </h3>
+                          <p className="text-sm text-slate-600">
+                            Template criativo para influenciadores
+                          </p>
+                        </div>
+                        {selectedPortfolio === portfolio.id && (
+                          <div className="absolute top-2 right-2 z-10">
+                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg">
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="none"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="3"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path d="M5 13l4 4L19 7"></path>
+                              </svg>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </TabsContent>
+            </Tabs>
 
             <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
               <Button

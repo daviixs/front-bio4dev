@@ -199,45 +199,39 @@ export function SignupPage() {
 
             {/* Error Message */}
             {error && (
-              <div className={`p-3 rounded-lg text-sm ${landingTheme.errorBox}`}>
+              <div
+                className={`p-3 rounded-lg text-sm ${landingTheme.errorBox}`}
+              >
                 {error}
               </div>
             )}
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full font-semibold py-6 rounded-lg ${landingTheme.buttonPrimary}`}
-            >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  Criar Conta
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </>
-              )}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={`flex-1 font-semibold py-6 rounded-lg ${landingTheme.buttonPrimary}`}
+              >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    Criar Conta
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </>
+                )}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1 font-semibold py-6 rounded-lg border-slate-300 text-slate-700 hover:bg-slate-50"
+                onClick={() => navigate("/login")}
+              >
+                Fazer Login
+              </Button>
+            </div>
           </form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-4 my-8">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-slate-400 text-sm">ou</span>
-            <div className="flex-1 h-px bg-slate-200" />
-          </div>
-
-          {/* Login Link */}
-          <p className="text-center text-slate-600">
-            Já tem uma conta?{" "}
-            <Link
-              to="/login"
-              className={`${landingTheme.accentText} ${landingTheme.accentTextHover} font-medium`}
-            >
-              Fazer login
-            </Link>
-          </p>
         </div>
       </div>
 

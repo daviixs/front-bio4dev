@@ -62,6 +62,7 @@ type PlatformConfig = {
 
 type AdditionalLink = {
   id: string;
+  label: string;
   url: string;
 };
 
@@ -203,9 +204,9 @@ const PLATFORM_SOCIAL_MAP: Record<PlatformId, string> = {
 };
 
 const INITIAL_ADDITIONAL_LINKS: AdditionalLink[] = [
-  { id: "additional-1", url: "" },
-  { id: "additional-2", url: "" },
-  { id: "additional-3", url: "" },
+  { id: "additional-1", label: "", url: "" },
+  { id: "additional-2", label: "", url: "" },
+  { id: "additional-3", label: "", url: "" },
 ];
 
 const getDefaultState = (): OnboardingState => ({
@@ -494,8 +495,8 @@ const AdditionalLinkRow = ({
   onRemove,
 }: {
   link: AdditionalLink;
-  error: string | null;
-  onChange: (nextValue: string) => void;
+  error: { label?: string | null; url?: string | null } | null;
+  onChange: (updates: Partial<AdditionalLink>) => void;
   onRemove: () => void;
 }) => (
   <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
@@ -503,18 +504,40 @@ const AdditionalLinkRow = ({
       <Link2 className="h-5 w-5" />
     </span>
     <div className="flex-1">
-      <label className="sr-only" htmlFor={`${link.id}-url`}>
-        URL do link adicional
-      </label>
-      <Input
-        id={`${link.id}-url`}
-        value={link.url}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder="url"
-        aria-invalid={Boolean(error)}
-        className={`h-11 ${landingTheme.input}`}
-      />
-      {error && <p className="mt-2 text-xs text-rose-400">{error}</p>}
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <label className="sr-only" htmlFor={`${link.id}-label`}>
+            Nome do link adicional
+          </label>
+          <Input
+            id={`${link.id}-label`}
+            value={link.label}
+            onChange={(event) => onChange({ label: event.target.value })}
+            placeholder="Nome do link"
+            aria-invalid={Boolean(error?.label)}
+            className={`h-11 ${landingTheme.input}`}
+          />
+        </div>
+        <div>
+          <label className="sr-only" htmlFor={`${link.id}-url`}>
+            URL do link adicional
+          </label>
+          <Input
+            id={`${link.id}-url`}
+            value={link.url}
+            onChange={(event) => onChange({ url: event.target.value })}
+            placeholder="https://"
+            aria-invalid={Boolean(error?.url)}
+            className={`h-11 ${landingTheme.input}`}
+          />
+        </div>
+      </div>
+      {(error?.label || error?.url) && (
+        <div className="mt-2 space-y-1 text-xs text-rose-400">
+          {error?.label && <p>{error.label}</p>}
+          {error?.url && <p>{error.url}</p>}
+        </div>
+      )}
     </div>
     <Button
       type="button"
@@ -681,13 +704,18 @@ export function InfluencerOnboardingPage({
     if (saved) {
       try {
         const parsed = JSON.parse(saved) as Partial<OnboardingState>;
+        const additionalLinks =
+          parsed.additionalLinks && parsed.additionalLinks.length > 0
+            ? parsed.additionalLinks.map((link, index) => ({
+                id: link.id || `additional-${index + 1}`,
+                label: link.label || "",
+                url: link.url || "",
+              }))
+            : INITIAL_ADDITIONAL_LINKS;
         setState({
           ...getDefaultState(),
           ...parsed,
-          additionalLinks:
-            parsed.additionalLinks && parsed.additionalLinks.length > 0
-              ? parsed.additionalLinks
-              : INITIAL_ADDITIONAL_LINKS,
+          additionalLinks,
         });
       } catch {
         setState(getDefaultState());
@@ -763,19 +791,30 @@ export function InfluencerOnboardingPage({
   }, {});
 
   const additionalErrors = state.additionalLinks.reduce<
-    Record<string, string | null>
+    Record<string, { label?: string | null; url?: string | null }>
   >((acc, link) => {
-    acc[link.id] = link.url.trim()
-      ? isValidUrl(link.url)
-        ? null
-        : "URL invalida."
-      : null;
+    const trimmedLabel = link.label.trim();
+    const trimmedUrl = link.url.trim();
+    let labelError: string | null = null;
+    let urlError: string | null = null;
+    if (trimmedUrl && !trimmedLabel) {
+      labelError = "Informe um nome para o link.";
+    }
+    if (trimmedLabel && !trimmedUrl) {
+      urlError = "Informe a URL do link.";
+    }
+    if (trimmedUrl && !isValidUrl(link.url)) {
+      urlError = "URL invalida.";
+    }
+    acc[link.id] = { label: labelError, url: urlError };
     return acc;
   }, {});
 
   const hasInvalidLinks =
     Object.values(platformErrors).some((value) => value) ||
-    Object.values(additionalErrors).some((value) => value);
+    Object.values(additionalErrors).some(
+      (value) => value.label || value.url,
+    );
 
   const isDisplayNameValid = state.displayName.trim().length > 0;
 
@@ -812,7 +851,7 @@ export function InfluencerOnboardingPage({
     updateState({
       additionalLinks: [
         ...state.additionalLinks,
-        { id: `additional-${Date.now()}`, url: "" },
+        { id: `additional-${Date.now()}`, label: "", url: "" },
       ],
     });
   };
@@ -894,9 +933,11 @@ export function InfluencerOnboardingPage({
     try {
       await saveSocialsFromPlatforms();
       const buttons = state.additionalLinks
-        .filter((link) => link.url.trim())
+        .filter(
+          (link) => link.url.trim() && link.label.trim(),
+        )
         .map((link, index) => ({
-          label: `Link adicional ${index + 1}`,
+          label: link.label.trim() || `Link adicional ${index + 1}`,
           url: link.url.trim(),
           subtext: "",
           icon: "link",
@@ -1078,11 +1119,11 @@ export function InfluencerOnboardingPage({
                           key={link.id}
                           link={link}
                           error={additionalErrors[link.id]}
-                          onChange={(nextValue) => {
+                          onChange={(updates) => {
                             const nextLinks = state.additionalLinks.map(
                               (item) =>
                                 item.id === link.id
-                                  ? { ...item, url: nextValue }
+                                  ? { ...item, ...updates }
                                   : item,
                             );
                             updateState({ additionalLinks: nextLinks });

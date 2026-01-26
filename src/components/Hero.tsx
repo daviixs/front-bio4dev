@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export function Hero() {
   return (
@@ -10,7 +10,7 @@ export function Hero() {
             <img
               src="https://images.unsplash.com/photo-1737575655055-e3967cbefd03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXZlbG9wZXIlMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NjQ5MjIxNDZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
               alt="Desenvolvedor"
-              className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-white shadow-2xl"
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full object-contain border-4 border-white shadow-2xl"
             />
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20"></div>
           </div>
