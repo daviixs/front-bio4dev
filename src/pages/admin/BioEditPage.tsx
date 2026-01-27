@@ -7,6 +7,7 @@ import { profileApi } from "@/lib/api";
 import type { ProfileComplete } from "@/types";
 import { EditablePortfolio1 } from "@/components/portfolio/EditablePortfolio1";
 import { EditablePortfolio2 } from "@/components/portfolio/EditablePortfolio2";
+import { EditablePortfolio3 } from "@/components/portfolio/EditablePortfolio3";
 
 export default function BioEditPage() {
   const navigate = useNavigate();
@@ -126,10 +127,11 @@ export default function BioEditPage() {
     );
   }
 
-  // Suporta template_01 e template_02
+  // Suporta template_01, template_02 e template_03
   if (
     profile.templateType !== "template_01" &&
-    profile.templateType !== "template_02"
+    profile.templateType !== "template_02" &&
+    profile.templateType !== "template_03"
   ) {
     return (
       <div className="space-y-6">
@@ -146,8 +148,8 @@ export default function BioEditPage() {
         </div>
         <div className="rounded-xl border bg-card shadow-sm p-6 text-center">
           <p className="text-slate-600">
-            Edição inline disponível para os Portfólios 1 e 2. Outros templates
-            serão suportados em breve.
+            Edicao inline disponivel para os Portfolios 1, 2 e 3. Outros
+            templates serao suportados em breve.
           </p>
         </div>
       </div>
@@ -229,7 +231,11 @@ export default function BioEditPage() {
       {/* Portfolio Editável */}
       <div
         className={
-          profile.templateType === "template_02" ? "bg-[#050505]" : "bg-white"
+          profile.templateType === "template_02"
+            ? "bg-[#050505]"
+            : profile.templateType === "template_03"
+              ? "bg-[#0F0F0F]"
+              : "bg-white"
         }
       >
         {profile && (
@@ -242,6 +248,12 @@ export default function BioEditPage() {
             )}
             {profile.templateType === "template_02" && (
               <EditablePortfolio2
+                profile={profile}
+                onProfileUpdate={handleProfileUpdate}
+              />
+            )}
+            {profile.templateType === "template_03" && (
+              <EditablePortfolio3
                 profile={profile}
                 onProfileUpdate={handleProfileUpdate}
               />

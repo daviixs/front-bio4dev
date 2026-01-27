@@ -19,7 +19,9 @@ export default function UserTypeSelectionPage() {
     localStorage.setItem("bio4dev_user_type", selectedType);
 
     // Redirecionar para criação de perfil
-    navigate("/profile/create");
+    const route =
+      selectedType === "dev" ? "/profile/create/developer" : "/profile/create";
+    navigate(route);
   };
 
   const userTypes = [

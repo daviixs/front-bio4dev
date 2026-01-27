@@ -61,24 +61,24 @@ import streamerImg from "@/temas-lintree/preview-screenshots/streamer.png";
 const portfolioExamples = [
   {
     id: 1,
-    name: "Portfólio 1 - Dev/Tech",
+    name: "Minimalist Dev",
     image: portfolio1Image,
     template: "template_01",
     category: "dev",
   },
   {
     id: 2,
-    name: "Portfólio 2 - Design",
+    name: "Creative Tech",
     image: portfolio2Image,
     template: "template_02",
-    category: "influenciador",
+    category: "dev",
   },
   {
     id: 3,
-    name: "Portfólio 3 - Business",
+    name: "Corporate Dev",
     image: portfolio3Image,
     template: "template_03",
-    category: "influenciador",
+    category: "dev",
   },
   {
     id: 4,
@@ -727,6 +727,25 @@ export default function BioPage() {
                 : "Escolha um dos modelos de portfólio abaixo para começar. Você pode personalizar depois."}
             </DialogDescription>
           </DialogHeader>
+          <div className="mt-4 rounded-xl border bg-muted/40 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900">
+                Novo fluxo Dev
+              </h3>
+              <p className="text-xs text-slate-500">
+                Crie um portfolio dev completo com templates dedicados.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreateBioDialogOpen(false);
+                navigate("/profile/create/developer");
+              }}
+            >
+              Criar Perfil Dev
+            </Button>
+          </div>
           <div className="mt-6">
             <Tabs
               value={selectedCategory}

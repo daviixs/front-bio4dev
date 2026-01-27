@@ -7,6 +7,7 @@ import {
   SignupPage,
   UserTypeSelectionPage,
   CreateProfilePage,
+  DeveloperCreateProfilePage,
   SetupWizardPage,
   InfluencerOnboardingPage,
   DashboardPage,
@@ -79,6 +80,10 @@ export default function App() {
         {/* Profile Creation */}
         <Route path="/profile/type" element={<UserTypeSelectionPage />} />
         <Route path="/profile/create" element={<CreateProfilePage />} />
+        <Route
+          path="/profile/create/developer"
+          element={<DeveloperCreateProfilePage />}
+        />
         <Route
           path="/onboarding/:profileId"
           element={
@@ -169,6 +174,9 @@ export default function App() {
           <Route path="appearance" element={<AppearanceEdit />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
+
+        {/* Public Profile by template route */}
+        <Route path="/portifolio-1/:username" element={<PublicProfilePage />} />
 
         {/* Public Profile - must be last due to dynamic route */}
         <Route path="/:username" element={<PublicProfilePage />} />

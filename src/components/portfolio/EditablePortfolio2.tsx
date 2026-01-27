@@ -44,6 +44,8 @@ import type {
   Projeto,
   WorkExperience,
   Technology,
+  Legenda,
+  Footer,
 } from "@/types";
 import { EditableField } from "./EditableField";
 import {
@@ -1331,6 +1333,8 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingSocial, setEditingSocial] = useState<SocialLink | null>(null);
   const [editUrl, setEditUrl] = useState("");
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("");
 
   const legenda = currentProfile.legendas?.[0];
 
@@ -1392,43 +1396,108 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     mappedTechStack.length > 0 ? mappedTechStack : DEMO_TECH_STACK;
 
   const handleResumeUpdate = async (resumeUrl: string) => {
-    if (!currentProfile.footer) return;
+    if (!currentProfile.id) return;
     try {
-      await footerApi.update(currentProfile.footer.id, {
-        ...currentProfile.footer,
-        resumeUrl,
-      });
-      setCurrentProfile({
-        ...currentProfile,
-        footer: { ...currentProfile.footer, resumeUrl },
-      });
-      toast.success("Updated!");
+      if (currentProfile.footer && currentProfile.footer.id) {
+        await footerApi.update(currentProfile.footer.id, {
+          resumeUrl,
+        });
+        setCurrentProfile({
+          ...currentProfile,
+          footer: { ...currentProfile.footer, resumeUrl },
+        });
+        toast.success("Updated!");
+      } else {
+        const newFooter = await footerApi.create({
+          profileId: currentProfile.id,
+          resumeUrl,
+          copyrightName: currentProfile.username || "Copyright",
+          madeWith: "Made with love",
+          title: "Let's Connect",
+          subtitle: "Feel free to reach out",
+        });
+        setCurrentProfile({
+          ...currentProfile,
+          footer: newFooter.footer as any, // Adjust based on actual return type
+        });
+        toast.success("Created and Updated!");
+      }
     } catch (e) {
-      toast.error("Error");
+      console.error(e);
+      toast.error("Error updating resume");
     }
   };
 
   const handleProfileUpdate = async (field: string, value: string) => {
-    if (!legenda) return;
-    const updatedLegenda = { ...legenda, [field]: value };
+    if (!currentProfile.id) return;
+
+    // Optimistic update
+    const updatedLegenda = legenda
+      ? { ...legenda, [field]: value }
+      : {
+          id: "",
+          profileId: currentProfile.id,
+          [field]: value,
+          ordem: 1,
+        } as unknown as Legenda;
+
     setCurrentProfile({ ...currentProfile, legendas: [updatedLegenda] });
+
     try {
-      await legendaApi.update(legenda.id, { [field]: value });
+      if (legenda && legenda.id) {
+        await legendaApi.update(legenda.id, { [field]: value });
+      } else {
+        const newLegenda = await legendaApi.create({
+          profileId: currentProfile.id,
+          nome: field === "nome" ? value : legenda?.nome || "",
+          titulo: field === "titulo" ? value : legenda?.titulo || "",
+          subtitulo: field === "subtitulo" ? value : legenda?.subtitulo || "",
+          descricao: legenda?.descricao || "Professional Description",
+          legendaFoto: field === "legendaFoto" ? value : legenda?.legendaFoto || "", // Add this
+          // Ensure other required fields if any
+        });
+        // Update state with the real ID from backend
+        if (newLegenda.legenda) {
+             setCurrentProfile((prev) => ({ ...prev, legendas: [newLegenda.legenda!] }));
+        }
+      }
       toast.success("Updated");
     } catch (e) {
-      toast.error("Error");
+      console.error(e);
+      toast.error("Error updating profile");
+      // Revert optimistic update if needed (omitted for brevity)
     }
   };
 
   const handleFooterUpdate = async (field: string, value: string) => {
-    if (!currentProfile.footer) return;
-    const updatedFooter = { ...currentProfile.footer, [field]: value };
+    if (!currentProfile.id) return;
+
+    // Optimistic
+    const updatedFooter = currentProfile.footer
+      ? { ...currentProfile.footer, [field]: value }
+      : { id: "", profileId: currentProfile.id, [field]: value, copyrightName: "", madeWith: "", title: "", subtitle: "", email: "", resumeUrl: "" } as unknown as Footer;
+      
     setCurrentProfile({ ...currentProfile, footer: updatedFooter });
+
     try {
-      await footerApi.update(currentProfile.footer.id, { [field]: value });
+      if (currentProfile.footer && currentProfile.footer.id) {
+        await footerApi.update(currentProfile.footer.id, { [field]: value });
+      } else {
+         const newFooter = await footerApi.create({
+          profileId: currentProfile.id,
+          copyrightName: field === "copyrightName" ? value : "Copyright",
+          madeWith: field === "madeWith" ? value : "Made with love",
+          title: "Let's Connect",
+          subtitle: "Feel free to reach out",
+        });
+        if(newFooter.footer) {
+             setCurrentProfile((prev) => ({...prev, footer: newFooter.footer as any}));
+        }
+      }
       toast.success("Updated");
     } catch (e) {
-      toast.error("Error");
+      console.error(e);
+      toast.error("Error updating footer");
     }
   };
 
@@ -1440,12 +1509,12 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   };
 
   const saveSocialEdit = async () => {
-    if (!editingSocial) return;
+    if (!editingSocial || !currentProfile.id) return;
 
     try {
       const newSocials = [...(currentProfile.social || [])];
 
-      // Normalize URL - add https:// if missing (except for mailto: and tel:)
+      // Normalize URL
       let normalizedUrl = editUrl.trim();
       if (
         normalizedUrl &&
@@ -1454,35 +1523,49 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         normalizedUrl = "https://" + normalizedUrl;
       }
 
-      const existingIndex = newSocials.findIndex(
+      const isValidUuid = (id?: string) => {
+          return id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      };
+
+      // Determine platform code: 
+      // If editing existing (UUID), name is the code (from convertToSocialLink).
+      // If adding new (ID is platform code), id is the code.
+      const platformCode = isValidUuid(editingSocial.id) 
+        ? editingSocial.name.toLowerCase() 
+        : editingSocial.id.toLowerCase();
+
+      // Check if we are editing an existing social record from DB
+      const existingSocial = newSocials.find(
         (s) =>
-          s.plataforma.toLowerCase() === editingSocial.name.toLowerCase() ||
-          s.id.toString() === editingSocial.id
+          s.plataforma.toLowerCase() === platformCode ||
+          (s.id && s.id.toString() === editingSocial.id && isValidUuid(editingSocial.id))
       );
 
-      if (existingIndex >= 0) {
+      if (existingSocial && isValidUuid(existingSocial.id)) {
         // Update existing social
-        const existingSocial = newSocials[existingIndex];
         await socialApi.update(existingSocial.id, {
-          plataforma: editingSocial.name.toLowerCase() as any,
+          plataforma: platformCode as any,
           url: normalizedUrl,
         });
-        newSocials[existingIndex] = {
-          ...newSocials[existingIndex],
-          plataforma: editingSocial.name.toLowerCase() as any,
+        
+        // Update local state
+        const index = newSocials.indexOf(existingSocial);
+        newSocials[index] = {
+          ...existingSocial,
+          plataforma: platformCode as any,
           url: normalizedUrl,
         };
       } else {
         // Create new social
         const newSocial = await socialApi.create({
           profileId: currentProfile.id,
-          plataforma: editingSocial.name.toLowerCase() as any,
+          plataforma: platformCode as any,
           url: normalizedUrl,
           ordem: newSocials.length,
         });
         newSocials.push({
           id: newSocial.id,
-          plataforma: editingSocial.name.toLowerCase() as any,
+          plataforma: platformCode as any,
           url: normalizedUrl,
           profileId: currentProfile.id,
           ordem: newSocials.length,
@@ -1492,9 +1575,10 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       setCurrentProfile({ ...currentProfile, social: newSocials });
       setIsEditModalOpen(false);
       toast.success("Social media link saved!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving social media:", error);
-      toast.error("Failed to save social media link");
+      const msg = error.response?.data?.message || "Failed to save social media link";
+      toast.error(Array.isArray(msg) ? msg[0] : msg);
     }
   };
 
@@ -1503,13 +1587,17 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
 
     try {
       // Find the social to delete
-      const socialToDelete = currentProfile.social?.find(
+       const socialToDelete = currentProfile.social?.find(
         (s) =>
           s.plataforma.toLowerCase() === editingSocial.name.toLowerCase() ||
           s.id.toString() === editingSocial.id
       );
 
-      if (socialToDelete) {
+      const isValidUuid = (id?: string) => {
+          return id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      };
+
+      if (socialToDelete && isValidUuid(socialToDelete.id)) {
         await socialApi.delete(socialToDelete.id);
       }
 
@@ -1746,6 +1834,14 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     } catch (e) {
       toast.error("Error deleting");
     }
+  };
+
+  const handleAvatarSave = async () => {
+    if (!avatarUrl.trim()) return;
+    
+    // Use handleProfileUpdate to save to legendaFoto
+    await handleProfileUpdate("legendaFoto", avatarUrl);
+    setIsAvatarModalOpen(false);
   };
 
   /* PROJECTS STATE */
@@ -2092,6 +2188,54 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         </DialogContent>
       </Dialog>
 
+      {/* AVATAR EDIT MODAL */}
+      <Dialog open={isAvatarModalOpen} onOpenChange={setIsAvatarModalOpen}>
+        <DialogContent className="sm:max-w-md bg-[#18181b] border-gray-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Edit Profile Image</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label>Image URL</Label>
+              <Input
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+                placeholder="https://..."
+                className="bg-black/50 border-gray-700"
+              />
+              <p className="text-xs text-gray-500">
+                Provide a direct link to an image (e.g. Unsplash, GitHub avatar)
+              </p>
+            </div>
+            {avatarUrl && (
+              <div className="flex justify-center p-4 bg-black/20 rounded-lg">
+                <img
+                  src={avatarUrl}
+                  alt="Preview"
+                  className="w-24 h-24 rounded-full object-cover border-2 border-yellow-500"
+                  onError={(e) => (e.currentTarget.style.display = "none")}
+                />
+              </div>
+            )}
+          </div>
+          <DialogFooter className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => setIsAvatarModalOpen(false)}
+              className="text-gray-400"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAvatarSave}
+              className="bg-yellow-500 text-black hover:bg-yellow-600"
+            >
+              Save Image
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* EXISTING SOCIAL MODAL code... */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="sm:max-w-md bg-[#18181b] border-gray-800 text-white">
@@ -2190,7 +2334,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         <main className="w-full max-w-md md:max-w-xl lg:max-w-2xl z-10 px-6 py-10 flex flex-col gap-6">
           <div className="bg-[#121318] rounded-[2rem] p-6 sm:p-8 border border-white/5 shadow-sm">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 relative group">
                 <Avatar
                   src={
                     legenda?.legendaFoto ||
@@ -2199,6 +2343,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                   }
                   alt={legenda?.nome || "Profile"}
                 />
+                <button
+                  onClick={() => {
+                    setAvatarUrl(legenda?.legendaFoto || currentProfile.avatarUrl || "");
+                    setIsAvatarModalOpen(true);
+                  }}
+                  className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white"
+                >
+                  <Pencil size={24} />
+                </button>
               </div>
               <div className="flex-1 text-center sm:text-left mt-2">
                 <div className="mb-1">

@@ -2,6 +2,7 @@ export { Home } from "./Home";
 export { default as Login } from "./Login";
 export { SignupPage } from "./SignupPage";
 export { CreateProfilePage } from "./CreateProfilePage";
+export { DeveloperCreateProfilePage } from "./DeveloperCreateProfilePage";
 export { SetupWizardPage } from "./SetupWizardPage";
 export { InfluencerOnboardingPage } from "./InfluencerOnboardingPage";
 export { default as UserTypeSelectionPage } from "./UserTypeSelectionPage";

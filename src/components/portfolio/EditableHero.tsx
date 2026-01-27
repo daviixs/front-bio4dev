@@ -3,10 +3,18 @@ import { Legenda, Profile } from '@/types';
 import { EditableField } from './EditableField';
 import { Pencil } from 'lucide-react';
 
+type LegendaEditableField =
+  | "legendaFoto"
+  | "greeting"
+  | "nome"
+  | "titulo"
+  | "subtitulo"
+  | "descricao";
+
 interface EditableHeroProps {
   profile?: Profile;
   legenda?: Legenda;
-  onLegendaUpdate?: (field: keyof Legenda, value: string) => Promise<void>;
+  onLegendaUpdate?: (field: LegendaEditableField, value: string) => Promise<void>;
   onAvatarUpdate?: (url: string) => Promise<void>;
 }
 
@@ -16,7 +24,7 @@ export function EditableHero({
   onLegendaUpdate,
   onAvatarUpdate 
 }: EditableHeroProps) {
-  const handleFieldUpdate = async (field: keyof Legenda, value: string) => {
+  const handleFieldUpdate = async (field: LegendaEditableField, value: string) => {
     if (onLegendaUpdate) {
       await onLegendaUpdate(field, value);
     }
@@ -78,6 +86,18 @@ export function EditableHero({
               onSave={(value) => handleFieldUpdate("titulo", value)}
               placeholder="Eu construo coisas para web"
               className="text-gray-700"
+            />
+          </div>
+        </div>
+
+        {/* Subtitulo */}
+        <div className="mb-6">
+          <div className="text-xl md:text-2xl text-gray-500">
+            <EditableField
+              value={legenda?.subtitulo || ""}
+              onSave={(value) => handleFieldUpdate("subtitulo", value)}
+              placeholder="Subtitulo ou chamada auxiliar"
+              className="text-gray-500"
             />
           </div>
         </div>

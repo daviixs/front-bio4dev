@@ -4,9 +4,9 @@ import { isInfluencerTemplate } from "@/pages/influencers/shared/templateMap";
 import { mapPortfolioDataToInfluencerData } from "@/pages/influencers/shared/mappers";
 
 // Importar templates existentes
+import { Template01 } from "../../templates/Template01";
 import { Template02 } from "../../templates/Template02";
 import { Template03 } from "../../templates/Template03";
-import BusinessProfile from "../../templates/Business/BusinessProfile";
 import View04 from "@/pages/influencers/template_04/View";
 import View05 from "@/pages/influencers/template_05/View";
 import View06 from "@/pages/influencers/template_06/View";
@@ -18,6 +18,7 @@ import View11 from "@/pages/influencers/template_11/View";
 import View12 from "@/pages/influencers/template_12/View";
 import View13 from "@/pages/influencers/template_13/View";
 import View14 from "@/pages/influencers/template_14/View";
+
 
 interface TemplateProps {
   data: PortfolioData;
@@ -48,8 +49,8 @@ const TemplateWrapper = ({
  * necessários para renderização (perfil, projetos, social, etc.)
  */
 const TEMPLATE_COMPONENTS: Record<TemplateType, React.ComponentType<any>> = {
-  // Template 01: Dev/Tech (Business Profile)
-  [TemplateType.template_01]: BusinessProfile,
+  // Template 01: Dev/Tech Portfolio
+  [TemplateType.template_01]: Template01,
 
   // Template 02: Design/Creative
   [TemplateType.template_02]: Template02,
