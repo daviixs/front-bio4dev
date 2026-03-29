@@ -10,6 +10,14 @@ import { mapProfileCompleteToInfluencerData } from "./mappers";
 import { logError } from "@/lib/logger";
 
 const DEFAULT_AVATAR_URL = "https://api.dicebear.com/7.x/avataaars/svg";
+const API_SUPPORTED_PLATFORMS = new Set([
+  "instagram",
+  "whatsapp",
+  "tiktok",
+  "youtube",
+  "facebook",
+  "pinterest",
+]);
 
 /**
  * Example: load(profileId)
@@ -67,12 +75,14 @@ async function upsertLegenda(
   profile: ProfileComplete,
 ) {
   const legenda = profile.legendas?.[0];
+  const safeName = data.name?.trim() || "Seu Nome";
+  const safeBio = data.bio?.trim() || "Influenciador digital";
   const payload = {
     profileId,
-    nome: data.name || "Seu Nome",
-    titulo: data.themeId || "Criador de Conteudo",
-    subtitulo: data.bio ? data.bio.substring(0, 255) : "",
-    descricao: data.bio || "",
+    nome: safeName,
+    titulo: "Criador de Conteudo",
+    subtitulo: safeBio.substring(0, 255),
+    descricao: safeBio,
     legendaFoto: data.photoUrl || DEFAULT_AVATAR_URL,
   };
 
@@ -99,17 +109,30 @@ async function replaceSocials(
     await socialApi.delete(social.id);
   }
 
+  const skippedPlatforms = new Set<string>();
   for (let i = 0; i < socials.length; i += 1) {
     const social = socials[i];
     if (!social.platform || !social.url) {
       continue;
     }
+    const platform = social.platform.toLowerCase();
+    if (!API_SUPPORTED_PLATFORMS.has(platform)) {
+      skippedPlatforms.add(platform);
+      continue;
+    }
 
     await socialApi.create({
       profileId,
-      plataforma: social.platform.toLowerCase() as any,
+      plataforma: platform as any,
       url: social.url,
       ordem: i,
+    });
+  }
+
+  if (skippedPlatforms.size) {
+    logError("influencer.replaceSocials", "Unsupported platforms skipped", {
+      profileId,
+      platforms: Array.from(skippedPlatforms),
     });
   }
 }

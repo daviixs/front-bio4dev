@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import {
   Home,
-  Login,
   SignupPage,
   UserTypeSelectionPage,
   CreateProfilePage,
@@ -28,21 +27,13 @@ import {
 } from "./pages";
 import { AdminLayoutWrapper } from "./components/admin/AdminLayoutWrapper";
 
-// Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  // Removida a verificação de login - acesso livre
-  return <>{children}</>;
-}
-
-// Auth Route Component (sem verificação de login)
-function AuthRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
 export default function App() {
   return (
     <BrowserRouter>
-      {/* Toast Notifications */}
       <Toaster
         position="bottom-right"
         toastOptions={{
@@ -55,29 +46,11 @@ export default function App() {
       />
 
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
 
-        {/* Auth Routes */}
-        <Route
-          path="/login"
-          element={
-            <AuthRoute>
-              <Login />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <AuthRoute>
-              <SignupPage />
-            </AuthRoute>
-          }
-        />
+        <Route path="/signup" element={<SignupPage />} />
 
-        {/* Profile Creation */}
         <Route path="/profile/type" element={<UserTypeSelectionPage />} />
         <Route path="/profile/create" element={<CreateProfilePage />} />
         <Route
@@ -93,7 +66,6 @@ export default function App() {
           }
         />
 
-        {/* Portfolio Editor (legacy route) */}
         <Route
           path="/dashboard/portfolio/:portfolioId"
           element={
@@ -102,7 +74,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        {/* Influencer Editor */}
         <Route
           path="/dashboard/influencer/:templateId/:profileId/edit"
           element={
@@ -112,7 +83,6 @@ export default function App() {
           }
         />
 
-        {/* Influencer Preview */}
         <Route
           path="/dashboard/influencer/:templateId/:profileId/preview"
           element={
@@ -122,7 +92,6 @@ export default function App() {
           }
         />
 
-        {/* Setup Wizard */}
         <Route
           path="/setup"
           element={
@@ -132,7 +101,6 @@ export default function App() {
           }
         />
 
-        {/* Bio Editor - Without sidebar */}
         <Route
           path="/dashboard/bio/:id"
           element={
@@ -142,7 +110,6 @@ export default function App() {
           }
         />
 
-        {/* Dashboard Routes - Admin Dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -157,7 +124,6 @@ export default function App() {
           <Route path="settings" element={<AdminSettingsPage />} />
         </Route>
 
-        {/* Old Dashboard Routes - kept for backward compatibility */}
         <Route
           path="/dashboard-old"
           element={
@@ -175,13 +141,9 @@ export default function App() {
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
-        {/* Public Profile by template route */}
         <Route path="/portifolio-1/:username" element={<PublicProfilePage />} />
-
-        {/* Public Profile - must be last due to dynamic route */}
         <Route path="/:username" element={<PublicProfilePage />} />
 
-        {/* 404 - Redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

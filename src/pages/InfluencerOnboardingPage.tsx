@@ -203,6 +203,16 @@ const PLATFORM_SOCIAL_MAP: Record<PlatformId, string> = {
   applemusic: "applemusic",
 };
 
+// API ainda nao aceita todas as plataformas do onboarding.
+const API_SUPPORTED_PLATFORMS = new Set<PlatformId>([
+  "instagram",
+  "whatsapp",
+  "tiktok",
+  "youtube",
+  "facebook",
+  "pinterest",
+]);
+
 const INITIAL_ADDITIONAL_LINKS: AdditionalLink[] = [
   { id: "additional-1", label: "", url: "" },
   { id: "additional-2", label: "", url: "" },
@@ -885,8 +895,16 @@ export function InfluencerOnboardingPage({
       await socialApi.delete(social.id);
     }
 
+    const skippedPlatforms: PlatformId[] = [];
     const selected = state.selectedPlatforms
       .map((platformId) => {
+        if (!API_SUPPORTED_PLATFORMS.has(platformId)) {
+          const rawValue = state.platformLinks[platformId] || "";
+          if (rawValue.trim()) {
+            skippedPlatforms.push(platformId);
+          }
+          return null;
+        }
         const rawValue = state.platformLinks[platformId] || "";
         const normalized = normalizeSocialUrl(platformId, rawValue);
         if (!normalized) return null;
@@ -896,6 +914,13 @@ export function InfluencerOnboardingPage({
         };
       })
       .filter(Boolean) as Array<{ platform: string; url: string }>;
+
+    if (skippedPlatforms.length) {
+      const readable = skippedPlatforms.join(", ");
+      toast.warning(
+        `Algumas plataformas ainda nao sao suportadas pela API: ${readable}. Use links adicionais para inclui-las.`,
+      );
+    }
 
     for (let i = 0; i < selected.length; i += 1) {
       const item = selected[i];

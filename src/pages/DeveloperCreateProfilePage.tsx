@@ -64,7 +64,7 @@ export function DeveloperCreateProfilePage() {
   useEffect(() => {
     if (!user) {
       toast.error("Faca login para continuar");
-      navigate("/login");
+      navigate("/");
     }
   }, [user, navigate]);
 
@@ -83,7 +83,7 @@ export function DeveloperCreateProfilePage() {
     const userId = user?.id;
     if (!userId || userId === "undefined" || typeof userId !== "string") {
       toast.error("Sessao invalida. Faca login novamente.");
-      navigate("/login");
+      navigate("/");
       return;
     }
 

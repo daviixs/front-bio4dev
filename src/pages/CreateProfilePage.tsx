@@ -166,7 +166,7 @@ export function CreateProfilePage() {
     if (!user) {
       console.warn("Nenhum usuário logado, redirecionando para login");
       toast.error("Faça login para continuar");
-      navigate("/login");
+      navigate("/");
     }
   }, [user, navigate]);
 
@@ -199,7 +199,7 @@ export function CreateProfilePage() {
     if (!userId || userId === "undefined" || typeof userId !== "string") {
       console.error("UserId inválido:", userId);
       toast.error("Sessão inválida. Faça login novamente.");
-      navigate("/login");
+      navigate("/");
       return;
     }
 

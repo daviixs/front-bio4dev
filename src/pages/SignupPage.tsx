@@ -222,14 +222,6 @@ export function SignupPage() {
                   </>
                 )}
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1 font-semibold py-6 rounded-lg border-slate-300 text-slate-700 hover:bg-slate-50"
-                onClick={() => navigate("/login")}
-              >
-                Fazer Login
-              </Button>
             </div>
           </form>
         </div>
