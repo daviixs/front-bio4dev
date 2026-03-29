@@ -12,14 +12,14 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // No futuro, o username pode vir da URL (ex: daviixs.bio4dev.com ou bio4dev.com/daviixs)
-  const username = 'joaosilva'; // Username para teste
+  // No futuro, o slug pode vir da URL (ex: daviixs.bio4dev.com ou bio4dev.com/daviixs)
+  const slug = 'joaosilva'; // Slug para teste
 
   useEffect(() => {
     async function fetchProfile() {
       try {
         setLoading(true);
-        const data = await profileApi.getByUsername(username);
+        const data = await profileApi.getBySlug(slug);
         setProfile(data);
       } catch (err: any) {
         console.error('Erro ao buscar perfil:', err);
@@ -30,7 +30,7 @@ export default function App() {
     }
 
     fetchProfile();
-  }, [username]);
+  }, [slug]);
 
   if (loading) {
     return (

@@ -40,9 +40,10 @@ export const api = axios.create({
 
 // ============ USERS ============
 export const usersApi = {
+  // Backend NestJS expõe /auth/register e /auth/login
   create: async (data: CreateUserDTO) => {
     const response = await api.post<{ message: string; user: User }>(
-      "/users/register",
+      "/auth/register",
       data,
     );
     return response.data;
@@ -52,7 +53,7 @@ export const usersApi = {
     const response = await api.post<{
       message: string;
       user: User;
-    }>("/users/login", data);
+    }>("/auth/login", data);
     return response.data;
   },
 
@@ -63,6 +64,95 @@ export const usersApi = {
 
   getAll: async () => {
     const response = await api.get<User[]>("/users");
+    return response.data;
+  },
+
+  update: async (id: string, data: Partial<User> & { username?: string }) => {
+    const response = await api.patch<{ message: string; user: User }>(
+      `/users/${id}`,
+      data,
+    );
+    return response.data;
+  },
+
+  updatePreferences: async (
+    id: string,
+    data: {
+      emailNotifications?: boolean;
+      marketingEmails?: boolean;
+      securityAlerts?: boolean;
+      language?: string;
+      timezone?: string;
+    },
+  ) => {
+    const response = await api.patch<{ message: string }>(
+      `/users/${id}/preferences`,
+      data,
+    );
+    return response.data;
+  },
+
+  updatePassword: async (
+    id: string,
+    data: { oldPassword: string; newPassword: string },
+  ) => {
+    const response = await api.patch<{ message: string }>(
+      `/users/${id}/password`,
+      data,
+    );
+    return response.data;
+  },
+
+  enable2FA: async (id: string) => {
+    const response = await api.post<{ message: string }>(
+      `/users/${id}/2fa/enable`,
+    );
+    return response.data;
+  },
+
+  disable2FA: async (id: string) => {
+    const response = await api.post<{ message: string }>(
+      `/users/${id}/2fa/disable`,
+    );
+    return response.data;
+  },
+};
+
+// ============ ANALYTICS ============
+export const analyticsApi = {
+  getOverview: async (profileId: string, range: string = "last30d") => {
+    const response = await api.get(`/analytics/overview`, {
+      params: { profileId, range },
+    });
+    return response.data;
+  },
+
+  getTimeseries: async (
+    profileId: string,
+    interval: "day" | "month" = "day",
+    range: string = "last90d",
+  ) => {
+    const response = await api.get(`/analytics/timeseries`, {
+      params: { profileId, interval, range },
+    });
+    return response.data;
+  },
+
+  getTopPages: async (
+    profileId: string,
+    limit: number = 10,
+    range: string = "last30d",
+  ) => {
+    const response = await api.get(`/analytics/top-pages`, {
+      params: { profileId, limit, range },
+    });
+    return response.data;
+  },
+
+  getDevices: async (profileId: string, range: string = "last30d") => {
+    const response = await api.get(`/analytics/devices`, {
+      params: { profileId, range },
+    });
     return response.data;
   },
 };
@@ -95,12 +185,17 @@ export const profileApi = {
     return response.data;
   },
 
-  getByUsername: async (username: string, previewToken?: string) => {
+  getBySlug: async (slug: string, previewToken?: string) => {
     const url = previewToken
-      ? `/profile/username/${username}?preview=${previewToken}`
-      : `/profile/username/${username}`;
+      ? `/profile/slug/${slug}?preview=${previewToken}`
+      : `/profile/slug/${slug}`;
     const response = await api.get<ProfileComplete>(url);
     return response.data;
+  },
+
+  // Backwards compatibility: mantém assinatura anterior, mas usa slug internamente
+  getByUsername: async (username: string, previewToken?: string) => {
+    return profileApi.getBySlug(username, previewToken);
   },
 
   getComplete: async (id: string) => {

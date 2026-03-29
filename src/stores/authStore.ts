@@ -44,23 +44,8 @@ export const useAuthStore = create<AuthState>()(
           });
 
           // Verificar se o usuário tem perfil
-          let hasProfile = false;
-          try {
-            // Tentar buscar o perfil do usuário
-            const profiles = await api.get(`/profile`);
-            const userProfile = profiles.data.find(
-              (p: any) => p.userId === user.id,
-            );
-
-            if (userProfile) {
-              hasProfile = true;
-              set({ profile: userProfile });
-            }
-          } catch (profileError) {
-            console.log(
-              "Perfil não encontrado - usuário será redirecionado para setup",
-            );
-          }
+          await get().loadProfile();
+          const hasProfile = !!get().profile;
 
           return { hasProfile };
         } catch (error: any) {
@@ -129,9 +114,12 @@ export const useAuthStore = create<AuthState>()(
         if (!user) return;
 
         try {
-          // Buscar perfil do usuário
-          // TODO: Implementar busca de perfil por userId
-          // Por enquanto, o profile será setado após criação
+          const profiles = await profileApi.getAll();
+          const userProfile = profiles.find((p: any) => p.userId === user.id);
+
+          if (userProfile) {
+            set({ profile: userProfile });
+          }
         } catch (error) {
           console.error("Erro ao carregar perfil:", error);
         }

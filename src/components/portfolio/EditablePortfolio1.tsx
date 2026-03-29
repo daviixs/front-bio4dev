@@ -65,6 +65,18 @@ type LegendaEditableField =
   | "subtitulo"
   | "descricao";
 
+const normalizeSlug = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+
 const TECH_OPTIONS: TechOption[] = [
   // Frontend
   { name: "HTML5", icon: "logos:html-5", color: "text-orange-600" },
@@ -821,10 +833,18 @@ export function EditablePortfolio1({
 
       console.log("Criando profile para edição");
       try {
+        if (!profile?.userId) {
+          toast.error("Usuário não encontrado para criar perfil");
+          return;
+        }
+
         // Criar profile básico
         const profileData = {
-          username: `user_${Date.now()}`,
+          userId: profile.userId,
+          username: profile.username || `user_${Date.now()}`,
+          slug: normalizeSlug(`draft-${Date.now().toString(36)}`) || `draft-${Date.now().toString(36)}`,
           templateType: "template_01" as const,
+          published: false,
         };
         const response = await profileApi.create(profileData);
 

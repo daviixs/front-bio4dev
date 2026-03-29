@@ -51,15 +51,18 @@ export function DeveloperCreateProfilePage() {
 
   const toSlug = (value: string) =>
     value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase()
       .trim()
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "")
       .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "");
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60);
 
   const slugPreview = toSlug(nameInput);
-  const hasInvalidChars = /[^a-zA-Z0-9-\s]/.test(nameInput);
+  const SLUG_REGEX = /^[a-z0-9-]{3,60}$/;
 
   useEffect(() => {
     if (!user) {
@@ -80,6 +83,17 @@ export function DeveloperCreateProfilePage() {
       return;
     }
 
+    const slugIsValid = SLUG_REGEX.test(slug);
+    const displayName = nameInput.trim() || slug;
+
+    if (!slugIsValid) {
+      setSlugError(
+        "Slug inválido. Use 3-60 caracteres, minúsculas, números e hifens.",
+      );
+      setIsSlugModalOpen(true);
+      return;
+    }
+
     const userId = user?.id;
     if (!userId || userId === "undefined" || typeof userId !== "string") {
       toast.error("Sessao invalida. Faca login novamente.");
@@ -96,11 +110,12 @@ export function DeveloperCreateProfilePage() {
 
       const response = await profileApi.create({
         userId,
-        username: slug,
+        username: displayName,
+        slug,
         bio: `Perfil ${templateData?.name ?? "Dev"}`,
         avatarUrl: undefined,
         templateType,
-        published: false,
+        published: true,
       });
 
       const profileId = response.profile?.id || response.id;
@@ -120,11 +135,17 @@ export function DeveloperCreateProfilePage() {
       }, 100);
     } catch (error: any) {
       console.error("Error creating profile:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Erro ao criar perfil";
-      toast.error(errorMessage);
+      const backendMessage = error.response?.data?.message || "";
+
+      if (error.response?.status === 400 && backendMessage) {
+        setSlugError(backendMessage);
+        setIsSlugModalOpen(true);
+        toast.error(backendMessage);
+      } else {
+        const errorMessage =
+          backendMessage || error.message || "Erro ao criar perfil";
+        toast.error(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -146,12 +167,10 @@ export function DeveloperCreateProfilePage() {
       setSlugError("Informe seu nome.");
       return;
     }
-    if (hasInvalidChars) {
-      setSlugError("Apenas letras, numeros e hifens.");
-      return;
-    }
-    if (!slugPreview) {
-      setSlugError("Informe um nome valido.");
+    if (!slugPreview || !SLUG_REGEX.test(slugPreview)) {
+      setSlugError(
+        "Use 3-60 caracteres, apenas letras minúsculas, números e hifens.",
+      );
       return;
     }
 

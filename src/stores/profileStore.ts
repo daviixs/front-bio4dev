@@ -29,7 +29,7 @@ interface ProfileState {
   // Actions
   setProfile: (profile: ProfileComplete | null) => void;
   loadProfile: (profileId: string) => Promise<void>;
-  loadPublicProfile: (username: string) => Promise<ProfileComplete | null>;
+  loadPublicProfile: (slug: string) => Promise<ProfileComplete | null>;
   updateProfile: (id: string, data: Partial<ProfileComplete>) => Promise<void>;
   
   // Legenda
@@ -78,10 +78,10 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
     }
   },
   
-  loadPublicProfile: async (username: string) => {
+  loadPublicProfile: async (slug: string) => {
     set({ isLoading: true, error: null });
     try {
-      const profile = await profileApi.getByUsername(username);
+      const profile = await profileApi.getBySlug(slug);
       set({ profile, isLoading: false });
       return profile;
     } catch (error: any) {
@@ -281,4 +281,3 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   
   clearError: () => set({ error: null }),
 }));
-

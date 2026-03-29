@@ -54,9 +54,9 @@ export default function BioEditPage() {
   };
 
   const handlePreview = async () => {
-    if (!profile?.username) {
+    if (!profile?.slug) {
       toast.error(
-        "Por favor, adicione um username antes de visualizar o preview",
+        "Defina um slug antes de visualizar o preview.",
       );
       return;
     }

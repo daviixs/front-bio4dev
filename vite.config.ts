@@ -55,7 +55,8 @@
       outDir: 'build',
     },
     server: {
-      port: 3000,
+      // Porta do frontend em dev
+      port: 4000,
       open: true,
     },
   });

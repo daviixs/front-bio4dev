@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/components/ui/utils";
@@ -12,10 +12,13 @@ import {
   MessageSquare,
   LogOut,
 } from "lucide-react";
+import { useAuthStore } from "@/stores/authStore";
 
 export function MobileHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
@@ -125,7 +128,11 @@ export function MobileHeader() {
                 </Link>
               ))}
               <button
-                onClick={closeMenu}
+                onClick={() => {
+                  closeMenu();
+                  logout();
+                  navigate("/");
+                }}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-red-500/10 hover:text-red-500 transition-colors mt-2"
               >
                 <LogOut className="size-4" />

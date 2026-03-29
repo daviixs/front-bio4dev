@@ -38,16 +38,16 @@ export interface Portfolio2Data {
 
 /**
  * Busca todos os dados necessários para o Portfólio 2
- * @param username - Username do perfil
+ * @param slug - Slug do perfil
  * @param previewToken - Token opcional para visualizar perfil não publicado
  */
 export async function getPortfolio2Data(
-  username: string,
+  slug: string,
   previewToken?: string
 ): Promise<Portfolio2Data> {
   try {
     // Busca perfil completo usando a rota existente
-    const profile = await profileApi.getByUsername(username, previewToken);
+    const profile = await profileApi.getBySlug(slug, previewToken);
 
     // Transforma os dados para o formato do Portfólio 2
     return {

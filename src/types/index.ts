@@ -4,6 +4,13 @@ export interface User {
   id: string;
   email: string;
   nome: string;
+  username?: string;
+  emailNotifications?: boolean;
+  marketingEmails?: boolean;
+  securityAlerts?: boolean;
+  language?: string;
+  timezone?: string;
+  twoFactorEnabled?: boolean;
   createdAt: string;
   updatedAt?: string;
 }
@@ -215,6 +222,7 @@ export interface CreateUserDTO {
 export interface CreateProfileDTO {
   userId: string;
   username: string;
+  slug: string;
   bio?: string;
   avatarUrl?: string;
   themeId?: number;
@@ -223,6 +231,7 @@ export interface CreateProfileDTO {
 }
 
 export interface UpdateProfileDTO {
+  slug?: string;
   username?: string;
   bio?: string;
   avatarUrl?: string;
@@ -343,4 +352,30 @@ export interface AuthResponse {
   message: string;
   user: User;
   token?: string;
+}
+
+// Analytics
+export interface OverviewResponse {
+  totalVisits: number;
+  uniqueVisitors: number | null;
+  avgSessionDurationMs: number;
+  bounceRatePct: number;
+  growthPct: number | null;
+}
+
+export interface TimeseriesPoint {
+  label: string;
+  visits: number;
+  unique: number;
+}
+
+export interface TopPage {
+  path: string;
+  visits: number;
+  trendPct: number | null;
+}
+
+export interface DeviceBreakdown {
+  device: "Desktop" | "Mobile" | "Tablet";
+  value: number;
 }

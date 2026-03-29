@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/components/ui/utils";
@@ -104,10 +104,22 @@ function LoginDialog({
 
 export function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [formData, setFormData] = useState({ email: "", senha: "" });
   const { login, isLoading, clearError } = useAuthStore();
+
+  const hideLandingActions = location.pathname.startsWith(
+    "/dashboard/influencer/",
+  );
+
+  useEffect(() => {
+    if (hideLandingActions) {
+      setMobileMenuOpen(false);
+      setLoginOpen(false);
+    }
+  }, [hideLandingActions]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -138,51 +150,57 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
-          {menuItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700",
-                "transition-colors hover:bg-slate-100 hover:text-slate-900",
-              )}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        {!hideLandingActions && (
+          <>
+            <nav className="hidden items-center gap-1 lg:flex">
+              {menuItems.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700",
+                    "transition-colors hover:bg-slate-100 hover:text-slate-900",
+                  )}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
-          <LoginDialog
-            open={loginOpen}
-            onOpenChange={setLoginOpen}
-            isLoading={isLoading}
-            formData={formData}
-            onChange={handleChange}
-            onSubmit={handleLogin}
-          />
-          <Link to="/signup">
-            <Button className="bg-blue-600 text-white hover:bg-blue-700">
-              Criar Portfolio
-            </Button>
-          </Link>
-        </div>
+            <div className="hidden items-center gap-3 lg:flex">
+              <LoginDialog
+                open={loginOpen}
+                onOpenChange={setLoginOpen}
+                isLoading={isLoading}
+                formData={formData}
+                onChange={handleChange}
+                onSubmit={handleLogin}
+              />
+              <Link to="/signup">
+                <Button className="bg-blue-600 text-white hover:bg-blue-700">
+                  Criar Portfolio
+                </Button>
+              </Link>
+            </div>
+          </>
+        )}
 
-        <button
-          className="rounded-lg p-2 text-slate-900 hover:bg-slate-100 lg:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Abrir menu"
-        >
-          {mobileMenuOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </button>
+        {!hideLandingActions && (
+          <button
+            className="rounded-lg p-2 text-slate-900 hover:bg-slate-100 lg:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Abrir menu"
+          >
+            {mobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
+        )}
       </div>
 
-      {mobileMenuOpen && (
+      {!hideLandingActions && mobileMenuOpen && (
         <div className="border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-1">
             {menuItems.map((item) => (

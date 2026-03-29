@@ -10,7 +10,7 @@ import { TemplateRenderer } from "../components/templates";
 import type { PortfolioData } from "../services/api/types";
 
 export function PublicProfilePage() {
-  const { username } = useParams<{ username: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [profile, setProfile] = useState<PortfolioData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,8 +18,8 @@ export function PublicProfilePage() {
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (!username) {
-        setError("Username não encontrado");
+      if (!slug) {
+        setError("Slug não encontrado");
         setIsLoading(false);
         return;
       }
@@ -31,7 +31,7 @@ export function PublicProfilePage() {
 
         // Usa o slug (username) para buscar o portfolio
         const data = await PortfolioService.getBySlug(
-          username,
+          slug,
           previewToken || undefined,
         );
 
@@ -64,7 +64,7 @@ export function PublicProfilePage() {
     };
 
     loadProfile();
-  }, [username]);
+  }, [slug]);
 
   // Loading State
   if (isLoading) {

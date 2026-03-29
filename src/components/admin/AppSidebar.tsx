@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
   User, 
@@ -9,9 +9,12 @@ import {
   LogOut
 } from "lucide-react";
 import { cn } from "@/components/ui/utils";
+import { useAuthStore } from "@/stores/authStore";
 
 export function AppSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
@@ -69,7 +72,13 @@ export function AppSidebar() {
           </Link>
         ))}
         
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-red-500/10 hover:text-red-500 transition-colors mt-2">
+        <button
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-red-500/10 hover:text-red-500 transition-colors mt-2"
+        >
           <LogOut className="size-4" />
           Sign Out
         </button>

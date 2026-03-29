@@ -9,20 +9,12 @@ import {
   DeveloperCreateProfilePage,
   SetupWizardPage,
   InfluencerOnboardingPage,
-  DashboardPage,
-  DashboardOverview,
   AdminDashboard,
   BioPage,
   BioEditPage,
   AnalyticsPage,
   AdminSettingsPage,
   PublicProfilePage,
-  ProfileEdit,
-  ProjectsEdit,
-  SocialsEdit,
-  PagesEdit,
-  AppearanceEdit,
-  SettingsPage,
   PortfolioEditorPage,
 } from "./pages";
 import { AdminLayoutWrapper } from "./components/admin/AdminLayoutWrapper";
@@ -124,25 +116,10 @@ export default function App() {
           <Route path="settings" element={<AdminSettingsPage />} />
         </Route>
 
-        <Route
-          path="/dashboard-old"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardOverview />} />
-          <Route path="profile" element={<ProfileEdit />} />
-          <Route path="projects" element={<ProjectsEdit />} />
-          <Route path="socials" element={<SocialsEdit />} />
-          <Route path="pages" element={<PagesEdit />} />
-          <Route path="appearance" element={<AppearanceEdit />} />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
+        <Route path="/dashboard-old" element={<Navigate to="/dashboard" replace />} />
 
-        <Route path="/portifolio-1/:username" element={<PublicProfilePage />} />
-        <Route path="/:username" element={<PublicProfilePage />} />
+        <Route path="/portifolio-1/:slug" element={<PublicProfilePage />} />
+        <Route path="/:slug" element={<PublicProfilePage />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

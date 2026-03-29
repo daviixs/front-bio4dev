@@ -159,6 +159,18 @@ const portfolioExamples = [
   },
 ];
 
+const toSlug = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+
 interface Bio {
   id: string;
   name: string;
@@ -257,20 +269,21 @@ export default function BioPage() {
 
       const templateType = selectedTemplate.template;
 
-      // Gerar username único
-      const baseUsername =
-        (user as any).nome?.toLowerCase().replace(/\s+/g, "") || "user";
-      const timestamp = Date.now();
-      const username = `${baseUsername}_${timestamp}`;
+      // Gerar slug único baseado no nome do usuário
+      const baseName = (user as any).nome || "user";
+      const uniqueSuffix = Date.now().toString(36);
+      const slug = toSlug(`${baseName}-${uniqueSuffix}`) || "user";
+      const username = baseName;
 
       // Criar novo perfil
       const response = await profileApi.create({
         userId: user.id,
         username,
+        slug,
         bio: `Portfólio ${selectedTemplate.name}`,
         avatarUrl: undefined,
         templateType: templateType,
-        published: false,
+        published: true,
       });
 
       toast.success("Portfólio criado com sucesso!");
@@ -310,8 +323,8 @@ export default function BioPage() {
   };
 
   const handlePreviewClick = async (bio: Bio) => {
-    if (!bio.username) {
-      toast.error("Username não encontrado para este perfil");
+    if (!bio.slug) {
+      toast.error("Slug não encontrado para este perfil");
       return;
     }
 
