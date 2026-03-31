@@ -43,6 +43,9 @@ import { cn } from "@/components/ui/utils";
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores/authStore";
 import { profileApi } from "@/lib/api";
+import { PageHeader } from "@/components/structure/PageHeader";
+import { EmptyState } from "@/components/feedback/EmptyState";
+import { MetricCard } from "@/components/analytics/MetricCard";
 import portfolio1Image from "@/bio-exempleimages/Portifolio 1.png";
 import portfolio2Image from "@/bio-exempleimages/Portifolio 2.png";
 import portfolio3Image from "@/bio-exempleimages/Portifolio 3.png";
@@ -197,6 +200,9 @@ export default function BioPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("dev");
   const [previewLoading, setPreviewLoading] = useState<string | null>(null);
   const [publishLoading, setPublishLoading] = useState<string | null>(null);
+  const totalBios = bios.length;
+  const publishedCount = bios.filter((b) => b.published).length;
+  const draftCount = Math.max(totalBios - publishedCount, 0);
 
   // Buscar bios/perfis do usuário
   useEffect(() => {
@@ -418,24 +424,34 @@ export default function BioPage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[60vh] text-muted-foreground">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            My Bios
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Manage your portfolio pages and templates.
-          </p>
-        </div>
-        <Button
-          className="gap-2 w-full sm:w-auto"
-          onClick={() => setCreateBioDialogOpen(true)}
-        >
-          <Plus className="h-4 w-4" />
-          Create New Bio
-        </Button>
+      <PageHeader
+        title="My Bios"
+        subtitle="Manage your portfolio pages and templates."
+        actions={
+          <Button
+            className="gap-2 w-full sm:w-auto"
+            onClick={() => setCreateBioDialogOpen(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Create New Bio
+          </Button>
+        }
+      />
+
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <MetricCard title="Total Bios" value={totalBios} helper="Portfólios criados" />
+        <MetricCard title="Publicados" value={publishedCount} helper="Ativos" />
+        <MetricCard title="Rascunhos" value={draftCount} helper="Prontos para publicar" />
       </div>
 
       <div className="rounded-xl border bg-card shadow-sm overflow-hidden sm:overflow-visible">

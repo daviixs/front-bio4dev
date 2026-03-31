@@ -1,238 +1,162 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, Code2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/components/ui/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
+import { List, X, ArrowUpRight } from "@phosphor-icons/react";
+import { cn } from "@/components/ui/utils";
 
 const menuItems = [
   { label: "Recursos", href: "#recursos" },
   { label: "Templates", href: "#templates" },
-  { label: "Precos", href: "#precos" },
+  { label: "Preços", href: "#precos" },
   { label: "FAQ", href: "#faq" },
 ];
 
-function LoginDialog({
-  open,
-  onOpenChange,
-  isLoading,
-  formData,
-  onChange,
-  onSubmit,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  isLoading: boolean;
-  formData: { email: string; senha: string };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent) => Promise<void>;
-}) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="border-slate-300 text-slate-700 hover:bg-slate-50"
-        >
-          Fazer Login
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="border-slate-200 bg-white sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-slate-900">Entrar</DialogTitle>
-          <DialogDescription className="text-slate-600">
-            Acesse sua conta para continuar no Bio4Dev.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={onSubmit} className="mt-2 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-slate-700">
-              Email
-            </Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={onChange}
-              placeholder="voce@exemplo.com"
-              required
-              className="border-slate-300 focus-visible:ring-blue-500"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="senha" className="text-slate-700">
-              Senha
-            </Label>
-            <Input
-              id="senha"
-              name="senha"
-              type="password"
-              value={formData.senha}
-              onChange={onChange}
-              placeholder="Digite sua senha"
-              required
-              className="border-slate-300 focus-visible:ring-blue-500"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 text-white hover:bg-blue-700"
-          >
-            {isLoading ? "Entrando..." : "Entrar"}
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 export function Header() {
-  const navigate = useNavigate();
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [formData, setFormData] = useState({ email: "", senha: "" });
-  const { login, isLoading, clearError } = useAuthStore();
+  const [open, setOpen] = useState(false);
+  const { loginWithGoogle, isLoading } = useAuthStore();
 
-  const hideLandingActions = location.pathname.startsWith(
-    "/dashboard/influencer/",
-  );
+  const hideLandingActions = location.pathname.startsWith("/dashboard");
 
   useEffect(() => {
-    if (hideLandingActions) {
-      setMobileMenuOpen(false);
-      setLoginOpen(false);
-    }
+    if (hideLandingActions) setOpen(false);
   }, [hideLandingActions]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     try {
-      clearError();
-      await login(formData.email, formData.senha);
-      toast.success("Login realizado com sucesso!");
-      setLoginOpen(false);
-      setFormData({ email: "", senha: "" });
-      navigate("/dashboard");
+      await loginWithGoogle();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Erro ao fazer login");
+      toast.error(err?.message || "Erro ao iniciar login com Google");
     }
   };
 
+  const LinkSet = () => (
+    <>
+      {menuItems.map((item, idx) => (
+        <a
+          key={item.label}
+          href={item.href}
+          className={cn(
+            "flex items-center gap-2 px-2 py-1 text-sm font-medium text-[#ece5d9] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
+            "hover:text-[#c3986b]"
+          )}
+          style={{ transitionDelay: `${idx * 50}ms` }}
+          onClick={() => setOpen(false)}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#c3986b]/80" />
+          {item.label}
+        </a>
+      ))}
+    </>
+  );
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <Code2 className="h-7 w-7 text-blue-600 lg:h-8 lg:w-8" />
-          <span className="text-2xl font-bold text-slate-900 lg:text-3xl">
-            Bio<span className="text-blue-600">4Dev</span>
-          </span>
-        </Link>
+    <>
+      <header className="w-full bg-[var(--surface)]">
+        <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-6 py-5">
+          <Link to="/" className="flex items-center px-0 py-0">
+            <LogoMark className="h-10 w-auto text-[#ece5d9]" />
+          </Link>
 
-        {!hideLandingActions && (
-          <>
-            <nav className="hidden items-center gap-1 lg:flex">
-              {menuItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-700",
-                    "transition-colors hover:bg-slate-100 hover:text-slate-900",
-                  )}
-                >
-                  {item.label}
-                </a>
-              ))}
+          {!hideLandingActions && (
+            <nav className="hidden flex-1 items-center gap-6 lg:flex">
+              <LinkSet />
             </nav>
+          )}
 
-            <div className="hidden items-center gap-3 lg:flex">
-              <LoginDialog
-                open={loginOpen}
-                onOpenChange={setLoginOpen}
-                isLoading={isLoading}
-                formData={formData}
-                onChange={handleChange}
-                onSubmit={handleLogin}
-              />
-              <Link to="/signup">
-                <Button className="bg-blue-600 text-white hover:bg-blue-700">
-                  Criar Portfolio
-                </Button>
+          {!hideLandingActions && (
+            <div className="ml-auto hidden items-center gap-2 lg:flex">
+              <button
+                onClick={handleLogin}
+                className="group flex items-center gap-2 rounded-full border border-[#c3986b]/40 bg-[#2c2621] px-4 py-2 text-sm font-medium text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#3a3028]"
+              >
+                {isLoading ? "Redirecionando..." : "Entrar"}
+              </button>
+              <Link
+                to="/signup"
+                className="group inline-flex items-center gap-3 rounded-full bg-[#c3986b] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(195,152,107,0.7)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
+              >
+                Começar agora
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px]">
+                  <ArrowUpRight size={18} weight="bold" />
+                </span>
               </Link>
             </div>
-          </>
-        )}
+          )}
 
-        {!hideLandingActions && (
-          <button
-            className="rounded-lg p-2 text-slate-900 hover:bg-slate-100 lg:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Abrir menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
-        )}
-      </div>
+          {!hideLandingActions && (
+            <button
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[#c3986b]/30 bg-[#2c2621] text-[#ece5d9] shadow-[0_12px_25px_-18px_rgba(0,0,0,0.35)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden"
+              onClick={() => setOpen((prev) => !prev)}
+              aria-label="Abrir menu"
+              aria-expanded={open}
+            >
+              {open ? <X size={22} weight="bold" /> : <List size={22} weight="bold" />}
+            </button>
+          )}
+        </div>
+      </header>
 
-      {!hideLandingActions && mobileMenuOpen && (
-        <div className="border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
-          <nav className="flex flex-col gap-1">
-            {menuItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="flex items-center justify-between rounded-lg px-3 py-3 text-left text-sm font-medium text-slate-900 hover:bg-slate-100"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <div className="mt-4 flex flex-col gap-2 border-t border-slate-200 pt-4">
-            <div onClick={() => setMobileMenuOpen(false)}>
-              <LoginDialog
-                open={loginOpen}
-                onOpenChange={setLoginOpen}
-                isLoading={isLoading}
-                formData={formData}
-                onChange={handleChange}
-                onSubmit={handleLogin}
-              />
+      {!hideLandingActions && open && (
+        <div className="fixed inset-0 z-30 bg-[#2c2621]/90 backdrop-blur-2xl lg:hidden">
+          <div className="mx-4 mt-24 rounded-3xl border border-[#c3986b]/25 bg-[#2c2621] p-6 text-[#ece5d9] shadow-[0_28px_80px_-50px_rgba(0,0,0,0.6)]">
+            <div className="flex flex-col gap-2">
+              <LinkSet />
             </div>
-            <Link to="/signup">
-              <Button className="w-full justify-center bg-blue-600 text-white hover:bg-blue-700">
-                Criar Portfolio
-              </Button>
-            </Link>
+            <div className="mt-6 grid gap-3">
+              <button
+                onClick={handleLogin}
+                className="flex items-center justify-center gap-2 rounded-full border border-[#c3986b]/30 bg-[#2c2621] px-4 py-3 text-sm font-semibold text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] hover:bg-[#3a3028]"
+              >
+                {isLoading ? "Redirecionando..." : "Entrar"}
+              </button>
+              <Link
+                to="/signup"
+                className="group inline-flex items-center justify-between gap-3 rounded-full bg-[#c3986b] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_-18px_rgba(195,152,107,0.7)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#b1835f]"
+                onClick={() => setOpen(false)}
+              >
+                Começar agora
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px]">
+                  <ArrowUpRight size={18} weight="bold" />
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
       )}
-    </header>
+    </>
+  );
+}
+
+function LogoMark({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 360 90"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Bio4Dev logo"
+    >
+      <rect
+        x="10"
+        y="5"
+        width="42"
+        height="70"
+        rx="9"
+        stroke="currentColor"
+        strokeWidth="8"
+      />
+      <text
+        x="124"
+        y="60"
+        fill="currentColor"
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontSize="52"
+        fontWeight="400"
+      >
+        bio4dev
+      </text>
+    </svg>
   );
 }

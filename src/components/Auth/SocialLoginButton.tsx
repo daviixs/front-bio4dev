@@ -3,14 +3,16 @@ import React from 'react';
 interface SocialLoginButtonProps {
   provider: 'google' | 'github' | 'facebook';
   onClick?: () => void;
+  disabled?: boolean;
+  label?: string;
 }
 
-export function SocialLoginButton({ provider, onClick }: SocialLoginButtonProps) {
+export function SocialLoginButton({ provider, onClick, disabled, label }: SocialLoginButtonProps) {
   const getProviderConfig = () => {
     switch (provider) {
       case 'google':
         return {
-          text: 'Or sign in with Google',
+          text: label ?? 'Entrar com Google',
           icon: (
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
               <path
@@ -48,6 +50,7 @@ export function SocialLoginButton({ provider, onClick }: SocialLoginButtonProps)
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className={`
         w-full flex items-center justify-center gap-3
         px-4 py-3 rounded-lg
@@ -55,7 +58,7 @@ export function SocialLoginButton({ provider, onClick }: SocialLoginButtonProps)
         transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]
         ${config.bgClass}
         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
-        shadow-sm hover:shadow-md
+        shadow-sm hover:shadow-md disabled:opacity-60 disabled:hover:scale-100
       `}
       aria-label={config.text}
     >

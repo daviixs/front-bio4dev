@@ -1,10 +1,10 @@
 :root {
   /* Cores padrão do sistema */
-  --primary-color: #3b82f6;
-  --secondary-color: #1e293b;
-  --accent-color: #f59e0b;
-  --background-color: #f8fafc;
-  --text-color: #0f172a;
+  --primary-color: #c3986b;
+  --secondary-color: #3a3028;
+  --accent-color: #c3986b;
+  --background-color: #2c2621;
+  --text-color: #f5ede4;
 
   /* Theme mode */
   --theme: light;
@@ -12,9 +12,9 @@
 
 /* Dark theme */
 [data-theme="dark"] {
-  --background-color: #0f172a;
-  --text-color: #f8fafc;
-  --secondary-color: #1e293b;
+  --background-color: #241f1b;
+  --text-color: #f5ede4;
+  --secondary-color: #3a3028;
 }
 
 /* Aplicar cor primária dinamicamente */

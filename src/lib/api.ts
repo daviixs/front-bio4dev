@@ -38,6 +38,78 @@ export const api = axios.create({
   },
 });
 
+type AccessTokenProvider = () => string | null;
+type RefreshHandler = () => Promise<string | null>;
+type LogoutHandler = () => void;
+
+let getAccessToken: AccessTokenProvider | null = null;
+let refreshHandler: RefreshHandler | null = null;
+let logoutHandler: LogoutHandler | null = null;
+let refreshPromise: Promise<string | null> | null = null;
+let interceptorsConfigured = false;
+
+export function configureAuthInterceptors(options: {
+  getAccessToken: AccessTokenProvider;
+  refreshAccessToken: RefreshHandler;
+  onUnauthorized: LogoutHandler;
+}) {
+  if (interceptorsConfigured) return;
+
+  getAccessToken = options.getAccessToken;
+  refreshHandler = options.refreshAccessToken;
+  logoutHandler = options.onUnauthorized;
+
+  api.interceptors.request.use((config) => {
+    const token = getAccessToken?.();
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    // allow refresh cookies when needed
+    if (config.withCredentials === undefined) {
+      config.withCredentials = true;
+    }
+    return config;
+  });
+
+  api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const status = error.response?.status;
+      const originalRequest: any = error.config || {};
+
+      if (status === 401 && !originalRequest._retry && refreshHandler) {
+        originalRequest._retry = true;
+        try {
+          const newToken = await queueRefresh();
+          if (newToken) {
+            originalRequest.headers = originalRequest.headers || {};
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            return api(originalRequest);
+          }
+        } catch (refreshError) {
+          // fallthrough to logout
+        }
+        logoutHandler?.();
+      }
+
+      return Promise.reject(error);
+    },
+  );
+
+  interceptorsConfigured = true;
+}
+
+async function queueRefresh(): Promise<string | null> {
+  if (!refreshHandler) return null;
+  if (!refreshPromise) {
+    refreshPromise = refreshHandler().finally(() => {
+      refreshPromise = null;
+    });
+  }
+  return refreshPromise;
+}
+
 // ============ USERS ============
 export const usersApi = {
   // Backend NestJS expõe /auth/register e /auth/login

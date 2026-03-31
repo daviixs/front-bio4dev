@@ -5,27 +5,22 @@ import {
   FeaturesSection,
   ToolsSection,
   FocusSection,
-  TestimonialsSection,
   FAQSection,
-  CTASection,
   Footer,
 } from '@/components/landing';
 
 export function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-[100dvh] bg-[var(--surface)]">
       <Header />
       <main>
         <HeroSection />
         <FeaturesSection />
         <ToolsSection />
         <FocusSection />
-        <TestimonialsSection />
         <FAQSection />
-        <CTASection />
       </main>
       <Footer />
     </div>
   );
 }
-

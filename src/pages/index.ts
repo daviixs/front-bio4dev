@@ -12,3 +12,4 @@ export { default as AnalyticsPage } from "./admin/AnalyticsPage";
 export { default as AdminSettingsPage } from "./admin/SettingsPage";
 export { PublicProfilePage } from "./PublicProfilePage";
 export { PortfolioEditorPage } from "./PortfolioEditorPage";
+export { AuthCallbackPage } from "./AuthCallbackPage";

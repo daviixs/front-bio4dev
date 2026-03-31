@@ -1,34 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ArrowUp,
-  ArrowDown,
-  Users,
-  Eye,
-  MousePointer2,
-  Clock,
-  Loader2,
-} from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { toast } from "sonner";
+import { Users, Eye, MousePointer2, Clock } from "lucide-react";
 import { useAuthStore } from "@/stores/authStore";
-import { analyticsApi, profileApi } from "@/lib/api";
-import type {
-  OverviewResponse,
-  TimeseriesPoint,
-  DeviceBreakdown,
-  Profile,
-} from "@/types";
+import { MetricCard } from "@/components/analytics/MetricCard";
+import { ChartShell } from "@/components/analytics/ChartShell";
+import { AreaSpark } from "@/components/analytics/AreaSpark";
+import { BarDiscrete } from "@/components/analytics/BarDiscrete";
+import { TopPagesList } from "@/components/analytics/TopPagesList";
+import { PageHeader } from "@/components/structure/PageHeader";
+import { EmptyState } from "@/components/feedback/EmptyState";
+import {
+  useDevicesData,
+  useOverviewData,
+  useProfilesByUser,
+  useTimeseriesData,
+  useTopPagesData,
+} from "@/hooks/useAnalyticsData";
 
 const formatDuration = (ms: number) => {
   if (!ms || ms <= 0) return "0s";
@@ -42,291 +29,158 @@ const formatDuration = (ms: number) => {
 export default function AnalyticsPage() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [overview, setOverview] = useState<OverviewResponse | null>(null);
-  const [timeseries, setTimeseries] = useState<TimeseriesPoint[]>([]);
-  const [devices, setDevices] = useState<DeviceBreakdown[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      try {
-        setLoading(true);
-        setError(null);
+  const profilesState = useProfilesByUser(user?.id);
+  const primaryProfile = profilesState.data?.[0];
+  const overviewState = useOverviewData(primaryProfile?.id);
+  const timeseriesState = useTimeseriesData(primaryProfile?.id, "day", "last90d");
+  const devicesState = useDevicesData(primaryProfile?.id, "last30d");
+  const topPagesState = useTopPagesData(primaryProfile?.id, 5, "last30d");
 
-        const profiles: Profile[] = await profileApi.getAll();
-        const userProfile = profiles.find((p) => p.userId === user.id);
+  const loading =
+    profilesState.loading ||
+    overviewState.loading ||
+    timeseriesState.loading ||
+    devicesState.loading ||
+    topPagesState.loading;
 
-        if (!userProfile) {
-          setError("no-profile");
-          return;
-        }
-
-        const [overviewRes, timeseriesRes, devicesRes] = await Promise.all([
-          analyticsApi.getOverview(userProfile.id),
-          analyticsApi.getTimeseries(userProfile.id, "day", "last90d"),
-          analyticsApi.getDevices(userProfile.id),
-        ]);
-
-        setOverview(overviewRes);
-        setTimeseries(timeseriesRes);
-        setDevices(devicesRes);
-      } catch (err: any) {
-        console.error(err);
-        setError("fetch-error");
-        toast.error("Erro ao carregar analytics");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [user]);
+  const anyError =
+    profilesState.error ||
+    overviewState.error ||
+    timeseriesState.error ||
+    devicesState.error ||
+    topPagesState.error;
 
   const accessData = useMemo(
     () =>
-      timeseries.map((item) => ({
+      (timeseriesState.data || []).map((item) => ({
         name: item.label,
         visits: item.visits,
         unique: item.unique,
       })),
-    [timeseries],
+    [timeseriesState.data],
   );
 
   const deviceData = useMemo(
-    () => devices.map((d) => ({ name: d.device, value: d.value })),
-    [devices],
+    () => (devicesState.data || []).map((d) => ({ name: d.device, value: d.value })),
+    [devicesState.data],
   );
 
-  if (loading) {
+  if (profilesState.empty && !profilesState.loading) {
     return (
-      <div className="flex items-center justify-center h-[60vh] text-muted-foreground">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
+      <EmptyState
+        title="Crie um perfil para ver analytics"
+        description="Você ainda não tem portfólios publicados."
+        actionLabel="Criar perfil"
+        onAction={() => navigate("/profile/create")}
+      />
     );
   }
 
-  if (error === "no-profile") {
+  if (anyError) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center gap-4">
-        <p className="text-lg font-semibold text-slate-900">
-          Crie um perfil para ver analytics.
-        </p>
-        <button
-          onClick={() => navigate("/profile/create")}
-          className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition"
-        >
-          Criar perfil
-        </button>
-      </div>
+      <EmptyState
+        title="Erro ao carregar analytics"
+        description={anyError}
+        actionLabel="Tentar novamente"
+        onAction={() => {
+          profilesState.refetch();
+          overviewState.refetch();
+          timeseriesState.refetch();
+          devicesState.refetch();
+          topPagesState.refetch();
+        }}
+      />
     );
   }
 
-  const growth = overview?.growthPct;
+  const growth = overviewState.data?.growthPct;
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-          Analytics
-        </h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-1">
-          Detailed insights into your portfolio performance.
-        </p>
-      </div>
+      <PageHeader
+        title="Analytics"
+        subtitle="Detailed insights into your portfolio performance."
+        actions={
+          <button
+            onClick={() => navigate("/profile/create")}
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition"
+          >
+            Criar perfil
+          </button>
+        }
+      />
 
-      {/* Metrics Overview */}
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Visits
-            </CardTitle>
-            <Eye className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{overview?.totalVisits ?? 0}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {growth === null || growth === undefined ? (
-                <span className="text-muted-foreground">—</span>
-              ) : (
-                <span
-                  className={`font-medium inline-flex items-center ${
-                    growth >= 0 ? "text-emerald-600" : "text-rose-500"
-                  }`}
-                >
-                  {growth >= 0 ? (
-                    <ArrowUp className="mr-1 h-3 w-3" />
-                  ) : (
-                    <ArrowDown className="mr-1 h-3 w-3" />
-                  )}
-                  {growth.toFixed(1)}%
-                </span>
-              )}{" "}
-              from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Unique Visitors
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {overview?.uniqueVisitors ?? "—"}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Same as visits for now</p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Avg. Session Duration
-            </CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatDuration(overview?.avgSessionDurationMs ?? 0)}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Últimos 30 dias</p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Bounce Rate
-            </CardTitle>
-            <MousePointer2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {(overview?.bounceRatePct ?? 0).toFixed(1)}%
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Últimos 30 dias</p>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="Total Visits"
+          value={overviewState.data?.totalVisits ?? 0}
+          delta={growth}
+          helper="vs último mês"
+          loading={loading}
+          icon={<Eye className="h-4 w-4" />}
+        />
+        <MetricCard
+          title="Unique Visitors"
+          value={overviewState.data?.uniqueVisitors ?? "—"}
+          helper="Contagem estimada"
+          loading={loading}
+          icon={<Users className="h-4 w-4" />}
+        />
+        <MetricCard
+          title="Avg. Session Duration"
+          value={formatDuration(overviewState.data?.avgSessionDurationMs ?? 0)}
+          helper="Últimos 30 dias"
+          loading={loading}
+          icon={<Clock className="h-4 w-4" />}
+        />
+        <MetricCard
+          title="Bounce Rate"
+          value={`${(overviewState.data?.bounceRatePct ?? 0).toFixed(1)}%`}
+          helper="Últimos 30 dias"
+          loading={loading}
+          icon={<MousePointer2 className="h-4 w-4" />}
+        />
       </div>
 
-      {/* Charts Section */}
       <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Visits Over Time</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-0 sm:pl-2">
-            <div className="h-[250px] sm:h-[300px] w-full">
-              {accessData.length === 0 ? (
-                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
-                  Nenhum acesso no período.
-                </div>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={accessData}>
-                    <defs>
-                      <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <XAxis
-                      dataKey="name"
-                      stroke="#888888"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      stroke="#888888"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--popover))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "var(--radius)",
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="visits"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorVisits)"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="unique"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      strokeDasharray="5 5"
-                      fillOpacity={0}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <ChartShell
+          title="Visits Over Time"
+          loading={timeseriesState.loading}
+          empty={accessData.length === 0}
+          error={timeseriesState.error}
+          onRetry={timeseriesState.refetch}
+          height={300}
+        >
+          <div className="h-[250px] sm:h-[300px] w-full">
+            <AreaSpark data={accessData} showUnique />
+          </div>
+        </ChartShell>
 
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Device Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-0 sm:pl-2">
-            <div className="h-[250px] sm:h-[300px] w-full">
-              {deviceData.length === 0 ? (
-                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
-                  Nenhum dado de dispositivo.
-                </div>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={deviceData}>
-                    <XAxis
-                      dataKey="name"
-                      stroke="#888888"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      stroke="#888888"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--popover))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "var(--radius)",
-                      }}
-                    />
-                    <Bar
-                      dataKey="value"
-                      fill="hsl(var(--primary))"
-                      radius={[8, 8, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <ChartShell
+          title="Device Breakdown"
+          loading={devicesState.loading}
+          empty={deviceData.length === 0}
+          error={devicesState.error}
+          onRetry={devicesState.refetch}
+          height={300}
+        >
+          <div className="h-[250px] sm:h-[300px] w-full">
+            <BarDiscrete data={deviceData} />
+          </div>
+        </ChartShell>
       </div>
+
+      <ChartShell
+        title="Top pages"
+        loading={topPagesState.loading}
+        empty={(topPagesState.data || []).length === 0}
+        error={topPagesState.error}
+        onRetry={topPagesState.refetch}
+        height={260}
+      >
+        <TopPagesList pages={topPagesState.data || []} />
+      </ChartShell>
     </div>
   );
 }

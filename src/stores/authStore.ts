@@ -1,19 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { User, Profile, ProfileComplete } from "@/types";
-import { usersApi, profileApi, api } from "@/lib/api";
+import type { User, ProfileComplete } from "@/types";
+import { profileApi, configureAuthInterceptors, api } from "@/lib/api";
 
 interface AuthState {
   user: User | null;
   profile: ProfileComplete | null;
+  accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
 
-  // Actions
-  login: (email: string, senha: string) => Promise<{ hasProfile: boolean }>;
-  signup: (email: string, senha: string, nome: string) => Promise<User>;
-  logout: () => void;
+  loginWithGoogle: () => Promise<void>;
+  handleOAuthCallback: (code: string, state?: string | null) => Promise<boolean | void>;
+  refreshAccessToken: () => Promise<string | null>;
+  logout: () => Promise<void>;
   setProfile: (profile: ProfileComplete | null) => void;
   loadProfile: () => Promise<void>;
   clearError: () => void;
@@ -24,85 +25,116 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       profile: null,
+      accessToken: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
 
-      login: async (email: string, senha: string) => {
+      loginWithGoogle: async () => {
         set({ isLoading: true, error: null });
         try {
-          const response = await usersApi.login({ email, senha });
-          const { user } = response;
-
-          // Armazenar dados do usuário
-          localStorage.setItem("bio4dev_user", JSON.stringify(user));
-
+          const response = await api.get<{ url: string; state: string }>(
+            "/auth/google",
+          );
+          const { url } = response.data;
+          window.location.href = url;
+        } catch (error: any) {
           set({
-            user,
-            isAuthenticated: true,
             isLoading: false,
+            error:
+              error.response?.data?.message ||
+              "Não foi possível iniciar login com Google",
+          });
+        }
+      },
+
+      handleOAuthCallback: async (code: string, state?: string | null) => {
+        set({ isLoading: true, error: null });
+        try {
+          const url = new URL(
+            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/google/callback`,
+          );
+          url.searchParams.set("code", code);
+          if (state) url.searchParams.set("state", state);
+
+          const response = await fetch(url.toString(), {
+            method: "GET",
+            credentials: "include",
           });
 
-          // Verificar se o usuário tem perfil
-          await get().loadProfile();
-          const hasProfile = !!get().profile;
-
-          return { hasProfile };
-        } catch (error: any) {
-          let errorMessage = "Erro ao fazer login";
-
-          if (
-            error.code === "ERR_NETWORK" ||
-            error.message === "Network Error"
-          ) {
-            errorMessage =
-              "Não foi possível conectar ao servidor. Verifique se o backend está rodando.";
-          } else if (error.response?.data?.message) {
-            errorMessage = error.response.data.message;
-          } else if (error.message) {
-            errorMessage = error.message;
+          if (!response.ok) {
+            throw new Error("Falha ao concluir login com Google");
           }
 
-          set({
-            error: errorMessage,
-            isLoading: false,
-          });
-          throw error;
-        }
-      },
-
-      signup: async (email: string, senha: string, nome: string) => {
-        set({ isLoading: true, error: null });
-        try {
-          const response = await usersApi.create({ email, senha, nome });
-
-          // Fazer login automático após criar a conta
-          const user = response.user;
-          localStorage.setItem("bio4dev_user", JSON.stringify(user));
+          const data = await response.json();
 
           set({
-            user,
+            user: data.user,
+            accessToken: data.accessToken,
             isAuthenticated: true,
             isLoading: false,
           });
 
-          return user;
+          await get().loadProfile();
+          return data.isNew as boolean;
         } catch (error: any) {
           set({
-            error: error.response?.data?.message || "Erro ao criar conta",
+            error:
+              error.message ||
+              "Não foi possível autenticar com Google. Tente novamente.",
             isLoading: false,
+            isAuthenticated: false,
+            accessToken: null,
+            user: null,
           });
           throw error;
         }
       },
 
-      logout: () => {
-        localStorage.removeItem("bio4dev_user");
-        set({
-          user: null,
-          profile: null,
-          isAuthenticated: false,
-        });
+      refreshAccessToken: async () => {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/refresh`,
+            {
+              method: "POST",
+              credentials: "include",
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error("Token refresh failed");
+          }
+
+          const data = await response.json();
+          set({ accessToken: data.accessToken, isAuthenticated: true });
+          return data.accessToken as string;
+        } catch (error) {
+          set({
+            isAuthenticated: false,
+            accessToken: null,
+            user: null,
+          });
+          return null;
+        }
+      },
+
+      logout: async () => {
+        try {
+          await fetch(
+            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/logout`,
+            {
+              method: "POST",
+              credentials: "include",
+            },
+          );
+        } finally {
+          set({
+            user: null,
+            profile: null,
+            accessToken: null,
+            isAuthenticated: false,
+          });
+        }
       },
 
       setProfile: (profile: ProfileComplete | null) => {
@@ -133,8 +165,15 @@ export const useAuthStore = create<AuthState>()(
       name: "bio4dev-auth",
       partialize: (state) => ({
         user: state.user,
+        profile: state.profile,
         isAuthenticated: state.isAuthenticated,
       }),
     },
   ),
 );
+
+configureAuthInterceptors({
+  getAccessToken: () => useAuthStore.getState().accessToken,
+  refreshAccessToken: () => useAuthStore.getState().refreshAccessToken(),
+  onUnauthorized: () => useAuthStore.getState().logout(),
+});

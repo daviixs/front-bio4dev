@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import {
   Home,
@@ -16,10 +16,39 @@ import {
   AdminSettingsPage,
   PublicProfilePage,
   PortfolioEditorPage,
+  AuthCallbackPage,
 } from "./pages";
 import { AdminLayoutWrapper } from "./components/admin/AdminLayoutWrapper";
+import { useAuthStore } from "@/stores/authStore";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+  const { isAuthenticated, refreshAccessToken } = useAuthStore();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    const ensureAuth = async () => {
+      if (isAuthenticated) {
+        if (mounted) setChecking(false);
+        return;
+      }
+
+      const token = await refreshAccessToken();
+      if (!token) {
+        navigate("/signup", { replace: true });
+        return;
+      }
+      if (mounted) setChecking(false);
+    };
+
+    ensureAuth();
+    return () => {
+      mounted = false;
+    };
+  }, [isAuthenticated, refreshAccessToken, navigate]);
+
+  if (checking) return null;
   return <>{children}</>;
 }
 
@@ -42,6 +71,7 @@ export default function App() {
         <Route path="/home" element={<Home />} />
 
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/auth/callback/google" element={<AuthCallbackPage />} />
 
         <Route path="/profile/type" element={<UserTypeSelectionPage />} />
         <Route path="/profile/create" element={<CreateProfilePage />} />
