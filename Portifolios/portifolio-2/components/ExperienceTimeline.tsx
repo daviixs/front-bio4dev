@@ -186,6 +186,5 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
     </Section>
   );
 };
-};
 
 export default ExperienceTimeline;

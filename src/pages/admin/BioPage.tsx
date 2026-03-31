@@ -490,15 +490,11 @@ export default function BioPage() {
                   </div>
 
                   <button
-                    onClick={() =>
-                      window.open(
-                        `http://localhost:3000/${bio.url
-                          .split("/")
-                          .slice(1)
-                          .join("/")}`,
-                        "_blank",
-                      )
-                    }
+                    onClick={() => {
+                      const base = window.location.origin;
+                      const path = bio.slug ? `/${bio.slug}` : `/${bio.url}`;
+                      window.open(`${base}${path}`, "_blank");
+                    }}
                     className="w-full text-left text-sm text-blue-700 hover:text-blue-800 flex items-center gap-2"
                     aria-label={`Abrir ${bio.url} em nova aba`}
                   >
@@ -594,15 +590,13 @@ export default function BioPage() {
                             {bio.url}
                             <ExternalLink
                               className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                              onClick={() =>
-                                window.open(
-                                  `http://localhost:3000/${bio.url
-                                    .split("/")
-                                    .slice(1)
-                                    .join("/")}`,
-                                  "_blank",
-                                )
-                              }
+                              onClick={() => {
+                                const base = window.location.origin;
+                                const path = bio.slug
+                                  ? `/${bio.slug}`
+                                  : `/${bio.url}`;
+                                window.open(`${base}${path}`, "_blank");
+                              }}
                             />
                           </span>
                         </div>
