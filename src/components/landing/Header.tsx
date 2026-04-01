@@ -74,7 +74,7 @@ export function Header() {
                 {isLoading ? "Redirecionando..." : "Entrar"}
               </button>
               <Link
-                to="/signup"
+                to="/profile/type"
                 className="group inline-flex items-center gap-3 rounded-full bg-[#c3986b] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(195,152,107,0.7)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
               >
                 Começar agora
@@ -112,7 +112,7 @@ export function Header() {
                 {isLoading ? "Redirecionando..." : "Entrar"}
               </button>
               <Link
-                to="/signup"
+                to="/profile/type"
                 className="group inline-flex items-center justify-between gap-3 rounded-full bg-[#c3986b] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_-18px_rgba(195,152,107,0.7)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#b1835f]"
                 onClick={() => setOpen(false)}
               >

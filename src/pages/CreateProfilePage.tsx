@@ -163,16 +163,6 @@ export function CreateProfilePage() {
   const slugPreview = toSlug(nameInput);
   const SLUG_REGEX = /^[a-z0-9-]{3,60}$/;
 
-  // Verificar se o usuário está logado ao montar o componente
-  useEffect(() => {
-    console.log("CreateProfilePage mounted, user:", user);
-    if (!user) {
-      console.warn("Nenhum usuário logado, redirecionando para login");
-      toast.error("Faça login para continuar");
-      navigate("/");
-    }
-  }, [user, navigate]);
-
   useEffect(() => {
     if (hasPromptedForSlug || slugValue) return;
     setIsSlugModalOpen(true);
@@ -199,23 +189,36 @@ export function CreateProfilePage() {
       return;
     }
 
-    // Obter userId do usuário logado
-    const userId = user?.id;
+    // Se não houver usuário logado, seguir em modo rascunho (onboarding primeiro, login depois)
+    if (!user?.id) {
+      const draftProfileId =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? `draft-${crypto.randomUUID()}`
+          : `draft-${Date.now().toString(36)}`;
 
+      localStorage.setItem("bio4dev_profile_id", draftProfileId);
+      localStorage.setItem(`bio4dev_theme_${draftProfileId}`, selectedTemplate);
+      localStorage.setItem(
+        `bio4dev_draft_profile_${draftProfileId}`,
+        JSON.stringify({
+          username: displayName,
+          slug: slugValue,
+          template: selectedTemplate,
+        }),
+      );
+
+      toast.info("Vamos montar sua bio primeiro. Conta será criada no final.");
+      navigate(`/onboarding/${draftProfileId}`);
+      return;
+    }
+
+    const userId = user.id;
     console.log("User info:", {
       user,
       userId,
       userType: typeof userId,
       userStringified: JSON.stringify(user),
     });
-
-    // Validação estrita do userId
-    if (!userId || userId === "undefined" || typeof userId !== "string") {
-      console.error("UserId inválido:", userId);
-      toast.error("Sessão inválida. Faça login novamente.");
-      navigate("/");
-      return;
-    }
 
     setIsLoading(true);
     try {

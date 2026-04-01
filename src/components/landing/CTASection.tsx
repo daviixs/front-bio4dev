@@ -20,7 +20,7 @@ export function CTASection() {
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
-                to="/signup"
+                to="/profile/type"
                 className="group inline-flex items-center gap-3 rounded-full bg-[#c3986b] px-6 py-3 text-base font-semibold text-white shadow-[0_20px_44px_-22px_rgba(195,152,107,0.75)] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] active:scale-[0.98] hover:bg-[#b1835f]"
               >
                 Começar agora
@@ -64,7 +64,7 @@ export function CTASection() {
                       <p className="text-sm text-slate-600">Sem h-screen: usamos min-h-[100dvh] para estabilidade no iOS.</p>
                     </div>
                     <Link
-                      to="/signup"
+                      to="/profile/type"
                     className="group inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-4 py-2 text-sm font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
                   >
                     Montar bio

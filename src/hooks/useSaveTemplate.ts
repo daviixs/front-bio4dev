@@ -14,6 +14,19 @@ export function useSaveTemplate(templateId?: string) {
       data: InfluencerTemplateData,
       currentProfile?: ProfileComplete,
     ) => {
+      // Modo rascunho (sem login): apenas persistir no localStorage e sair
+      if (profileId.startsWith("draft-")) {
+        try {
+          localStorage.setItem(
+            `bio4dev_onboarding_${profileId}_persisted`,
+            JSON.stringify(data),
+          );
+        } catch {
+          // ignore storage errors
+        }
+        return;
+      }
+
       if (!templateId || !templateRegistry[templateId]) {
         const message = "Template nao registrado.";
         setError(message);

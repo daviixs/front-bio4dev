@@ -30,16 +30,18 @@ export function ChartShell({
   return (
     <Card
       className={cn(
-        "shadow-sm [animation-duration:220ms] animate-[fadeIn_0.22s_ease-out,slideUp_0.22s_ease-out]",
+        "relative overflow-hidden border-[rgba(236,229,217,0.14)] shadow-[0_20px_46px_-30px_rgba(0,0,0,0.75)]",
+        "[animation-duration:260ms] animate-[fadeIn_0.26s_ease-out,slideUp_0.26s_ease-out]",
         className,
       )}
       style={{ animationFillMode: "both" }}
     >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg sm:text-xl text-slate-900">{title}</CardTitle>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/3 via-transparent to-transparent opacity-60" />
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+        <CardTitle className="text-lg sm:text-xl text-foreground tracking-tight">{title}</CardTitle>
         {action}
       </CardHeader>
-      <CardContent className="pl-0 sm:pl-2">
+      <CardContent className="pl-0 sm:pl-2 relative z-10">
         <div className="w-full" style={{ height }}>
           {loading ? (
             <div className="space-y-3 px-6 py-4">

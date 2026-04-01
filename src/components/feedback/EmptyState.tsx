@@ -22,16 +22,16 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center gap-3 rounded-xl border border-dashed border-slate-200 bg-white/60 px-6 py-10 text-slate-600",
-        "[animation-duration:220ms] animate-[fadeIn_0.22s_ease-out,slideUp_0.22s_ease-out]",
+        "flex flex-col items-center justify-center text-center gap-3 rounded-2xl border border-dashed border-[rgba(236,229,217,0.25)] bg-[#1b1613]/70 px-6 py-10 text-foreground/70 backdrop-blur-sm",
+        "[animation-duration:260ms] animate-[fadeIn_0.26s_ease-out,slideUp_0.26s_ease-out]",
         className,
       )}
       style={{ animationFillMode: "both" }}
     >
-      {icon && <div className="text-slate-500">{icon}</div>}
+      {icon && <div className="text-foreground/60">{icon}</div>}
       <div>
-        <p className="text-base font-semibold text-slate-900">{title}</p>
-        {description && <p className="text-sm text-slate-500 mt-1">{description}</p>}
+        <p className="text-base font-semibold text-foreground">{title}</p>
+        {description && <p className="text-sm text-foreground/60 mt-1">{description}</p>}
       </div>
       {actionLabel && onAction && (
         <Button onClick={onAction} variant="default" size="sm">

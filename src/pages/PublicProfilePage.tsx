@@ -104,7 +104,7 @@ export function PublicProfilePage() {
                   Voltar ao Inicio
                 </Button>
               </Link>
-              <Link to="/signup">
+              <Link to="/profile/type">
                 <Button variant="outline" className={`rounded-full px-6 py-2 ${landingTheme.buttonSecondary}`}>
                   Criar meu portfolio
                 </Button>

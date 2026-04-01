@@ -15,7 +15,7 @@ export function AuthCallbackPage() {
 
     if (!code) {
       toast.error("Código do Google ausente");
-      navigate("/signup", { replace: true });
+      navigate("/profile/type", { replace: true });
       return;
     }
 
@@ -29,7 +29,7 @@ export function AuthCallbackPage() {
       })
       .catch(() => {
         toast.error("Não foi possível autenticar. Tente novamente.");
-        navigate("/signup", { replace: true });
+        navigate("/profile/type", { replace: true });
       })
       .finally(() => setProcessing(false));
   }, [params, navigate, handleOAuthCallback]);

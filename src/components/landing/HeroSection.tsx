@@ -33,7 +33,7 @@ export function HeroSection() {
           <Reveal delay={240}>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
-                to="/signup"
+                to="/profile/type"
                 className="group inline-flex items-center justify-between gap-3 rounded-full bg-[#c3986b] px-6 py-3 text-base font-semibold text-white shadow-[0_18px_40px_-18px_rgba(195,152,107,0.75)] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] active:scale-[0.98] hover:bg-[#b1835f]"
               >
                 Crie sua conta gratuita
@@ -99,7 +99,7 @@ export function HeroSection() {
           Pronto para montar sua bio agora?
         </div>
         <Link
-          to="/signup"
+          to="/profile/type"
           className="inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-4 py-2 text-sm font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#b1835f]"
         >
           Começar

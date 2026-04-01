@@ -747,18 +747,29 @@ export function InfluencerOnboardingPage({
 
   React.useEffect(() => {
     if (!profileId || resolvedTemplateId) return;
-    setIsResolvingTemplate(true);
-    profileApi
-      .getComplete(profileId)
-      .then((profile) => {
-        setResolvedTemplateId(profile.templateType);
-      })
-      .catch(() => {
-        setResolvedTemplateId(null);
-      })
-      .finally(() => {
-        setIsResolvingTemplate(false);
-      });
+
+    // Fallback: recuperar tema salvo localmente (ex: modo rascunho sem login)
+    const savedTheme = localStorage.getItem(`bio4dev_theme_${profileId}`);
+    if (savedTheme) {
+      setResolvedTemplateId(savedTheme);
+      return;
+    }
+
+    // Se não for rascunho, tentar no backend
+    if (!profileId.startsWith("draft-")) {
+      setIsResolvingTemplate(true);
+      profileApi
+        .getComplete(profileId)
+        .then((profile) => {
+          setResolvedTemplateId(profile.templateType);
+        })
+        .catch(() => {
+          setResolvedTemplateId(null);
+        })
+        .finally(() => {
+          setIsResolvingTemplate(false);
+        });
+    }
   }, [profileId, resolvedTemplateId]);
 
   if (!profileId) {
