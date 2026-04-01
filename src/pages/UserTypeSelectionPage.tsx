@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Code, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { landingTheme } from "@/theme/landingTheme";
 
@@ -55,8 +54,6 @@ export default function UserTypeSelectionPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <Header />
-
       <div className="flex-1 py-12 px-4 lg:px-6">
         <div className="max-w-5xl mx-auto">
           {/* Header */}

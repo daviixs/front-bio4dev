@@ -18,10 +18,12 @@ export function Header() {
   const { loginWithGoogle, isLoading } = useAuthStore();
 
   const hideLandingActions = location.pathname.startsWith("/dashboard");
+  const isOnboarding = location.pathname.startsWith("/onboarding");
+  const shouldHideLanding = hideLandingActions || isOnboarding;
 
   useEffect(() => {
-    if (hideLandingActions) setOpen(false);
-  }, [hideLandingActions]);
+    if (shouldHideLanding) setOpen(false);
+  }, [shouldHideLanding]);
 
   const handleLogin = async () => {
     try {
@@ -56,16 +58,21 @@ export function Header() {
       <header className="w-full bg-[var(--surface)]">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-6 py-5">
           <Link to="/" className="flex items-center px-0 py-0">
-            <LogoMark className="h-10 w-auto text-[#ece5d9]" />
+            <img
+              src="/images/logobio4dev.png"
+              alt="Bio4Dev"
+              className="h-10 w-auto"
+              loading="eager"
+            />
           </Link>
 
-          {!hideLandingActions && (
+          {!shouldHideLanding && (
             <nav className="hidden flex-1 items-center gap-6 lg:flex">
               <LinkSet />
             </nav>
           )}
 
-          {!hideLandingActions && (
+          {!shouldHideLanding && (
             <div className="ml-auto hidden items-center gap-2 lg:flex">
               <button
                 onClick={handleLogin}
@@ -85,7 +92,7 @@ export function Header() {
             </div>
           )}
 
-          {!hideLandingActions && (
+          {!shouldHideLanding && (
             <button
               className="flex h-11 w-11 items-center justify-center rounded-full border border-[#c3986b]/30 bg-[#2c2621] text-[#ece5d9] shadow-[0_12px_25px_-18px_rgba(0,0,0,0.35)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden"
               onClick={() => setOpen((prev) => !prev)}
@@ -98,7 +105,7 @@ export function Header() {
         </div>
       </header>
 
-      {!hideLandingActions && open && (
+      {!shouldHideLanding && open && (
         <div className="fixed inset-0 z-30 bg-[#2c2621]/90 backdrop-blur-2xl lg:hidden">
           <div className="mx-4 mt-24 rounded-3xl border border-[#c3986b]/25 bg-[#2c2621] p-6 text-[#ece5d9] shadow-[0_28px_80px_-50px_rgba(0,0,0,0.6)]">
             <div className="flex flex-col gap-2">
@@ -126,37 +133,5 @@ export function Header() {
         </div>
       )}
     </>
-  );
-}
-
-function LogoMark({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 360 90"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="Bio4Dev logo"
-    >
-      <rect
-        x="10"
-        y="5"
-        width="42"
-        height="70"
-        rx="9"
-        stroke="currentColor"
-        strokeWidth="8"
-      />
-      <text
-        x="124"
-        y="60"
-        fill="currentColor"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontSize="52"
-        fontWeight="400"
-      >
-        bio4dev
-      </text>
-    </svg>
   );
 }

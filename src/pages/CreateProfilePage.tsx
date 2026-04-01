@@ -4,7 +4,6 @@ import { Loader2, Palette, Zap, Rocket, Users } from "lucide-react";
 import { profileApi } from "@/lib/api";
 import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
-import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { landingTheme } from "@/theme/landingTheme";
 import activistImg from "@/temas-lintree/preview-screenshots/activist.png";
@@ -272,8 +271,6 @@ export function CreateProfilePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <Header />
-
       <div className="flex-1 py-12 px-4 lg:px-6">
         <div className="max-w-4xl mx-auto">
           <div className="space-y-10">
