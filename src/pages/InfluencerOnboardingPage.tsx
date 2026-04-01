@@ -32,6 +32,7 @@ import { Footer } from "@/components/landing/Footer";
 import { landingTheme } from "@/theme/landingTheme";
 import { profileApi, socialApi } from "@/lib/api";
 import { useSaveTemplate } from "@/hooks/useSaveTemplate";
+import { useAuthStore } from "@/stores/authStore";
 
 type PlatformId =
   | "instagram"
@@ -696,6 +697,7 @@ export function InfluencerOnboardingPage({
     templateId?: string;
   }>();
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuthStore();
   const [state, setState] = React.useState<OnboardingState>(getDefaultState);
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
   const [isSavingLinks, setIsSavingLinks] = React.useState(false);
@@ -746,14 +748,14 @@ export function InfluencerOnboardingPage({
   }, [state, profileId]);
 
   React.useEffect(() => {
-    if (!profileId || resolvedTemplateId) return;
+      if (!profileId || resolvedTemplateId) return;
 
     // Fallback: recuperar tema salvo localmente (ex: modo rascunho sem login)
-    const savedTheme = localStorage.getItem(`bio4dev_theme_${profileId}`);
-    if (savedTheme) {
-      setResolvedTemplateId(savedTheme);
-      return;
-    }
+      const savedTheme = localStorage.getItem(`bio4dev_theme_${profileId}`);
+      if (savedTheme) {
+        setResolvedTemplateId(savedTheme);
+        return;
+      }
 
     // Se não for rascunho, tentar no backend
     if (!profileId.startsWith("draft-")) {
@@ -900,8 +902,10 @@ export function InfluencerOnboardingPage({
     setAvatarError(null);
   };
 
-  const saveSocialsFromPlatforms = async () => {
-    const currentSocials = await socialApi.getByProfileId(profileId);
+  const saveSocialsFromPlatforms = async (targetProfileId: string) => {
+    if (targetProfileId.startsWith("draft-")) return;
+
+    const currentSocials = await socialApi.getByProfileId(targetProfileId);
     for (const social of currentSocials) {
       await socialApi.delete(social.id);
     }
@@ -936,11 +940,11 @@ export function InfluencerOnboardingPage({
     for (let i = 0; i < selected.length; i += 1) {
       const item = selected[i];
       const data = {
-        profileId,
-        plataforma: item.platform as any,
-        url: item.url,
-        ordem: i + 1,
-      };
+          profileId: targetProfileId,
+          plataforma: item.platform as any,
+          url: item.url,
+          ordem: i + 1,
+        };
       console.log("Sending social data:", data);
       await socialApi.create(data);
     }
@@ -949,7 +953,22 @@ export function InfluencerOnboardingPage({
   const handleContinueFromLinks = async () => {
     setIsSavingLinks(true);
     try {
-      await saveSocialsFromPlatforms();
+      if (!profileId) {
+        toast.error("Perfil não encontrado.");
+        return;
+      }
+
+      if (profileId.startsWith("draft-")) {
+        // Em modo draft, apenas segue para próxima etapa sem chamar API
+        trackOnboardingEvent("links_saved_draft", {
+          profileId,
+          selectedPlatforms: state.selectedPlatforms,
+        });
+        updateState({ step: 3 });
+        return;
+      }
+
+      await saveSocialsFromPlatforms(profileId);
       trackOnboardingEvent("links_saved", {
         profileId,
         selectedPlatforms: state.selectedPlatforms,
@@ -967,11 +986,56 @@ export function InfluencerOnboardingPage({
   const handleFinish = async () => {
     setIsSavingAll(true);
     try {
-      await saveSocialsFromPlatforms();
+      if (!profileId) {
+        toast.error("Perfil não encontrado.");
+        return;
+      }
+
+      // Se for rascunho e não estiver logado, exigir login
+      if (profileId.startsWith("draft-") && !isAuthenticated) {
+        toast.error("Faça login para publicar seu perfil.");
+        navigate("/profile/type");
+        return;
+      }
+
+      let effectiveProfileId = profileId;
+
+      // Converter draft em perfil real se logado
+      if (profileId.startsWith("draft-") && isAuthenticated && user?.id) {
+        const draftDataRaw = localStorage.getItem(
+          `bio4dev_draft_profile_${profileId}`,
+        );
+        const draftData = draftDataRaw ? JSON.parse(draftDataRaw) : {};
+        const templateType = draftData.templateType || resolvedTemplateId;
+
+        const createPayload = {
+          userId: user.id,
+          username: draftData.username || state.displayName || "",
+          slug: draftData.slug || state.displayName || "",
+          templateType: templateType || "template_04",
+          published: false,
+        } as const;
+
+        try {
+          const response = await profileApi.create(createPayload);
+          effectiveProfileId = response.profile?.id || response.id;
+
+          localStorage.setItem("bio4dev_profile_id", effectiveProfileId);
+          localStorage.setItem(
+            `bio4dev_theme_${effectiveProfileId}`,
+            templateType,
+          );
+        } catch (error) {
+          console.error("Erro ao criar perfil real a partir do draft:", error);
+          toast.error("Não foi possível criar seu perfil. Tente novamente.");
+          return;
+        }
+      }
+
+      await saveSocialsFromPlatforms(effectiveProfileId);
+
       const buttons = state.additionalLinks
-        .filter(
-          (link) => link.url.trim() && link.label.trim(),
-        )
+        .filter((link) => link.url.trim() && link.label.trim())
         .map((link, index) => ({
           label: link.label.trim() || `Link adicional ${index + 1}`,
           url: link.url.trim(),
@@ -980,7 +1044,7 @@ export function InfluencerOnboardingPage({
           style: "primary",
         }));
 
-      await save(profileId, {
+      await save(effectiveProfileId, {
         themeId: resolvedTemplateId,
         name: state.displayName.trim(),
         bio: state.bio.trim(),
@@ -1000,12 +1064,14 @@ export function InfluencerOnboardingPage({
           .filter(Boolean) as Array<{ platform: string; url: string }>,
         buttons,
       });
+
       trackOnboardingEvent("onboarding_completed", {
-        profileId,
+        profileId: effectiveProfileId,
         selectedPlatforms: state.selectedPlatforms,
       });
+
       navigate(
-        `/dashboard/influencer/${resolvedTemplateId}/${profileId}/preview`,
+        `/dashboard/influencer/${resolvedTemplateId}/${effectiveProfileId}/preview`,
       );
     } catch {
       toast.error("Nao foi possivel salvar seu perfil.");

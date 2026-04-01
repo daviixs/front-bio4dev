@@ -86,14 +86,7 @@ export default function App() {
             path="/profile/create/developer"
             element={<DeveloperCreateProfilePage />}
           />
-          <Route
-            path="/onboarding/:profileId"
-            element={
-              <ProtectedRoute>
-                <InfluencerOnboardingPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/onboarding/:profileId" element={<InfluencerOnboardingPage />} />
 
           <Route
             path="/dashboard/portfolio/:portfolioId"

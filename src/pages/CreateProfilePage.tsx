@@ -189,151 +189,54 @@ export function CreateProfilePage() {
       return;
     }
 
-    // Se não houver usuário logado, seguir em modo rascunho (onboarding primeiro, login depois)
-    if (!user?.id) {
+    const templateMap: Record<string, string> = {
+      activist: "template_04",
+      altmusic: "template_05",
+      architect: "template_06",
+      artist: "template_07",
+      athlete: "template_08",
+      business: "template_09",
+      creator: "template_10",
+      ecofashion: "template_11",
+      gourmet: "template_12",
+      innovation: "template_13",
+      streamer: "template_14",
+    };
+
+    const templateType = templateMap[selectedTemplate] || "template_04";
+
+    setIsLoading(true);
+    try {
+      const availability = await profileApi.checkSlug(slugValue);
+      if (!availability.available) {
+        setSlugError(availability.message || "Slug já está em uso");
+        setIsSlugModalOpen(true);
+        return;
+      }
+
       const draftProfileId =
         typeof crypto !== "undefined" && crypto.randomUUID
           ? `draft-${crypto.randomUUID()}`
           : `draft-${Date.now().toString(36)}`;
 
       localStorage.setItem("bio4dev_profile_id", draftProfileId);
-      localStorage.setItem(`bio4dev_theme_${draftProfileId}`, selectedTemplate);
+      localStorage.setItem(`bio4dev_theme_${draftProfileId}`, templateType);
       localStorage.setItem(
         `bio4dev_draft_profile_${draftProfileId}`,
         JSON.stringify({
           username: displayName,
           slug: slugValue,
-          template: selectedTemplate,
+          templateType,
         }),
       );
 
       toast.info("Vamos montar sua bio primeiro. Conta será criada no final.");
       navigate(`/onboarding/${draftProfileId}`);
-      return;
-    }
-
-    const userId = user.id;
-    console.log("User info:", {
-      user,
-      userId,
-      userType: typeof userId,
-      userStringified: JSON.stringify(user),
-    });
-
-    setIsLoading(true);
-    try {
-      // Mapear o tema selecionado para templateType do backend (template_04 até template_11 são os 11 temas)
-      const templateMap: Record<string, string> = {
-        activist: "template_04",
-        altmusic: "template_05",
-        architect: "template_06",
-        artist: "template_07",
-        athlete: "template_08",
-        business: "template_09",
-        creator: "template_10",
-        ecofashion: "template_11",
-        gourmet: "template_12",
-        innovation: "template_13",
-        streamer: "template_14",
-      };
-
-      const templateType = templateMap[selectedTemplate] || "template_04";
-
-      console.log("Creating profile with:", {
-        userId,
-        username: displayName,
-        slug: slugValue,
-        templateType,
-        influencerTheme: selectedTemplate,
-      });
-
-      // Criar perfil no backend
-      const response = await profileApi.create({
-        userId,
-        username: displayName,
-        slug: slugValue,
-        bio: `Perfil ${selectedTemplate}`,
-        avatarUrl: undefined,
-        templateType: templateType,
-        published: true,
-      });
-
-      console.log("Profile created successfully:", response);
-      console.log("Response structure:", {
-        hasProfile: !!response.profile,
-        profileId: response.profile?.id,
-        responseId: response.id,
-        responseKeys: Object.keys(response),
-        profileKeys: response.profile ? Object.keys(response.profile) : [],
-        fullResponse: JSON.stringify(response, null, 2),
-      });
-
-      // O backend retorna { message, profile: { id, ... } }
-      const profileId = response.profile?.id || response.id;
-
-      console.log("✅ Extracted profileId:", profileId);
-      console.log("✅ Type of profileId:", typeof profileId);
-      console.log(
-        "✅ Is valid UUID:",
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-          profileId || "",
-        ),
-      );
-
-      // Validação rigorosa do profileId
-      if (
-        !profileId ||
-        typeof profileId !== "string" ||
-        profileId === "undefined" ||
-        profileId.trim() === ""
-      ) {
-        console.error("❌ Profile ID inválido na resposta:", {
-          profileId,
-          type: typeof profileId,
-          response,
-        });
-        toast.error(
-          "Erro: ID do perfil não foi retornado corretamente pelo servidor",
-        );
-        return;
-      }
-
-      // Validar se é um UUID válido
-      const uuidRegex =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      if (!uuidRegex.test(profileId)) {
-        console.error("❌ Profile ID não é um UUID válido:", profileId);
-        toast.error("Erro: ID do perfil está em formato inválido");
-        return;
-      }
-
-      // Salvar informações do tema para o editor
-      localStorage.setItem("bio4dev_profile_id", profileId);
-      localStorage.setItem(`bio4dev_theme_${profileId}`, selectedTemplate);
-
-      const navigationPath = `/onboarding/${profileId}`;
-      console.log("🚀 Navigating to:", navigationPath);
-      console.log("🚀 Final profileId being used:", profileId);
-
-      toast.success("Perfil criado com sucesso!");
-
-      // Pequeno delay para garantir que o estado seja salvo
-      setTimeout(() => {
-        navigate(navigationPath);
-      }, 100);
     } catch (error: any) {
-      console.error("Error creating profile:", error);
+      console.error("Error preparing draft profile:", error);
       const backendMessage = error.response?.data?.message || "";
-
-      if (error.response?.status === 400 && backendMessage) {
-        setSlugError(backendMessage);
-        setIsSlugModalOpen(true);
-        toast.error(backendMessage);
-      } else {
-        const errorMessage =
-          backendMessage || error.message || "Erro ao criar perfil";
-        toast.error(errorMessage);
-      }
+      const errorMessage = backendMessage || error.message || "Erro ao criar rascunho";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

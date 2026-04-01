@@ -239,6 +239,28 @@ export const profileApi = {
     return response.data;
   },
 
+  /**
+   * Verifica se um slug está disponível.
+   * Considera 404 como disponível; qualquer outra resposta (200/403/400) indica indisponibilidade.
+   */
+  checkSlug: async (slug: string) => {
+    try {
+      await api.get(`/profile/slug/${slug}`);
+      return { available: false } as const;
+    } catch (error: any) {
+      const status = error?.response?.status;
+      if (status === 404) {
+        return { available: true } as const;
+      }
+      // slug existe mas pode estar não publicado ou outra validação
+      if (status === 403 || status === 400 || status === 401) {
+        const message = error?.response?.data?.message;
+        return { available: false, message } as const;
+      }
+      throw error;
+    }
+  },
+
   update: async (id: string, data: UpdateProfileDTO) => {
     const response = await api.post<{ message: string; profile: Profile }>(
       `/profile/${id}`,
