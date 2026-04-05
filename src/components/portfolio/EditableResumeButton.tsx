@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { FileDown, Pencil, Upload, Loader2 } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import React, { useState } from 'react';
+import { FileDown, Pencil, Upload, Loader2 } from 'lucide-react';
+import { cn } from '@/components/ui/utils';
 import {
   Dialog,
   DialogContent,
@@ -8,12 +8,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { uploadApi } from "@/lib/api";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { uploadApi } from '@/lib/api';
 
 interface EditableResumeButtonProps {
   resumeUrl?: string;
@@ -27,13 +27,13 @@ export function EditableResumeButton({
   className,
 }: EditableResumeButtonProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [tempUrl, setTempUrl] = useState(resumeUrl || "");
+  const [tempUrl, setTempUrl] = useState(resumeUrl || '');
   const [isUploading, setIsUploading] = useState(false);
 
   const handleSave = () => {
     onResumeUpdate(tempUrl);
     setIsEditing(false);
-    toast.success("URL do currículo atualizado!");
+    toast.success('URL do currículo atualizado!');
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,11 +46,11 @@ export function EditableResumeButton({
       setTempUrl(response.url);
       onResumeUpdate(response.url);
       setIsEditing(false);
-      toast.success("Currículo enviado com sucesso!");
+      toast.success('Currículo enviado com sucesso!');
     } catch (error: any) {
-      console.error("Erro ao fazer upload:", error);
+      console.error('Erro ao fazer upload:', error);
       toast.error(
-        error.response?.data?.message || "Erro ao fazer upload do currículo"
+        error.response?.data?.message || 'Erro ao fazer upload do currículo',
       );
     } finally {
       setIsUploading(false);
@@ -60,19 +60,19 @@ export function EditableResumeButton({
   return (
     <>
       {/* Botão Inline dentro do Card */}
-      <div className={cn("w-full", className)}>
+      <div className={cn('w-full', className)}>
         {resumeUrl ? (
           <a
             href={resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "inline-flex items-center justify-center gap-2 px-4 py-2 w-full",
-              "bg-gradient-to-r from-blue-600 to-purple-600",
-              "text-white font-semibold rounded-lg text-sm",
-              "hover:from-blue-700 hover:to-purple-700",
-              "transition-all duration-300",
-              "shadow-md hover:shadow-lg"
+              'inline-flex items-center justify-center gap-2 px-4 py-2 w-full',
+              'bg-gray-900',
+              'text-white font-semibold rounded-lg text-sm',
+              'hover:bg-gray-800',
+              'transition-all duration-300',
+              'shadow-md hover:shadow-lg',
             )}
           >
             <FileDown size={16} />
@@ -82,12 +82,12 @@ export function EditableResumeButton({
           <button
             onClick={() => setIsEditing(true)}
             className={cn(
-              "inline-flex items-center justify-center gap-2 px-4 py-2 w-full",
-              "bg-gradient-to-r from-gray-400 to-gray-500",
-              "text-white font-semibold rounded-lg text-sm",
-              "hover:from-gray-500 hover:to-gray-600",
-              "transition-all duration-300",
-              "shadow-md hover:shadow-lg"
+              'inline-flex items-center justify-center gap-2 px-4 py-2 w-full',
+              'bg-gray-900',
+              'text-white font-semibold rounded-lg text-sm',
+              'hover:bg-gray-800',
+              'transition-all duration-300',
+              'shadow-md hover:shadow-lg',
             )}
           >
             <Upload size={16} />
@@ -99,14 +99,14 @@ export function EditableResumeButton({
         <button
           onClick={() => setIsEditing(true)}
           className={cn(
-            "absolute -top-2 -right-2",
-            "w-8 h-8 rounded-full",
-            "bg-white border-2 border-blue-600",
-            "flex items-center justify-center",
-            "shadow-lg",
-            "opacity-0 group-hover:opacity-100",
-            "transition-opacity duration-200",
-            "hover:bg-blue-50"
+            'absolute -top-2 -right-2',
+            'w-8 h-8 rounded-full',
+            'bg-white border-2 border-blue-600',
+            'flex items-center justify-center',
+            'shadow-lg',
+            'opacity-0 group-hover:opacity-100',
+            'transition-opacity duration-200',
+            'hover:bg-blue-50',
           )}
         >
           <Pencil size={14} className="text-blue-600" />
@@ -183,7 +183,7 @@ export function EditableResumeButton({
               variant="outline"
               onClick={() => {
                 setIsEditing(false);
-                setTempUrl(resumeUrl || "");
+                setTempUrl(resumeUrl || '');
               }}
             >
               Cancelar
