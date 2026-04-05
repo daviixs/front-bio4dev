@@ -9,41 +9,88 @@ interface WorkHistoryProps {
 export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
   const displayWorkHistory = apiWorkHistory || [
     {
-      company: "Empresa de E-commerce XPTO",
-      period: "2023 - Atual",
-      summary: "Desenvolvimento de plataforma de e-commerce escalável para mais de 100 mil usuários ativos. Refatoração completa do frontend para melhorar performance e experiência do usuário.",
-      technologies: [{ technology: "React" }, { technology: "TypeScript" }, { technology: "Node.js" }, { technology: "PostgreSQL" }, { technology: "AWS" }, { technology: "Docker" }],
-      responsibilities: [
-        { responsibility: "Desenvolvimento de componentes reutilizáveis e escaláveis" },
-        { responsibility: "Implementação de testes unitários e integração contínua" },
-        { responsibility: "Otimização de performance e SEO" }
+      company: 'Empresa de E-commerce XPTO',
+      period: '2023 - Atual',
+      summary:
+        'Desenvolvimento de plataforma de e-commerce escalável para mais de 100 mil usuários ativos. Refatoração completa do frontend para melhorar performance e experiência do usuário.',
+      technologies: [
+        { technology: 'React' },
+        { technology: 'TypeScript' },
+        { technology: 'Node.js' },
+        { technology: 'PostgreSQL' },
+        { technology: 'AWS' },
+        { technology: 'Docker' },
       ],
-      impact: "Redução de 40% no tempo de carregamento e aumento de 25% na taxa de conversão."
+      responsibilities: [
+        {
+          responsibility:
+            'Desenvolvimento de componentes reutilizáveis e escaláveis',
+        },
+        {
+          responsibility:
+            'Implementação de testes unitários e integração contínua',
+        },
+        { responsibility: 'Otimização de performance e SEO' },
+      ],
+      impact:
+        'Redução de 40% no tempo de carregamento e aumento de 25% na taxa de conversão.',
     },
     {
-      company: "StartUp FinTech ABC",
-      period: "2022 - 2023",
-      summary: "Criação de dashboard financeiro para gestão de investimentos e análise de carteiras. Integração com múltiplas APIs bancárias e de mercado financeiro.",
-      technologies: [{ technology: "React" }, { technology: "Next.js" }, { technology: "Tailwind CSS" }, { technology: "GraphQL" }, { technology: "MongoDB" }],
-      responsibilities: [
-        { responsibility: "Arquitetura e desenvolvimento do frontend da aplicação" },
-        { responsibility: "Integração com APIs de terceiros e tratamento de dados financeiros" },
-        { responsibility: "Desenvolvimento de gráficos e visualizações de dados em tempo real" }
+      company: 'StartUp FinTech ABC',
+      period: '2022 - 2023',
+      summary:
+        'Criação de dashboard financeiro para gestão de investimentos e análise de carteiras. Integração com múltiplas APIs bancárias e de mercado financeiro.',
+      technologies: [
+        { technology: 'React' },
+        { technology: 'Next.js' },
+        { technology: 'Tailwind CSS' },
+        { technology: 'GraphQL' },
+        { technology: 'MongoDB' },
       ],
-      impact: "Aplicação lançada com sucesso, atendendo mais de 5 mil usuários nos primeiros 3 meses."
+      responsibilities: [
+        {
+          responsibility:
+            'Arquitetura e desenvolvimento do frontend da aplicação',
+        },
+        {
+          responsibility:
+            'Integração com APIs de terceiros e tratamento de dados financeiros',
+        },
+        {
+          responsibility:
+            'Desenvolvimento de gráficos e visualizações de dados em tempo real',
+        },
+      ],
+      impact:
+        'Aplicação lançada com sucesso, atendendo mais de 5 mil usuários nos primeiros 3 meses.',
     },
     {
-      company: "Agência Digital Criativa",
-      period: "2021 - 2022",
-      summary: "Desenvolvimento de sites institucionais e landing pages para diversos clientes. Foco em responsividade, acessibilidade e otimização de performance.",
-      technologies: [{ technology: "HTML5" }, { technology: "CSS3" }, { technology: "JavaScript" }, { technology: "WordPress" }, { technology: "Sass" }, { technology: "Git" }],
-      responsibilities: [
-        { responsibility: "Transformação de designs (Figma/Adobe XD) em código responsivo" },
-        { responsibility: "Implementação de animações e interações complexas" },
-        { responsibility: "Garantia de compatibilidade cross-browser e acessibilidade" }
+      company: 'Agência Digital Criativa',
+      period: '2021 - 2022',
+      summary:
+        'Desenvolvimento de sites institucionais e landing pages para diversos clientes. Foco em responsividade, acessibilidade e otimização de performance.',
+      technologies: [
+        { technology: 'HTML5' },
+        { technology: 'CSS3' },
+        { technology: 'JavaScript' },
+        { technology: 'WordPress' },
+        { technology: 'Sass' },
+        { technology: 'Git' },
       ],
-      impact: "Entrega de mais de 15 projetos dentro do prazo e orçamento, com taxa de satisfação de clientes acima de 95%."
-    }
+      responsibilities: [
+        {
+          responsibility:
+            'Transformação de designs (Figma/Adobe XD) em código responsivo',
+        },
+        { responsibility: 'Implementação de animações e interações complexas' },
+        {
+          responsibility:
+            'Garantia de compatibilidade cross-browser e acessibilidade',
+        },
+      ],
+      impact:
+        'Entrega de mais de 15 projetos dentro do prazo e orçamento, com taxa de satisfação de clientes acima de 95%.',
+    },
   ];
 
   return (
@@ -55,7 +102,8 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
             Experiência Profissional
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Histórico de projetos e empresas onde apliquei minhas habilidades para criar soluções impactantes
+            Histórico de projetos e empresas onde apliquei minhas habilidades
+            para criar soluções impactantes
           </p>
         </div>
 
@@ -74,14 +122,18 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                 }`}
               >
                 {/* Card de conteúdo */}
-                <div className={`w-full md:w-5/12 ${index % 2 === 0 ? '' : 'md:text-right'}`}>
+                <div
+                  className={`w-full md:w-5/12 ${index % 2 === 0 ? '' : 'md:text-right'}`}
+                >
                   <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border border-gray-100">
                     {/* Cabeçalho */}
                     <div className="mb-4">
                       <h3 className="text-xl mb-2 text-gray-900">
                         {work.company}
                       </h3>
-                      <div className={`flex items-center gap-2 text-sm text-gray-700 ${index % 2 === 0 ? '' : 'md:justify-end'}`}>
+                      <div
+                        className={`flex items-center gap-2 text-sm text-gray-700 ${index % 2 === 0 ? '' : 'md:justify-end'}`}
+                      >
                         <Calendar className="w-4 h-4" />
                         <span>{work.period}</span>
                       </div>
@@ -94,29 +146,47 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
 
                     {/* Tecnologias */}
                     <div className="mb-4">
-                      <h4 className="text-sm text-gray-900 mb-2">Tecnologias:</h4>
-                      <div className={`flex flex-wrap gap-2 ${index % 2 === 0 ? '' : 'md:justify-end'}`}>
-                        {work.technologies.map((tech: any, techIndex: number) => (
-                          <span
-                            key={techIndex}
-                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                          >
-                            {typeof tech === 'string' ? tech : tech.technology}
-                          </span>
-                        ))}
+                      <h4 className="text-sm text-gray-900 mb-2">
+                        Tecnologias:
+                      </h4>
+                      <div
+                        className={`flex flex-wrap gap-2 ${index % 2 === 0 ? '' : 'md:justify-end'}`}
+                      >
+                        {work.technologies.map(
+                          (tech: any, techIndex: number) => (
+                            <span
+                              key={techIndex}
+                              className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                            >
+                              {typeof tech === 'string'
+                                ? tech
+                                : tech.technology}
+                            </span>
+                          ),
+                        )}
                       </div>
                     </div>
 
                     {/* Responsabilidades */}
                     <div className="mb-4">
-                      <h4 className="text-sm text-gray-900 mb-2">Responsabilidades:</h4>
-                      <ul className={`space-y-1 text-sm text-gray-700 ${index % 2 === 0 ? 'list-disc list-inside' : 'md:list-none'}`}>
-                        {work.responsibilities.map((resp: any, respIndex: number) => (
-                          <li key={respIndex} className="leading-relaxed">
-                            {index !== 0 && <span className="md:inline hidden">• </span>}
-                            {typeof resp === 'string' ? resp : resp.responsibility}
-                          </li>
-                        ))}
+                      <h4 className="text-sm text-gray-900 mb-2">
+                        Responsabilidades:
+                      </h4>
+                      <ul
+                        className={`space-y-1 text-sm text-gray-700 ${index % 2 === 0 ? 'list-disc list-inside' : 'md:list-none'}`}
+                      >
+                        {work.responsibilities.map(
+                          (resp: any, respIndex: number) => (
+                            <li key={respIndex} className="leading-relaxed">
+                              {index !== 0 && (
+                                <span className="md:inline hidden">• </span>
+                              )}
+                              {typeof resp === 'string'
+                                ? resp
+                                : resp.responsibility}
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
 
@@ -128,15 +198,16 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                       </p>
                     </div>
                   </div>
-
-                  {/* Ícone central (visível apenas em desktop) */}
-                  <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gray-200 rounded-full items-center justify-center shadow-lg">
-                    <Briefcase className="w-6 h-6 text-gray-600" />
-                  </div>
-
-                  {/* Espaço vazio do outro lado (apenas desktop) */}
-                  <div className="hidden md:block w-5/12"></div>
                 </div>
+
+                {/* Ícone central (visível apenas em desktop) */}
+                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gray-200 rounded-full items-center justify-center shadow-lg">
+                  <Briefcase className="w-6 h-6 text-gray-600" />
+                </div>
+
+                {/* Espaço vazio do outro lado (apenas desktop) */}
+                <div className="hidden md:block w-5/12"></div>
+              </div>
             ))}
           </div>
 
