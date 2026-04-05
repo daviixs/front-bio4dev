@@ -1,7 +1,16 @@
-import { PortfolioData, PortfolioListItem, PreviewToken } from "./types";
+import { PortfolioData, PortfolioListItem, PreviewToken } from './types';
 
-// Vite usa import.meta.env ao invés de process.env
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// Detecta automaticamente o host atual (localhost ou IP local) para acessar a API
+const getApiBaseUrl = () => {
+  const currentHost =
+    typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.hostname}`
+      : 'http://localhost';
+  return import.meta.env.VITE_API_URL
+    ? import.meta.env.VITE_API_URL
+    : `${currentHost}:3000`;
+};
+const API_BASE_URL = getApiBaseUrl();
 
 export class PortfolioService {
   /**
@@ -15,28 +24,28 @@ export class PortfolioService {
   ): Promise<PortfolioData> {
     const url = new URL(`${API_BASE_URL}/profile/slug/${slug}`);
     if (previewToken) {
-      url.searchParams.append("preview", previewToken);
+      url.searchParams.append('preview', previewToken);
     }
 
     const response = await fetch(url.toString(), {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      cache: "no-store", // Next.js 13+: sempre buscar dados frescos
+      cache: 'no-store', // Next.js 13+: sempre buscar dados frescos
     });
 
     if (!response.ok) {
       if (response.status === 404) {
-        throw new Error("PORTFOLIO_NOT_FOUND");
+        throw new Error('PORTFOLIO_NOT_FOUND');
       }
       if (response.status === 403) {
-        throw new Error("PORTFOLIO_NOT_PUBLISHED");
+        throw new Error('PORTFOLIO_NOT_PUBLISHED');
       }
       if (response.status === 401) {
-        throw new Error("INVALID_PREVIEW_TOKEN");
+        throw new Error('INVALID_PREVIEW_TOKEN');
       }
-      throw new Error("API_ERROR");
+      throw new Error('API_ERROR');
     }
 
     return response.json();
@@ -48,14 +57,14 @@ export class PortfolioService {
    */
   static async listByUserId(userId: string): Promise<PortfolioListItem[]> {
     const response = await fetch(`${API_BASE_URL}/profile/user/${userId}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
-      throw new Error("FAILED_TO_FETCH_PORTFOLIOS");
+      throw new Error('FAILED_TO_FETCH_PORTFOLIOS');
     }
 
     return response.json();
@@ -69,15 +78,15 @@ export class PortfolioService {
     const response = await fetch(
       `${API_BASE_URL}/profile/${profileId}/preview-token`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       },
     );
 
     if (!response.ok) {
-      throw new Error("FAILED_TO_GENERATE_TOKEN");
+      throw new Error('FAILED_TO_GENERATE_TOKEN');
     }
 
     return response.json();

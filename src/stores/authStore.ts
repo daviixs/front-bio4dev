@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { User, ProfileComplete } from "@/types";
-import { profileApi, configureAuthInterceptors, api } from "@/lib/api";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { User, ProfileComplete } from '@/types';
+import { profileApi, configureAuthInterceptors, api } from '@/lib/api';
 
 interface AuthState {
   user: User | null;
@@ -12,7 +12,10 @@ interface AuthState {
   error: string | null;
 
   loginWithGoogle: () => Promise<void>;
-  handleOAuthCallback: (code: string, state?: string | null) => Promise<boolean | void>;
+  handleOAuthCallback: (
+    code: string,
+    state?: string | null,
+  ) => Promise<boolean | void>;
   refreshAccessToken: () => Promise<string | null>;
   logout: () => Promise<void>;
   setProfile: (profile: ProfileComplete | null) => void;
@@ -34,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           const response = await api.get<{ url: string; state: string }>(
-            "/auth/google",
+            '/auth/google',
           );
           const { url } = response.data;
           window.location.href = url;
@@ -43,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error:
               error.response?.data?.message ||
-              "Não foi possível iniciar login com Google",
+              'Não foi possível iniciar login com Google',
           });
         }
       },
@@ -51,19 +54,24 @@ export const useAuthStore = create<AuthState>()(
       handleOAuthCallback: async (code: string, state?: string | null) => {
         set({ isLoading: true, error: null });
         try {
-          const url = new URL(
-            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/google/callback`,
-          );
-          url.searchParams.set("code", code);
-          if (state) url.searchParams.set("state", state);
+          const currentHost =
+            typeof window !== 'undefined'
+              ? `${window.location.protocol}//${window.location.hostname}`
+              : 'http://localhost';
+          const apiUrl = import.meta.env.VITE_API_URL
+            ? import.meta.env.VITE_API_URL
+            : `${currentHost}:3000`;
+          const url = new URL(`${apiUrl}/auth/google/callback`);
+          url.searchParams.set('code', code);
+          if (state) url.searchParams.set('state', state);
 
           const response = await fetch(url.toString(), {
-            method: "GET",
-            credentials: "include",
+            method: 'GET',
+            credentials: 'include',
           });
 
           if (!response.ok) {
-            throw new Error("Falha ao concluir login com Google");
+            throw new Error('Falha ao concluir login com Google');
           }
 
           const data = await response.json();
@@ -81,7 +89,7 @@ export const useAuthStore = create<AuthState>()(
           set({
             error:
               error.message ||
-              "Não foi possível autenticar com Google. Tente novamente.",
+              'Não foi possível autenticar com Google. Tente novamente.',
             isLoading: false,
             isAuthenticated: false,
             accessToken: null,
@@ -93,16 +101,20 @@ export const useAuthStore = create<AuthState>()(
 
       refreshAccessToken: async () => {
         try {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/refresh`,
-            {
-              method: "POST",
-              credentials: "include",
-            },
-          );
+          const currentHost =
+            typeof window !== 'undefined'
+              ? `${window.location.protocol}//${window.location.hostname}`
+              : 'http://localhost';
+          const apiUrl = import.meta.env.VITE_API_URL
+            ? import.meta.env.VITE_API_URL
+            : `${currentHost}:3000`;
+          const response = await fetch(`${apiUrl}/auth/refresh`, {
+            method: 'POST',
+            credentials: 'include',
+          });
 
           if (!response.ok) {
-            throw new Error("Token refresh failed");
+            throw new Error('Token refresh failed');
           }
 
           const data = await response.json();
@@ -120,13 +132,17 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          await fetch(
-            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/auth/logout`,
-            {
-              method: "POST",
-              credentials: "include",
-            },
-          );
+          const currentHost =
+            typeof window !== 'undefined'
+              ? `${window.location.protocol}//${window.location.hostname}`
+              : 'http://localhost';
+          const apiUrl = import.meta.env.VITE_API_URL
+            ? import.meta.env.VITE_API_URL
+            : `${currentHost}:3000`;
+          await fetch(`${apiUrl}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include',
+          });
         } finally {
           set({
             user: null,
@@ -153,7 +169,7 @@ export const useAuthStore = create<AuthState>()(
             set({ profile: userProfile });
           }
         } catch (error) {
-          console.error("Erro ao carregar perfil:", error);
+          console.error('Erro ao carregar perfil:', error);
         }
       },
 
@@ -162,7 +178,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "bio4dev-auth",
+      name: 'bio4dev-auth',
       partialize: (state) => ({
         user: state.user,
         profile: state.profile,

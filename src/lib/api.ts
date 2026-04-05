@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import type {
   User,
   Profile,
@@ -26,15 +26,21 @@ import type {
   UpdateFooterDTO,
   LoginDTO,
   Footer,
-} from "@/types";
+} from '@/types';
 
-// Usa a variável de ambiente ou fallback para localhost:3000
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// Detecta automaticamente o host atual (localhost ou IP local) para acessar a API
+const currentHost =
+  typeof window !== 'undefined'
+    ? `${window.location.protocol}//${window.location.hostname}`
+    : 'http://localhost';
+const API_BASE_URL = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL
+  : `${currentHost}:3000`;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -115,7 +121,7 @@ export const usersApi = {
   // Backend NestJS expõe /auth/register e /auth/login
   create: async (data: CreateUserDTO) => {
     const response = await api.post<{ message: string; user: User }>(
-      "/auth/register",
+      '/auth/register',
       data,
     );
     return response.data;
@@ -125,7 +131,7 @@ export const usersApi = {
     const response = await api.post<{
       message: string;
       user: User;
-    }>("/auth/login", data);
+    }>('/auth/login', data);
     return response.data;
   },
 
@@ -135,7 +141,7 @@ export const usersApi = {
   },
 
   getAll: async () => {
-    const response = await api.get<User[]>("/users");
+    const response = await api.get<User[]>('/users');
     return response.data;
   },
 
@@ -192,7 +198,7 @@ export const usersApi = {
 
 // ============ ANALYTICS ============
 export const analyticsApi = {
-  getOverview: async (profileId: string, range: string = "last30d") => {
+  getOverview: async (profileId: string, range: string = 'last30d') => {
     const response = await api.get(`/analytics/overview`, {
       params: { profileId, range },
     });
@@ -201,8 +207,8 @@ export const analyticsApi = {
 
   getTimeseries: async (
     profileId: string,
-    interval: "day" | "month" = "day",
-    range: string = "last90d",
+    interval: 'day' | 'month' = 'day',
+    range: string = 'last90d',
   ) => {
     const response = await api.get(`/analytics/timeseries`, {
       params: { profileId, interval, range },
@@ -213,7 +219,7 @@ export const analyticsApi = {
   getTopPages: async (
     profileId: string,
     limit: number = 10,
-    range: string = "last30d",
+    range: string = 'last30d',
   ) => {
     const response = await api.get(`/analytics/top-pages`, {
       params: { profileId, limit, range },
@@ -221,7 +227,7 @@ export const analyticsApi = {
     return response.data;
   },
 
-  getDevices: async (profileId: string, range: string = "last30d") => {
+  getDevices: async (profileId: string, range: string = 'last30d') => {
     const response = await api.get(`/analytics/devices`, {
       params: { profileId, range },
     });
@@ -233,7 +239,7 @@ export const analyticsApi = {
 export const profileApi = {
   create: async (data: CreateProfileDTO) => {
     const response = await api.post<{ message: string; profile: Profile }>(
-      "/profile",
+      '/profile',
       data,
     );
     return response.data;
@@ -275,7 +281,7 @@ export const profileApi = {
   },
 
   getAll: async () => {
-    const response = await api.get<Profile[]>("/profile");
+    const response = await api.get<Profile[]>('/profile');
     return response.data;
   },
 
@@ -314,7 +320,7 @@ export const profileApi = {
 export const legendaApi = {
   create: async (data: CreateLegendaDTO) => {
     const response = await api.post<{ message: string; legenda?: Legenda }>(
-      "/legenda",
+      '/legenda',
       data,
     );
     return response.data;
@@ -322,7 +328,7 @@ export const legendaApi = {
 
   update: async (
     id: string,
-    data: Partial<Omit<CreateLegendaDTO, "profileId">> & { greeting?: string },
+    data: Partial<Omit<CreateLegendaDTO, 'profileId'>> & { greeting?: string },
   ) => {
     const response = await api.patch<{ message: string; legenda: Legenda }>(
       `/legenda/${id}`,
@@ -351,7 +357,7 @@ export const legendaApi = {
 export const configApi = {
   create: async (data: CreateConfigDTO) => {
     const response = await api.post<{ message: string; config: Config }>(
-      "/config",
+      '/config',
       data,
     );
     return response.data;
@@ -385,7 +391,7 @@ export const configApi = {
 export const pagesApi = {
   create: async (data: CreatePageDTO) => {
     const response = await api.post<{ message: string; page: Page }>(
-      "/pages",
+      '/pages',
       data,
     );
     return response.data;
@@ -423,7 +429,7 @@ export const pagesApi = {
 // ============ SOCIAL ============
 export const socialApi = {
   create: async (data: CreateSocialDTO) => {
-    const response = await api.post<Social>("/social", data);
+    const response = await api.post<Social>('/social', data);
     return response.data;
   },
 
@@ -452,7 +458,7 @@ export const socialApi = {
 export const projetosApi = {
   create: async (data: CreateProjetoDTO) => {
     const response = await api.post<{ message: string; projeto: Projeto }>(
-      "/projects",
+      '/projects',
       data,
     );
     return response.data;
@@ -557,13 +563,13 @@ export const footerApi = {
 export const uploadApi = {
   uploadResume: async (file: File) => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
     const response = await api.post<{ url: string; message: string }>(
-      "/upload/resume",
+      '/upload/resume',
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       },
     );
@@ -612,12 +618,12 @@ export const linkButtonsApi = {
     const response = await api.post<{
       message: string;
       linkButton: LinkButton;
-    }>("/link-buttons", data);
+    }>('/link-buttons', data);
     return response.data;
   },
 
   getAll: async () => {
-    const response = await api.get<LinkButton[]>("/link-buttons");
+    const response = await api.get<LinkButton[]>('/link-buttons');
     return response.data;
   },
 
@@ -654,7 +660,7 @@ export const linkButtonsApi = {
 
   upsertMany: async (
     profileId: string,
-    buttons: Omit<CreateLinkButtonDTO, "profileId">[],
+    buttons: Omit<CreateLinkButtonDTO, 'profileId'>[],
   ) => {
     const response = await api.put<{
       message: string;
