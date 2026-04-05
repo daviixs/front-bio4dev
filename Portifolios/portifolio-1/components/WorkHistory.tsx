@@ -47,11 +47,11 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-20 px-6 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         {/* Título da Seção */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl mb-4 text-gray-900">
             Experiência Profissional
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -62,7 +62,7 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
         {/* Linha do Tempo */}
         <div className="relative">
           {/* Linha vertical central (visível apenas em desktop) */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-400 to-purple-400"></div>
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-300"></div>
 
           {/* Items da timeline */}
           <div className="space-y-12">
@@ -81,7 +81,7 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                       <h3 className="text-xl mb-2 text-gray-900">
                         {work.company}
                       </h3>
-                      <div className={`flex items-center gap-2 text-sm text-blue-600 ${index % 2 === 0 ? '' : 'md:justify-end'}`}>
+                      <div className={`flex items-center gap-2 text-sm text-gray-700 ${index % 2 === 0 ? '' : 'md:justify-end'}`}>
                         <Calendar className="w-4 h-4" />
                         <span>{work.period}</span>
                       </div>
@@ -99,7 +99,7 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                         {work.technologies.map((tech: any, techIndex: number) => (
                           <span
                             key={techIndex}
-                            className="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 rounded-full text-sm"
+                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
                           >
                             {typeof tech === 'string' ? tech : tech.technology}
                           </span>
@@ -113,7 +113,7 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                       <ul className={`space-y-1 text-sm text-gray-700 ${index % 2 === 0 ? 'list-disc list-inside' : 'md:list-none'}`}>
                         {work.responsibilities.map((resp: any, respIndex: number) => (
                           <li key={respIndex} className="leading-relaxed">
-                            {index % 2 !== 0 && <span className="md:inline hidden">• </span>}
+                            {index !== 0 && <span className="md:inline hidden">• </span>}
                             {typeof resp === 'string' ? resp : resp.responsibility}
                           </li>
                         ))}
@@ -123,29 +123,28 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                     {/* Impacto */}
                     <div className="pt-4 border-t border-gray-200">
                       <h4 className="text-sm text-gray-900 mb-2">Impacto:</h4>
-                      <p className="text-sm text-green-700 bg-green-50 p-3 rounded-lg">
+                      <p className="text-sm text-gray-700 bg-green-50 p-3 rounded-lg">
                         {work.impact}
                       </p>
                     </div>
                   </div>
-                </div>
 
-                {/* Ícone central (visível apenas em desktop) */}
-                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full items-center justify-center shadow-lg">
-                  <Briefcase className="w-6 h-6 text-white" />
-                </div>
+                  {/* Ícone central (visível apenas em desktop) */}
+                  <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gray-200 rounded-full items-center justify-center shadow-lg">
+                    <Briefcase className="w-6 h-6 text-gray-600" />
+                  </div>
 
-                {/* Espaço vazio do outro lado (apenas desktop) */}
-                <div className="hidden md:block w-5/12"></div>
-              </div>
+                  {/* Espaço vazio do outro lado (apenas desktop) */}
+                  <div className="hidden md:block w-5/12"></div>
+                </div>
             ))}
           </div>
-        </div>
 
-        {/* Indicador de início da carreira */}
-        <div className="text-center mt-12">
-          <div className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-lg">
-            Início da Jornada
+          {/* Indicador de início da carreira */}
+          <div className="text-center mt-12">
+            <div className="inline-block px-6 py-3 bg-gray-900 text-white rounded-full shadow-lg">
+              Início da Jornada
+            </div>
           </div>
         </div>
       </div>

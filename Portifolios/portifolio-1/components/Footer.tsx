@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Github,
   Linkedin,
@@ -8,8 +8,8 @@ import {
   Instagram,
   Youtube,
   FileDown,
-} from "lucide-react";
-import { Footer as FooterType, Social } from "@/types";
+} from 'lucide-react';
+import { Footer as FooterType, Social } from '@/types';
 
 interface FooterProps {
   footer?: FooterType;
@@ -30,11 +30,31 @@ export function Footer({ footer, socials }: FooterProps) {
 
   // Prefer links set in the footer (what the user edits in the editor)
   const footerSocials = [
-    footer?.github && { href: footer.github, label: "GitHub", icon: <Github size={24} /> },
-    footer?.linkedin && { href: footer.linkedin, label: "LinkedIn", icon: <Linkedin size={24} /> },
-    footer?.twitter && { href: footer.twitter, label: "Twitter", icon: <Twitter size={24} /> },
-    footer?.email && { href: `mailto:${footer.email}`, label: "Email", icon: <Mail size={24} /> },
-  ].filter(Boolean) as Array<{ href: string; label: string; icon: React.ReactNode }>;
+    footer?.github && {
+      href: footer.github,
+      label: 'GitHub',
+      icon: <Github size={24} />,
+    },
+    footer?.linkedin && {
+      href: footer.linkedin,
+      label: 'LinkedIn',
+      icon: <Linkedin size={24} />,
+    },
+    footer?.twitter && {
+      href: footer.twitter,
+      label: 'Twitter',
+      icon: <Twitter size={24} />,
+    },
+    footer?.email && {
+      href: `mailto:${footer.email}`,
+      label: 'Email',
+      icon: <Mail size={24} />,
+    },
+  ].filter(Boolean) as Array<{
+    href: string;
+    label: string;
+    icon: React.ReactNode;
+  }>;
 
   // Fallback to legacy socials list if footer links aren't set
   const legacySocials =
@@ -52,22 +72,27 @@ export function Footer({ footer, socials }: FooterProps) {
       id="contato"
       className="py-12 px-6 transition-colors duration-300"
       style={{
-        backgroundColor: "#09090b",
-        color: "#ffffff",
+        backgroundColor: '#f3f4f6',
+        color: '#1f2937',
       }}
     >
       <div className="max-w-6xl mx-auto">
         {/* Contact section */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl mb-4">{footer?.title || "Vamos trabalhar juntos?"}</h2>
-          <p className="text-gray-400 mb-8">{footer?.subtitle || "Estou sempre aberto a novos projetos e oportunidades"}</p>
+          <h2 className="text-3xl md:text-4xl mb-4 text-gray-900">
+            {footer?.title || 'Vamos trabalhar juntos?'}
+          </h2>
+          <p className="text-gray-500 mb-8">
+            {footer?.subtitle ||
+              'Estou sempre aberto a novos projetos e oportunidades'}
+          </p>
 
           {/* Contact email / Resume */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {footer?.email && (
               <a
                 href={`mailto:${footer.email}`}
-                className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-lg"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all shadow-lg"
               >
                 <Mail size={20} />
                 {footer.email}
@@ -78,7 +103,7 @@ export function Footer({ footer, socials }: FooterProps) {
                 href={footer.resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all shadow-lg"
               >
                 <FileDown size={20} />
                 Baixe aqui meu Currículo
@@ -95,7 +120,7 @@ export function Footer({ footer, socials }: FooterProps) {
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors hover:scale-110"
+              className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors hover:scale-110"
               aria-label={social.label}
             >
               {social.icon}
@@ -107,7 +132,7 @@ export function Footer({ footer, socials }: FooterProps) {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors hover:scale-110"
+                className="w-12 h-12 flex items-center justify-center bg-gray-700 rounded-full hover:bg-gray-600 transition-colors hover:scale-110"
                 aria-label="GitHub"
               >
                 <Github size={24} />
@@ -116,7 +141,7 @@ export function Footer({ footer, socials }: FooterProps) {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-blue-600 transition-colors hover:scale-110"
+                className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors hover:scale-110"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={24} />
@@ -126,19 +151,20 @@ export function Footer({ footer, socials }: FooterProps) {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-800 pt-8">
+        <div className="border-t border-gray-300 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
             <p className="text-gray-400 text-center md:text-left">
-              © {currentYear} {footer?.copyrightName || "João Silva"}. Todos os direitos reservados.
+              © {currentYear} {footer?.copyrightName || 'João Silva'}. Todos os
+              direitos reservados.
             </p>
 
             {/* Made with */}
             <p className="text-gray-400 flex items-center gap-2">
-              {footer?.madeWith || (
+              {footer?.madeWith && (
                 <>
-                  Feito com <span className="text-blue-500">❤️</span> e
-                  <Coffee size={18} className="text-yellow-600" />
+                  Feito com <span className="text-gray-600">❤️</span> e
+                  <Coffee size={18} className="text-gray-600" />
                   café
                 </>
               )}

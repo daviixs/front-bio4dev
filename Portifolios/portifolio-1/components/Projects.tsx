@@ -59,16 +59,12 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
   ];
 
   return (
-    <section id="projetos" className="py-20 px-6 bg-gradient-to-br from-gray-50 to-gray-100">
+    <section id="projetos" className="py-20 px-6 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Título da seção */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Projetos
-          </h2>
-          <p className="text-gray-600">
-            Alguns dos meus trabalhos recentes
-          </p>
+          <h2 className="text-4xl md:text-5xl mb-4 text-gray-900">Projetos</h2>
+          <p className="text-gray-600">Alguns dos meus trabalhos recentes</p>
         </div>
 
         {/* Grade de projetos */}
@@ -79,7 +75,7 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
               className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group"
             >
               {/* GIF do projeto */}
-              <div className="relative overflow-hidden h-56 bg-gradient-to-br from-blue-100 to-purple-100">
+              <div className="relative overflow-hidden h-56 bg-gray-100">
                 <img
                   src={project.gif}
                   alt={project.nome}
@@ -90,29 +86,25 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
 
               {/* Conteúdo do card */}
               <div className="p-6">
-                <h3 className="mb-3 text-gray-800">
-                  {project.nome}
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  {project.descricao}
-                </p>
+                <h3 className="mb-3 text-gray-800">{project.nome}</h3>
+                <p className="text-gray-600 mb-6">{project.descricao}</p>
 
                 {/* Botões */}
                 <div className="flex gap-4">
                   <a
-                    href={project.demoLink || "#"}
+                    href={project.demoLink || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
                   >
                     <ExternalLink size={18} />
                     Live Demo
                   </a>
                   <a
-                    href={project.codeLink || "#"}
+                    href={project.codeLink || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
                   >
                     <Github size={18} />
                     Ver Código
