@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Instagram,
   MessageCircle,
@@ -22,37 +22,37 @@ import {
   ArrowLeft,
   ArrowRight,
   Image,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { Header } from "@/components/landing/Header";
-import { Footer } from "@/components/landing/Footer";
-import { landingTheme } from "@/theme/landingTheme";
-import { profileApi, socialApi } from "@/lib/api";
-import { useSaveTemplate } from "@/hooks/useSaveTemplate";
-import { useAuthStore } from "@/stores/authStore";
-import { saveAll as saveInfluencerData } from "@/pages/influencers/shared/services";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
+import { Header } from '@/components/landing/Header';
+import { Footer } from '@/components/landing/Footer';
+import { landingTheme } from '@/theme/landingTheme';
+import { profileApi, socialApi } from '@/lib/api';
+import { useSaveTemplate } from '@/hooks/useSaveTemplate';
+import { useAuthStore } from '@/stores/authStore';
+import { saveAll as saveInfluencerData } from '@/pages/influencers/shared/services';
 
 type PlatformId =
-  | "instagram"
-  | "whatsapp"
-  | "tiktok"
-  | "youtube"
-  | "website"
-  | "spotify"
-  | "threads"
-  | "facebook"
-  | "x"
-  | "soundcloud"
-  | "snapchat"
-  | "pinterest"
-  | "patreon"
-  | "twitch"
-  | "applemusic";
+  | 'instagram'
+  | 'whatsapp'
+  | 'tiktok'
+  | 'youtube'
+  | 'website'
+  | 'spotify'
+  | 'threads'
+  | 'facebook'
+  | 'x'
+  | 'soundcloud'
+  | 'snapchat'
+  | 'pinterest'
+  | 'patreon'
+  | 'twitch'
+  | 'applemusic';
 
-type PlatformInputType = "handle" | "url" | "phone";
+type PlatformInputType = 'handle' | 'url' | 'phone';
 
 type PlatformConfig = {
   id: PlatformId;
@@ -108,12 +108,12 @@ const toTemplateData = (
     try {
       const parsed = JSON.parse(persistedRaw);
       return {
-        templateType: parsed.themeId || templateTypeFallback || "template_04",
+        templateType: parsed.themeId || templateTypeFallback || 'template_04',
         data: {
-          themeId: parsed.themeId || templateTypeFallback || "template_04",
-          name: parsed.name || state.displayName || "Meu perfil",
-          bio: parsed.bio || state.bio || "",
-          photoUrl: parsed.photoUrl || state.avatarDataUrl || "",
+          themeId: parsed.themeId || templateTypeFallback || 'template_04',
+          name: parsed.name || state.displayName || 'Meu perfil',
+          bio: parsed.bio || state.bio || '',
+          photoUrl: parsed.photoUrl || state.avatarDataUrl || '',
           socials: parsed.socials || [],
           buttons: parsed.buttons || [],
         },
@@ -126,11 +126,11 @@ const toTemplateData = (
   const themeId =
     templateTypeFallback ||
     localStorage.getItem(`bio4dev_theme_${draftId}`) ||
-    "template_04";
+    'template_04';
 
   const socials = (state.selectedPlatforms || [])
     .map((platformId) => {
-      const raw = state.platformLinks[platformId] || "";
+      const raw = state.platformLinks[platformId] || '';
       const url = normalizeSocialUrl(platformId, raw);
       return url
         ? {
@@ -146,9 +146,9 @@ const toTemplateData = (
     .map((link, index) => ({
       label: link.label.trim(),
       url: link.url.trim(),
-      subtext: "",
-      icon: "link",
-      style: "primary",
+      subtext: '',
+      icon: 'link',
+      style: 'primary',
       ordem: index,
     }));
 
@@ -156,9 +156,9 @@ const toTemplateData = (
     templateType: themeId,
     data: {
       themeId,
-      name: state.displayName || "Meu perfil",
-      bio: state.bio || "",
-      photoUrl: state.avatarDataUrl || "",
+      name: state.displayName || 'Meu perfil',
+      bio: state.bio || '',
+      photoUrl: state.avatarDataUrl || '',
       socials,
       buttons,
     },
@@ -167,144 +167,228 @@ const toTemplateData = (
 
 const PLATFORM_OPTIONS: PlatformConfig[] = [
   {
-    id: "instagram",
-    label: "Instagram",
+    id: 'instagram',
+    label: 'Instagram',
     icon: Instagram,
-    placeholder: "@usuario",
-    type: "handle",
+    placeholder: '@usuario',
+    type: 'handle',
   },
   {
-    id: "whatsapp",
-    label: "WhatsApp",
+    id: 'whatsapp',
+    label: 'WhatsApp',
     icon: MessageCircle,
-    placeholder: "Numero do WhatsApp",
-    type: "phone",
+    placeholder: 'Numero do WhatsApp',
+    type: 'phone',
   },
   {
-    id: "tiktok",
-    label: "TikTok",
+    id: 'tiktok',
+    label: 'TikTok',
     icon: PlaySquare,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'tiktok.com/usuario',
+    type: 'url',
   },
   {
-    id: "youtube",
-    label: "YouTube",
+    id: 'youtube',
+    label: 'YouTube',
     icon: Youtube,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'youtube.com/usuario',
+    type: 'url',
   },
   {
-    id: "website",
-    label: "Website",
+    id: 'website',
+    label: 'Website',
     icon: Globe,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'seusite.com',
+    type: 'url',
   },
   {
-    id: "spotify",
-    label: "Spotify",
+    id: 'spotify',
+    label: 'Spotify',
     icon: Disc3,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'open.spotify.com/usuario',
+    type: 'url',
   },
   {
-    id: "threads",
-    label: "Threads",
+    id: 'threads',
+    label: 'Threads',
     icon: AtSign,
-    placeholder: "@usuario",
-    type: "handle",
+    placeholder: '@usuario',
+    type: 'handle',
   },
   {
-    id: "facebook",
-    label: "Facebook",
+    id: 'facebook',
+    label: 'Facebook',
     icon: Facebook,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'facebook.com/usuario',
+    type: 'url',
   },
   {
-    id: "x",
-    label: "X",
+    id: 'x',
+    label: 'X',
     icon: Twitter,
-    placeholder: "@usuario",
-    type: "handle",
+    placeholder: '@usuario',
+    type: 'handle',
   },
   {
-    id: "soundcloud",
-    label: "SoundCloud",
+    id: 'soundcloud',
+    label: 'SoundCloud',
     icon: Radio,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'soundcloud.com/usuario',
+    type: 'url',
   },
   {
-    id: "snapchat",
-    label: "Snapchat",
+    id: 'snapchat',
+    label: 'Snapchat',
     icon: Camera,
-    placeholder: "@usuario",
-    type: "handle",
+    placeholder: '@usuario',
+    type: 'handle',
   },
   {
-    id: "pinterest",
-    label: "Pinterest",
+    id: 'pinterest',
+    label: 'Pinterest',
     icon: Pin,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'pinterest.com/usuario',
+    type: 'url',
   },
   {
-    id: "patreon",
-    label: "Patreon",
+    id: 'patreon',
+    label: 'Patreon',
     icon: HandHelping,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'patreon.com/usuario',
+    type: 'url',
   },
   {
-    id: "twitch",
-    label: "Twitch",
+    id: 'twitch',
+    label: 'Twitch',
     icon: Twitch,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'twitch.tv/usuario',
+    type: 'url',
   },
   {
-    id: "applemusic",
-    label: "Apple Music",
+    id: 'applemusic',
+    label: 'Apple Music',
     icon: Apple,
-    placeholder: "URL",
-    type: "url",
+    placeholder: 'music.apple.com/usuario',
+    type: 'url',
+  },
+  {
+    id: 'youtube',
+    label: 'YouTube',
+    icon: Youtube,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'website',
+    label: 'Website',
+    icon: Globe,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'spotify',
+    label: 'Spotify',
+    icon: Disc3,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'threads',
+    label: 'Threads',
+    icon: AtSign,
+    placeholder: '@usuario',
+    type: 'handle',
+  },
+  {
+    id: 'facebook',
+    label: 'Facebook',
+    icon: Facebook,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'x',
+    label: 'X',
+    icon: Twitter,
+    placeholder: '@usuario',
+    type: 'handle',
+  },
+  {
+    id: 'soundcloud',
+    label: 'SoundCloud',
+    icon: Radio,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'snapchat',
+    label: 'Snapchat',
+    icon: Camera,
+    placeholder: '@usuario',
+    type: 'handle',
+  },
+  {
+    id: 'pinterest',
+    label: 'Pinterest',
+    icon: Pin,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'patreon',
+    label: 'Patreon',
+    icon: HandHelping,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'twitch',
+    label: 'Twitch',
+    icon: Twitch,
+    placeholder: 'URL',
+    type: 'url',
+  },
+  {
+    id: 'applemusic',
+    label: 'Apple Music',
+    icon: Apple,
+    placeholder: 'URL',
+    type: 'url',
   },
 ];
 
 const PLATFORM_SOCIAL_MAP: Record<PlatformId, string> = {
-  instagram: "instagram",
-  whatsapp: "whatsapp",
-  tiktok: "tiktok",
-  youtube: "youtube",
-  website: "website",
-  spotify: "spotify",
-  threads: "threads",
-  facebook: "facebook",
-  x: "x",
-  soundcloud: "soundcloud",
-  snapchat: "snapchat",
-  pinterest: "pinterest",
-  patreon: "patreon",
-  twitch: "twitch",
-  applemusic: "applemusic",
+  instagram: 'instagram',
+  whatsapp: 'whatsapp',
+  tiktok: 'tiktok',
+  youtube: 'youtube',
+  website: 'website',
+  spotify: 'spotify',
+  threads: 'threads',
+  facebook: 'facebook',
+  x: 'x',
+  soundcloud: 'soundcloud',
+  snapchat: 'snapchat',
+  pinterest: 'pinterest',
+  patreon: 'patreon',
+  twitch: 'twitch',
+  applemusic: 'applemusic',
 };
 
 // API ainda nao aceita todas as plataformas do onboarding.
 const API_SUPPORTED_PLATFORMS = new Set<PlatformId>([
-  "instagram",
-  "whatsapp",
-  "tiktok",
-  "youtube",
-  "facebook",
-  "pinterest",
+  'instagram',
+  'whatsapp',
+  'tiktok',
+  'youtube',
+  'facebook',
+  'pinterest',
 ]);
 
 const INITIAL_ADDITIONAL_LINKS: AdditionalLink[] = [
-  { id: "additional-1", label: "", url: "" },
-  { id: "additional-2", label: "", url: "" },
-  { id: "additional-3", label: "", url: "" },
+  { id: 'additional-1', label: '', url: '' },
+  { id: 'additional-2', label: '', url: '' },
+  { id: 'additional-3', label: '', url: '' },
 ];
 
 const getDefaultState = (): OnboardingState => ({
@@ -312,8 +396,8 @@ const getDefaultState = (): OnboardingState => ({
   selectedPlatforms: [],
   platformLinks: {},
   additionalLinks: INITIAL_ADDITIONAL_LINKS,
-  displayName: "",
-  bio: "",
+  displayName: '',
+  bio: '',
   avatarDataUrl: null,
   avatarFileName: null,
 });
@@ -321,8 +405,12 @@ const getDefaultState = (): OnboardingState => ({
 const isValidUrl = (value: string) => {
   if (!value.trim()) return true;
   try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    const trimmed = value.trim();
+    if (/^https?:\/\//i.test(trimmed)) {
+      const url = new URL(trimmed);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    }
+    return true;
   } catch {
     return false;
   }
@@ -343,54 +431,48 @@ const validatePlatformValue = (
   value: string,
 ): string | null => {
   if (!value.trim()) return null;
-  if (platform.type === "url" && !isValidUrl(value)) {
-    return "Informe uma URL valida.";
+  if (platform.type === 'url' && !isValidUrl(value)) {
+    return 'Informe uma URL valida.';
   }
-  if (platform.type === "phone" && !isValidPhone(value)) {
-    return "Use o formato E.164, com numeros e opcional +.";
+  if (platform.type === 'phone' && !isValidPhone(value)) {
+    return 'Use o formato internacional, ex: +5511999998888.';
   }
-  if (platform.type === "handle" && !isValidHandle(value)) {
-    return "Use @usuario sem espacos.";
+  if (platform.type === 'handle' && !isValidHandle(value)) {
+    return 'Use @usuario sem espacos.';
   }
   return null;
 };
 
-const ensureProtocol = (value: string) => {
-  if (!value) return value;
-  if (/^https?:\/\//i.test(value)) return value;
-  return `https://${value}`;
-};
-
 const normalizeSocialUrl = (platformId: PlatformId, value: string) => {
   const trimmed = value.trim();
-  if (!trimmed) return "";
+  if (!trimmed) return '';
 
-  if (platformId === "whatsapp") {
-    const digits = trimmed.replace(/[^\d]/g, "");
-    return digits ? `https://wa.me/${digits}` : "";
+  if (platformId === 'whatsapp') {
+    const digits = trimmed.replace(/[^\d]/g, '');
+    return digits ? `https://wa.me/${digits}` : '';
   }
 
-  if (platformId === "instagram") {
-    const handle = trimmed.replace(/^@/, "");
-    return handle ? `https://instagram.com/${handle}` : "";
+  if (platformId === 'instagram') {
+    const handle = trimmed.replace(/^@/, '');
+    return handle ? `https://instagram.com/${handle}` : '';
   }
 
-  if (platformId === "x") {
-    const handle = trimmed.replace(/^@/, "");
-    return handle ? `https://x.com/${handle}` : "";
+  if (platformId === 'x') {
+    const handle = trimmed.replace(/^@/, '');
+    return handle ? `https://x.com/${handle}` : '';
   }
 
-  if (platformId === "threads") {
-    const handle = trimmed.replace(/^@/, "");
-    return handle ? `https://www.threads.net/@${handle}` : "";
+  if (platformId === 'threads') {
+    const handle = trimmed.replace(/^@/, '');
+    return handle ? `https://www.threads.net/@${handle}` : '';
   }
 
-  if (platformId === "snapchat") {
-    const handle = trimmed.replace(/^@/, "");
-    return handle ? `https://www.snapchat.com/add/${handle}` : "";
+  if (platformId === 'snapchat') {
+    const handle = trimmed.replace(/^@/, '');
+    return handle ? `https://www.snapchat.com/add/${handle}` : '';
   }
 
-  return ensureProtocol(trimmed);
+  return trimmed;
 };
 
 const trackOnboardingEvent = (
@@ -402,11 +484,11 @@ const trackOnboardingEvent = (
     payload,
     timestamp: new Date().toISOString(),
   };
-  const existing = localStorage.getItem("bio4dev_onboarding_events");
+  const existing = localStorage.getItem('bio4dev_onboarding_events');
   const next = existing ? JSON.parse(existing) : [];
   next.push(record);
-  localStorage.setItem("bio4dev_onboarding_events", JSON.stringify(next));
-  console.log("[onboarding]", record);
+  localStorage.setItem('bio4dev_onboarding_events', JSON.stringify(next));
+  console.log('[onboarding]', record);
 };
 
 const TopBar = ({
@@ -504,8 +586,8 @@ const PlatformCard = ({
       className={`relative flex items-center gap-4 rounded-2xl border px-4 py-4 text-left transition ${landingTheme.focusRing} ${
         isSelected
           ? `${landingTheme.accentBorder} ${landingTheme.accentSoft}`
-          : "border-slate-200 bg-white hover:border-slate-300"
-      } ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
+          : 'border-slate-200 bg-white hover:border-slate-300'
+      } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
     >
       <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
         <Icon className="h-6 w-6" />
@@ -515,7 +597,7 @@ const PlatformCard = ({
           {platform.label}
         </p>
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-          {platform.type === "handle" ? "usuario" : platform.type}
+          {platform.type === 'handle' ? 'usuario' : platform.type}
         </p>
       </div>
       {isSelected && (
@@ -624,7 +706,7 @@ const AdditionalLinkRow = ({
             id={`${link.id}-url`}
             value={link.url}
             onChange={(event) => onChange({ url: event.target.value })}
-            placeholder="https://"
+            placeholder="seusite.com"
             aria-invalid={Boolean(error?.url)}
             className={`h-11 ${landingTheme.input}`}
           />
@@ -685,9 +767,9 @@ const AvatarCard = ({
         <Input
           id="avatar-upload"
           type="url"
-          value={avatarDataUrl || ""}
+          value={avatarDataUrl || ''}
           onChange={onChange}
-          placeholder="https://exemplo.com/minha-foto.jpg"
+          placeholder="exemplo.com/minha-foto.jpg"
           className={`h-11 ${landingTheme.input}`}
         />
         {avatarDataUrl && (
@@ -740,10 +822,10 @@ const PreviewCard = ({
         </div>
         <div>
           <p className="text-lg font-semibold text-slate-900">
-            {displayName.trim() || "Seu nome"}
+            {displayName.trim() || 'Seu nome'}
           </p>
           <p className="text-sm text-slate-600">
-            {bio.trim() || "Sua bio aparecera aqui."}
+            {bio.trim() || 'Sua bio aparecera aqui.'}
           </p>
         </div>
       </div>
@@ -764,7 +846,7 @@ const PreviewCard = ({
                 <span>{platform.label}</span>
               </div>
               <span className="text-xs text-slate-500">
-                {platformLinks[platformId] || "Adicionar link"}
+                {platformLinks[platformId] || 'Adicionar link'}
               </span>
             </div>
           );
@@ -809,8 +891,8 @@ export function InfluencerOnboardingPage({
           parsed.additionalLinks && parsed.additionalLinks.length > 0
             ? parsed.additionalLinks.map((link, index) => ({
                 id: link.id || `additional-${index + 1}`,
-                label: link.label || "",
-                url: link.url || "",
+                label: link.label || '',
+                url: link.url || '',
               }))
             : INITIAL_ADDITIONAL_LINKS;
         setState({
@@ -829,7 +911,7 @@ export function InfluencerOnboardingPage({
     const convertDraft = async () => {
       if (isConvertingDraft) return;
       if (!isAuthenticated || !user?.id) return;
-      if (!profileId || !profileId.startsWith("draft-")) return;
+      if (!profileId || !profileId.startsWith('draft-')) return;
 
       const draftDataRaw = localStorage.getItem(
         `bio4dev_draft_profile_${profileId}`,
@@ -838,14 +920,14 @@ export function InfluencerOnboardingPage({
 
       const draftData = JSON.parse(draftDataRaw);
       const templateType =
-        draftData.templateType || resolvedTemplateId || "template_04";
-      const username = draftData.username || state.displayName || "meu-perfil";
+        draftData.templateType || resolvedTemplateId || 'template_04';
+      const username = draftData.username || state.displayName || 'meu-perfil';
       const slug = draftData.slug || draftData.username || username;
 
       setIsConvertingDraft(true);
       try {
         if (import.meta.env.DEV) {
-          console.log("Onboarding auto-convert draft:", {
+          console.log('Onboarding auto-convert draft:', {
             profileId,
             userId: user.id,
             username,
@@ -863,23 +945,22 @@ export function InfluencerOnboardingPage({
         });
 
         const realId = response.profile?.id || response.id;
-        localStorage.setItem("bio4dev_profile_id", realId);
+        localStorage.setItem('bio4dev_profile_id', realId);
         localStorage.setItem(`bio4dev_theme_${realId}`, templateType);
         localStorage.removeItem(`bio4dev_draft_profile_${profileId}`);
 
-        navigate(
-          `/dashboard/influencer/${templateType}/${realId}/preview`,
-          { replace: true },
-        );
+        navigate(`/dashboard/influencer/${templateType}/${realId}/preview`, {
+          replace: true,
+        });
       } catch (error: any) {
-        const backendMessage = error?.response?.data?.message || "";
-        if (backendMessage.toLowerCase().includes("usuário não encontrado")) {
-          toast.error("Sessão expirada. Faça login novamente.");
+        const backendMessage = error?.response?.data?.message || '';
+        if (backendMessage.toLowerCase().includes('usuário não encontrado')) {
+          toast.error('Sessão expirada. Faça login novamente.');
           await logout();
           await loginWithGoogle();
         } else {
-          console.error("Auto-convert draft failed:", error);
-          toast.error("Não foi possível criar seu perfil. Tente novamente.");
+          console.error('Auto-convert draft failed:', error);
+          toast.error('Não foi possível criar seu perfil. Tente novamente.');
         }
       } finally {
         setIsConvertingDraft(false);
@@ -922,7 +1003,7 @@ export function InfluencerOnboardingPage({
     }
 
     // Se não for rascunho, tentar no backend
-    if (!profileId.startsWith("draft-")) {
+    if (!profileId.startsWith('draft-')) {
       setIsResolvingTemplate(true);
       profileApi
         .getComplete(profileId)
@@ -943,7 +1024,7 @@ export function InfluencerOnboardingPage({
     const convert = async () => {
       if (isConvertingDraft) return;
       if (!isAuthenticated || !user?.id) return;
-      if (!profileId || !profileId.startsWith("draft-")) return;
+      if (!profileId || !profileId.startsWith('draft-')) return;
 
       const draftDataRaw = localStorage.getItem(
         `bio4dev_draft_profile_${profileId}`,
@@ -959,39 +1040,45 @@ export function InfluencerOnboardingPage({
 
       const createPayload = {
         userId: user.id,
-        username: draftData.username || state.displayName || "meu-perfil",
-        slug: draftData.slug || draftData.username || state.displayName || "meu-perfil",
-        templateType: templateType || "template_04",
+        username: draftData.username || state.displayName || 'meu-perfil',
+        slug:
+          draftData.slug ||
+          draftData.username ||
+          state.displayName ||
+          'meu-perfil',
+        templateType: templateType || 'template_04',
         published: false,
       } as const;
 
       setIsConvertingDraft(true);
       try {
         if (import.meta.env.DEV) {
-          console.log("Auto convert draft (onboarding useEffect):", createPayload);
+          console.log(
+            'Auto convert draft (onboarding useEffect):',
+            createPayload,
+          );
         }
         const response = await profileApi.create(createPayload);
         const realId = response.profile?.id || response.id;
 
-        localStorage.setItem("bio4dev_profile_id", realId);
+        localStorage.setItem('bio4dev_profile_id', realId);
         localStorage.setItem(`bio4dev_theme_${realId}`, templateType);
         localStorage.removeItem(`bio4dev_draft_profile_${profileId}`);
 
         await saveInfluencerData(realId, data);
 
-        navigate(
-          `/dashboard/influencer/${templateType}/${realId}/preview`,
-          { replace: true },
-        );
+        navigate(`/dashboard/influencer/${templateType}/${realId}/preview`, {
+          replace: true,
+        });
       } catch (error: any) {
-        const backendMessage = error?.response?.data?.message || "";
-        if (backendMessage.toLowerCase().includes("usuário não encontrado")) {
-          toast.error("Sessão expirada. Faça login novamente.");
+        const backendMessage = error?.response?.data?.message || '';
+        if (backendMessage.toLowerCase().includes('usuário não encontrado')) {
+          toast.error('Sessão expirada. Faça login novamente.');
           await logout();
           await loginWithGoogle();
         } else {
-          console.error("Auto-convert draft failed:", error);
-          toast.error("Não foi possível criar seu perfil. Tente novamente.");
+          console.error('Auto-convert draft failed:', error);
+          toast.error('Não foi possível criar seu perfil. Tente novamente.');
         }
       } finally {
         setIsConvertingDraft(false);
@@ -1021,7 +1108,7 @@ export function InfluencerOnboardingPage({
   if (!resolvedTemplateId) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-500">
-        {isResolvingTemplate ? "Carregando template..." : null}
+        {isResolvingTemplate ? 'Carregando template...' : null}
       </div>
     );
   }
@@ -1038,7 +1125,7 @@ export function InfluencerOnboardingPage({
     if (!platform) return acc;
     acc[platformId] = validatePlatformValue(
       platform,
-      state.platformLinks[platformId] || "",
+      state.platformLinks[platformId] || '',
     );
     return acc;
   }, {});
@@ -1046,7 +1133,7 @@ export function InfluencerOnboardingPage({
   const platformWarnings = state.selectedPlatforms.reduce<
     Record<string, boolean>
   >((acc, platformId) => {
-    acc[platformId] = !(state.platformLinks[platformId] || "").trim();
+    acc[platformId] = !(state.platformLinks[platformId] || '').trim();
     return acc;
   }, {});
 
@@ -1058,13 +1145,13 @@ export function InfluencerOnboardingPage({
     let labelError: string | null = null;
     let urlError: string | null = null;
     if (trimmedUrl && !trimmedLabel) {
-      labelError = "Informe um nome para o link.";
+      labelError = 'Informe um nome para o link.';
     }
     if (trimmedLabel && !trimmedUrl) {
-      urlError = "Informe a URL do link.";
+      urlError = 'Informe a URL do link.';
     }
     if (trimmedUrl && !isValidUrl(link.url)) {
-      urlError = "URL invalida.";
+      urlError = 'URL invalida.';
     }
     acc[link.id] = { label: labelError, url: urlError };
     return acc;
@@ -1072,9 +1159,7 @@ export function InfluencerOnboardingPage({
 
   const hasInvalidLinks =
     Object.values(platformErrors).some((value) => value) ||
-    Object.values(additionalErrors).some(
-      (value) => value.label || value.url,
-    );
+    Object.values(additionalErrors).some((value) => value.label || value.url);
 
   const isDisplayNameValid = state.displayName.trim().length > 0;
 
@@ -1084,7 +1169,7 @@ export function InfluencerOnboardingPage({
   const handlePlatformToggle = (id: PlatformId) => {
     const alreadySelected = selectedSet.has(id);
     if (!alreadySelected && !canSelectMore) {
-      toast.error("Voce pode selecionar ate cinco plataformas.");
+      toast.error('Voce pode selecionar ate cinco plataformas.');
       return;
     }
 
@@ -1094,7 +1179,7 @@ export function InfluencerOnboardingPage({
 
     updateState({ selectedPlatforms: nextPlatforms });
     trackOnboardingEvent(
-      alreadySelected ? "platform_removed" : "platform_selected",
+      alreadySelected ? 'platform_removed' : 'platform_selected',
       {
         profileId,
         platform: id,
@@ -1105,13 +1190,13 @@ export function InfluencerOnboardingPage({
 
   const handleAddAdditionalLink = () => {
     if (state.additionalLinks.length >= 10) {
-      toast.error("Voce pode adicionar ate 10 links adicionais.");
+      toast.error('Voce pode adicionar ate 10 links adicionais.');
       return;
     }
     updateState({
       additionalLinks: [
         ...state.additionalLinks,
-        { id: `additional-${Date.now()}`, label: "", url: "" },
+        { id: `additional-${Date.now()}`, label: '', url: '' },
       ],
     });
   };
@@ -1125,13 +1210,13 @@ export function InfluencerOnboardingPage({
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (!value.trim()) {
-      updateState({ avatarDataUrl: "", avatarFileName: null });
+      updateState({ avatarDataUrl: '', avatarFileName: null });
       setAvatarError(null);
       return;
     }
 
     if (!isValidUrl(value)) {
-      setAvatarError("Informe uma URL valida.");
+      setAvatarError('Informe uma URL valida.');
       return;
     }
 
@@ -1140,7 +1225,7 @@ export function InfluencerOnboardingPage({
   };
 
   const saveSocialsFromPlatforms = async (targetProfileId: string) => {
-    if (targetProfileId.startsWith("draft-")) return;
+    if (targetProfileId.startsWith('draft-')) return;
 
     const currentSocials = await socialApi.getByProfileId(targetProfileId);
     for (const social of currentSocials) {
@@ -1151,13 +1236,13 @@ export function InfluencerOnboardingPage({
     const selected = state.selectedPlatforms
       .map((platformId) => {
         if (!API_SUPPORTED_PLATFORMS.has(platformId)) {
-          const rawValue = state.platformLinks[platformId] || "";
+          const rawValue = state.platformLinks[platformId] || '';
           if (rawValue.trim()) {
             skippedPlatforms.push(platformId);
           }
           return null;
         }
-        const rawValue = state.platformLinks[platformId] || "";
+        const rawValue = state.platformLinks[platformId] || '';
         const normalized = normalizeSocialUrl(platformId, rawValue);
         if (!normalized) return null;
         return {
@@ -1168,7 +1253,7 @@ export function InfluencerOnboardingPage({
       .filter(Boolean) as Array<{ platform: string; url: string }>;
 
     if (skippedPlatforms.length) {
-      const readable = skippedPlatforms.join(", ");
+      const readable = skippedPlatforms.join(', ');
       toast.warning(
         `Algumas plataformas ainda nao sao suportadas pela API: ${readable}. Use links adicionais para inclui-las.`,
       );
@@ -1177,12 +1262,12 @@ export function InfluencerOnboardingPage({
     for (let i = 0; i < selected.length; i += 1) {
       const item = selected[i];
       const data = {
-          profileId: targetProfileId,
-          plataforma: item.platform as any,
-          url: item.url,
-          ordem: i + 1,
-        };
-      console.log("Sending social data:", data);
+        profileId: targetProfileId,
+        plataforma: item.platform as any,
+        url: item.url,
+        ordem: i + 1,
+      };
+      console.log('Sending social data:', data);
       await socialApi.create(data);
     }
   };
@@ -1191,13 +1276,13 @@ export function InfluencerOnboardingPage({
     setIsSavingLinks(true);
     try {
       if (!profileId) {
-        toast.error("Perfil não encontrado.");
+        toast.error('Perfil não encontrado.');
         return;
       }
 
-      if (profileId.startsWith("draft-")) {
+      if (profileId.startsWith('draft-')) {
         // Em modo draft, apenas segue para próxima etapa sem chamar API
-        trackOnboardingEvent("links_saved_draft", {
+        trackOnboardingEvent('links_saved_draft', {
           profileId,
           selectedPlatforms: state.selectedPlatforms,
         });
@@ -1206,7 +1291,7 @@ export function InfluencerOnboardingPage({
       }
 
       await saveSocialsFromPlatforms(profileId);
-      trackOnboardingEvent("links_saved", {
+      trackOnboardingEvent('links_saved', {
         profileId,
         selectedPlatforms: state.selectedPlatforms,
         additionalLinks: state.additionalLinks.filter((link) => link.url.trim())
@@ -1214,7 +1299,7 @@ export function InfluencerOnboardingPage({
       });
       updateState({ step: 3 });
     } catch {
-      toast.error("Nao foi possivel salvar suas redes sociais.");
+      toast.error('Nao foi possivel salvar suas redes sociais.');
     } finally {
       setIsSavingLinks(false);
     }
@@ -1224,16 +1309,16 @@ export function InfluencerOnboardingPage({
     setIsSavingAll(true);
     try {
       if (!profileId) {
-        toast.error("Perfil não encontrado.");
+        toast.error('Perfil não encontrado.');
         return;
       }
 
       // Exigir login antes de criar perfil real
       if (!isAuthenticated) {
-        toast.error("Faça login com Google para salvar seu perfil.");
+        toast.error('Faça login com Google para salvar seu perfil.');
         try {
           localStorage.setItem(
-            "bio4dev_post_auth_redirect",
+            'bio4dev_post_auth_redirect',
             window.location.pathname + window.location.search,
           );
         } catch {
@@ -1244,7 +1329,9 @@ export function InfluencerOnboardingPage({
       }
 
       if (!user?.id) {
-        toast.error("Não foi possível identificar seu usuário. Faça login novamente.");
+        toast.error(
+          'Não foi possível identificar seu usuário. Faça login novamente.',
+        );
         await logout();
         await loginWithGoogle();
         return;
@@ -1253,7 +1340,7 @@ export function InfluencerOnboardingPage({
       let effectiveProfileId = profileId;
 
       // Converter draft em perfil real se logado
-      if (profileId.startsWith("draft-")) {
+      if (profileId.startsWith('draft-')) {
         const draftDataRaw = localStorage.getItem(
           `bio4dev_draft_profile_${profileId}`,
         );
@@ -1262,20 +1349,20 @@ export function InfluencerOnboardingPage({
 
         const createPayload = {
           userId: user.id,
-          username: draftData.username || state.displayName || "",
-          slug: draftData.slug || state.displayName || "",
-          templateType: templateType || "template_04",
+          username: draftData.username || state.displayName || '',
+          slug: draftData.slug || state.displayName || '',
+          templateType: templateType || 'template_04',
           published: false,
         } as const;
 
         try {
           if (import.meta.env.DEV) {
-            console.log("Criando perfil a partir do draft:", createPayload);
+            console.log('Criando perfil a partir do draft:', createPayload);
           }
           const response = await profileApi.create(createPayload);
           effectiveProfileId = response.profile?.id || response.id;
 
-          localStorage.setItem("bio4dev_profile_id", effectiveProfileId);
+          localStorage.setItem('bio4dev_profile_id', effectiveProfileId);
           localStorage.setItem(
             `bio4dev_theme_${effectiveProfileId}`,
             templateType,
@@ -1284,16 +1371,17 @@ export function InfluencerOnboardingPage({
           const backendMessage = error?.response?.data?.message;
           if (
             backendMessage &&
-            backendMessage
-              .toLowerCase()
-              .includes("usuário não encontrado")
+            backendMessage.toLowerCase().includes('usuário não encontrado')
           ) {
-            toast.error("Sessão expirada. Faça login novamente.");
+            toast.error('Sessão expirada. Faça login novamente.');
             await logout();
             await loginWithGoogle();
           } else {
-            console.error("Erro ao criar perfil real a partir do draft:", error);
-            toast.error("Não foi possível criar seu perfil. Tente novamente.");
+            console.error(
+              'Erro ao criar perfil real a partir do draft:',
+              error,
+            );
+            toast.error('Não foi possível criar seu perfil. Tente novamente.');
           }
           return;
         }
@@ -1306,21 +1394,21 @@ export function InfluencerOnboardingPage({
         .map((link, index) => ({
           label: link.label.trim() || `Link adicional ${index + 1}`,
           url: link.url.trim(),
-          subtext: "",
-          icon: "link",
-          style: "primary",
+          subtext: '',
+          icon: 'link',
+          style: 'primary',
         }));
 
       await save(effectiveProfileId, {
         themeId: resolvedTemplateId,
         name: state.displayName.trim(),
         bio: state.bio.trim(),
-        photoUrl: state.avatarDataUrl || "",
+        photoUrl: state.avatarDataUrl || '',
         socials: state.selectedPlatforms
           .map((platformId) => {
             const normalized = normalizeSocialUrl(
               platformId,
-              state.platformLinks[platformId] || "",
+              state.platformLinks[platformId] || '',
             );
             if (!normalized) return null;
             return {
@@ -1332,7 +1420,7 @@ export function InfluencerOnboardingPage({
         buttons,
       });
 
-      trackOnboardingEvent("onboarding_completed", {
+      trackOnboardingEvent('onboarding_completed', {
         profileId: effectiveProfileId,
         selectedPlatforms: state.selectedPlatforms,
       });
@@ -1341,7 +1429,7 @@ export function InfluencerOnboardingPage({
         `/dashboard/influencer/${resolvedTemplateId}/${effectiveProfileId}/preview`,
       );
     } catch {
-      toast.error("Nao foi possivel salvar seu perfil.");
+      toast.error('Nao foi possivel salvar seu perfil.');
     } finally {
       setIsSavingAll(false);
     }
@@ -1355,7 +1443,7 @@ export function InfluencerOnboardingPage({
           <TopBar
             onBack={() =>
               state.step === 1
-                ? navigate("/profile/create")
+                ? navigate('/profile/create')
                 : updateState({ step: state.step - 1 })
             }
             onSkip={() =>
@@ -1405,8 +1493,8 @@ export function InfluencerOnboardingPage({
                 <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-600">
                   <span>
                     {selectedCount === 0
-                      ? "Selecione ao menos uma plataforma para continuar."
-                      : `${selectedCount} plataforma${selectedCount > 1 ? "s" : ""} selecionada${selectedCount > 1 ? "s" : ""}.`}
+                      ? 'Selecione ao menos uma plataforma para continuar.'
+                      : `${selectedCount} plataforma${selectedCount > 1 ? 's' : ''} selecionada${selectedCount > 1 ? 's' : ''}.`}
                   </span>
                   <Button
                     type="button"
@@ -1449,7 +1537,7 @@ export function InfluencerOnboardingPage({
                             <SelectedPlatformInput
                               key={platformId}
                               platform={platform}
-                              value={state.platformLinks[platformId] || ""}
+                              value={state.platformLinks[platformId] || ''}
                               error={platformErrors[platformId]}
                               showWarning={platformWarnings[platformId]}
                               onChange={(nextValue) =>
@@ -1520,7 +1608,7 @@ export function InfluencerOnboardingPage({
                     disabled={hasInvalidLinks}
                     className={landingTheme.buttonPrimary}
                   >
-                    {isSavingLinks ? "Salvando..." : "Continuar"}
+                    {isSavingLinks ? 'Salvando...' : 'Continuar'}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
@@ -1623,7 +1711,7 @@ export function InfluencerOnboardingPage({
                     disabled={!isDisplayNameValid}
                     className={landingTheme.buttonPrimary}
                   >
-                    {isSavingAll ? "Salvando..." : "Continuar"}
+                    {isSavingAll ? 'Salvando...' : 'Continuar'}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>

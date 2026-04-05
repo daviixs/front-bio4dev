@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   MapPin,
   User,
@@ -26,10 +26,10 @@ import {
   Codepen,
   Pin,
   X,
-} from "lucide-react";
-import { LucideIcon } from "lucide-react";
-import { EditableResumeButton } from "./EditableResumeButton";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
+import { EditableResumeButton } from './EditableResumeButton';
+import { toast } from 'sonner';
 import {
   footerApi,
   legendaApi,
@@ -37,7 +37,7 @@ import {
   workExperienceApi,
   projetosApi,
   socialApi,
-} from "@/lib/api"; // APIs
+} from '@/lib/api'; // APIs
 import type {
   ProfileComplete,
   Social,
@@ -46,8 +46,8 @@ import type {
   Technology,
   Legenda,
   Footer,
-} from "@/types";
-import { EditableField } from "./EditableField";
+} from '@/types';
+import { EditableField } from './EditableField';
 import {
   Dialog,
   DialogContent,
@@ -55,13 +55,13 @@ import {
   DialogTitle,
   DialogFooter,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { TechIcon } from "./TechIcon";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
+import { TechIcon } from './TechIcon';
 
 // ==========================================
 // TYPES
@@ -134,7 +134,7 @@ interface InfoRowProps {
 const InfoRow: React.FC<InfoRowProps> = ({
   icon: Icon,
   text,
-  className = "",
+  className = '',
 }) => {
   return (
     <div
@@ -143,9 +143,9 @@ const InfoRow: React.FC<InfoRowProps> = ({
       <Icon
         size={16}
         className={
-          text.includes("Product Designer") || text.includes("Dev")
-            ? "text-yellow-500"
-            : "text-red-500"
+          text.includes('Product Designer') || text.includes('Dev')
+            ? 'text-yellow-500'
+            : 'text-red-500'
         }
       />
       <span className="font-medium tracking-wide">{text}</span>
@@ -160,8 +160,8 @@ interface SocialCardProps {
 }
 
 const SocialCard: React.FC<SocialCardProps> = ({ item, onEdit }) => {
-  const textColor = item.textColorClass || "text-white";
-  const subTextColor = item.textColorClass ? "text-gray-600" : "text-gray-400";
+  const textColor = item.textColorClass || 'text-white';
+  const subTextColor = item.textColorClass ? 'text-gray-600' : 'text-gray-400';
 
   return (
     <div
@@ -172,7 +172,7 @@ const SocialCard: React.FC<SocialCardProps> = ({ item, onEdit }) => {
         }
       }}
       className={`
-        ${item.colSpan === 2 ? "col-span-2" : "col-span-1"}
+        ${item.colSpan === 2 ? 'col-span-2' : 'col-span-1'}
         ${item.colorClass}
         relative p-6 rounded-3xl transition-all duration-300 hover:scale-[1.02] active:scale-95
         flex flex-col justify-between
@@ -187,12 +187,12 @@ const SocialCard: React.FC<SocialCardProps> = ({ item, onEdit }) => {
       <div className="flex justify-between items-start z-10">
         <div
           className={`p-2.5 rounded-xl ${
-            item.id === "dev" ? "bg-black text-white" : "bg-white/10"
+            item.id === 'dev' ? 'bg-black text-white' : 'bg-white/10'
           }`}
         >
           <item.icon
             size={22}
-            className={item.id === "dev" ? "text-white" : "text-white"}
+            className={item.id === 'dev' ? 'text-white' : 'text-white'}
           />
         </div>
 
@@ -209,14 +209,14 @@ const SocialCard: React.FC<SocialCardProps> = ({ item, onEdit }) => {
       </div>
 
       <div className="z-10">
-        {item.id === "github" && (
+        {item.id === 'github' && (
           <span className="mb-2 inline-block px-2.5 py-0.5 text-[10px] font-bold bg-white text-black rounded uppercase tracking-wider">
             Follow
           </span>
         )}
         <h3 className={`font-bold text-lg ${textColor}`}>{item.name}</h3>
         <p className={`text-xs ${subTextColor} font-medium truncate mt-0.5`}>
-          {item.handle || "Click to add link"}
+          {item.handle || 'Click to add link'}
         </p>
       </div>
     </div>
@@ -268,7 +268,7 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
               {/* Dot on timeline */}
               <span
                 className={`absolute -left-[1.95rem] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-[#121318] ${
-                  item.current ? "bg-yellow-500 animate-pulse" : "bg-gray-600"
+                  item.current ? 'bg-yellow-500 animate-pulse' : 'bg-gray-600'
                 }`}
               ></span>
 
@@ -360,489 +360,489 @@ interface AddTechDialogProps {
 
 const TECH_OPTIONS: TechOption[] = [
   // 🌐 Frontend
-  { name: "HTML5", icon: "logos:html-5", color: "text-orange-600" },
-  { name: "CSS3", icon: "logos:css-3", color: "text-blue-600" },
-  { name: "JavaScript", icon: "logos:javascript", color: "text-yellow-500" },
-  { name: "TypeScript", icon: "logos:typescript-icon", color: "text-blue-700" },
-  { name: "React", icon: "logos:react", color: "text-cyan-500" },
-  { name: "Next.js", icon: "logos:nextjs-icon", color: "text-black" },
-  { name: "Vue.js", icon: "logos:vue", color: "text-green-600" },
-  { name: "Nuxt.js", icon: "logos:nuxt-icon", color: "text-green-700" },
-  { name: "Angular", icon: "logos:angular-icon", color: "text-red-600" },
-  { name: "Svelte", icon: "logos:svelte-icon", color: "text-orange-500" },
-  { name: "SvelteKit", icon: "logos:svelte-icon", color: "text-orange-600" },
-  { name: "SolidJS", icon: "logos:solidjs-icon", color: "text-blue-500" },
-  { name: "Astro", icon: "logos:astro-icon", color: "text-purple-600" },
-  { name: "Qwik", icon: "logos:qwik-icon", color: "text-purple-500" },
-  { name: "Vite", icon: "logos:vitejs", color: "text-yellow-600" },
-  { name: "Webpack", icon: "logos:webpack", color: "text-blue-400" },
-  { name: "Parcel", icon: "logos:parcel-icon", color: "text-brown-500" },
-  { name: "Rollup", icon: "logos:rollup", color: "text-red-500" },
-  { name: "Babel", icon: "logos:babel", color: "text-yellow-600" },
+  { name: 'HTML5', icon: 'logos:html-5', color: 'text-orange-600' },
+  { name: 'CSS3', icon: 'logos:css-3', color: 'text-blue-600' },
+  { name: 'JavaScript', icon: 'logos:javascript', color: 'text-yellow-500' },
+  { name: 'TypeScript', icon: 'logos:typescript-icon', color: 'text-blue-700' },
+  { name: 'React', icon: 'logos:react', color: 'text-cyan-500' },
+  { name: 'Next.js', icon: 'logos:nextjs-icon', color: 'text-black' },
+  { name: 'Vue.js', icon: 'logos:vue', color: 'text-green-600' },
+  { name: 'Nuxt.js', icon: 'logos:nuxt-icon', color: 'text-green-700' },
+  { name: 'Angular', icon: 'logos:angular-icon', color: 'text-red-600' },
+  { name: 'Svelte', icon: 'logos:svelte-icon', color: 'text-orange-500' },
+  { name: 'SvelteKit', icon: 'logos:svelte-icon', color: 'text-orange-600' },
+  { name: 'SolidJS', icon: 'logos:solidjs-icon', color: 'text-blue-500' },
+  { name: 'Astro', icon: 'logos:astro-icon', color: 'text-purple-600' },
+  { name: 'Qwik', icon: 'logos:qwik-icon', color: 'text-purple-500' },
+  { name: 'Vite', icon: 'logos:vitejs', color: 'text-yellow-600' },
+  { name: 'Webpack', icon: 'logos:webpack', color: 'text-blue-400' },
+  { name: 'Parcel', icon: 'logos:parcel-icon', color: 'text-brown-500' },
+  { name: 'Rollup', icon: 'logos:rollup', color: 'text-red-500' },
+  { name: 'Babel', icon: 'logos:babel', color: 'text-yellow-600' },
   {
-    name: "Tailwind CSS",
-    icon: "logos:tailwindcss-icon",
-    color: "text-teal-500",
+    name: 'Tailwind CSS',
+    icon: 'logos:tailwindcss-icon',
+    color: 'text-teal-500',
   },
-  { name: "Bootstrap", icon: "logos:bootstrap", color: "text-purple-600" },
+  { name: 'Bootstrap', icon: 'logos:bootstrap', color: 'text-purple-600' },
   {
-    name: "Material UI (MUI)",
-    icon: "logos:material-ui",
-    color: "text-blue-600",
+    name: 'Material UI (MUI)',
+    icon: 'logos:material-ui',
+    color: 'text-blue-600',
   },
-  { name: "Ant Design", icon: "logos:ant-design", color: "text-red-500" },
-  { name: "Chakra UI", icon: "simple-icons:chakraui", color: "text-teal-600" },
-  { name: "Shadcn UI", icon: "simple-icons:shadcnui", color: "text-gray-700" },
-  { name: "Radix UI", icon: "simple-icons:radixui", color: "text-black" },
+  { name: 'Ant Design', icon: 'logos:ant-design', color: 'text-red-500' },
+  { name: 'Chakra UI', icon: 'simple-icons:chakraui', color: 'text-teal-600' },
+  { name: 'Shadcn UI', icon: 'simple-icons:shadcnui', color: 'text-gray-700' },
+  { name: 'Radix UI', icon: 'simple-icons:radixui', color: 'text-black' },
   {
-    name: "Styled Components",
-    icon: "skill-icons:styledcomponents",
-    color: "text-pink-500",
+    name: 'Styled Components',
+    icon: 'skill-icons:styledcomponents',
+    color: 'text-pink-500',
   },
-  { name: "Emotion", icon: "simple-icons:emotion", color: "text-purple-500" },
-  { name: "Sass (SCSS)", icon: "logos:sass", color: "text-pink-600" },
-  { name: "Less", icon: "logos:less", color: "text-blue-500" },
-  { name: "PostCSS", icon: "logos:postcss", color: "text-pink-400" },
-  { name: "Redux", icon: "logos:redux", color: "text-purple-600" },
-  { name: "Redux Toolkit", icon: "logos:redux", color: "text-purple-700" },
-  { name: "Zustand", icon: "simple-icons:zustand", color: "text-black" },
-  { name: "Recoil", icon: "simple-icons:recoil", color: "text-blue-500" },
-  { name: "Jotai", icon: "simple-icons:jotai", color: "text-green-500" },
-  { name: "MobX", icon: "logos:mobx", color: "text-pink-500" },
+  { name: 'Emotion', icon: 'simple-icons:emotion', color: 'text-purple-500' },
+  { name: 'Sass (SCSS)', icon: 'logos:sass', color: 'text-pink-600' },
+  { name: 'Less', icon: 'logos:less', color: 'text-blue-500' },
+  { name: 'PostCSS', icon: 'logos:postcss', color: 'text-pink-400' },
+  { name: 'Redux', icon: 'logos:redux', color: 'text-purple-600' },
+  { name: 'Redux Toolkit', icon: 'logos:redux', color: 'text-purple-700' },
+  { name: 'Zustand', icon: 'simple-icons:zustand', color: 'text-black' },
+  { name: 'Recoil', icon: 'simple-icons:recoil', color: 'text-blue-500' },
+  { name: 'Jotai', icon: 'simple-icons:jotai', color: 'text-green-500' },
+  { name: 'MobX', icon: 'logos:mobx', color: 'text-pink-500' },
   {
-    name: "React Query (TanStack Query)",
-    icon: "logos:react-query-icon",
-    color: "text-red-600",
+    name: 'React Query (TanStack Query)',
+    icon: 'logos:react-query-icon',
+    color: 'text-red-600',
   },
-  { name: "SWR", icon: "logos:swr", color: "text-gray-700" },
+  { name: 'SWR', icon: 'logos:swr', color: 'text-gray-700' },
   {
-    name: "Apollo Client",
-    icon: "logos:apollostack",
-    color: "text-purple-500",
+    name: 'Apollo Client',
+    icon: 'logos:apollostack',
+    color: 'text-purple-500',
   },
-  { name: "GraphQL", icon: "logos:graphql", color: "text-pink-600" },
-  { name: "Framer Motion", icon: "logos:framer", color: "text-black" },
-  { name: "GSAP", icon: "logos:greensock-icon", color: "text-green-600" },
-  { name: "Three.js", icon: "logos:threejs", color: "text-gray-700" },
+  { name: 'GraphQL', icon: 'logos:graphql', color: 'text-pink-600' },
+  { name: 'Framer Motion', icon: 'logos:framer', color: 'text-black' },
+  { name: 'GSAP', icon: 'logos:greensock-icon', color: 'text-green-600' },
+  { name: 'Three.js', icon: 'logos:threejs', color: 'text-gray-700' },
   {
-    name: "React Three Fiber",
-    icon: "simple-icons:threedotjs",
-    color: "text-black",
+    name: 'React Three Fiber',
+    icon: 'simple-icons:threedotjs',
+    color: 'text-black',
   },
-  { name: "D3.js", icon: "logos:d3", color: "text-orange-600" },
-  { name: "Chart.js", icon: "simple-icons:chartdotjs", color: "text-red-500" },
+  { name: 'D3.js', icon: 'logos:d3', color: 'text-orange-600' },
+  { name: 'Chart.js', icon: 'simple-icons:chartdotjs', color: 'text-red-500' },
   {
-    name: "ECharts",
-    icon: "simple-icons:apacheecharts",
-    color: "text-green-500",
+    name: 'ECharts',
+    icon: 'simple-icons:apacheecharts',
+    color: 'text-green-500',
   },
-  { name: "Storybook", icon: "logos:storybook-icon", color: "text-pink-600" },
-  { name: "Cypress", icon: "logos:cypress-icon", color: "text-gray-700" },
-  { name: "Playwright", icon: "logos:playwright", color: "text-green-600" },
-  { name: "Jest", icon: "logos:jest", color: "text-red-500" },
-  { name: "Vitest", icon: "logos:vitest", color: "text-yellow-600" },
+  { name: 'Storybook', icon: 'logos:storybook-icon', color: 'text-pink-600' },
+  { name: 'Cypress', icon: 'logos:cypress-icon', color: 'text-gray-700' },
+  { name: 'Playwright', icon: 'logos:playwright', color: 'text-green-600' },
+  { name: 'Jest', icon: 'logos:jest', color: 'text-red-500' },
+  { name: 'Vitest', icon: 'logos:vitest', color: 'text-yellow-600' },
   {
-    name: "Testing Library",
-    icon: "simple-icons:testinglibrary",
-    color: "text-red-600",
+    name: 'Testing Library',
+    icon: 'simple-icons:testinglibrary',
+    color: 'text-red-600',
   },
-  { name: "ESLint", icon: "logos:eslint", color: "text-purple-600" },
-  { name: "Prettier", icon: "logos:prettier", color: "text-black" },
-  { name: "Husky", icon: "simple-icons:husky", color: "text-brown-600" },
+  { name: 'ESLint', icon: 'logos:eslint', color: 'text-purple-600' },
+  { name: 'Prettier', icon: 'logos:prettier', color: 'text-black' },
+  { name: 'Husky', icon: 'simple-icons:husky', color: 'text-brown-600' },
   {
-    name: "Lint-staged",
-    icon: "simple-icons:lintstaged",
-    color: "text-orange-500",
+    name: 'Lint-staged',
+    icon: 'simple-icons:lintstaged',
+    color: 'text-orange-500',
   },
-  { name: "PWA", icon: "logos:pwa", color: "text-blue-500" },
+  { name: 'PWA', icon: 'logos:pwa', color: 'text-blue-500' },
   {
-    name: "Web Components",
-    icon: "simple-icons:webcomponentsdotorg",
-    color: "text-blue-600",
+    name: 'Web Components',
+    icon: 'simple-icons:webcomponentsdotorg',
+    color: 'text-blue-600',
   },
 
   // 🧠 Backend
-  { name: "Node.js", icon: "logos:nodejs-icon", color: "text-green-600" },
+  { name: 'Node.js', icon: 'logos:nodejs-icon', color: 'text-green-600' },
   {
-    name: "Express",
-    icon: "skill-icons:expressjs-light",
-    color: "text-gray-700",
+    name: 'Express',
+    icon: 'skill-icons:expressjs-light',
+    color: 'text-gray-700',
   },
-  { name: "Fastify", icon: "logos:fastify-icon", color: "text-white" },
-  { name: "NestJS", icon: "logos:nestjs", color: "text-red-600" },
-  { name: "AdonisJS", icon: "logos:adonisjs-icon", color: "text-purple-600" },
-  { name: "Hapi", icon: "simple-icons:hapi", color: "text-orange-500" },
-  { name: "Koa", icon: "logos:koa", color: "text-green-500" },
-  { name: "Bun", icon: "logos:bun", color: "text-brown-600" },
-  { name: "Deno", icon: "logos:deno", color: "text-black" },
-  { name: "Java", icon: "logos:java", color: "text-red-600" },
-  { name: "Spring Boot", icon: "logos:spring-icon", color: "text-green-600" },
-  { name: "Spring Cloud", icon: "logos:spring-icon", color: "text-green-700" },
-  { name: "Quarkus", icon: "logos:quarkus-icon", color: "text-purple-600" },
-  { name: "Micronaut", icon: "logos:micronaut-icon", color: "text-blue-500" },
-  { name: "Kotlin", icon: "logos:kotlin-icon", color: "text-purple-700" },
-  { name: "Ktor", icon: "simple-icons:ktor", color: "text-black" },
-  { name: "C#", icon: "logos:c-sharp", color: "text-purple-600" },
-  { name: ".NET", icon: "logos:dotnet", color: "text-purple-700" },
-  { name: "ASP.NET Core", icon: "logos:dotnet", color: "text-blue-600" },
-  { name: "Python", icon: "logos:python", color: "text-yellow-500" },
-  { name: "Django", icon: "logos:django-icon", color: "text-green-700" },
+  { name: 'Fastify', icon: 'logos:fastify-icon', color: 'text-white' },
+  { name: 'NestJS', icon: 'logos:nestjs', color: 'text-red-600' },
+  { name: 'AdonisJS', icon: 'logos:adonisjs-icon', color: 'text-purple-600' },
+  { name: 'Hapi', icon: 'simple-icons:hapi', color: 'text-orange-500' },
+  { name: 'Koa', icon: 'logos:koa', color: 'text-green-500' },
+  { name: 'Bun', icon: 'logos:bun', color: 'text-brown-600' },
+  { name: 'Deno', icon: 'logos:deno', color: 'text-black' },
+  { name: 'Java', icon: 'logos:java', color: 'text-red-600' },
+  { name: 'Spring Boot', icon: 'logos:spring-icon', color: 'text-green-600' },
+  { name: 'Spring Cloud', icon: 'logos:spring-icon', color: 'text-green-700' },
+  { name: 'Quarkus', icon: 'logos:quarkus-icon', color: 'text-purple-600' },
+  { name: 'Micronaut', icon: 'logos:micronaut-icon', color: 'text-blue-500' },
+  { name: 'Kotlin', icon: 'logos:kotlin-icon', color: 'text-purple-700' },
+  { name: 'Ktor', icon: 'simple-icons:ktor', color: 'text-black' },
+  { name: 'C#', icon: 'logos:c-sharp', color: 'text-purple-600' },
+  { name: '.NET', icon: 'logos:dotnet', color: 'text-purple-700' },
+  { name: 'ASP.NET Core', icon: 'logos:dotnet', color: 'text-blue-600' },
+  { name: 'Python', icon: 'logos:python', color: 'text-yellow-500' },
+  { name: 'Django', icon: 'logos:django-icon', color: 'text-green-700' },
   {
-    name: "Django Rest Framework",
-    icon: "logos:django-icon",
-    color: "text-green-600",
+    name: 'Django Rest Framework',
+    icon: 'logos:django-icon',
+    color: 'text-green-600',
   },
-  { name: "Flask", icon: "logos:flask", color: "text-black" },
-  { name: "FastAPI", icon: "logos:fastapi-icon", color: "text-teal-600" },
-  { name: "Pyramid", icon: "simple-icons:pylon", color: "text-orange-500" },
-  { name: "Ruby", icon: "logos:ruby", color: "text-red-600" },
-  { name: "Ruby on Rails", icon: "logos:rails", color: "text-red-700" },
-  { name: "Sinatra", icon: "logos:sinatra", color: "text-black" },
-  { name: "PHP", icon: "logos:php", color: "text-purple-600" },
-  { name: "Laravel", icon: "logos:laravel", color: "text-red-600" },
-  { name: "Symfony", icon: "logos:symfony", color: "text-black" },
+  { name: 'Flask', icon: 'logos:flask', color: 'text-black' },
+  { name: 'FastAPI', icon: 'logos:fastapi-icon', color: 'text-teal-600' },
+  { name: 'Pyramid', icon: 'simple-icons:pylon', color: 'text-orange-500' },
+  { name: 'Ruby', icon: 'logos:ruby', color: 'text-red-600' },
+  { name: 'Ruby on Rails', icon: 'logos:rails', color: 'text-red-700' },
+  { name: 'Sinatra', icon: 'logos:sinatra', color: 'text-black' },
+  { name: 'PHP', icon: 'logos:php', color: 'text-purple-600' },
+  { name: 'Laravel', icon: 'logos:laravel', color: 'text-red-600' },
+  { name: 'Symfony', icon: 'logos:symfony', color: 'text-black' },
   {
-    name: "CodeIgniter",
-    icon: "logos:codeigniter-icon",
-    color: "text-red-500",
+    name: 'CodeIgniter',
+    icon: 'logos:codeigniter-icon',
+    color: 'text-red-500',
   },
-  { name: "CakePHP", icon: "logos:cakephp-icon", color: "text-red-600" },
-  { name: "Go", icon: "logos:go", color: "text-cyan-500" },
-  { name: "Gin", icon: "logos:go", color: "text-cyan-600" },
-  { name: "Fiber", icon: "logos:go", color: "text-cyan-700" },
-  { name: "Echo", icon: "logos:go", color: "text-cyan-400" },
-  { name: "Rust", icon: "logos:rust", color: "text-orange-600" },
-  { name: "Actix", icon: "simple-icons:actix", color: "text-black" },
-  { name: "Axum", icon: "simple-icons:axum", color: "text-orange-500" },
-  { name: "Rocket", icon: "logos:rust", color: "text-orange-700" },
-  { name: "Elixir", icon: "logos:elixir", color: "text-purple-600" },
-  { name: "Phoenix", icon: "logos:phoenix", color: "text-orange-600" },
-  { name: "Erlang", icon: "logos:erlang", color: "text-red-600" },
-  { name: "Scala", icon: "logos:scala", color: "text-red-600" },
-  { name: "Play Framework", icon: "logos:play", color: "text-brown-600" },
-  { name: "Groovy", icon: "logos:groovy", color: "text-blue-600" },
-  { name: "Grails", icon: "logos:grails", color: "text-green-600" },
-  { name: "C", icon: "logos:c", color: "text-blue-600" },
-  { name: "C++", icon: "logos:c-plusplus", color: "text-blue-700" },
-  { name: "Zig", icon: "logos:zig", color: "text-yellow-500" },
-  { name: "Lua", icon: "logos:lua", color: "text-blue-500" },
-  { name: "Swift", icon: "logos:swift", color: "text-orange-600" },
-  { name: "Vapor", icon: "logos:swift", color: "text-orange-700" },
-  { name: "Objective-C", icon: "logos:objectivec", color: "text-blue-600" },
-  { name: "Perl", icon: "logos:perl", color: "text-blue-500" },
-  { name: "Haskell", icon: "logos:haskell-icon", color: "text-purple-600" },
-  { name: "OCaml", icon: "logos:ocaml", color: "text-orange-500" },
-  { name: "Crystal", icon: "logos:crystal", color: "text-black" },
-  { name: "Nim", icon: "logos:nim-lang", color: "text-yellow-600" },
-  { name: "GraphQL Yoga", icon: "logos:graphql", color: "text-pink-600" },
+  { name: 'CakePHP', icon: 'logos:cakephp-icon', color: 'text-red-600' },
+  { name: 'Go', icon: 'logos:go', color: 'text-cyan-500' },
+  { name: 'Gin', icon: 'logos:go', color: 'text-cyan-600' },
+  { name: 'Fiber', icon: 'logos:go', color: 'text-cyan-700' },
+  { name: 'Echo', icon: 'logos:go', color: 'text-cyan-400' },
+  { name: 'Rust', icon: 'logos:rust', color: 'text-orange-600' },
+  { name: 'Actix', icon: 'simple-icons:actix', color: 'text-black' },
+  { name: 'Axum', icon: 'simple-icons:axum', color: 'text-orange-500' },
+  { name: 'Rocket', icon: 'logos:rust', color: 'text-orange-700' },
+  { name: 'Elixir', icon: 'logos:elixir', color: 'text-purple-600' },
+  { name: 'Phoenix', icon: 'logos:phoenix', color: 'text-orange-600' },
+  { name: 'Erlang', icon: 'logos:erlang', color: 'text-red-600' },
+  { name: 'Scala', icon: 'logos:scala', color: 'text-red-600' },
+  { name: 'Play Framework', icon: 'logos:play', color: 'text-brown-600' },
+  { name: 'Groovy', icon: 'logos:groovy', color: 'text-blue-600' },
+  { name: 'Grails', icon: 'logos:grails', color: 'text-green-600' },
+  { name: 'C', icon: 'logos:c', color: 'text-blue-600' },
+  { name: 'C++', icon: 'logos:c-plusplus', color: 'text-blue-700' },
+  { name: 'Zig', icon: 'logos:zig', color: 'text-yellow-500' },
+  { name: 'Lua', icon: 'logos:lua', color: 'text-blue-500' },
+  { name: 'Swift', icon: 'logos:swift', color: 'text-orange-600' },
+  { name: 'Vapor', icon: 'logos:swift', color: 'text-orange-700' },
+  { name: 'Objective-C', icon: 'logos:objectivec', color: 'text-blue-600' },
+  { name: 'Perl', icon: 'logos:perl', color: 'text-blue-500' },
+  { name: 'Haskell', icon: 'logos:haskell-icon', color: 'text-purple-600' },
+  { name: 'OCaml', icon: 'logos:ocaml', color: 'text-orange-500' },
+  { name: 'Crystal', icon: 'logos:crystal', color: 'text-black' },
+  { name: 'Nim', icon: 'logos:nim-lang', color: 'text-yellow-600' },
+  { name: 'GraphQL Yoga', icon: 'logos:graphql', color: 'text-pink-600' },
   {
-    name: "Apollo Server",
-    icon: "logos:apollostack",
-    color: "text-purple-500",
+    name: 'Apollo Server',
+    icon: 'logos:apollostack',
+    color: 'text-purple-500',
   },
-  { name: "tRPC", icon: "logos:trpc", color: "text-blue-500" },
+  { name: 'tRPC', icon: 'logos:trpc', color: 'text-blue-500' },
   {
-    name: "REST",
-    icon: "simple-icons:openapiinitiative",
-    color: "text-green-500",
+    name: 'REST',
+    icon: 'simple-icons:openapiinitiative',
+    color: 'text-green-500',
   },
-  { name: "gRPC", icon: "logos:grpc", color: "text-blue-600" },
-  { name: "SOAP", icon: "simple-icons:soap", color: "text-blue-500" },
-  { name: "OpenAPI", icon: "logos:openapi-icon", color: "text-green-600" },
-  { name: "Swagger", icon: "logos:swagger", color: "text-green-700" },
-  { name: "Postman", icon: "logos:postman-icon", color: "text-orange-600" },
-  { name: "Insomnia", icon: "logos:insomnia", color: "text-purple-600" },
+  { name: 'gRPC', icon: 'logos:grpc', color: 'text-blue-600' },
+  { name: 'SOAP', icon: 'simple-icons:soap', color: 'text-blue-500' },
+  { name: 'OpenAPI', icon: 'logos:openapi-icon', color: 'text-green-600' },
+  { name: 'Swagger', icon: 'logos:swagger', color: 'text-green-700' },
+  { name: 'Postman', icon: 'logos:postman-icon', color: 'text-orange-600' },
+  { name: 'Insomnia', icon: 'logos:insomnia', color: 'text-purple-600' },
 
   // 🗄️ Bancos de Dados
-  { name: "PostgreSQL", icon: "logos:postgresql", color: "text-blue-600" },
-  { name: "MySQL", icon: "logos:mysql", color: "text-orange-600" },
-  { name: "MariaDB", icon: "logos:mariadb-icon", color: "text-blue-500" },
-  { name: "SQLite", icon: "logos:sqlite", color: "text-blue-700" },
-  { name: "Oracle DB", icon: "logos:oracle", color: "text-red-600" },
+  { name: 'PostgreSQL', icon: 'logos:postgresql', color: 'text-blue-600' },
+  { name: 'MySQL', icon: 'logos:mysql', color: 'text-orange-600' },
+  { name: 'MariaDB', icon: 'logos:mariadb-icon', color: 'text-blue-500' },
+  { name: 'SQLite', icon: 'logos:sqlite', color: 'text-blue-700' },
+  { name: 'Oracle DB', icon: 'logos:oracle', color: 'text-red-600' },
   {
-    name: "SQL Server",
-    icon: "logos:microsoft-sql-server",
-    color: "text-red-700",
+    name: 'SQL Server',
+    icon: 'logos:microsoft-sql-server',
+    color: 'text-red-700',
   },
-  { name: "MongoDB", icon: "logos:mongodb-icon", color: "text-green-600" },
-  { name: "Redis", icon: "logos:redis", color: "text-red-600" },
-  { name: "DynamoDB", icon: "logos:aws-dynamodb", color: "text-orange-600" },
-  { name: "Cassandra", icon: "logos:cassandra", color: "text-blue-500" },
-  { name: "CouchDB", icon: "logos:couchdb", color: "text-blue-600" },
-  { name: "Couchbase", icon: "logos:couchbase", color: "text-green-500" },
+  { name: 'MongoDB', icon: 'logos:mongodb-icon', color: 'text-green-600' },
+  { name: 'Redis', icon: 'logos:redis', color: 'text-red-600' },
+  { name: 'DynamoDB', icon: 'logos:aws-dynamodb', color: 'text-orange-600' },
+  { name: 'Cassandra', icon: 'logos:cassandra', color: 'text-blue-500' },
+  { name: 'CouchDB', icon: 'logos:couchdb', color: 'text-blue-600' },
+  { name: 'Couchbase', icon: 'logos:couchbase', color: 'text-green-500' },
   {
-    name: "Firebase Firestore",
-    icon: "logos:firebase",
-    color: "text-yellow-500",
+    name: 'Firebase Firestore',
+    icon: 'logos:firebase',
+    color: 'text-yellow-500',
   },
   {
-    name: "Firebase Realtime DB",
-    icon: "logos:firebase",
-    color: "text-yellow-600",
+    name: 'Firebase Realtime DB',
+    icon: 'logos:firebase',
+    color: 'text-yellow-600',
   },
-  { name: "Supabase", icon: "logos:supabase-icon", color: "text-green-600" },
-  { name: "Neon", icon: "logos:neon-icon", color: "text-black" },
-  { name: "PlanetScale", icon: "logos:planetscale", color: "text-black" },
-  { name: "CockroachDB", icon: "logos:cockroachdb", color: "text-black" },
-  { name: "TimescaleDB", icon: "logos:timescale", color: "text-blue-600" },
-  { name: "InfluxDB", icon: "logos:influxdb", color: "text-yellow-500" },
-  { name: "ClickHouse", icon: "logos:clickhouse", color: "text-yellow-600" },
-  { name: "BigQuery", icon: "logos:google-bigquery", color: "text-green-600" },
-  { name: "Snowflake", icon: "logos:snowflake-icon", color: "text-blue-500" },
+  { name: 'Supabase', icon: 'logos:supabase-icon', color: 'text-green-600' },
+  { name: 'Neon', icon: 'logos:neon-icon', color: 'text-black' },
+  { name: 'PlanetScale', icon: 'logos:planetscale', color: 'text-black' },
+  { name: 'CockroachDB', icon: 'logos:cockroachdb', color: 'text-black' },
+  { name: 'TimescaleDB', icon: 'logos:timescale', color: 'text-blue-600' },
+  { name: 'InfluxDB', icon: 'logos:influxdb', color: 'text-yellow-500' },
+  { name: 'ClickHouse', icon: 'logos:clickhouse', color: 'text-yellow-600' },
+  { name: 'BigQuery', icon: 'logos:google-bigquery', color: 'text-green-600' },
+  { name: 'Snowflake', icon: 'logos:snowflake-icon', color: 'text-blue-500' },
   {
-    name: "Elasticsearch",
-    icon: "logos:elasticsearch",
-    color: "text-yellow-600",
+    name: 'Elasticsearch',
+    icon: 'logos:elasticsearch',
+    color: 'text-yellow-600',
   },
-  { name: "OpenSearch", icon: "logos:opensearch", color: "text-orange-500" },
-  { name: "Meilisearch", icon: "logos:meilisearch", color: "text-black" },
-  { name: "Algolia", icon: "logos:algolia", color: "text-blue-600" },
-  { name: "Solr", icon: "logos:solr", color: "text-blue-500" },
-  { name: "Neo4j", icon: "logos:neo4j", color: "text-blue-700" },
-  { name: "ArangoDB", icon: "logos:arangodb", color: "text-green-600" },
-  { name: "FaunaDB", icon: "logos:fauna", color: "text-green-500" },
-  { name: "Realm", icon: "logos:realm", color: "text-green-700" },
-  { name: "Prisma", icon: "logos:prisma", color: "text-black" },
-  { name: "TypeORM", icon: "logos:typeorm", color: "text-red-600" },
-  { name: "Sequelize", icon: "logos:sequelize", color: "text-blue-600" },
+  { name: 'OpenSearch', icon: 'logos:opensearch', color: 'text-orange-500' },
+  { name: 'Meilisearch', icon: 'logos:meilisearch', color: 'text-black' },
+  { name: 'Algolia', icon: 'logos:algolia', color: 'text-blue-600' },
+  { name: 'Solr', icon: 'logos:solr', color: 'text-blue-500' },
+  { name: 'Neo4j', icon: 'logos:neo4j', color: 'text-blue-700' },
+  { name: 'ArangoDB', icon: 'logos:arangodb', color: 'text-green-600' },
+  { name: 'FaunaDB', icon: 'logos:fauna', color: 'text-green-500' },
+  { name: 'Realm', icon: 'logos:realm', color: 'text-green-700' },
+  { name: 'Prisma', icon: 'logos:prisma', color: 'text-black' },
+  { name: 'TypeORM', icon: 'logos:typeorm', color: 'text-red-600' },
+  { name: 'Sequelize', icon: 'logos:sequelize', color: 'text-blue-600' },
   {
-    name: "Drizzle ORM",
-    icon: "simple-icons:drizzle",
-    color: "text-orange-500",
+    name: 'Drizzle ORM',
+    icon: 'simple-icons:drizzle',
+    color: 'text-orange-500',
   },
-  { name: "MikroORM", icon: "simple-icons:mikroorm", color: "text-pink-500" },
-  { name: "Hibernate", icon: "logos:hibernate", color: "text-green-600" },
-  { name: "JPA", icon: "logos:java", color: "text-blue-600" },
-  { name: "Flyway", icon: "simple-icons:flyway", color: "text-blue-500" },
-  { name: "Liquibase", icon: "logos:liquibase", color: "text-blue-600" },
+  { name: 'MikroORM', icon: 'simple-icons:mikroorm', color: 'text-pink-500' },
+  { name: 'Hibernate', icon: 'logos:hibernate', color: 'text-green-600' },
+  { name: 'JPA', icon: 'logos:java', color: 'text-blue-600' },
+  { name: 'Flyway', icon: 'simple-icons:flyway', color: 'text-blue-500' },
+  { name: 'Liquibase', icon: 'logos:liquibase', color: 'text-blue-600' },
   {
-    name: "Supabase Storage",
-    icon: "logos:supabase-icon",
-    color: "text-green-600",
+    name: 'Supabase Storage',
+    icon: 'logos:supabase-icon',
+    color: 'text-green-600',
   },
-  { name: "MinIO", icon: "logos:minio", color: "text-orange-600" },
-  { name: "Amazon S3", icon: "logos:aws-s3", color: "text-orange-500" },
+  { name: 'MinIO', icon: 'logos:minio', color: 'text-orange-600' },
+  { name: 'Amazon S3', icon: 'logos:aws-s3', color: 'text-orange-500' },
   {
-    name: "Google Cloud Storage",
-    icon: "logos:google-cloud",
-    color: "text-blue-600",
+    name: 'Google Cloud Storage',
+    icon: 'logos:google-cloud',
+    color: 'text-blue-600',
   },
-  { name: "Azure Blob Storage", icon: "logos:azure", color: "text-blue-500" },
+  { name: 'Azure Blob Storage', icon: 'logos:azure', color: 'text-blue-500' },
   {
-    name: "Firebase Storage",
-    icon: "logos:firebase",
-    color: "text-yellow-500",
+    name: 'Firebase Storage',
+    icon: 'logos:firebase',
+    color: 'text-yellow-500',
   },
-  { name: "Redis Streams", icon: "logos:redis", color: "text-red-600" },
-  { name: "Kafka Streams", icon: "logos:kafka-icon", color: "text-black" },
-  { name: "Mongo Atlas", icon: "logos:mongodb-icon", color: "text-green-600" },
+  { name: 'Redis Streams', icon: 'logos:redis', color: 'text-red-600' },
+  { name: 'Kafka Streams', icon: 'logos:kafka-icon', color: 'text-black' },
+  { name: 'Mongo Atlas', icon: 'logos:mongodb-icon', color: 'text-green-600' },
 
   // ☁️ DevOps, Cloud & Infra
-  { name: "Docker", icon: "logos:docker-icon", color: "text-blue-600" },
-  { name: "Docker Compose", icon: "logos:docker-icon", color: "text-blue-700" },
-  { name: "Kubernetes", icon: "logos:kubernetes", color: "text-blue-500" },
-  { name: "Helm", icon: "logos:helm", color: "text-blue-600" },
-  { name: "Terraform", icon: "logos:terraform-icon", color: "text-purple-600" },
-  { name: "Pulumi", icon: "logos:pulumi-icon", color: "text-orange-500" },
-  { name: "Ansible", icon: "logos:ansible", color: "text-red-600" },
-  { name: "Vagrant", icon: "logos:vagrant-icon", color: "text-orange-600" },
-  { name: "AWS", icon: "logos:aws", color: "text-orange-600" },
-  { name: "AWS Lambda", icon: "logos:aws-lambda", color: "text-orange-500" },
-  { name: "AWS ECS", icon: "logos:aws-ecs", color: "text-orange-600" },
-  { name: "AWS EKS", icon: "logos:aws-eks", color: "text-orange-700" },
-  { name: "AWS EC2", icon: "logos:aws-ec2", color: "text-orange-500" },
-  { name: "AWS RDS", icon: "logos:aws-rds", color: "text-orange-600" },
+  { name: 'Docker', icon: 'logos:docker-icon', color: 'text-blue-600' },
+  { name: 'Docker Compose', icon: 'logos:docker-icon', color: 'text-blue-700' },
+  { name: 'Kubernetes', icon: 'logos:kubernetes', color: 'text-blue-500' },
+  { name: 'Helm', icon: 'logos:helm', color: 'text-blue-600' },
+  { name: 'Terraform', icon: 'logos:terraform-icon', color: 'text-purple-600' },
+  { name: 'Pulumi', icon: 'logos:pulumi-icon', color: 'text-orange-500' },
+  { name: 'Ansible', icon: 'logos:ansible', color: 'text-red-600' },
+  { name: 'Vagrant', icon: 'logos:vagrant-icon', color: 'text-orange-600' },
+  { name: 'AWS', icon: 'logos:aws', color: 'text-orange-600' },
+  { name: 'AWS Lambda', icon: 'logos:aws-lambda', color: 'text-orange-500' },
+  { name: 'AWS ECS', icon: 'logos:aws-ecs', color: 'text-orange-600' },
+  { name: 'AWS EKS', icon: 'logos:aws-eks', color: 'text-orange-700' },
+  { name: 'AWS EC2', icon: 'logos:aws-ec2', color: 'text-orange-500' },
+  { name: 'AWS RDS', icon: 'logos:aws-rds', color: 'text-orange-600' },
   {
-    name: "Google Cloud Platform",
-    icon: "logos:google-cloud",
-    color: "text-blue-600",
+    name: 'Google Cloud Platform',
+    icon: 'logos:google-cloud',
+    color: 'text-blue-600',
   },
-  { name: "Cloud Run", icon: "logos:google-cloud-run", color: "text-blue-500" },
-  { name: "Firebase", icon: "logos:firebase", color: "text-yellow-500" },
-  { name: "Azure", icon: "logos:azure-icon", color: "text-blue-600" },
+  { name: 'Cloud Run', icon: 'logos:google-cloud-run', color: 'text-blue-500' },
+  { name: 'Firebase', icon: 'logos:firebase', color: 'text-yellow-500' },
+  { name: 'Azure', icon: 'logos:azure-icon', color: 'text-blue-600' },
   {
-    name: "Azure Functions",
-    icon: "logos:azure-functions",
-    color: "text-blue-500",
-  },
-  {
-    name: "DigitalOcean",
-    icon: "logos:digital-ocean-icon",
-    color: "text-blue-600",
-  },
-  { name: "Vercel", icon: "logos:vercel-icon", color: "text-black" },
-  { name: "Netlify", icon: "logos:netlify-icon", color: "text-teal-600" },
-  { name: "Railway", icon: "simple-icons:railway", color: "text-black" },
-  { name: "Render", icon: "simple-icons:render", color: "text-blue-500" },
-  { name: "Fly.io", icon: "logos:flyio-icon", color: "text-black" },
-  { name: "Heroku", icon: "logos:heroku-icon", color: "text-purple-600" },
-  {
-    name: "Cloudflare",
-    icon: "logos:cloudflare-icon",
-    color: "text-orange-600",
+    name: 'Azure Functions',
+    icon: 'logos:azure-functions',
+    color: 'text-blue-500',
   },
   {
-    name: "Cloudflare Workers",
-    icon: "logos:cloudflare-workers-icon",
-    color: "text-orange-500",
+    name: 'DigitalOcean',
+    icon: 'logos:digital-ocean-icon',
+    color: 'text-blue-600',
   },
-  { name: "Nginx", icon: "logos:nginx", color: "text-green-600" },
-  { name: "Apache", icon: "logos:apache", color: "text-red-600" },
-  { name: "Traefik", icon: "logos:traefik-icon", color: "text-blue-600" },
-  { name: "HAProxy", icon: "simple-icons:haproxy", color: "text-yellow-500" },
-  { name: "PM2", icon: "simple-icons:pm2", color: "text-blue-500" },
-  { name: "GitHub Actions", icon: "logos:github-actions", color: "text-black" },
-  { name: "GitLab CI", icon: "logos:gitlab", color: "text-orange-600" },
+  { name: 'Vercel', icon: 'logos:vercel-icon', color: 'text-black' },
+  { name: 'Netlify', icon: 'logos:netlify-icon', color: 'text-teal-600' },
+  { name: 'Railway', icon: 'simple-icons:railway', color: 'text-black' },
+  { name: 'Render', icon: 'simple-icons:render', color: 'text-blue-500' },
+  { name: 'Fly.io', icon: 'logos:flyio-icon', color: 'text-black' },
+  { name: 'Heroku', icon: 'logos:heroku-icon', color: 'text-purple-600' },
   {
-    name: "Bitbucket Pipelines",
-    icon: "logos:bitbucket",
-    color: "text-blue-600",
-  },
-  { name: "Jenkins", icon: "logos:jenkins", color: "text-black" },
-  { name: "ArgoCD", icon: "logos:argo-icon", color: "text-blue-500" },
-  { name: "FluxCD", icon: "logos:flux-icon", color: "text-gray-700" },
-  { name: "Prometheus", icon: "logos:prometheus", color: "text-orange-600" },
-  { name: "Grafana", icon: "logos:grafana", color: "text-orange-500" },
-  { name: "Datadog", icon: "logos:datadog", color: "text-purple-600" },
-  { name: "New Relic", icon: "logos:new-relic-icon", color: "text-blue-600" },
-  { name: "Sentry", icon: "logos:sentry-icon", color: "text-orange-600" },
-  { name: "Logstash", icon: "logos:logstash", color: "text-orange-500" },
-  { name: "Kibana", icon: "logos:kibana", color: "text-pink-600" },
-  {
-    name: "Elastic Stack (ELK)",
-    icon: "logos:elasticsearch",
-    color: "text-yellow-600",
+    name: 'Cloudflare',
+    icon: 'logos:cloudflare-icon',
+    color: 'text-orange-600',
   },
   {
-    name: "OpenTelemetry",
-    icon: "logos:opentelemetry-icon",
-    color: "text-purple-500",
+    name: 'Cloudflare Workers',
+    icon: 'logos:cloudflare-workers-icon',
+    color: 'text-orange-500',
   },
-  { name: "Jaeger", icon: "logos:jaegertracing", color: "text-black" },
-  { name: "Loki", icon: "logos:grafana", color: "text-orange-500" },
-  { name: "Consul", icon: "logos:consul", color: "text-yellow-500" },
-  { name: "Vault", icon: "logos:vault-icon", color: "text-yellow-600" },
-  { name: "Istio", icon: "logos:istio", color: "text-blue-500" },
-  { name: "Linkerd", icon: "logos:linkerd", color: "text-blue-600" },
+  { name: 'Nginx', icon: 'logos:nginx', color: 'text-green-600' },
+  { name: 'Apache', icon: 'logos:apache', color: 'text-red-600' },
+  { name: 'Traefik', icon: 'logos:traefik-icon', color: 'text-blue-600' },
+  { name: 'HAProxy', icon: 'simple-icons:haproxy', color: 'text-yellow-500' },
+  { name: 'PM2', icon: 'simple-icons:pm2', color: 'text-blue-500' },
+  { name: 'GitHub Actions', icon: 'logos:github-actions', color: 'text-black' },
+  { name: 'GitLab CI', icon: 'logos:gitlab', color: 'text-orange-600' },
   {
-    name: "Serverless Framework",
-    icon: "logos:serverless",
-    color: "text-red-600",
+    name: 'Bitbucket Pipelines',
+    icon: 'logos:bitbucket',
+    color: 'text-blue-600',
   },
-  { name: "SST", icon: "logos:sst-icon", color: "text-orange-500" },
-  { name: "Nx", icon: "logos:nx", color: "text-black" },
-  { name: "Turborepo", icon: "logos:turborepo-icon", color: "text-gray-700" },
-  { name: "Monorepo", icon: "medium", color: "text-black" },
+  { name: 'Jenkins', icon: 'logos:jenkins', color: 'text-black' },
+  { name: 'ArgoCD', icon: 'logos:argo-icon', color: 'text-blue-500' },
+  { name: 'FluxCD', icon: 'logos:flux-icon', color: 'text-gray-700' },
+  { name: 'Prometheus', icon: 'logos:prometheus', color: 'text-orange-600' },
+  { name: 'Grafana', icon: 'logos:grafana', color: 'text-orange-500' },
+  { name: 'Datadog', icon: 'logos:datadog', color: 'text-purple-600' },
+  { name: 'New Relic', icon: 'logos:new-relic-icon', color: 'text-blue-600' },
+  { name: 'Sentry', icon: 'logos:sentry-icon', color: 'text-orange-600' },
+  { name: 'Logstash', icon: 'logos:logstash', color: 'text-orange-500' },
+  { name: 'Kibana', icon: 'logos:kibana', color: 'text-pink-600' },
   {
-    name: "Microservices",
-    icon: "carbon:microservices-1",
-    color: "text-blue-500",
+    name: 'Elastic Stack (ELK)',
+    icon: 'logos:elasticsearch',
+    color: 'text-yellow-600',
+  },
+  {
+    name: 'OpenTelemetry',
+    icon: 'logos:opentelemetry-icon',
+    color: 'text-purple-500',
+  },
+  { name: 'Jaeger', icon: 'logos:jaegertracing', color: 'text-black' },
+  { name: 'Loki', icon: 'logos:grafana', color: 'text-orange-500' },
+  { name: 'Consul', icon: 'logos:consul', color: 'text-yellow-500' },
+  { name: 'Vault', icon: 'logos:vault-icon', color: 'text-yellow-600' },
+  { name: 'Istio', icon: 'logos:istio', color: 'text-blue-500' },
+  { name: 'Linkerd', icon: 'logos:linkerd', color: 'text-blue-600' },
+  {
+    name: 'Serverless Framework',
+    icon: 'logos:serverless',
+    color: 'text-red-600',
+  },
+  { name: 'SST', icon: 'logos:sst-icon', color: 'text-orange-500' },
+  { name: 'Nx', icon: 'logos:nx', color: 'text-black' },
+  { name: 'Turborepo', icon: 'logos:turborepo-icon', color: 'text-gray-700' },
+  { name: 'Monorepo', icon: 'medium', color: 'text-black' },
+  {
+    name: 'Microservices',
+    icon: 'carbon:microservices-1',
+    color: 'text-blue-500',
   },
 
   // 📱 Mobile, Desktop, Games & Outros
-  { name: "React Native", icon: "logos:react", color: "text-cyan-500" },
-  { name: "Expo", icon: "logos:expo-icon", color: "text-black" },
-  { name: "Flutter", icon: "logos:flutter", color: "text-blue-600" },
-  { name: "Dart", icon: "logos:dart", color: "text-blue-700" },
-  { name: "SwiftUI", icon: "logos:swift", color: "text-orange-600" },
-  { name: "UIKit", icon: "logos:apple", color: "text-gray-700" },
+  { name: 'React Native', icon: 'logos:react', color: 'text-cyan-500' },
+  { name: 'Expo', icon: 'logos:expo-icon', color: 'text-black' },
+  { name: 'Flutter', icon: 'logos:flutter', color: 'text-blue-600' },
+  { name: 'Dart', icon: 'logos:dart', color: 'text-blue-700' },
+  { name: 'SwiftUI', icon: 'logos:swift', color: 'text-orange-600' },
+  { name: 'UIKit', icon: 'logos:apple', color: 'text-gray-700' },
   {
-    name: "Kotlin Android",
-    icon: "logos:kotlin-icon",
-    color: "text-purple-700",
+    name: 'Kotlin Android',
+    icon: 'logos:kotlin-icon',
+    color: 'text-purple-700',
   },
   {
-    name: "Jetpack Compose",
-    icon: "logos:android-icon",
-    color: "text-green-600",
+    name: 'Jetpack Compose',
+    icon: 'logos:android-icon',
+    color: 'text-green-600',
   },
-  { name: "Ionic", icon: "logos:ionic-icon", color: "text-blue-600" },
-  { name: "Capacitor", icon: "logos:capacitorjs-icon", color: "text-blue-500" },
-  { name: "Cordova", icon: "logos:cordova", color: "text-green-600" },
-  { name: "Electron", icon: "logos:electron", color: "text-blue-600" },
-  { name: "Tauri", icon: "logos:tauri", color: "text-yellow-500" },
+  { name: 'Ionic', icon: 'logos:ionic-icon', color: 'text-blue-600' },
+  { name: 'Capacitor', icon: 'logos:capacitorjs-icon', color: 'text-blue-500' },
+  { name: 'Cordova', icon: 'logos:cordova', color: 'text-green-600' },
+  { name: 'Electron', icon: 'logos:electron', color: 'text-blue-600' },
+  { name: 'Tauri', icon: 'logos:tauri', color: 'text-yellow-500' },
   {
-    name: "Neutralino",
-    icon: "simple-icons:neutralinojs",
-    color: "text-blue-500",
+    name: 'Neutralino',
+    icon: 'simple-icons:neutralinojs',
+    color: 'text-blue-500',
   },
-  { name: "Qt", icon: "logos:qt", color: "text-green-600" },
-  { name: "JavaFX", icon: "logos:java", color: "text-red-600" },
-  { name: "WPF", icon: "logos:dotnet", color: "text-purple-600" },
-  { name: "MAUI", icon: "logos:dotnet", color: "text-purple-700" },
-  { name: "Unity", icon: "logos:unity", color: "text-gray-700" },
+  { name: 'Qt', icon: 'logos:qt', color: 'text-green-600' },
+  { name: 'JavaFX', icon: 'logos:java', color: 'text-red-600' },
+  { name: 'WPF', icon: 'logos:dotnet', color: 'text-purple-600' },
+  { name: 'MAUI', icon: 'logos:dotnet', color: 'text-purple-700' },
+  { name: 'Unity', icon: 'logos:unity', color: 'text-gray-700' },
   {
-    name: "Unreal Engine",
-    icon: "logos:unreal-engine",
-    color: "text-gray-600",
+    name: 'Unreal Engine',
+    icon: 'logos:unreal-engine',
+    color: 'text-gray-600',
   },
-  { name: "Godot", icon: "logos:godot-icon", color: "text-blue-600" },
-  { name: "Phaser", icon: "logos:phaser", color: "text-red-600" },
-  { name: "PlayCanvas", icon: "logos:playcanvas", color: "text-blue-500" },
-  { name: "Blender", icon: "logos:blender", color: "text-orange-600" },
-  { name: "OpenGL", icon: "logos:opengl", color: "text-blue-600" },
-  { name: "Vulkan", icon: "logos:vulkan", color: "text-gray-700" },
-  { name: "DirectX", icon: "simple-icons:directx", color: "text-blue-500" },
-  { name: "WebGL", icon: "logos:webgl", color: "text-blue-600" },
-  { name: "WebGPU", icon: "logos:w3c", color: "text-black" },
-  { name: "Arduino", icon: "logos:arduino", color: "text-blue-600" },
-  { name: "Raspberry Pi", icon: "logos:raspberry-pi", color: "text-red-600" },
-  { name: "ESP32", icon: "logos:espressif", color: "text-black" },
-  { name: "ROS", icon: "logos:ros", color: "text-blue-500" },
-  { name: "TensorFlow", icon: "logos:tensorflow", color: "text-orange-600" },
-  { name: "PyTorch", icon: "logos:pytorch-icon", color: "text-red-600" },
-  { name: "Keras", icon: "logos:keras", color: "text-red-500" },
+  { name: 'Godot', icon: 'logos:godot-icon', color: 'text-blue-600' },
+  { name: 'Phaser', icon: 'logos:phaser', color: 'text-red-600' },
+  { name: 'PlayCanvas', icon: 'logos:playcanvas', color: 'text-blue-500' },
+  { name: 'Blender', icon: 'logos:blender', color: 'text-orange-600' },
+  { name: 'OpenGL', icon: 'logos:opengl', color: 'text-blue-600' },
+  { name: 'Vulkan', icon: 'logos:vulkan', color: 'text-gray-700' },
+  { name: 'DirectX', icon: 'simple-icons:directx', color: 'text-blue-500' },
+  { name: 'WebGL', icon: 'logos:webgl', color: 'text-blue-600' },
+  { name: 'WebGPU', icon: 'logos:w3c', color: 'text-black' },
+  { name: 'Arduino', icon: 'logos:arduino', color: 'text-blue-600' },
+  { name: 'Raspberry Pi', icon: 'logos:raspberry-pi', color: 'text-red-600' },
+  { name: 'ESP32', icon: 'logos:espressif', color: 'text-black' },
+  { name: 'ROS', icon: 'logos:ros', color: 'text-blue-500' },
+  { name: 'TensorFlow', icon: 'logos:tensorflow', color: 'text-orange-600' },
+  { name: 'PyTorch', icon: 'logos:pytorch-icon', color: 'text-red-600' },
+  { name: 'Keras', icon: 'logos:keras', color: 'text-red-500' },
   {
-    name: "Scikit-learn",
-    icon: "logos:scikit-learn",
-    color: "text-orange-500",
+    name: 'Scikit-learn',
+    icon: 'logos:scikit-learn',
+    color: 'text-orange-500',
   },
-  { name: "Pandas", icon: "logos:pandas-icon", color: "text-blue-600" },
-  { name: "NumPy", icon: "logos:numpy", color: "text-blue-700" },
-  { name: "Jupyter", icon: "logos:jupyter", color: "text-orange-600" },
-  { name: "OpenCV", icon: "logos:opencv", color: "text-red-600" },
+  { name: 'Pandas', icon: 'logos:pandas-icon', color: 'text-blue-600' },
+  { name: 'NumPy', icon: 'logos:numpy', color: 'text-blue-700' },
+  { name: 'Jupyter', icon: 'logos:jupyter', color: 'text-orange-600' },
+  { name: 'OpenCV', icon: 'logos:opencv', color: 'text-red-600' },
   {
-    name: "LangChain",
-    icon: "simple-icons:langchain",
-    color: "text-green-500",
+    name: 'LangChain',
+    icon: 'simple-icons:langchain',
+    color: 'text-green-500',
   },
-  { name: "OpenAI API", icon: "logos:openai-icon", color: "text-black" },
+  { name: 'OpenAI API', icon: 'logos:openai-icon', color: 'text-black' },
   {
-    name: "Hugging Face",
-    icon: "logos:hugging-face-icon",
-    color: "text-yellow-500",
+    name: 'Hugging Face',
+    icon: 'logos:hugging-face-icon',
+    color: 'text-yellow-500',
   },
   {
-    name: "Stable Diffusion",
-    icon: "simple-icons:stabilityai",
-    color: "text-purple-500",
+    name: 'Stable Diffusion',
+    icon: 'simple-icons:stabilityai',
+    color: 'text-purple-500',
   },
-  { name: "Kafka", icon: "logos:kafka-icon", color: "text-black" },
-  { name: "RabbitMQ", icon: "logos:rabbitmq-icon", color: "text-orange-600" },
+  { name: 'Kafka', icon: 'logos:kafka-icon', color: 'text-black' },
+  { name: 'RabbitMQ', icon: 'logos:rabbitmq-icon', color: 'text-orange-600' },
   {
-    name: "ActiveMQ",
-    icon: "simple-icons:apacheactivemq",
-    color: "text-red-500",
+    name: 'ActiveMQ',
+    icon: 'simple-icons:apacheactivemq',
+    color: 'text-red-500',
   },
-  { name: "BullMQ", icon: "simple-icons:bullmq", color: "text-red-600" },
-  { name: "Celery", icon: "simple-icons:celery", color: "text-green-600" },
-  { name: "Sidekiq", icon: "simple-icons:sidekiq", color: "text-red-500" },
-  { name: "Temporal", icon: "logos:temporal-icon", color: "text-blue-500" },
-  { name: "Airflow", icon: "logos:airflow-icon", color: "text-orange-500" },
+  { name: 'BullMQ', icon: 'simple-icons:bullmq', color: 'text-red-600' },
+  { name: 'Celery', icon: 'simple-icons:celery', color: 'text-green-600' },
+  { name: 'Sidekiq', icon: 'simple-icons:sidekiq', color: 'text-red-500' },
+  { name: 'Temporal', icon: 'logos:temporal-icon', color: 'text-blue-500' },
+  { name: 'Airflow', icon: 'logos:airflow-icon', color: 'text-orange-500' },
   {
-    name: "Supabase Auth",
-    icon: "logos:supabase-icon",
-    color: "text-green-600",
+    name: 'Supabase Auth',
+    icon: 'logos:supabase-icon',
+    color: 'text-green-600',
   },
-  { name: "Auth0", icon: "logos:auth0-icon", color: "text-black" },
-  { name: "Keycloak", icon: "logos:keycloak", color: "text-orange-500" },
-  { name: "Firebase Auth", icon: "logos:firebase", color: "text-yellow-500" },
-  { name: "OAuth 2.0", icon: "logos:oauth", color: "text-blue-600" },
-  { name: "JWT", icon: "logos:jwt-icon", color: "text-purple-600" },
+  { name: 'Auth0', icon: 'logos:auth0-icon', color: 'text-black' },
+  { name: 'Keycloak', icon: 'logos:keycloak', color: 'text-orange-500' },
+  { name: 'Firebase Auth', icon: 'logos:firebase', color: 'text-yellow-500' },
+  { name: 'OAuth 2.0', icon: 'logos:oauth', color: 'text-blue-600' },
+  { name: 'JWT', icon: 'logos:jwt-icon', color: 'text-purple-600' },
   {
-    name: "WebSockets",
-    icon: "simple-icons:socketdotio",
-    color: "text-gray-700",
+    name: 'WebSockets',
+    icon: 'simple-icons:socketdotio',
+    color: 'text-gray-700',
   },
 ];
 
@@ -851,39 +851,39 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
   onOpenChange,
   onAdd,
 }) => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<TechOption | null>(null);
 
   const filtered = TECH_OPTIONS.filter((tech) =>
-    tech.name.toLowerCase().includes(search.toLowerCase())
+    tech.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleConfirm = () => {
     const base =
       selected ||
       (search.trim()
-        ? { name: search.trim(), icon: "lucide:code-2", color: "text-gray-700" }
+        ? { name: search.trim(), icon: 'lucide:code-2', color: 'text-gray-700' }
         : null);
 
     if (!base) return;
 
     onAdd({
       id: Date.now().toString(),
-      techStackId: "",
+      techStackId: '',
       name: base.name,
       icon: base.icon,
-      color: base.color || "text-gray-700",
+      color: base.color || 'text-gray-700',
       ordem: 0,
     });
 
-    setSearch("");
+    setSearch('');
     setSelected(null);
     onOpenChange(false);
   };
 
   const handleOpenChange = (isOpen: boolean) => {
     if (!isOpen) {
-      setSearch("");
+      setSearch('');
       setSelected(null);
     }
     onOpenChange(isOpen);
@@ -910,13 +910,13 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
                 key={tech.name}
                 onClick={() => setSelected(tech)}
                 className={`flex items-center gap-2 p-2 rounded-xl border border-white/5 bg-[#0f0f12] hover:border-yellow-500/40 transition-colors ${
-                  selected?.name === tech.name ? "border-yellow-500/60" : ""
+                  selected?.name === tech.name ? 'border-yellow-500/60' : ''
                 }`}
               >
                 <TechIcon
                   icon={tech.icon}
                   size={22}
-                  className={tech.color || "text-gray-300"}
+                  className={tech.color || 'text-gray-300'}
                 />
                 <span className="text-sm text-gray-200 text-left">
                   {tech.name}
@@ -976,9 +976,9 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
               className="group px-4 py-2 bg-[#18181b] hover:bg-[#202025] text-gray-300 font-medium rounded-xl border border-white/5 hover:border-yellow-500/30 transition-all cursor-default text-sm flex items-center gap-2"
             >
               <TechIcon
-                icon={tech.icon || "lucide:code-2"}
+                icon={tech.icon || 'lucide:code-2'}
                 size={18}
-                className={tech.color || "text-yellow-400"}
+                className={tech.color || 'text-yellow-400'}
               />
               <span className="group-hover:text-white">{tech.name}</span>
               {onRemove && (
@@ -1038,27 +1038,27 @@ const convertToSocialLink = (social: Social): SocialLink => {
 
   const getColorClass = (plat: string): string => {
     const colors: Record<string, string> = {
-      github: "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
-      email: "bg-[#1e293b] hover:bg-[#263345]",
-      facebook: "bg-[#3b82f6] hover:bg-[#2563eb]",
-      figma: "bg-[#1e1e1e] hover:bg-[#2d2d2d]",
-      dev: "bg-white hover:bg-gray-100",
-      linkedin: "bg-[#0077b5] hover:bg-[#006399]",
+      github: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800',
+      email: 'bg-[#1e293b] hover:bg-[#263345]',
+      facebook: 'bg-[#3b82f6] hover:bg-[#2563eb]',
+      figma: 'bg-[#1e1e1e] hover:bg-[#2d2d2d]',
+      dev: 'bg-white hover:bg-gray-100',
+      linkedin: 'bg-[#0077b5] hover:bg-[#006399]',
       instagram:
-        "bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600",
+        'bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600',
     };
-    return colors[plat] || "bg-[#121318] hover:bg-[#18181b]";
+    return colors[plat] || 'bg-[#121318] hover:bg-[#18181b]';
   };
 
   return {
     id: social.id?.toString() || platform,
     name: social.plataforma,
-    handle: social.url.replace("https://", "").replace("http://", ""),
+    handle: social.url.replace('https://', '').replace('http://', ''),
     icon: getIcon(platform),
     url: social.url,
     colorClass: getColorClass(platform),
-    textColorClass: platform === "dev" ? "text-black" : undefined,
-    colSpan: platform === "github" ? 2 : 1,
+    textColorClass: platform === 'dev' ? 'text-black' : undefined,
+    colSpan: platform === 'github' ? 2 : 1,
   };
 };
 
@@ -1068,255 +1068,255 @@ const convertToSocialLink = (social: Social): SocialLink => {
 
 const DEMO_SOCIAL_LINKS: SocialLink[] = [
   {
-    id: "github",
-    name: "GitHub",
-    handle: "@m-aqsam",
+    id: 'github',
+    name: 'GitHub',
+    handle: '@m-aqsam',
     icon: Github,
-    url: "https://github.com",
-    colorClass: "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
+    url: 'https://github.com',
+    colorClass: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800',
     colSpan: 2,
   },
   {
-    id: "email",
-    name: "Email",
-    handle: "maqsam1155@gmail.com",
+    id: 'email',
+    name: 'Email',
+    handle: 'maqsam1155@gmail.com',
     icon: Mail,
-    url: "mailto:maqsam1155@gmail.com",
-    colorClass: "bg-[#1e293b] hover:bg-[#263345]",
+    url: 'mailto:maqsam1155@gmail.com',
+    colorClass: 'bg-[#1e293b] hover:bg-[#263345]',
     colSpan: 1,
   },
   {
-    id: "facebook",
-    name: "Facebook",
-    handle: "@m_aqsam",
+    id: 'facebook',
+    name: 'Facebook',
+    handle: '@m_aqsam',
     icon: Facebook,
-    url: "https://facebook.com",
-    colorClass: "bg-[#3b82f6] hover:bg-[#2563eb]",
+    url: 'https://facebook.com',
+    colorClass: 'bg-[#3b82f6] hover:bg-[#2563eb]',
     colSpan: 1,
   },
   {
-    id: "figma",
-    name: "Figma",
-    handle: "@maqsam",
+    id: 'figma',
+    name: 'Figma',
+    handle: '@maqsam',
     icon: Figma,
-    url: "https://figma.com",
-    colorClass: "bg-[#1e1e1e] hover:bg-[#2d2d2d]",
+    url: 'https://figma.com',
+    colorClass: 'bg-[#1e1e1e] hover:bg-[#2d2d2d]',
     colSpan: 1,
   },
   {
-    id: "dev",
-    name: "DEV",
-    handle: "@maqsam",
+    id: 'dev',
+    name: 'DEV',
+    handle: '@maqsam',
     icon: Code2,
-    url: "https://dev.to",
-    colorClass: "bg-white hover:bg-gray-100",
-    textColorClass: "text-black",
+    url: 'https://dev.to',
+    colorClass: 'bg-white hover:bg-gray-100',
+    textColorClass: 'text-black',
     colSpan: 1,
   },
 ];
 
 const DEMO_TECH_STACK: Technology[] = TECH_OPTIONS.map((tech, idx) => ({
   id: `demo-${idx}`,
-  techStackId: "demo",
+  techStackId: 'demo',
   name: tech.name,
   icon: tech.icon,
-  color: tech.color || "text-gray-700",
+  color: tech.color || 'text-gray-700',
   ordem: idx,
 }));
 
 const DEMO_EXPERIENCE_DATA: Experience[] = [
   {
-    id: "1",
-    role: "Senior Product Designer",
-    company: "TechFlow Solutions",
-    date: "2023 - Present",
+    id: '1',
+    role: 'Senior Product Designer',
+    company: 'TechFlow Solutions',
+    date: '2023 - Present',
     description:
-      "Leading the design system initiative and overseeing product UX for enterprise clients.",
+      'Leading the design system initiative and overseeing product UX for enterprise clients.',
     current: true,
   },
   {
-    id: "2",
-    role: "Frontend Developer",
-    company: "Creative Digital",
-    date: "2021 - 2023",
+    id: '2',
+    role: 'Frontend Developer',
+    company: 'Creative Digital',
+    date: '2021 - 2023',
     description:
-      "Developed responsive web applications using React and TypeScript. Collaborated closely with UI designers.",
+      'Developed responsive web applications using React and TypeScript. Collaborated closely with UI designers.',
     current: false,
   },
   {
-    id: "3",
-    role: "UI/UX Intern",
-    company: "StartUp Inc",
-    date: "2020 - 2021",
+    id: '3',
+    role: 'UI/UX Intern',
+    company: 'StartUp Inc',
+    date: '2020 - 2021',
     description:
-      "Assisted in wireframing and prototyping mobile applications. Conducted user research interviews.",
+      'Assisted in wireframing and prototyping mobile applications. Conducted user research interviews.',
     current: false,
   },
 ];
 
 const DEMO_PROJECTS_DATA: Project[] = [
   {
-    id: "p1",
-    title: "E-Commerce Dashboard",
+    id: 'p1',
+    title: 'E-Commerce Dashboard',
     description:
-      "A comprehensive analytics dashboard for online retailers featuring real-time data visualization.",
-    tags: ["React", "Tailwind", "Recharts"],
-    link: "#",
+      'A comprehensive analytics dashboard for online retailers featuring real-time data visualization.',
+    tags: ['React', 'Tailwind', 'Recharts'],
+    link: '#',
   },
   {
-    id: "p2",
-    title: "HealthTrack App",
+    id: 'p2',
+    title: 'HealthTrack App',
     description:
-      "Mobile-first fitness tracking application focusing on simplicity and user retention.",
-    tags: ["Figma", "UX Research", "Prototyping"],
-    link: "#",
+      'Mobile-first fitness tracking application focusing on simplicity and user retention.',
+    tags: ['Figma', 'UX Research', 'Prototyping'],
+    link: '#',
   },
   {
-    id: "p3",
-    title: "Finance AI",
+    id: 'p3',
+    title: 'Finance AI',
     description:
-      "Personal finance assistant powered by generative AI to help users save money.",
-    tags: ["TypeScript", "OpenAI API", "Node.js"],
-    link: "#",
+      'Personal finance assistant powered by generative AI to help users save money.',
+    tags: ['TypeScript', 'OpenAI API', 'Node.js'],
+    link: '#',
   },
 ];
 
 const SOCIAL_OPTIONS = [
   {
-    id: "dribbble",
-    name: "Dribbble",
+    id: 'dribbble',
+    name: 'Dribbble',
     icon: Dribbble,
-    colorClass: "bg-[#ea4c89] hover:bg-[#ff5da0]",
-    url: "https://dribbble.com/",
+    colorClass: 'bg-[#ea4c89] hover:bg-[#ff5da0]',
+    url: 'https://dribbble.com/',
   },
   {
-    id: "behance",
-    name: "Behance",
+    id: 'behance',
+    name: 'Behance',
     icon: Linkedin,
-    colorClass: "bg-[#1769ff] hover:bg-[#4080ff]",
-    url: "https://behance.net/",
+    colorClass: 'bg-[#1769ff] hover:bg-[#4080ff]',
+    url: 'https://behance.net/',
   },
   {
-    id: "pinterest",
-    name: "Pinterest",
+    id: 'pinterest',
+    name: 'Pinterest',
     icon: Pin,
-    colorClass: "bg-[#e60023] hover:bg-[#ff1a3c]",
-    url: "https://pinterest.com/",
+    colorClass: 'bg-[#e60023] hover:bg-[#ff1a3c]',
+    url: 'https://pinterest.com/',
   },
   {
-    id: "github",
-    name: "GitHub",
+    id: 'github',
+    name: 'GitHub',
     icon: Github,
-    colorClass: "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
-    url: "https://github.com/",
+    colorClass: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800',
+    url: 'https://github.com/',
   },
   {
-    id: "gitlab",
-    name: "GitLab",
+    id: 'gitlab',
+    name: 'GitLab',
     icon: Gitlab,
-    colorClass: "bg-[#fc6d26] hover:bg-[#fd8c52]",
-    url: "https://gitlab.com/",
+    colorClass: 'bg-[#fc6d26] hover:bg-[#fd8c52]',
+    url: 'https://gitlab.com/',
   },
   {
-    id: "bitbucket",
-    name: "Bitbucket",
+    id: 'bitbucket',
+    name: 'Bitbucket',
     icon: FolderGit2,
-    colorClass: "bg-[#0052cc] hover:bg-[#2684ff]",
-    url: "https://bitbucket.org/",
+    colorClass: 'bg-[#0052cc] hover:bg-[#2684ff]',
+    url: 'https://bitbucket.org/',
   },
   {
-    id: "stackoverflow",
-    name: "StackOverflow",
+    id: 'stackoverflow',
+    name: 'StackOverflow',
     icon: Code2,
-    colorClass: "bg-[#f48024] hover:bg-[#ff9a4d]",
-    url: "https://stackoverflow.com/",
+    colorClass: 'bg-[#f48024] hover:bg-[#ff9a4d]',
+    url: 'https://stackoverflow.com/',
   },
   {
-    id: "codepen",
-    name: "CodePen",
+    id: 'codepen',
+    name: 'CodePen',
     icon: Codepen,
-    colorClass: "bg-black hover:bg-gray-800 border border-gray-800",
-    url: "https://codepen.io/",
+    colorClass: 'bg-black hover:bg-gray-800 border border-gray-800',
+    url: 'https://codepen.io/',
   },
   {
-    id: "dev",
-    name: "DEV.to",
+    id: 'dev',
+    name: 'DEV.to',
     icon: Code2,
-    colorClass: "bg-white hover:bg-gray-100",
-    textColorClass: "text-black",
-    url: "https://dev.to/",
+    colorClass: 'bg-white hover:bg-gray-100',
+    textColorClass: 'text-black',
+    url: 'https://dev.to/',
   },
   {
-    id: "linkedin",
-    name: "LinkedIn",
+    id: 'linkedin',
+    name: 'LinkedIn',
     icon: Linkedin,
-    colorClass: "bg-[#0077b5] hover:bg-[#006399]",
-    url: "https://linkedin.com/in/",
+    colorClass: 'bg-[#0077b5] hover:bg-[#006399]',
+    url: 'https://linkedin.com/in/',
   },
   {
-    id: "medium",
-    name: "Medium",
+    id: 'medium',
+    name: 'Medium',
     icon: Mail,
-    colorClass: "bg-white hover:bg-gray-100",
-    textColorClass: "text-black",
-    url: "https://medium.com/",
+    colorClass: 'bg-white hover:bg-gray-100',
+    textColorClass: 'text-black',
+    url: 'https://medium.com/',
   },
   {
-    id: "youtube",
-    name: "YouTube",
+    id: 'youtube',
+    name: 'YouTube',
     icon: Youtube,
-    colorClass: "bg-[#FF0000] hover:bg-[#ff3333]",
-    url: "https://youtube.com/",
+    colorClass: 'bg-[#FF0000] hover:bg-[#ff3333]',
+    url: 'https://youtube.com/',
   },
   {
-    id: "instagram",
-    name: "Instagram",
+    id: 'instagram',
+    name: 'Instagram',
     icon: Instagram,
     colorClass:
-      "bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600",
-    url: "https://instagram.com/",
+      'bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600',
+    url: 'https://instagram.com/',
   },
   {
-    id: "facebook",
-    name: "Facebook",
+    id: 'facebook',
+    name: 'Facebook',
     icon: Facebook,
-    colorClass: "bg-[#1877F2] hover:bg-[#3b87f4]",
-    url: "https://facebook.com/",
+    colorClass: 'bg-[#1877F2] hover:bg-[#3b87f4]',
+    url: 'https://facebook.com/',
   },
   {
-    id: "twitter",
-    name: "Twitter",
+    id: 'twitter',
+    name: 'Twitter',
     icon: Twitter,
-    colorClass: "bg-[#1DA1F2] hover:bg-[#4cb5f5]",
-    url: "https://twitter.com/",
+    colorClass: 'bg-[#1DA1F2] hover:bg-[#4cb5f5]',
+    url: 'https://twitter.com/',
   },
   {
-    id: "discord",
-    name: "Discord",
+    id: 'discord',
+    name: 'Discord',
     icon: MessageCircle,
-    colorClass: "bg-[#5865F2] hover:bg-[#7983f5]",
-    url: "https://discord.com/",
+    colorClass: 'bg-[#5865F2] hover:bg-[#7983f5]',
+    url: 'https://discord.com/',
   },
   {
-    id: "whatsapp",
-    name: "WhatsApp",
+    id: 'whatsapp',
+    name: 'WhatsApp',
     icon: Phone,
-    colorClass: "bg-[#25D366] hover:bg-[#4ce285]",
-    url: "https://wa.me/",
+    colorClass: 'bg-[#25D366] hover:bg-[#4ce285]',
+    url: 'https://wa.me/',
   },
   {
-    id: "telegram",
-    name: "Telegram",
+    id: 'telegram',
+    name: 'Telegram',
     icon: Send,
-    colorClass: "bg-[#0088cc] hover:bg-[#2cabeb]",
-    url: "https://t.me/",
+    colorClass: 'bg-[#0088cc] hover:bg-[#2cabeb]',
+    url: 'https://t.me/',
   },
   {
-    id: "email",
-    name: "Email",
+    id: 'email',
+    name: 'Email',
     icon: Mail,
-    colorClass: "bg-[#1e293b] hover:bg-[#263345]",
-    url: "mailto:",
+    colorClass: 'bg-[#1e293b] hover:bg-[#263345]',
+    url: 'mailto:',
   },
 ];
 
@@ -1332,9 +1332,9 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const [currentProfile, setCurrentProfile] = useState(profile);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingSocial, setEditingSocial] = useState<SocialLink | null>(null);
-  const [editUrl, setEditUrl] = useState("");
+  const [editUrl, setEditUrl] = useState('');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState('');
 
   const legenda = currentProfile.legendas?.[0];
 
@@ -1344,14 +1344,14 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const mappedExperience: Experience[] = (currentProfile.workHistory || []).map(
     (work) => {
       // Parse summary to extract role and company
-      const summary = work.summary || "";
+      const summary = work.summary || '';
       let role = work.company; // Default to company field as role
-      let company = "";
+      let company = '';
       let description = summary;
 
       // Try to parse "Role at Company. Description"
-      const atIndex = summary.indexOf(" at ");
-      const dotIndex = summary.indexOf(". ");
+      const atIndex = summary.indexOf(' at ');
+      const dotIndex = summary.indexOf('. ');
       if (atIndex > 0 && dotIndex > atIndex) {
         role = summary.substring(0, atIndex).trim();
         company = summary.substring(atIndex + 4, dotIndex).trim();
@@ -1365,10 +1365,10 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         date: work.period,
         description,
         current:
-          work.period.toLowerCase().includes("present") ||
-          work.period.toLowerCase().includes("atua"),
+          work.period.toLowerCase().includes('present') ||
+          work.period.toLowerCase().includes('atua'),
       };
-    }
+    },
   );
   const experienceData =
     mappedExperience.length > 0 ? mappedExperience : DEMO_EXPERIENCE_DATA;
@@ -1381,7 +1381,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       tags: [],
       link: p.demoLink || p.codeLink,
       image: p.gif,
-    })
+    }),
   );
   const projectsData =
     mappedProjects.length > 0 ? mappedProjects : DEMO_PROJECTS_DATA;
@@ -1389,7 +1389,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const mappedTechStack: Technology[] =
     currentProfile.techStack?.technologies?.map((t, idx) => ({
       ...t,
-      color: t.color || "text-gray-700",
+      color: t.color || 'text-gray-700',
       ordem: t.ordem ?? idx,
     })) || [];
   const techStackData =
@@ -1406,25 +1406,25 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
           ...currentProfile,
           footer: { ...currentProfile.footer, resumeUrl },
         });
-        toast.success("Updated!");
+        toast.success('Updated!');
       } else {
         const newFooter = await footerApi.create({
           profileId: currentProfile.id,
           resumeUrl,
-          copyrightName: currentProfile.username || "Copyright",
-          madeWith: "Made with love",
+          copyrightName: currentProfile.username || 'Copyright',
+          madeWith: 'Made with love',
           title: "Let's Connect",
-          subtitle: "Feel free to reach out",
+          subtitle: 'Feel free to reach out',
         });
         setCurrentProfile({
           ...currentProfile,
           footer: newFooter.footer as any, // Adjust based on actual return type
         });
-        toast.success("Created and Updated!");
+        toast.success('Created and Updated!');
       }
     } catch (e) {
       console.error(e);
-      toast.error("Error updating resume");
+      toast.error('Error updating resume');
     }
   };
 
@@ -1434,12 +1434,12 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     // Optimistic update
     const updatedLegenda = legenda
       ? { ...legenda, [field]: value }
-      : {
-          id: "",
+      : ({
+          id: '',
           profileId: currentProfile.id,
           [field]: value,
           ordem: 1,
-        } as unknown as Legenda;
+        } as unknown as Legenda);
 
     setCurrentProfile({ ...currentProfile, legendas: [updatedLegenda] });
 
@@ -1449,22 +1449,26 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       } else {
         const newLegenda = await legendaApi.create({
           profileId: currentProfile.id,
-          nome: field === "nome" ? value : legenda?.nome || "",
-          titulo: field === "titulo" ? value : legenda?.titulo || "",
-          subtitulo: field === "subtitulo" ? value : legenda?.subtitulo || "",
-          descricao: legenda?.descricao || "Professional Description",
-          legendaFoto: field === "legendaFoto" ? value : legenda?.legendaFoto || "", // Add this
+          nome: field === 'nome' ? value : legenda?.nome || '',
+          titulo: field === 'titulo' ? value : legenda?.titulo || '',
+          subtitulo: field === 'subtitulo' ? value : legenda?.subtitulo || '',
+          descricao: legenda?.descricao || 'Professional Description',
+          legendaFoto:
+            field === 'legendaFoto' ? value : legenda?.legendaFoto || '', // Add this
           // Ensure other required fields if any
         });
         // Update state with the real ID from backend
         if (newLegenda.legenda) {
-             setCurrentProfile((prev) => ({ ...prev, legendas: [newLegenda.legenda!] }));
+          setCurrentProfile((prev) => ({
+            ...prev,
+            legendas: [newLegenda.legenda!],
+          }));
         }
       }
-      toast.success("Updated");
+      toast.success('Updated');
     } catch (e) {
       console.error(e);
-      toast.error("Error updating profile");
+      toast.error('Error updating profile');
       // Revert optimistic update if needed (omitted for brevity)
     }
   };
@@ -1475,36 +1479,49 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     // Optimistic
     const updatedFooter = currentProfile.footer
       ? { ...currentProfile.footer, [field]: value }
-      : { id: "", profileId: currentProfile.id, [field]: value, copyrightName: "", madeWith: "", title: "", subtitle: "", email: "", resumeUrl: "" } as unknown as Footer;
-      
+      : ({
+          id: '',
+          profileId: currentProfile.id,
+          [field]: value,
+          copyrightName: '',
+          madeWith: '',
+          title: '',
+          subtitle: '',
+          email: '',
+          resumeUrl: '',
+        } as unknown as Footer);
+
     setCurrentProfile({ ...currentProfile, footer: updatedFooter });
 
     try {
       if (currentProfile.footer && currentProfile.footer.id) {
         await footerApi.update(currentProfile.footer.id, { [field]: value });
       } else {
-         const newFooter = await footerApi.create({
+        const newFooter = await footerApi.create({
           profileId: currentProfile.id,
-          copyrightName: field === "copyrightName" ? value : "Copyright",
-          madeWith: field === "madeWith" ? value : "Made with love",
+          copyrightName: field === 'copyrightName' ? value : 'Copyright',
+          madeWith: field === 'madeWith' ? value : 'Made with love',
           title: "Let's Connect",
-          subtitle: "Feel free to reach out",
+          subtitle: 'Feel free to reach out',
         });
-        if(newFooter.footer) {
-             setCurrentProfile((prev) => ({...prev, footer: newFooter.footer as any}));
+        if (newFooter.footer) {
+          setCurrentProfile((prev) => ({
+            ...prev,
+            footer: newFooter.footer as any,
+          }));
         }
       }
-      toast.success("Updated");
+      toast.success('Updated');
     } catch (e) {
       console.error(e);
-      toast.error("Error updating footer");
+      toast.error('Error updating footer');
     }
   };
 
   const openSocialEdit = (link: SocialLink) => {
     setEditingSocial(link);
     const isReal = currentProfile.social?.some((s) => s.url === link.url);
-    setEditUrl(isReal ? link.url : "");
+    setEditUrl(isReal ? link.url : '');
     setIsEditModalOpen(true);
   };
 
@@ -1520,25 +1537,32 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         normalizedUrl &&
         !normalizedUrl.match(/^(https?:\/\/|mailto:|tel:)/i)
       ) {
-        normalizedUrl = "https://" + normalizedUrl;
+        normalizedUrl = 'https://' + normalizedUrl;
       }
 
       const isValidUuid = (id?: string) => {
-          return id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        return (
+          id &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            id,
+          )
+        );
       };
 
-      // Determine platform code: 
+      // Determine platform code:
       // If editing existing (UUID), name is the code (from convertToSocialLink).
       // If adding new (ID is platform code), id is the code.
-      const platformCode = isValidUuid(editingSocial.id) 
-        ? editingSocial.name.toLowerCase() 
+      const platformCode = isValidUuid(editingSocial.id)
+        ? editingSocial.name.toLowerCase()
         : editingSocial.id.toLowerCase();
 
       // Check if we are editing an existing social record from DB
       const existingSocial = newSocials.find(
         (s) =>
           s.plataforma.toLowerCase() === platformCode ||
-          (s.id && s.id.toString() === editingSocial.id && isValidUuid(editingSocial.id))
+          (s.id &&
+            s.id.toString() === editingSocial.id &&
+            isValidUuid(editingSocial.id)),
       );
 
       if (existingSocial && isValidUuid(existingSocial.id)) {
@@ -1547,7 +1571,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
           plataforma: platformCode as any,
           url: normalizedUrl,
         });
-        
+
         // Update local state
         const index = newSocials.indexOf(existingSocial);
         newSocials[index] = {
@@ -1574,10 +1598,11 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
 
       setCurrentProfile({ ...currentProfile, social: newSocials });
       setIsEditModalOpen(false);
-      toast.success("Social media link saved!");
+      toast.success('Social media link saved!');
     } catch (error: any) {
-      console.error("Error saving social media:", error);
-      const msg = error.response?.data?.message || "Failed to save social media link";
+      console.error('Error saving social media:', error);
+      const msg =
+        error.response?.data?.message || 'Failed to save social media link';
       toast.error(Array.isArray(msg) ? msg[0] : msg);
     }
   };
@@ -1587,14 +1612,19 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
 
     try {
       // Find the social to delete
-       const socialToDelete = currentProfile.social?.find(
+      const socialToDelete = currentProfile.social?.find(
         (s) =>
           s.plataforma.toLowerCase() === editingSocial.name.toLowerCase() ||
-          s.id.toString() === editingSocial.id
+          s.id.toString() === editingSocial.id,
       );
 
       const isValidUuid = (id?: string) => {
-          return id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        return (
+          id &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            id,
+          )
+        );
       };
 
       if (socialToDelete && isValidUuid(socialToDelete.id)) {
@@ -1604,14 +1634,14 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       const newSocials = (currentProfile.social || []).filter(
         (s) =>
           s.plataforma.toLowerCase() !== editingSocial.name.toLowerCase() &&
-          s.id.toString() !== editingSocial.id
+          s.id.toString() !== editingSocial.id,
       );
       setCurrentProfile({ ...currentProfile, social: newSocials });
       setIsEditModalOpen(false);
-      toast.success("Social media link removed!");
+      toast.success('Social media link removed!');
     } catch (error) {
-      console.error("Error deleting social media:", error);
-      toast.error("Failed to remove social media link");
+      console.error('Error deleting social media:', error);
+      toast.error('Failed to remove social media link');
     }
   };
 
@@ -1624,7 +1654,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       name: option.name,
       handle: option.id,
       icon: option.icon,
-      url: "",
+      url: '',
       colorClass: option.colorClass,
     };
     openSocialEdit(tempLink);
@@ -1635,15 +1665,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     const newTechObj: Technology = {
       ...newTech,
       id: newTech.id || Date.now().toString(),
-      techStackId: currentProfile.techStack?.id || "",
-      color: newTech.color || "text-gray-700",
+      techStackId: currentProfile.techStack?.id || '',
+      color: newTech.color || 'text-gray-700',
       ordem: currentTechs.length,
     };
     const newTechnologies = [...currentTechs, newTechObj];
 
     const updatedTechStack = {
-      title: currentProfile.techStack?.title || "Tech Stack",
-      subtitle: currentProfile.techStack?.subtitle || "Technologies I use",
+      title: currentProfile.techStack?.title || 'Tech Stack',
+      subtitle: currentProfile.techStack?.subtitle || 'Technologies I use',
       ...currentProfile.techStack,
       technologies: newTechnologies,
     };
@@ -1659,7 +1689,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         technologies: newTechnologies.map((t, idx) => ({
           name: t.name,
           icon: t.icon,
-          color: t.color || "text-gray-700",
+          color: t.color || 'text-gray-700',
           ordem: idx,
         })),
       };
@@ -1669,21 +1699,21 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       } else {
         await techStackApi.update(currentProfile.id, payload);
       }
-      toast.success("Tech added");
+      toast.success('Tech added');
     } catch (e) {
-      toast.error("Error adding tech");
+      toast.error('Error adding tech');
     }
   };
 
   const handleRemoveTech = async (techToRemove: Technology) => {
     const currentTechs = currentProfile.techStack?.technologies || [];
     const newTechnologies = currentTechs.filter((t) =>
-      t.id ? t.id !== techToRemove.id : t.name !== techToRemove.name
+      t.id ? t.id !== techToRemove.id : t.name !== techToRemove.name,
     );
 
     const updatedTechStack = {
-      title: currentProfile.techStack?.title || "Tech Stack",
-      subtitle: currentProfile.techStack?.subtitle || "Technologies I use",
+      title: currentProfile.techStack?.title || 'Tech Stack',
+      subtitle: currentProfile.techStack?.subtitle || 'Technologies I use',
       ...currentProfile.techStack,
       technologies: newTechnologies,
     };
@@ -1700,15 +1730,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
           technologies: newTechnologies.map((t, idx) => ({
             name: t.name,
             icon: t.icon,
-            color: t.color || "text-gray-700",
+            color: t.color || 'text-gray-700',
             ordem: idx,
           })),
         };
         await techStackApi.update(currentProfile.id, payload);
-        toast.success("Tech removed");
+        toast.success('Tech removed');
       }
     } catch (e) {
-      toast.error("Error removing tech");
+      toast.error('Error removing tech');
     }
   };
 
@@ -1716,10 +1746,10 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const [isExpModalOpen, setIsExpModalOpen] = useState(false);
   const [editingExp, setEditingExp] = useState<Experience | null>(null);
   const [expForm, setExpForm] = useState({
-    role: "",
-    company: "",
-    date: "",
-    description: "",
+    role: '',
+    company: '',
+    date: '',
+    description: '',
     current: false,
   });
 
@@ -1727,10 +1757,10 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const openExpAdd = () => {
     setEditingExp(null);
     setExpForm({
-      role: "",
-      company: "",
-      date: "",
-      description: "",
+      role: '',
+      company: '',
+      date: '',
+      description: '',
       current: false,
     });
     setIsExpModalOpen(true);
@@ -1756,8 +1786,8 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       : `${expForm.role}. ${expForm.description}`.trim();
 
     const newWork = {
-      company: expForm.role || "Position",
-      period: expForm.date || "Date",
+      company: expForm.role || 'Position',
+      period: expForm.date || 'Date',
       summary: summaryText,
       ordem: 0, // Default
       technologies: [], // Default empty
@@ -1767,13 +1797,13 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     try {
       if (editingExp) {
         await workExperienceApi.update(editingExp.id, newWork);
-        toast.success("Experience updated");
+        toast.success('Experience updated');
       } else {
         await workExperienceApi.create({
           ...newWork,
           profileId: currentProfile.id,
         });
-        toast.success("Experience added");
+        toast.success('Experience added');
       }
 
       // Optimistic UI Update
@@ -1805,7 +1835,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       let newList;
       if (editingExp) {
         newList = currentList.map((item) =>
-          item.id === editingExp.id ? { ...item, ...newBackendWork } : item
+          item.id === editingExp.id ? { ...item, ...newBackendWork } : item,
         );
       } else {
         newList = [
@@ -1817,7 +1847,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       setCurrentProfile({ ...currentProfile, workHistory: newList as any });
       setIsExpModalOpen(false);
     } catch (e) {
-      toast.error("Error saving experience");
+      toast.error('Error saving experience');
     }
   };
 
@@ -1826,21 +1856,21 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     try {
       await workExperienceApi.delete(editingExp.id);
       const newList = (currentProfile.workHistory || []).filter(
-        (i) => i.id !== editingExp.id
+        (i) => i.id !== editingExp.id,
       );
       setCurrentProfile({ ...currentProfile, workHistory: newList });
       setIsExpModalOpen(false);
-      toast.success("Deleted");
+      toast.success('Deleted');
     } catch (e) {
-      toast.error("Error deleting");
+      toast.error('Error deleting');
     }
   };
 
   const handleAvatarSave = async () => {
     if (!avatarUrl.trim()) return;
-    
+
     // Use handleProfileUpdate to save to legendaFoto
-    await handleProfileUpdate("legendaFoto", avatarUrl);
+    await handleProfileUpdate('legendaFoto', avatarUrl);
     setIsAvatarModalOpen(false);
   };
 
@@ -1848,24 +1878,24 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const [isProjModalOpen, setIsProjModalOpen] = useState(false);
   const [editingProj, setEditingProj] = useState<Projeto | null>(null);
   const [projForm, setProjForm] = useState({
-    title: "",
-    description: "",
-    githubUrl: "",
-    deployUrl: "",
-    thumbnail: "",
-    technologies: "",
+    title: '',
+    description: '',
+    githubUrl: '',
+    deployUrl: '',
+    thumbnail: '',
+    technologies: '',
   });
 
   /* PROJECTS HANDLERS */
   const openProjAdd = () => {
     setEditingProj(null);
     setProjForm({
-      title: "",
-      description: "",
-      githubUrl: "",
-      deployUrl: "",
-      thumbnail: "",
-      technologies: "",
+      title: '',
+      description: '',
+      githubUrl: '',
+      deployUrl: '',
+      thumbnail: '',
+      technologies: '',
     });
     setIsProjModalOpen(true);
   };
@@ -1874,23 +1904,23 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const openProjEdit = (projUI: Project) => {
     // Find the original backend object
     const original = (currentProfile.projetos || []).find(
-      (p) => p.id === projUI.id
+      (p) => p.id === projUI.id,
     );
 
     if (original) {
       setEditingProj(original);
       setProjForm({
-        title: original.nome || "",
-        description: original.descricao || "",
-        githubUrl: original.codeLink || "",
-        deployUrl: original.demoLink || "",
-        thumbnail: original.gif || "",
-        technologies: "",
+        title: original.nome || '',
+        description: original.descricao || '',
+        githubUrl: original.codeLink || '',
+        deployUrl: original.demoLink || '',
+        thumbnail: original.gif || '',
+        technologies: '',
       });
       setIsProjModalOpen(true);
     } else {
       // Fallback if not found (should not happen usually)
-      toast.error("Could not find project data");
+      toast.error('Could not find project data');
     }
   };
 
@@ -1898,8 +1928,12 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     // Helper function to validate URL
     const isValidUrl = (url: string) => {
       try {
-        new URL(url);
-        return true;
+        const trimmed = url.trim();
+        if (/^https?:\/\//i.test(trimmed)) {
+          new URL(trimmed);
+          return true;
+        }
+        return trimmed.length > 0;
       } catch {
         return false;
       }
@@ -1907,8 +1941,8 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
 
     // Create DTO payload - only include fields that have values
     const payload: any = {
-      nome: projForm.title || "Project Title",
-      descricao: projForm.description || "Project Description",
+      nome: projForm.title || 'Project Title',
+      descricao: projForm.description || 'Project Description',
     };
 
     // Only include optional URL fields if they have valid URLs
@@ -1927,13 +1961,13 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     try {
       if (editingProj) {
         await projetosApi.update(editingProj.id, payload);
-        toast.success("Project updated");
+        toast.success('Project updated');
       } else {
         // For create, profileId is required
         const createPayload = { ...payload, profileId: currentProfile.id };
         // Don't send gif field if it's empty - it's optional in the DTO
         await projetosApi.create(createPayload);
-        toast.success("Project added");
+        toast.success('Project added');
       }
 
       // Local State Update
@@ -1953,7 +1987,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       let newProjsList;
       if (editingProj) {
         newProjsList = currentProjs.map((p) =>
-          p.id === editingProj.id ? { ...p, ...newProjUI } : p
+          p.id === editingProj.id ? { ...p, ...newProjUI } : p,
         );
       } else {
         newProjsList = [...currentProjs, newProjUI];
@@ -1962,12 +1996,12 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       setCurrentProfile({ ...currentProfile, projetos: newProjsList });
       setIsProjModalOpen(false);
     } catch (e: any) {
-      console.error("Error saving project:", e.response?.data || e);
+      console.error('Error saving project:', e.response?.data || e);
       const errorMessage = e.response?.data?.message;
       if (Array.isArray(errorMessage)) {
         toast.error(errorMessage[0]);
       } else {
-        toast.error(errorMessage || "Error saving project");
+        toast.error(errorMessage || 'Error saving project');
       }
     }
   };
@@ -1977,13 +2011,13 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     try {
       await projetosApi.delete(editingProj.id);
       const newProjsList = (currentProfile.projetos || []).filter(
-        (p) => p.id !== editingProj.id
+        (p) => p.id !== editingProj.id,
       );
       setCurrentProfile({ ...currentProfile, projetos: newProjsList });
       setIsProjModalOpen(false);
-      toast.success("Project deleted");
+      toast.success('Project deleted');
     } catch (e) {
-      toast.error("Error deleting project");
+      toast.error('Error deleting project');
     }
   };
 
@@ -2003,7 +2037,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         <DialogContent className="sm:max-w-md bg-[#18181b] border-gray-800 text-white">
           <DialogHeader>
             <DialogTitle>
-              {editingProj ? "Edit Project" : "Add Project"}
+              {editingProj ? 'Edit Project' : 'Add Project'}
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4 max-h-[70vh] overflow-y-auto">
@@ -2100,7 +2134,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         <DialogContent className="sm:max-w-md bg-[#18181b] border-gray-800 text-white">
           <DialogHeader>
             <DialogTitle>
-              {editingExp ? "Edit Experience" : "Add Experience"}
+              {editingExp ? 'Edit Experience' : 'Add Experience'}
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">
@@ -2213,7 +2247,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                   src={avatarUrl}
                   alt="Preview"
                   className="w-24 h-24 rounded-full object-cover border-2 border-yellow-500"
-                  onError={(e) => (e.currentTarget.style.display = "none")}
+                  onError={(e) => (e.currentTarget.style.display = 'none')}
                 />
               </div>
             )}
@@ -2262,15 +2296,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                   onChange={(e) => {
                     const platform = e.target.value;
                     const option = SOCIAL_OPTIONS.find(
-                      (o) => o.id === platform
+                      (o) => o.id === platform,
                     );
                     if (option) {
                       setEditingSocial({
                         id: platform,
                         name: option.name,
-                        handle: "",
+                        handle: '',
                         icon: option.icon,
-                        url: "",
+                        url: '',
                         colorClass: option.colorClass,
                       } as SocialLink);
                     }
@@ -2301,7 +2335,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
             currentProfile.social?.some(
               (s) =>
                 s.plataforma === editingSocial.name ||
-                s.id.toString() === editingSocial.id
+                s.id.toString() === editingSocial.id,
             ) ? (
               <Button variant="destructive" onClick={deleteSocial} size="sm">
                 <Trash2 size={16} className="mr-2" /> Remove
@@ -2339,13 +2373,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                   src={
                     legenda?.legendaFoto ||
                     currentProfile.avatarUrl ||
-                    "https://api.dicebear.com/7.x/avataaars/svg?seed=Default&backgroundColor=fbbf24"
+                    'https://api.dicebear.com/7.x/avataaars/svg?seed=Default&backgroundColor=fbbf24'
                   }
-                  alt={legenda?.nome || "Profile"}
+                  alt={legenda?.nome || 'Profile'}
                 />
                 <button
                   onClick={() => {
-                    setAvatarUrl(legenda?.legendaFoto || currentProfile.avatarUrl || "");
+                    setAvatarUrl(
+                      legenda?.legendaFoto || currentProfile.avatarUrl || '',
+                    );
                     setIsAvatarModalOpen(true);
                   }}
                   className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white"
@@ -2356,15 +2392,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
               <div className="flex-1 text-center sm:text-left mt-2">
                 <div className="mb-1">
                   <EditableField
-                    value={legenda?.nome || "Your Name"}
-                    onSave={(val) => handleProfileUpdate("nome", val)}
+                    value={legenda?.nome || 'Your Name'}
+                    onSave={(val) => handleProfileUpdate('nome', val)}
                     className="text-2xl sm:text-3xl font-bold text-white tracking-tight hover:bg-white/5 p-1 rounded -ml-1"
                   />
                 </div>
                 <div className="mb-4">
                   <EditableField
-                    value={legenda?.titulo || "Your Title"}
-                    onSave={(val) => handleProfileUpdate("titulo", val)}
+                    value={legenda?.titulo || 'Your Title'}
+                    onSave={(val) => handleProfileUpdate('titulo', val)}
                     className="text-yellow-500 font-medium text-sm hover:bg-yellow-500/10 p-1 rounded -ml-1"
                   />
                 </div>
@@ -2374,17 +2410,17 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                     <EditableField
                       value={
                         legenda?.subtitulo ||
-                        "Building digital products that matter."
+                        'Building digital products that matter.'
                       }
-                      onSave={(val) => handleProfileUpdate("subtitulo", val)}
+                      onSave={(val) => handleProfileUpdate('subtitulo', val)}
                       className="text-sm hover:bg-white/5 p-1 rounded"
                     />
                   </div>
                   <div className="flex items-center gap-2 text-gray-400">
                     <MapPin size={16} />
                     <EditableField
-                      value={legenda?.subtitulo || "Location/Contact"}
-                      onSave={(val) => handleProfileUpdate("subtitulo", val)}
+                      value={legenda?.subtitulo || 'Location/Contact'}
+                      onSave={(val) => handleProfileUpdate('subtitulo', val)}
                       className="text-sm hover:bg-white/5 p-1 rounded"
                     />
                   </div>
@@ -2413,7 +2449,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
             <button
               onClick={() => {
                 setEditingSocial(null);
-                setEditUrl("");
+                setEditUrl('');
                 setIsEditModalOpen(true);
               }}
               className="col-span-1 p-6 rounded-3xl border-2 border-dashed border-gray-600 hover:border-yellow-500 bg-[#121318] hover:bg-[#18181b] transition-all duration-300 flex flex-col items-center justify-center gap-3 group"
@@ -2440,8 +2476,8 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                                     flex items-center gap-2 px-3 py-2 rounded-xl border border-white/5 
                                     transition-all duration-200 group bg-[#18181b] hover:scale-105
                                     ${option.colorClass.replace(
-                                      "bg-",
-                                      "hover:bg-"
+                                      'bg-',
+                                      'hover:bg-',
                                     )} 
                                 `}
                 >
@@ -2526,7 +2562,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
               <div className="flex justify-center items-center gap-2">
                 <EditableField
                   value={currentProfile.footer.copyrightName}
-                  onSave={(val) => handleFooterUpdate("copyrightName", val)}
+                  onSave={(val) => handleFooterUpdate('copyrightName', val)}
                   className="hover:bg-white/5 p-1 rounded"
                 />
               </div>
@@ -2534,7 +2570,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                 <div className="mt-2 flex justify-center items-center gap-2">
                   <EditableField
                     value={currentProfile.footer.madeWith}
-                    onSave={(val) => handleFooterUpdate("madeWith", val)}
+                    onSave={(val) => handleFooterUpdate('madeWith', val)}
                     className="hover:bg-white/5 p-1 rounded"
                   />
                 </div>

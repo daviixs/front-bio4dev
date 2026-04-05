@@ -308,24 +308,6 @@ export function CreateProfilePage() {
                     )}
 
                     <div className="p-6 flex flex-col gap-4">
-                      {/* Avatar placeholder */}
-                      <div className="flex justify-center">
-                        <div className="w-14 h-14 rounded-full bg-white/80 border border-white/40 shadow-sm" />
-                      </div>
-
-                      {/* Social row placeholder */}
-                      <div className="flex items-center justify-center gap-2 text-slate-500/80 text-xs">
-                        <span className="w-3 h-3 rounded-full bg-white/70" />
-                        <span className="w-3 h-3 rounded-full bg-white/70" />
-                        <span className="w-3 h-3 rounded-full bg-white/70" />
-                      </div>
-
-                      {/* Link bars */}
-                      <div className="space-y-3">
-                        <div className="h-11 rounded-xl bg-white/85 shadow-sm" />
-                        <div className="h-11 rounded-xl bg-white/80 shadow-sm" />
-                        <div className="h-11 rounded-xl bg-white/75 shadow-sm" />
-                      </div>
                     </div>
                   </button>
                 );
