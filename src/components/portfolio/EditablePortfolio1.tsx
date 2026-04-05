@@ -1012,6 +1012,19 @@ export function EditablePortfolio1({
       toast.success('Tech added');
       onProfileUpdate?.();
     } catch (e) {
+      // Rollback se falhar
+      const rolledBackTechStack = {
+        ...currentProfile.techStack,
+        technologies: currentTechs,
+      };
+      setCurrentProfile({
+        ...currentProfile,
+        techStack: rolledBackTechStack as any,
+      });
+      setLocalProfile((prev) => ({
+        ...prev,
+        techStack: rolledBackTechStack as any,
+      }));
       toast.error('Error adding tech');
     }
   };

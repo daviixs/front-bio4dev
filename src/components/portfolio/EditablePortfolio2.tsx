@@ -1701,6 +1701,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       }
       toast.success('Tech added');
     } catch (e) {
+      // Rollback se falhar
+      const rolledBackTechStack = {
+        ...currentProfile.techStack,
+        technologies: currentTechs,
+      };
+      setCurrentProfile({
+        ...currentProfile,
+        techStack: rolledBackTechStack as any,
+      });
       toast.error('Error adding tech');
     }
   };
@@ -1738,6 +1747,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         toast.success('Tech removed');
       }
     } catch (e) {
+      // Rollback se falhar
+      const rolledBackTechStack = {
+        ...currentProfile.techStack,
+        technologies: currentTechs,
+      };
+      setCurrentProfile({
+        ...currentProfile,
+        techStack: rolledBackTechStack as any,
+      });
       toast.error('Error removing tech');
     }
   };
