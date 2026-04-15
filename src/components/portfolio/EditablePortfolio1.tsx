@@ -13,6 +13,7 @@ import {
   workExperienceApi,
   projetosApi,
 } from '@/lib/api';
+import { template01Theme } from '@/theme/template01Theme';
 import type {
   ProfileComplete,
   Legenda,
@@ -581,7 +582,11 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
     const base =
       selected ||
       (search.trim()
-        ? { name: search.trim(), icon: 'lucide:code-2', color: 'text-gray-700' }
+        ? {
+            name: search.trim(),
+            icon: 'lucide:code-2',
+            color: 'text-[#695f5c]',
+          }
         : null);
 
     if (!base) return;
@@ -591,7 +596,7 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
       techStackId: '',
       name: base.name,
       icon: base.icon,
-      color: base.color || 'text-gray-700',
+      color: base.color || 'text-[#695f5c]',
       ordem: 0,
     });
 
@@ -610,7 +615,9 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md bg-white border-slate-200 text-slate-900">
+      <DialogContent
+        className={`sm:max-w-md ${template01Theme.card} ${template01Theme.textPrimary}`}
+      >
         <DialogHeader>
           <DialogTitle>Adicionar tecnologia</DialogTitle>
         </DialogHeader>
@@ -620,7 +627,7 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar tecnologia (ex: React, Python)..."
-            className="bg-white border-slate-200"
+            className="bg-[#c5b9b7] border-[#887d7a] text-[#4a413e] placeholder:text-[#887d7a]"
           />
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto">
@@ -628,22 +635,20 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
               <button
                 key={tech.name}
                 onClick={() => setSelected(tech)}
-                className={`flex items-center gap-2 p-2 rounded-xl border border-slate-200 bg-white hover:border-blue-400 transition-colors ${
-                  selected?.name === tech.name ? 'border-blue-500' : ''
+                className={`flex items-center gap-2 p-2 rounded-xl border border-[#887d7a] bg-[#c5b9b7] hover:bg-[#a69b98] transition-colors ${
+                  selected?.name === tech.name
+                    ? 'border-[#695f5c] bg-[#a69b98]'
+                    : ''
                 }`}
               >
-                <TechIcon
-                  icon={tech.icon}
-                  size={22}
-                  className={tech.color || 'text-slate-600'}
-                />
-                <span className="text-sm text-slate-700 text-left">
+                <TechIcon icon={tech.icon} size={22} className="text-[#695f5c]" />
+                <span className="text-sm text-[#4a413e] text-left">
                   {tech.name}
                 </span>
               </button>
             ))}
             {filtered.length === 0 && (
-              <p className="col-span-full text-sm text-slate-500">
+              <p className="col-span-full text-sm text-[#695f5c]">
                 Nenhuma tecnologia encontrada.
               </p>
             )}
@@ -655,14 +660,11 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
             <Button
               variant="ghost"
               onClick={() => handleOpenChange(false)}
-              className="text-slate-500"
+              className="text-[#695f5c] hover:bg-[#a69b98]/50"
             >
               Cancelar
             </Button>
-            <Button
-              onClick={handleConfirm}
-              className="bg-blue-600 text-white hover:bg-blue-700"
-            >
+            <Button onClick={handleConfirm} className={template01Theme.primaryButton}>
               Adicionar
             </Button>
           </div>
@@ -676,20 +678,25 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <section id="tech-stack" className="py-20 px-6 bg-white">
+    <section
+      id="tech-stack"
+      className={`py-20 px-6 ${template01Theme.sectionAlt}`}
+    >
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl mb-4 text-gray-900">
+          <h2
+            className={`text-4xl md:text-5xl mb-4 ${template01Theme.textPrimary}`}
+          >
             Tech Stack
           </h2>
-          <p className="text-gray-600">
+          <p className={template01Theme.textSecondary}>
             Tecnologias e ferramentas que utilizo no dia a dia
           </p>
         </div>
 
         {data && data.length > 0 && (
           <div className="text-center mb-6">
-            <p className="text-sm text-gray-500">
+            <p className={`text-sm ${template01Theme.textMuted}`}>
               {data.length === 1
                 ? '1 tecnologia adicionada'
                 : `${data.length} tecnologias adicionadas`}
@@ -699,7 +706,7 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
 
         {data && data.length === 0 && (
           <div className="text-center mb-6">
-            <span className="text-slate-500 text-sm">
+            <span className={`text-sm ${template01Theme.textMuted}`}>
               Nenhuma tecnologia adicionada ainda.
             </span>
           </div>
@@ -710,7 +717,7 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
             <Button
               size="sm"
               onClick={() => setIsDialogOpen(true)}
-              className="bg-blue-600 text-white hover:bg-blue-700 h-9 flex items-center gap-2"
+              className={`h-9 flex items-center gap-2 ${template01Theme.primaryButton}`}
             >
               <Plus size={16} />
               Adicionar tecnologia
@@ -732,7 +739,7 @@ const DEMO_TECH_STACK: Technology[] = TECH_OPTIONS.map((tech, idx) => ({
   techStackId: 'demo',
   name: tech.name,
   icon: tech.icon,
-  color: tech.color || 'text-gray-700',
+  color: tech.color || 'text-[#695f5c]',
   ordem: idx,
 }));
 
@@ -972,7 +979,7 @@ export function EditablePortfolio1({
       ...newTech,
       id: newTech.id || Date.now().toString(),
       techStackId: currentProfile.techStack?.id || '',
-      color: newTech.color || 'text-gray-700',
+      color: newTech.color || 'text-[#695f5c]',
       ordem: currentTechs.length,
     };
     const newTechnologies = [...currentTechs, newTechObj];
@@ -999,7 +1006,7 @@ export function EditablePortfolio1({
         technologies: newTechnologies.map((t, idx) => ({
           name: t.name,
           icon: t.icon,
-          color: t.color || 'text-gray-700',
+          color: t.color || 'text-[#695f5c]',
           ordem: idx,
         })),
       };
@@ -1058,7 +1065,7 @@ export function EditablePortfolio1({
           technologies: newTechnologies.map((t, idx) => ({
             name: t.name,
             icon: t.icon,
-            color: t.color || 'text-gray-700',
+            color: t.color || 'text-[#695f5c]',
             ordem: idx,
           })),
         };
@@ -1422,7 +1429,7 @@ export function EditablePortfolio1({
       ...tech,
       id: tech.id || `tech-${idx}`,
       techStackId: currentProfile.techStack?.id || '',
-      color: tech.color || 'text-gray-700',
+      color: tech.color || 'text-[#695f5c]',
       ordem: tech.ordem ?? idx,
     })) || [];
   const techStackData =
@@ -1444,7 +1451,7 @@ export function EditablePortfolio1({
     }
 
     return (
-      <div className="min-h-screen bg-white">
+      <div className={`min-h-screen ${template01Theme.pageBg}`}>
         {/* Botão de Currículo Editável - Fixo no Topo */}
         <EditableResumeButton
           resumeUrl={localProfile.footer?.resumeUrl}
@@ -1471,7 +1478,7 @@ export function EditablePortfolio1({
           <button
             type="button"
             onClick={() => openWorkModal()}
-            className="absolute right-6 top-6 z-10 inline-flex items-center gap-2 rounded-full bg-white shadow-md px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+            className={`absolute right-6 top-6 z-10 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ${template01Theme.secondaryButton}`}
           >
             <Plus className="h-4 w-4" />
             Nova Experiencia
@@ -1485,7 +1492,7 @@ export function EditablePortfolio1({
                     key={work.id}
                     type="button"
                     onClick={() => openWorkModal(work)}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs text-slate-600 hover:bg-slate-50"
+                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs ${template01Theme.chip}`}
                   >
                     <Pencil className="h-3 w-3" />
                     {work.company || 'Experiencia'}
@@ -1501,7 +1508,7 @@ export function EditablePortfolio1({
           <button
             type="button"
             onClick={() => openProjectModal()}
-            className="absolute right-6 top-6 z-10 inline-flex items-center gap-2 rounded-full bg-white shadow-md px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+            className={`absolute right-6 top-6 z-10 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ${template01Theme.secondaryButton}`}
           >
             <Plus className="h-4 w-4" />
             Novo Projeto
@@ -1515,7 +1522,7 @@ export function EditablePortfolio1({
                     key={project.id}
                     type="button"
                     onClick={() => openProjectModal(project)}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs text-slate-600 hover:bg-slate-50"
+                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs ${template01Theme.chip}`}
                   >
                     <Pencil className="h-3 w-3" />
                     {project.nome || 'Projeto'}
@@ -1531,7 +1538,7 @@ export function EditablePortfolio1({
           <button
             type="button"
             onClick={openFooterModal}
-            className="absolute right-6 top-6 z-10 inline-flex items-center gap-2 rounded-full bg-white shadow-md px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+            className={`absolute right-6 top-6 z-10 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ${template01Theme.secondaryButton}`}
           >
             <Pencil className="h-4 w-4" />
             Editar Footer

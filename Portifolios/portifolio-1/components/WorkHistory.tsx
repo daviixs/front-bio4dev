@@ -1,5 +1,6 @@
 import React from 'react';
 import { Briefcase, Calendar } from 'lucide-react';
+import { template01Theme } from '@/theme/template01Theme';
 import { WorkExperience } from '@/types';
 
 interface WorkHistoryProps {
@@ -94,14 +95,16 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
   ];
 
   return (
-    <section className="py-20 px-6 bg-gray-50">
+    <section className={`py-20 px-6 ${template01Theme.sectionGradient}`}>
       <div className="max-w-6xl mx-auto">
         {/* Título da Seção */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl mb-4 text-gray-900">
+          <h2
+            className={`text-4xl md:text-5xl mb-4 ${template01Theme.textPrimary}`}
+          >
             Experiência Profissional
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className={`max-w-2xl mx-auto ${template01Theme.textSecondary}`}>
             Histórico de projetos e empresas onde apliquei minhas habilidades
             para criar soluções impactantes
           </p>
@@ -110,7 +113,7 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
         {/* Linha do Tempo */}
         <div className="relative">
           {/* Linha vertical central (visível apenas em desktop) */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-300"></div>
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-[#887d7a]"></div>
 
           {/* Items da timeline */}
           <div className="space-y-12">
@@ -125,14 +128,18 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                 <div
                   className={`w-full md:w-5/12 ${index % 2 === 0 ? '' : 'md:text-right'}`}
                 >
-                  <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                  <div
+                    className={`rounded-lg p-6 hover:shadow-xl transition-shadow duration-300 shadow-[0_22px_44px_-28px_rgba(74,65,62,0.45)] ${template01Theme.card}`}
+                  >
                     {/* Cabeçalho */}
                     <div className="mb-4">
-                      <h3 className="text-xl mb-2 text-gray-900">
+                      <h3
+                        className={`text-xl mb-2 ${template01Theme.textPrimary}`}
+                      >
                         {work.company}
                       </h3>
                       <div
-                        className={`flex items-center gap-2 text-sm text-gray-700 ${index % 2 === 0 ? '' : 'md:justify-end'}`}
+                        className={`flex items-center gap-2 text-sm ${template01Theme.textSecondary} ${index % 2 === 0 ? '' : 'md:justify-end'}`}
                       >
                         <Calendar className="w-4 h-4" />
                         <span>{work.period}</span>
@@ -140,13 +147,17 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                     </div>
 
                     {/* Resumo */}
-                    <p className="text-gray-700 mb-4 leading-relaxed">
+                    <p
+                      className={`mb-4 leading-relaxed ${template01Theme.textSecondary}`}
+                    >
                       {work.summary}
                     </p>
 
                     {/* Tecnologias */}
                     <div className="mb-4">
-                      <h4 className="text-sm text-gray-900 mb-2">
+                      <h4
+                        className={`text-sm mb-2 ${template01Theme.textPrimary}`}
+                      >
                         Tecnologias:
                       </h4>
                       <div
@@ -156,7 +167,7 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                           (tech: any, techIndex: number) => (
                             <span
                               key={techIndex}
-                              className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                              className={`px-3 py-1 rounded-full text-sm ${template01Theme.chip}`}
                             >
                               {typeof tech === 'string'
                                 ? tech
@@ -169,11 +180,13 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
 
                     {/* Responsabilidades */}
                     <div className="mb-4">
-                      <h4 className="text-sm text-gray-900 mb-2">
+                      <h4
+                        className={`text-sm mb-2 ${template01Theme.textPrimary}`}
+                      >
                         Responsabilidades:
                       </h4>
                       <ul
-                        className={`space-y-1 text-sm text-gray-700 ${index % 2 === 0 ? 'list-disc list-inside' : 'md:list-none'}`}
+                        className={`space-y-1 text-sm ${template01Theme.textSecondary} ${index % 2 === 0 ? 'list-disc list-inside' : 'md:list-none'}`}
                       >
                         {work.responsibilities.map(
                           (resp: any, respIndex: number) => (
@@ -191,9 +204,13 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                     </div>
 
                     {/* Impacto */}
-                    <div className="pt-4 border-t border-gray-200">
-                      <h4 className="text-sm text-gray-900 mb-2">Impacto:</h4>
-                      <p className="text-sm text-gray-700 bg-green-50 p-3 rounded-lg">
+                    <div className={`pt-4 border-t ${template01Theme.divider}`}>
+                      <h4 className={`text-sm mb-2 ${template01Theme.textPrimary}`}>
+                        Impacto:
+                      </h4>
+                      <p
+                        className={`text-sm p-3 rounded-lg ${template01Theme.impact}`}
+                      >
                         {work.impact}
                       </p>
                     </div>
@@ -201,8 +218,8 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                 </div>
 
                 {/* Ícone central (visível apenas em desktop) */}
-                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gray-200 rounded-full items-center justify-center shadow-lg">
-                  <Briefcase className="w-6 h-6 text-gray-600" />
+                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-[#a69b98] rounded-full items-center justify-center shadow-[0_18px_36px_-24px_rgba(74,65,62,0.55)] border border-[#887d7a]">
+                  <Briefcase className="w-6 h-6 text-[#4a413e]" />
                 </div>
 
                 {/* Espaço vazio do outro lado (apenas desktop) */}
@@ -213,7 +230,9 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
 
           {/* Indicador de início da carreira */}
           <div className="text-center mt-12">
-            <div className="inline-block px-6 py-3 bg-gray-900 text-white rounded-full shadow-lg">
+            <div
+              className={`inline-block px-6 py-3 rounded-full ${template01Theme.primaryButton}`}
+            >
               Início da Jornada
             </div>
           </div>

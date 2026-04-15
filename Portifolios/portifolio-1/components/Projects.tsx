@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink, Github } from 'lucide-react';
+import { template01Theme } from '@/theme/template01Theme';
 import { Projeto } from '@/types';
 
 interface ProjectsProps {
@@ -59,12 +60,21 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
   ];
 
   return (
-    <section id="projetos" className="py-20 px-6 bg-gray-50">
+    <section
+      id="projetos"
+      className={`py-20 px-6 ${template01Theme.sectionGradientAlt}`}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Título da seção */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl mb-4 text-gray-900">Projetos</h2>
-          <p className="text-gray-600">Alguns dos meus trabalhos recentes</p>
+          <h2
+            className={`text-4xl md:text-5xl mb-4 ${template01Theme.textPrimary}`}
+          >
+            Projetos
+          </h2>
+          <p className={template01Theme.textSecondary}>
+            Alguns dos meus trabalhos recentes
+          </p>
         </div>
 
         {/* Grade de projetos */}
@@ -72,22 +82,28 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
           {projects.map((project: any, index: number) => (
             <div
               key={index}
-              className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group"
+              className={`rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 group shadow-[0_24px_48px_-28px_rgba(74,65,62,0.45)] ${template01Theme.card}`}
             >
               {/* GIF do projeto */}
-              <div className="relative overflow-hidden h-56 bg-gray-100">
+              <div className="relative overflow-hidden h-56 bg-[#a69b98]">
                 <img
                   src={project.gif}
                   alt={project.nome}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div
+                  className={`absolute inset-0 bg-gradient-to-t ${template01Theme.projectOverlay} opacity-0 group-hover:opacity-100 transition-opacity`}
+                ></div>
               </div>
 
               {/* Conteúdo do card */}
               <div className="p-6">
-                <h3 className="mb-3 text-gray-800">{project.nome}</h3>
-                <p className="text-gray-600 mb-6">{project.descricao}</p>
+                <h3 className={`mb-3 ${template01Theme.textPrimary}`}>
+                  {project.nome}
+                </h3>
+                <p className={`mb-6 ${template01Theme.textSecondary}`}>
+                  {project.descricao}
+                </p>
 
                 {/* Botões */}
                 <div className="flex gap-4">
@@ -95,7 +111,7 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
                     href={project.demoLink || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${template01Theme.primaryButton}`}
                   >
                     <ExternalLink size={18} />
                     Live Demo
@@ -104,7 +120,7 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
                     href={project.codeLink || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#695f5c] text-[#c5b9b7] rounded-lg hover:bg-[#4a413e] transition-colors shadow-[0_20px_40px_-24px_rgba(74,65,62,0.55)]"
                   >
                     <Github size={18} />
                     Ver Código

@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { template01Theme } from '@/theme/template01Theme';
 import { toast } from 'sonner';
 import { uploadApi } from '@/lib/api';
 
@@ -68,9 +69,8 @@ export function EditableResumeButton({
             rel="noopener noreferrer"
             className={cn(
               'inline-flex items-center justify-center gap-2 px-4 py-2 w-full',
-              'bg-gray-900',
-              'text-white font-semibold rounded-lg text-sm',
-              'hover:bg-gray-800',
+              template01Theme.primaryButton,
+              'font-semibold rounded-lg text-sm',
               'transition-all duration-300',
               'shadow-md hover:shadow-lg',
             )}
@@ -83,9 +83,8 @@ export function EditableResumeButton({
             onClick={() => setIsEditing(true)}
             className={cn(
               'inline-flex items-center justify-center gap-2 px-4 py-2 w-full',
-              'bg-gray-900',
-              'text-white font-semibold rounded-lg text-sm',
-              'hover:bg-gray-800',
+              template01Theme.primaryButton,
+              'font-semibold rounded-lg text-sm',
               'transition-all duration-300',
               'shadow-md hover:shadow-lg',
             )}
@@ -101,15 +100,15 @@ export function EditableResumeButton({
           className={cn(
             'absolute -top-2 -right-2',
             'w-8 h-8 rounded-full',
-            'bg-white border-2 border-blue-600',
+            'bg-[#c5b9b7] border-2 border-[#695f5c]',
             'flex items-center justify-center',
             'shadow-lg',
             'opacity-0 group-hover:opacity-100',
             'transition-opacity duration-200',
-            'hover:bg-blue-50',
+            'hover:bg-[#a69b98]',
           )}
         >
-          <Pencil size={14} className="text-blue-600" />
+          <Pencil size={14} className="text-[#4a413e]" />
         </button>
       </div>
 

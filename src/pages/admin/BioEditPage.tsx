@@ -235,7 +235,7 @@ export default function BioEditPage() {
             ? "bg-[#050505]"
             : profile.templateType === "template_03"
               ? "bg-[#0F0F0F]"
-              : "bg-white"
+              : "bg-[#c5b9b7]"
         }
       >
         {profile && (

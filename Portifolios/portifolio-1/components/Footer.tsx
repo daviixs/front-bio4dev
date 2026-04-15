@@ -9,6 +9,7 @@ import {
   Youtube,
   FileDown,
 } from 'lucide-react';
+import { template01Theme } from '@/theme/template01Theme';
 import { Footer as FooterType, Social } from '@/types';
 
 interface FooterProps {
@@ -70,19 +71,15 @@ export function Footer({ footer, socials }: FooterProps) {
   return (
     <footer
       id="contato"
-      className="py-12 px-6 transition-colors duration-300"
-      style={{
-        backgroundColor: '#f3f4f6',
-        color: '#1f2937',
-      }}
+      className={`py-12 px-6 transition-colors duration-300 ${template01Theme.footerBg}`}
     >
       <div className="max-w-6xl mx-auto">
         {/* Contact section */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl mb-4 text-gray-900">
+          <h2 className="text-3xl md:text-4xl mb-4">
             {footer?.title || 'Vamos trabalhar juntos?'}
           </h2>
-          <p className="text-gray-500 mb-8">
+          <p className={`mb-8 ${template01Theme.footerSecondary}`}>
             {footer?.subtitle ||
               'Estou sempre aberto a novos projetos e oportunidades'}
           </p>
@@ -92,7 +89,7 @@ export function Footer({ footer, socials }: FooterProps) {
             {footer?.email && (
               <a
                 href={`mailto:${footer.email}`}
-                className="inline-flex items-center gap-2 px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all shadow-lg"
+                className={`inline-flex items-center gap-2 px-8 py-3 rounded-lg transition-all ${template01Theme.footerButton}`}
               >
                 <Mail size={20} />
                 {footer.email}
@@ -103,7 +100,7 @@ export function Footer({ footer, socials }: FooterProps) {
                 href={footer.resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all shadow-lg"
+                className={`inline-flex items-center gap-2 px-8 py-3 rounded-lg transition-all ${template01Theme.footerButton}`}
               >
                 <FileDown size={20} />
                 Baixe aqui meu Currículo
@@ -120,7 +117,7 @@ export function Footer({ footer, socials }: FooterProps) {
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors hover:scale-110"
+              className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
               aria-label={social.label}
             >
               {social.icon}
@@ -132,7 +129,7 @@ export function Footer({ footer, socials }: FooterProps) {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-gray-700 rounded-full hover:bg-gray-600 transition-colors hover:scale-110"
+                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
                 aria-label="GitHub"
               >
                 <Github size={24} />
@@ -141,7 +138,7 @@ export function Footer({ footer, socials }: FooterProps) {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors hover:scale-110"
+                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
                 aria-label="LinkedIn"
               >
                 <Linkedin size={24} />
@@ -151,20 +148,20 @@ export function Footer({ footer, socials }: FooterProps) {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-300 pt-8">
+        <div className={`border-t pt-8 ${template01Theme.divider}`}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
-            <p className="text-gray-400 text-center md:text-left">
+            <p className={`${template01Theme.footerSecondary} text-center md:text-left`}>
               © {currentYear} {footer?.copyrightName || 'João Silva'}. Todos os
               direitos reservados.
             </p>
 
             {/* Made with */}
-            <p className="text-gray-400 flex items-center gap-2">
+            <p className={`${template01Theme.footerSecondary} flex items-center gap-2`}>
               {footer?.madeWith && (
                 <>
-                  Feito com <span className="text-gray-600">❤️</span> e
-                  <Coffee size={18} className="text-gray-600" />
+                  Feito com <span className="text-[#c5b9b7]">❤️</span> e
+                  <Coffee size={18} className="text-[#a69b98]" />
                   café
                 </>
               )}

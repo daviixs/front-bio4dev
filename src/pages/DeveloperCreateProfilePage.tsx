@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Code2, Cpu, Briefcase } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { profileApi } from "@/lib/api";
 import { getApiErrorMessage } from "@/lib/api-errors";
 import {
@@ -24,21 +24,18 @@ const devTemplates = [
     id: "template_01",
     name: "Portfolio Minimalista Dev",
     description: "Foco total em projetos, GitHub e stack principal.",
-    icon: <Code2 className="w-5 h-5" />,
     highlights: ["GitHub Integration", "Tech Stack", "Experiencia"],
   },
   {
     id: "template_02",
     name: "Portfolio Criativo Tech",
     description: "Visual impactante para destacar produtos e demos.",
-    icon: <Cpu className="w-5 h-5" />,
     highlights: ["Demos Interativas", "Cases", "Highlights"],
   },
   {
     id: "template_03",
     name: "Portfolio Corporativo Dev",
     description: "Layout executivo para consultores e times tech.",
-    icon: <Briefcase className="w-5 h-5" />,
     highlights: ["Experiencia", "Resultados", "Credibilidade"],
   },
 ] as const;
@@ -237,10 +234,7 @@ export function DeveloperCreateProfilePage() {
                   )}
 
                   <div className="p-6 flex flex-col gap-4 text-left">
-                    <div className="flex items-center gap-3 text-slate-800">
-                      <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-                        {template.icon}
-                      </div>
+                    <div className="text-slate-800">
                       <div>
                         <h3 className="text-lg font-semibold">
                           {template.name}
