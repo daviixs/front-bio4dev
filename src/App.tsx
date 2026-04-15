@@ -62,17 +62,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppShell>
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: "#1a1a2e",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "#fff",
-            },
-          }}
-        />
-
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
@@ -154,6 +143,18 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AppShell>
+      <Toaster
+        position="bottom-right"
+        style={{ zIndex: 2147483647 }}
+        toastOptions={{
+          style: {
+            zIndex: 2147483647,
+            background: "var(--card)",
+            border: "1px solid var(--primary)",
+            color: "var(--foreground)",
+          },
+        }}
+      />
     </BrowserRouter>
   );
 }

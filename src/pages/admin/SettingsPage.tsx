@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +10,17 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/stores/authStore";
 import { usersApi } from "@/lib/api";
 
+const SETTINGS_TOAST_ID = "admin-settings-toast";
+
 export default function AdminSettingsPage() {
   const { user } = useAuthStore();
+  const requestLocks = useRef({
+    profile: false,
+    notifications: false,
+    general: false,
+    password: false,
+    twoFactor: false,
+  });
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -55,7 +64,7 @@ export default function AdminSettingsPage() {
         setTwoFactorEnabled(data.twoFactorEnabled ?? false);
       } catch (err) {
         console.error(err);
-        toast.error("Erro ao carregar usuário");
+        toast.error("Erro ao carregar usuário", { id: SETTINGS_TOAST_ID });
       } finally {
         setLoading(false);
       }
@@ -65,21 +74,26 @@ export default function AdminSettingsPage() {
   }, [user]);
 
   const handleSaveProfile = async () => {
-    if (!user) return;
+    if (!user || requestLocks.current.profile) return;
+    requestLocks.current.profile = true;
     try {
       setSavingProfile(true);
       await usersApi.update(user.id, { nome: name, email, username });
-      toast.success("Perfil atualizado");
+      toast.success("Perfil atualizado", { id: SETTINGS_TOAST_ID });
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Erro ao salvar perfil");
+      toast.error(err.response?.data?.message || "Erro ao salvar perfil", {
+        id: SETTINGS_TOAST_ID,
+      });
     } finally {
+      requestLocks.current.profile = false;
       setSavingProfile(false);
     }
   };
 
   const handleSaveNotifications = async () => {
-    if (!user) return;
+    if (!user || requestLocks.current.notifications) return;
+    requestLocks.current.notifications = true;
     try {
       setSavingNotifications(true);
       await usersApi.updatePreferences(user.id, {
@@ -87,72 +101,90 @@ export default function AdminSettingsPage() {
         marketingEmails,
         securityAlerts,
       });
-      toast.success("Notificações atualizadas");
+      toast.success("Notificações atualizadas", { id: SETTINGS_TOAST_ID });
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Erro ao salvar notificações");
+      toast.error(
+        err.response?.data?.message || "Erro ao salvar notificações",
+        { id: SETTINGS_TOAST_ID },
+      );
     } finally {
+      requestLocks.current.notifications = false;
       setSavingNotifications(false);
     }
   };
 
   const handleSaveGeneral = async () => {
-    if (!user) return;
+    if (!user || requestLocks.current.general) return;
+    requestLocks.current.general = true;
     try {
       setSavingGeneral(true);
       await usersApi.updatePreferences(user.id, {
         language,
         timezone,
       });
-      toast.success("Preferências atualizadas");
+      toast.success("Preferências atualizadas", { id: SETTINGS_TOAST_ID });
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Erro ao salvar preferências");
+      toast.error(
+        err.response?.data?.message || "Erro ao salvar preferências",
+        { id: SETTINGS_TOAST_ID },
+      );
     } finally {
+      requestLocks.current.general = false;
       setSavingGeneral(false);
     }
   };
 
   const handleChangePassword = async () => {
-    if (!user) return;
+    if (!user || requestLocks.current.password) return;
     if (!oldPassword || !newPassword) {
-      toast.error("Informe a senha atual e a nova senha");
+      toast.error("Informe a senha atual e a nova senha", {
+        id: SETTINGS_TOAST_ID,
+      });
       return;
     }
+    requestLocks.current.password = true;
     try {
       setSavingPassword(true);
       await usersApi.updatePassword(user.id, {
         oldPassword,
         newPassword,
       });
-      toast.success("Senha alterada");
+      toast.success("Senha alterada", { id: SETTINGS_TOAST_ID });
       setOldPassword("");
       setNewPassword("");
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Erro ao trocar senha");
+      toast.error(
+        err.response?.data?.message || "Erro ao trocar senha",
+        { id: SETTINGS_TOAST_ID },
+      );
     } finally {
+      requestLocks.current.password = false;
       setSavingPassword(false);
     }
   };
 
   const handleToggle2FA = async () => {
-    if (!user) return;
+    if (!user || requestLocks.current.twoFactor) return;
+    requestLocks.current.twoFactor = true;
     try {
       setToggling2fa(true);
       if (twoFactorEnabled) {
         await usersApi.disable2FA(user.id);
         setTwoFactorEnabled(false);
-        toast.success("2FA desativado (stub)");
+        toast.success("2FA desativado (stub)", { id: SETTINGS_TOAST_ID });
       } else {
         await usersApi.enable2FA(user.id);
         setTwoFactorEnabled(true);
-        toast.success("2FA ativado (stub)");
+        toast.success("2FA ativado (stub)", { id: SETTINGS_TOAST_ID });
       }
     } catch (err: any) {
       console.error(err);
-      toast.error("Erro ao alternar 2FA");
+      toast.error("Erro ao alternar 2FA", { id: SETTINGS_TOAST_ID });
     } finally {
+      requestLocks.current.twoFactor = false;
       setToggling2fa(false);
     }
   };
