@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Code2, Cpu, Briefcase } from "lucide-react";
 import { profileApi } from "@/lib/api";
+import { getApiErrorMessage } from "@/lib/api-errors";
+import {
+  hasReachedProfileLimit,
+  PROFILE_LIMIT_MESSAGE,
+} from "@/lib/profile-limits";
 import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { Header } from "@/components/landing/Header";
@@ -103,6 +108,13 @@ export function DeveloperCreateProfilePage() {
 
     setIsLoading(true);
     try {
+      const reachedLimit = await hasReachedProfileLimit(userId);
+      if (reachedLimit) {
+        toast.error(PROFILE_LIMIT_MESSAGE);
+        navigate("/dashboard/bio");
+        return;
+      }
+
       const templateData = devTemplates.find(
         (template) => template.id === selectedTemplate,
       );
@@ -135,12 +147,18 @@ export function DeveloperCreateProfilePage() {
       }, 100);
     } catch (error: any) {
       console.error("Error creating profile:", error);
-      const backendMessage = error.response?.data?.message || "";
+      const backendMessage = getApiErrorMessage(error);
+      const normalizedMessage = backendMessage.toLowerCase();
 
       if (error.response?.status === 400 && backendMessage) {
-        setSlugError(backendMessage);
-        setIsSlugModalOpen(true);
+        if (normalizedMessage.includes("slug")) {
+          setSlugError(backendMessage);
+          setIsSlugModalOpen(true);
+        }
         toast.error(backendMessage);
+        if (normalizedMessage.includes("limite")) {
+          navigate("/dashboard/bio");
+        }
       } else {
         const errorMessage =
           backendMessage || error.message || "Erro ao criar perfil";

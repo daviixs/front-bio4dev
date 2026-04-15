@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { profileApi } from '@/lib/api';
+import { getApiErrorMessage } from '@/lib/api-errors';
+import {
+  hasReachedProfileLimit,
+  PROFILE_LIMIT_MESSAGE,
+} from '@/lib/profile-limits';
 import { saveAll as saveInfluencerData } from '@/pages/influencers/shared/services';
 import type { InfluencerTemplateData } from '@/pages/influencers/shared/types';
 import { toast } from 'sonner';
@@ -118,6 +123,14 @@ export function AuthCallbackPage() {
         const draftId = localStorage.getItem('bio4dev_profile_id');
         if (draftId && draftId.startsWith('draft-') && currentUser?.id) {
           try {
+            const reachedLimit = await hasReachedProfileLimit(currentUser.id);
+            if (reachedLimit) {
+              localStorage.removeItem('bio4dev_post_auth_redirect');
+              toast.error(PROFILE_LIMIT_MESSAGE);
+              navigate('/dashboard/bio', { replace: true });
+              return;
+            }
+
             const draftDataRaw = localStorage.getItem(
               `bio4dev_draft_profile_${draftId}`,
             );
@@ -162,15 +175,25 @@ export function AuthCallbackPage() {
             );
             return;
           } catch (error: any) {
-            const backendMessage = error?.response?.data?.message || '';
+            const backendMessage = getApiErrorMessage(error);
+            const normalizedMessage = backendMessage.toLowerCase();
             if (
-              backendMessage.toLowerCase().includes('usuário não encontrado')
+              normalizedMessage.includes('usuário não encontrado')
             ) {
               toast.error('Sessão expirada. Faça login novamente.');
               navigate('/profile/type', { replace: true });
               return;
             }
+            if (normalizedMessage.includes('limite')) {
+              localStorage.removeItem('bio4dev_post_auth_redirect');
+              toast.error(backendMessage || PROFILE_LIMIT_MESSAGE);
+              navigate('/dashboard/bio', { replace: true });
+              return;
+            }
             console.error('Callback: erro ao criar perfil do draft', error);
+            if (backendMessage) {
+              toast.error(backendMessage);
+            }
             // Continua para fallback
           }
         }

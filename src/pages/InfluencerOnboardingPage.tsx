@@ -31,9 +31,13 @@ import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { landingTheme } from '@/theme/landingTheme';
 import { profileApi, socialApi } from '@/lib/api';
+import { getApiErrorMessage } from '@/lib/api-errors';
+import {
+  hasReachedProfileLimit,
+  PROFILE_LIMIT_MESSAGE,
+} from '@/lib/profile-limits';
 import { useSaveTemplate } from '@/hooks/useSaveTemplate';
 import { useAuthStore } from '@/stores/authStore';
-import { saveAll as saveInfluencerData } from '@/pages/influencers/shared/services';
 
 type PlatformId =
   | 'instagram'
@@ -77,92 +81,6 @@ type OnboardingState = {
   bio: string;
   avatarDataUrl?: string | null;
   avatarFileName?: string | null;
-};
-
-const toTemplateData = (
-  draftId: string,
-  state: OnboardingState,
-  templateTypeFallback?: string | null,
-): {
-  templateType: string;
-  data: {
-    themeId: string;
-    name: string;
-    bio: string;
-    photoUrl: string;
-    socials: Array<{ platform: string; url: string }>;
-    buttons: Array<{
-      label: string;
-      url: string;
-      subtext?: string;
-      icon?: string;
-      style?: string;
-      ordem?: number;
-    }>;
-  };
-} => {
-  const persistedRaw = localStorage.getItem(
-    `bio4dev_onboarding_${draftId}_persisted`,
-  );
-  if (persistedRaw) {
-    try {
-      const parsed = JSON.parse(persistedRaw);
-      return {
-        templateType: parsed.themeId || templateTypeFallback || 'template_04',
-        data: {
-          themeId: parsed.themeId || templateTypeFallback || 'template_04',
-          name: parsed.name || state.displayName || 'Meu perfil',
-          bio: parsed.bio || state.bio || '',
-          photoUrl: parsed.photoUrl || state.avatarDataUrl || '',
-          socials: parsed.socials || [],
-          buttons: parsed.buttons || [],
-        },
-      };
-    } catch {
-      // ignore parse error
-    }
-  }
-
-  const themeId =
-    templateTypeFallback ||
-    localStorage.getItem(`bio4dev_theme_${draftId}`) ||
-    'template_04';
-
-  const socials = (state.selectedPlatforms || [])
-    .map((platformId) => {
-      const raw = state.platformLinks[platformId] || '';
-      const url = normalizeSocialUrl(platformId, raw);
-      return url
-        ? {
-            platform: PLATFORM_SOCIAL_MAP[platformId],
-            url,
-          }
-        : null;
-    })
-    .filter(Boolean) as Array<{ platform: string; url: string }>;
-
-  const buttons = (state.additionalLinks || [])
-    .filter((link) => link.label.trim() && link.url.trim())
-    .map((link, index) => ({
-      label: link.label.trim(),
-      url: link.url.trim(),
-      subtext: '',
-      icon: 'link',
-      style: 'primary',
-      ordem: index,
-    }));
-
-  return {
-    templateType: themeId,
-    data: {
-      themeId,
-      name: state.displayName || 'Meu perfil',
-      bio: state.bio || '',
-      photoUrl: state.avatarDataUrl || '',
-      socials,
-      buttons,
-    },
-  };
 };
 
 const PLATFORM_OPTIONS: PlatformConfig[] = [
@@ -866,13 +784,11 @@ export function InfluencerOnboardingPage({
     templateId?: string;
   }>();
   const navigate = useNavigate();
-  const { user, isAuthenticated, loginWithGoogle, loadProfile, logout } =
-    useAuthStore();
+  const { user, isAuthenticated, loginWithGoogle, logout } = useAuthStore();
   const [state, setState] = React.useState<OnboardingState>(getDefaultState);
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
   const [isSavingLinks, setIsSavingLinks] = React.useState(false);
   const [isSavingAll, setIsSavingAll] = React.useState(false);
-  const [isConvertingDraft, setIsConvertingDraft] = React.useState(false);
   const [resolvedTemplateId, setResolvedTemplateId] = React.useState<
     string | null
   >(templateIdProp || templateIdParam || null);
@@ -905,80 +821,6 @@ export function InfluencerOnboardingPage({
       }
     }
   }, [profileId]);
-
-  // Auto-converter draft em perfil real quando login conclui
-  React.useEffect(() => {
-    const convertDraft = async () => {
-      if (isConvertingDraft) return;
-      if (!isAuthenticated || !user?.id) return;
-      if (!profileId || !profileId.startsWith('draft-')) return;
-
-      const draftDataRaw = localStorage.getItem(
-        `bio4dev_draft_profile_${profileId}`,
-      );
-      if (!draftDataRaw) return;
-
-      const draftData = JSON.parse(draftDataRaw);
-      const templateType =
-        draftData.templateType || resolvedTemplateId || 'template_04';
-      const username = draftData.username || state.displayName || 'meu-perfil';
-      const slug = draftData.slug || draftData.username || username;
-
-      setIsConvertingDraft(true);
-      try {
-        if (import.meta.env.DEV) {
-          console.log('Onboarding auto-convert draft:', {
-            profileId,
-            userId: user.id,
-            username,
-            slug,
-            templateType,
-          });
-        }
-
-        const response = await profileApi.create({
-          userId: user.id,
-          username,
-          slug,
-          templateType,
-          published: false,
-        });
-
-        const realId = response.profile?.id || response.id;
-        localStorage.setItem('bio4dev_profile_id', realId);
-        localStorage.setItem(`bio4dev_theme_${realId}`, templateType);
-        localStorage.removeItem(`bio4dev_draft_profile_${profileId}`);
-
-        navigate(`/dashboard/influencer/${templateType}/${realId}/preview`, {
-          replace: true,
-        });
-      } catch (error: any) {
-        const backendMessage = error?.response?.data?.message || '';
-        if (backendMessage.toLowerCase().includes('usuário não encontrado')) {
-          toast.error('Sessão expirada. Faça login novamente.');
-          await logout();
-          await loginWithGoogle();
-        } else {
-          console.error('Auto-convert draft failed:', error);
-          toast.error('Não foi possível criar seu perfil. Tente novamente.');
-        }
-      } finally {
-        setIsConvertingDraft(false);
-      }
-    };
-
-    void convertDraft();
-  }, [
-    isAuthenticated,
-    user?.id,
-    profileId,
-    resolvedTemplateId,
-    state.displayName,
-    isConvertingDraft,
-    navigate,
-    loginWithGoogle,
-    logout,
-  ]);
 
   React.useEffect(() => {
     if (!profileId) return;
@@ -1018,85 +860,6 @@ export function InfluencerOnboardingPage({
         });
     }
   }, [profileId, resolvedTemplateId]);
-
-  // Auto-converter draft em perfil real quando o login conclui
-  React.useEffect(() => {
-    const convert = async () => {
-      if (isConvertingDraft) return;
-      if (!isAuthenticated || !user?.id) return;
-      if (!profileId || !profileId.startsWith('draft-')) return;
-
-      const draftDataRaw = localStorage.getItem(
-        `bio4dev_draft_profile_${profileId}`,
-      );
-      if (!draftDataRaw) return;
-      const draftData = JSON.parse(draftDataRaw);
-
-      const { templateType, data } = toTemplateData(
-        profileId,
-        state,
-        resolvedTemplateId,
-      );
-
-      const createPayload = {
-        userId: user.id,
-        username: draftData.username || state.displayName || 'meu-perfil',
-        slug:
-          draftData.slug ||
-          draftData.username ||
-          state.displayName ||
-          'meu-perfil',
-        templateType: templateType || 'template_04',
-        published: false,
-      } as const;
-
-      setIsConvertingDraft(true);
-      try {
-        if (import.meta.env.DEV) {
-          console.log(
-            'Auto convert draft (onboarding useEffect):',
-            createPayload,
-          );
-        }
-        const response = await profileApi.create(createPayload);
-        const realId = response.profile?.id || response.id;
-
-        localStorage.setItem('bio4dev_profile_id', realId);
-        localStorage.setItem(`bio4dev_theme_${realId}`, templateType);
-        localStorage.removeItem(`bio4dev_draft_profile_${profileId}`);
-
-        await saveInfluencerData(realId, data);
-
-        navigate(`/dashboard/influencer/${templateType}/${realId}/preview`, {
-          replace: true,
-        });
-      } catch (error: any) {
-        const backendMessage = error?.response?.data?.message || '';
-        if (backendMessage.toLowerCase().includes('usuário não encontrado')) {
-          toast.error('Sessão expirada. Faça login novamente.');
-          await logout();
-          await loginWithGoogle();
-        } else {
-          console.error('Auto-convert draft failed:', error);
-          toast.error('Não foi possível criar seu perfil. Tente novamente.');
-        }
-      } finally {
-        setIsConvertingDraft(false);
-      }
-    };
-
-    void convert();
-  }, [
-    isAuthenticated,
-    user?.id,
-    profileId,
-    resolvedTemplateId,
-    state,
-    isConvertingDraft,
-    navigate,
-    loginWithGoogle,
-    logout,
-  ]);
 
   if (!profileId) {
     return (
@@ -1341,6 +1104,13 @@ export function InfluencerOnboardingPage({
 
       // Converter draft em perfil real se logado
       if (profileId.startsWith('draft-')) {
+        const reachedLimit = await hasReachedProfileLimit(user.id);
+        if (reachedLimit) {
+          toast.error(PROFILE_LIMIT_MESSAGE);
+          navigate('/dashboard/bio');
+          return;
+        }
+
         const draftDataRaw = localStorage.getItem(
           `bio4dev_draft_profile_${profileId}`,
         );
@@ -1368,10 +1138,11 @@ export function InfluencerOnboardingPage({
             templateType,
           );
         } catch (error: any) {
-          const backendMessage = error?.response?.data?.message;
+          const backendMessage = getApiErrorMessage(error);
+          const normalizedMessage = backendMessage.toLowerCase();
           if (
             backendMessage &&
-            backendMessage.toLowerCase().includes('usuário não encontrado')
+            normalizedMessage.includes('usuário não encontrado')
           ) {
             toast.error('Sessão expirada. Faça login novamente.');
             await logout();
@@ -1381,7 +1152,13 @@ export function InfluencerOnboardingPage({
               'Erro ao criar perfil real a partir do draft:',
               error,
             );
-            toast.error('Não foi possível criar seu perfil. Tente novamente.');
+            toast.error(
+              backendMessage ||
+                'Não foi possível criar seu perfil. Tente novamente.',
+            );
+            if (normalizedMessage.includes('limite')) {
+              navigate('/dashboard/bio');
+            }
           }
           return;
         }

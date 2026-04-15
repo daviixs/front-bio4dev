@@ -285,6 +285,11 @@ export const profileApi = {
     return response.data;
   },
 
+  getByUserId: async (userId: string) => {
+    const response = await api.get<Profile[]>(`/profile/user/${userId}`);
+    return response.data;
+  },
+
   getBySlug: async (slug: string, previewToken?: string) => {
     const url = previewToken
       ? `/profile/slug/${slug}?preview=${previewToken}`

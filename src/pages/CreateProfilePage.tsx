@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Palette, Zap, Rocket, Users } from "lucide-react";
 import { profileApi } from "@/lib/api";
+import { getApiErrorMessage } from "@/lib/api-errors";
+import {
+  hasReachedProfileLimit,
+  PROFILE_LIMIT_MESSAGE,
+} from "@/lib/profile-limits";
 import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { Footer } from "@/components/landing/Footer";
@@ -206,6 +211,15 @@ export function CreateProfilePage() {
 
     setIsLoading(true);
     try {
+      if (user?.id) {
+        const reachedLimit = await hasReachedProfileLimit(user.id);
+        if (reachedLimit) {
+          toast.error(PROFILE_LIMIT_MESSAGE);
+          navigate("/dashboard/bio");
+          return;
+        }
+      }
+
       const availability = await profileApi.checkSlug(slugValue);
       if (!availability.available) {
         setSlugError(availability.message || "Slug já está em uso");
@@ -233,8 +247,8 @@ export function CreateProfilePage() {
       navigate(`/onboarding/${draftProfileId}`);
     } catch (error: any) {
       console.error("Error preparing draft profile:", error);
-      const backendMessage = error.response?.data?.message || "";
-      const errorMessage = backendMessage || error.message || "Erro ao criar rascunho";
+      const errorMessage =
+        getApiErrorMessage(error) || "Erro ao criar rascunho";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
