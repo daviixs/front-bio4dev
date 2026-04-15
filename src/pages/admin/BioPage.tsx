@@ -21,14 +21,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
   Plus,
   Edit2,
   LayoutTemplate,
@@ -44,135 +36,7 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/stores/authStore";
 import { profileApi } from "@/lib/api";
 import { PageHeader } from "@/components/structure/PageHeader";
-import { EmptyState } from "@/components/feedback/EmptyState";
 import { MetricCard } from "@/components/analytics/MetricCard";
-import portfolio1Image from "@/bio-exempleimages/Portifolio 1.png";
-import portfolio2Image from "@/bio-exempleimages/Portifolio 2.png";
-import portfolio3Image from "@/bio-exempleimages/Portifolio 3.png";
-import activistImg from "@/temas-lintree/preview-screenshots/activist.png";
-import altMusicImg from "@/temas-lintree/preview-screenshots/alt-music.png";
-import architectImg from "@/temas-lintree/preview-screenshots/architect.png";
-import artistImg from "@/temas-lintree/preview-screenshots/artist.png";
-import athleteImg from "@/temas-lintree/preview-screenshots/Athlete.png";
-import businessImg from "@/temas-lintree/preview-screenshots/business.png";
-import creatorImg from "@/temas-lintree/preview-screenshots/creator.png";
-import ecoFashionImg from "@/temas-lintree/preview-screenshots/eco-fashion.png";
-import gourmetImg from "@/temas-lintree/preview-screenshots/gourmet.png";
-import innovationImg from "@/temas-lintree/preview-screenshots/innovation.png";
-import streamerImg from "@/temas-lintree/preview-screenshots/streamer.png";
-
-const portfolioExamples = [
-  {
-    id: 1,
-    name: "Minimalist Dev",
-    image: portfolio1Image,
-    template: "template_01",
-    category: "dev",
-  },
-  {
-    id: 2,
-    name: "Creative Tech",
-    image: portfolio2Image,
-    template: "template_02",
-    category: "dev",
-  },
-  {
-    id: 3,
-    name: "Corporate Dev",
-    image: portfolio3Image,
-    template: "template_03",
-    category: "dev",
-  },
-  {
-    id: 4,
-    name: "Ativista",
-    image: activistImg,
-    template: "template_04",
-    category: "influenciador",
-  },
-  {
-    id: 5,
-    name: "Alt Music",
-    image: altMusicImg,
-    template: "template_05",
-    category: "influenciador",
-  },
-  {
-    id: 6,
-    name: "Arquiteto",
-    image: architectImg,
-    template: "template_06",
-    category: "influenciador",
-  },
-  {
-    id: 7,
-    name: "Artista",
-    image: artistImg,
-    template: "template_07",
-    category: "influenciador",
-  },
-  {
-    id: 8,
-    name: "Atleta",
-    image: athleteImg,
-    template: "template_08",
-    category: "influenciador",
-  },
-  {
-    id: 9,
-    name: "Business",
-    image: businessImg,
-    template: "template_09",
-    category: "influenciador",
-  },
-  {
-    id: 10,
-    name: "Creator",
-    image: creatorImg,
-    template: "template_10",
-    category: "influenciador",
-  },
-  {
-    id: 11,
-    name: "Eco Fashion",
-    image: ecoFashionImg,
-    template: "template_11",
-    category: "influenciador",
-  },
-  {
-    id: 12,
-    name: "Gourmet",
-    image: gourmetImg,
-    template: "template_12",
-    category: "influenciador",
-  },
-  {
-    id: 13,
-    name: "Innovation",
-    image: innovationImg,
-    template: "template_13",
-    category: "influenciador",
-  },
-  {
-    id: 14,
-    name: "Streamer",
-    image: streamerImg,
-    template: "template_14",
-    category: "influenciador",
-  },
-];
-
-const toSlug = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
 
 interface Bio {
   id: string;
@@ -192,12 +56,7 @@ export default function BioPage() {
   const [bios, setBios] = useState<Bio[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [createBioDialogOpen, setCreateBioDialogOpen] = useState(false);
   const [selectedBio, setSelectedBio] = useState<Bio | null>(null);
-  const [selectedPortfolio, setSelectedPortfolio] = useState<number | null>(
-    null,
-  );
-  const [selectedCategory, setSelectedCategory] = useState<string>("dev");
   const [previewLoading, setPreviewLoading] = useState<string | null>(null);
   const [publishLoading, setPublishLoading] = useState<string | null>(null);
   const totalBios = bios.length;
@@ -252,80 +111,6 @@ export default function BioPage() {
   const handleEditClick = (bio: Bio) => {
     // Redirecionar para o editor com canetas (PortfolioEditorPage)
     navigate(`/dashboard/portfolio/${bio.id}`);
-  };
-
-  const handleCreateBio = async () => {
-    if (!selectedPortfolio || !user) {
-      toast.error("Erro ao criar portfólio");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-
-      // Encontrar o template selecionado
-      const selectedTemplate = portfolioExamples.find(
-        (p) => p.id === selectedPortfolio,
-      );
-
-      if (!selectedTemplate) {
-        toast.error("Template não encontrado");
-        return;
-      }
-
-      const templateType = selectedTemplate.template;
-
-      // Gerar slug único baseado no nome do usuário
-      const baseName = (user as any).nome || "user";
-      const uniqueSuffix = Date.now().toString(36);
-      const slug = toSlug(`${baseName}-${uniqueSuffix}`) || "user";
-      const username = baseName;
-
-      // Criar novo perfil
-      const response = await profileApi.create({
-        userId: user.id,
-        username,
-        slug,
-        bio: `Portfólio ${selectedTemplate.name}`,
-        avatarUrl: undefined,
-        templateType: templateType,
-        published: true,
-      });
-
-      toast.success("Portfólio criado com sucesso!");
-      setCreateBioDialogOpen(false);
-      setSelectedPortfolio(null);
-
-      // Recarregar lista de bios
-      const updatedProfiles = await profileApi.getAll();
-      const userBios = updatedProfiles.filter(
-        (profile: any) => profile.userId === user.id,
-      );
-
-      const mappedBios = userBios.map((profile: any) => ({
-        id: profile.id,
-        name: profile.username || "Sem nome",
-        username: profile.username,
-        slug: profile.slug,
-        template: profile.templateType || "template_01",
-        status: profile.published ? "Published" : "Draft",
-        published: !!profile.published,
-        lastUpdated: new Date(
-          profile.updatedAt || profile.createdAt,
-        ).toLocaleDateString(),
-        url: `bio4dev.com/${profile.slug}`,
-      }));
-
-      setBios(mappedBios);
-
-      // Redirecionar para o editor
-      navigate(`/dashboard/portfolio/${response.id}`);
-    } catch (error: any) {
-      console.error("Erro ao criar portfólio:", error);
-      toast.error(error.response?.data?.message || "Erro ao criar portfólio");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const handlePreviewClick = async (bio: Bio) => {
@@ -440,7 +225,7 @@ export default function BioPage() {
         actions={
           <Button
             className="gap-2 w-full sm:w-auto"
-            onClick={() => setCreateBioDialogOpen(true)}
+            onClick={() => navigate("/profile/type")}
           >
             <Plus className="h-4 w-4" />
             Create New Bio
@@ -736,186 +521,6 @@ export default function BioPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Create New Bio - Portfolio Selection Dialog */}
-      <Dialog open={createBioDialogOpen} onOpenChange={setCreateBioDialogOpen}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {bios.length > 0 ? "Trocar Template" : "Selecione um Portfólio"}
-            </DialogTitle>
-            <DialogDescription>
-              {bios.length > 0
-                ? "Você já tem um portfólio. Escolha um novo template para atualizá-lo."
-                : "Escolha um dos modelos de portfólio abaixo para começar. Você pode personalizar depois."}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="mt-4 rounded-xl border bg-muted/40 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-900">
-                Novo fluxo Dev
-              </h3>
-              <p className="text-xs text-slate-500">
-                Crie um portfolio dev completo com templates dedicados.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setCreateBioDialogOpen(false);
-                navigate("/profile/create/developer");
-              }}
-            >
-              Criar Perfil Dev
-            </Button>
-          </div>
-          <div className="mt-6">
-            <Tabs
-              value={selectedCategory}
-              onValueChange={(value) => {
-                setSelectedCategory(value);
-                setSelectedPortfolio(null);
-              }}
-              className="w-full"
-            >
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="dev">Dev</TabsTrigger>
-                <TabsTrigger value="influenciador">Influenciador</TabsTrigger>
-              </TabsList>
-              <TabsContent value="dev" className="mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {portfolioExamples
-                    .filter((p) => p.category === "dev")
-                    .map((portfolio) => (
-                      <div
-                        key={portfolio.id}
-                        className={cn(
-                          "relative rounded-lg border-2 overflow-hidden cursor-pointer transition-all bg-slate-50 hover:shadow-md",
-                          selectedPortfolio === portfolio.id
-                            ? "border-emerald-500 ring-2 ring-emerald-500/20 shadow-lg"
-                            : "border-slate-200 hover:border-slate-300",
-                        )}
-                        onClick={() => setSelectedPortfolio(portfolio.id)}
-                      >
-                        <div className="aspect-video overflow-hidden">
-                          <img
-                            src={portfolio.image}
-                            alt={portfolio.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="p-4">
-                          <h3 className="font-semibold text-slate-900 mb-1">
-                            {portfolio.name}
-                          </h3>
-                          <p className="text-sm text-slate-600">
-                            Template profissional para desenvolvedores
-                          </p>
-                        </div>
-                        {selectedPortfolio === portfolio.id && (
-                          <div className="absolute top-2 right-2 z-10">
-                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg">
-                              <svg
-                                className="w-4 h-4 text-white"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="3"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path d="M5 13l4 4L19 7"></path>
-                              </svg>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="influenciador" className="mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {portfolioExamples
-                    .filter((p) => p.category === "influenciador")
-                    .map((portfolio) => (
-                      <div
-                        key={portfolio.id}
-                        className={cn(
-                          "relative rounded-lg border-2 overflow-hidden cursor-pointer transition-all bg-slate-50 hover:shadow-md",
-                          selectedPortfolio === portfolio.id
-                            ? "border-emerald-500 ring-2 ring-emerald-500/20 shadow-lg"
-                            : "border-slate-200 hover:border-slate-300",
-                        )}
-                        onClick={() => setSelectedPortfolio(portfolio.id)}
-                      >
-                        <div className="aspect-video overflow-hidden">
-                          <img
-                            src={portfolio.image}
-                            alt={portfolio.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="p-4">
-                          <h3 className="font-semibold text-slate-900 mb-1">
-                            {portfolio.name}
-                          </h3>
-                          <p className="text-sm text-slate-600">
-                            Template criativo para influenciadores
-                          </p>
-                        </div>
-                        {selectedPortfolio === portfolio.id && (
-                          <div className="absolute top-2 right-2 z-10">
-                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg">
-                              <svg
-                                className="w-4 h-4 text-white"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="3"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path d="M5 13l4 4L19 7"></path>
-                              </svg>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </TabsContent>
-            </Tabs>
-
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setCreateBioDialogOpen(false);
-                  setSelectedPortfolio(null);
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={handleCreateBio}
-                disabled={!selectedPortfolio || isLoading}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    {bios.length > 0 ? "Atualizando..." : "Criando..."}
-                  </>
-                ) : bios.length > 0 ? (
-                  "Atualizar Template"
-                ) : (
-                  "Criar Bio"
-                )}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
