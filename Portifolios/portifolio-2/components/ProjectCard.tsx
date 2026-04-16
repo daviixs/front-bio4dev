@@ -14,6 +14,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   onEdit,
   ariaLabel,
 }) => {
+  const projectLink = project.link && project.link !== "#" ? project.link : undefined;
+  const projectImage = project.image?.trim();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     title: project.title,
@@ -104,14 +106,24 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       aria-label={ariaLabel || `Project ${project.title}`}
       role="listitem"
     >
+      {projectImage && (
+        <div className="mb-4 overflow-hidden rounded-2xl border border-white/5 bg-[#111216] aspect-[16/10]">
+          <img
+            src={projectImage}
+            alt={project.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          />
+        </div>
+      )}
+
       <div className="flex justify-between items-start mb-4">
         <div className="p-2 bg-white/5 rounded-lg text-yellow-500">
           <FolderGit2 size={20} />
         </div>
         <div className="flex gap-2">
-          {project.link && project.link !== "#" && (
+          {projectLink && (
             <a
-              href={project.link}
+              href={projectLink}
               className="h-10 w-10 inline-flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#18181b]"
               aria-label={`Open ${project.title} in a new tab`}
               title={`Open ${project.title}`}

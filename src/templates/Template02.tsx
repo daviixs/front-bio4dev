@@ -227,15 +227,28 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+  const projectLink = project.link && project.link !== '#' ? project.link : undefined;
+  const projectImage = project.image?.trim();
+
   return (
     <div className="bg-[#18181b] p-5 rounded-2xl border border-white/5 hover:border-yellow-500/30 transition-colors group">
+      {projectImage && (
+        <div className="mb-4 overflow-hidden rounded-2xl border border-white/5 bg-[#111216] aspect-[16/10]">
+          <img
+            src={projectImage}
+            alt={project.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          />
+        </div>
+      )}
+
       <div className="flex justify-between items-start mb-4">
         <div className="p-2 bg-white/5 rounded-lg text-yellow-500">
           <FolderGit2 size={20} />
         </div>
-        {project.link && (
+        {projectLink && (
           <a
-            href={project.link}
+            href={projectLink}
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-500 hover:text-white transition-colors"
@@ -667,7 +680,7 @@ export function Template02({ profile }: TemplateProps) {
     id: p.id,
     title: p.nome,
     description: p.descricao,
-    tags: [],
+    tags: p.tags || [],
     link: p.demoLink || p.codeLink,
     image: p.gif,
   }));

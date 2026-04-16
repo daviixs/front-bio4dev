@@ -103,6 +103,30 @@ interface TechOption {
   color?: string;
 }
 
+const normalizeHttpUrl = (value: string, fieldLabel: string) => {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return { value: undefined as string | undefined };
+  }
+
+  const normalized = /^(https?:\/\/)/i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+
+  try {
+    const parsed = new URL(normalized);
+
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      throw new Error('unsupported_protocol');
+    }
+
+    return { value: parsed.toString() };
+  } catch {
+    return { error: `${fieldLabel} precisa ser uma URL válida` };
+  }
+};
+
 // ==========================================
 // COMPONENTS
 // ==========================================
@@ -306,15 +330,28 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+  const projectLink = project.link && project.link !== '#' ? project.link : undefined;
+  const projectImage = project.image?.trim();
+
   return (
     <div className="bg-[#18181b] p-5 rounded-2xl border border-white/5 hover:border-yellow-500/30 transition-colors group">
+      {projectImage && (
+        <div className="mb-4 overflow-hidden rounded-2xl border border-white/5 bg-[#111216] aspect-[16/10]">
+          <img
+            src={projectImage}
+            alt={project.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          />
+        </div>
+      )}
+
       <div className="flex justify-between items-start mb-4">
         <div className="p-2 bg-white/5 rounded-lg text-yellow-500">
           <FolderGit2 size={20} />
         </div>
-        {project.link && (
+        {projectLink && (
           <a
-            href={project.link}
+            href={projectLink}
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-500 hover:text-white transition-colors"
@@ -356,6 +393,8 @@ interface AddTechDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAdd: (tech: Technology) => void;
+  onRemove: (tech: Technology) => void;
+  selectedTechs: Technology[];
 }
 
 const TECH_OPTIONS: TechOption[] = [
@@ -850,15 +889,20 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
   open,
   onOpenChange,
   onAdd,
+  onRemove,
+  selectedTechs,
 }) => {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<TechOption | null>(null);
+  const selectedTechNames = new Set(
+    selectedTechs.map((tech) => tech.name.trim().toLowerCase()),
+  );
 
   const filtered = TECH_OPTIONS.filter((tech) =>
     tech.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const base =
       selected ||
       (search.trim()
@@ -867,7 +911,12 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
 
     if (!base) return;
 
-    onAdd({
+    if (selectedTechNames.has(base.name.trim().toLowerCase())) {
+      setSelected(null);
+      return;
+    }
+
+    await onAdd({
       id: Date.now().toString(),
       techStackId: '',
       name: base.name,
@@ -878,7 +927,6 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
 
     setSearch('');
     setSelected(null);
-    onOpenChange(false);
   };
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -897,6 +945,47 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
         </DialogHeader>
 
         <div className="space-y-4">
+          <div className="space-y-3 rounded-2xl border border-white/5 bg-[#0f0f12] p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-medium text-gray-200">
+                Tecnologias adicionadas
+              </p>
+              <span className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-400">
+                {selectedTechs.length}
+              </span>
+            </div>
+
+            {selectedTechs.length === 0 ? (
+              <p className="text-sm text-gray-500">
+                Nenhuma tecnologia adicionada ainda.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {selectedTechs.map((tech) => (
+                  <span
+                    key={tech.id || tech.name}
+                    className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-[#18181b] px-3 py-2 text-sm text-gray-200"
+                  >
+                    <TechIcon
+                      icon={tech.icon || 'lucide:code-2'}
+                      size={16}
+                      className={tech.color || 'text-gray-300'}
+                    />
+                    <span>{tech.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => onRemove(tech)}
+                      className="text-gray-500 transition-colors hover:text-red-400"
+                      aria-label={`Remover ${tech.name}`}
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -905,24 +994,43 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
           />
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto">
-            {filtered.map((tech) => (
-              <button
-                key={tech.name}
-                onClick={() => setSelected(tech)}
-                className={`flex items-center gap-2 p-2 rounded-xl border border-white/5 bg-[#0f0f12] hover:border-yellow-500/40 transition-colors ${
-                  selected?.name === tech.name ? 'border-yellow-500/60' : ''
-                }`}
-              >
-                <TechIcon
-                  icon={tech.icon}
-                  size={22}
-                  className={tech.color || 'text-gray-300'}
-                />
-                <span className="text-sm text-gray-200 text-left">
-                  {tech.name}
-                </span>
-              </button>
-            ))}
+            {filtered.map((tech) => {
+              const isAdded = selectedTechNames.has(
+                tech.name.trim().toLowerCase(),
+              );
+
+              return (
+                <button
+                  key={tech.name}
+                  type="button"
+                  onClick={() => {
+                    if (!isAdded) {
+                      setSelected(tech);
+                    }
+                  }}
+                  disabled={isAdded}
+                  className={`flex items-center gap-2 p-2 rounded-xl border border-white/5 bg-[#0f0f12] transition-colors ${
+                    isAdded
+                      ? 'cursor-not-allowed opacity-60'
+                      : 'hover:border-yellow-500/40'
+                  } ${selected?.name === tech.name ? 'border-yellow-500/60' : ''}`}
+                >
+                  <TechIcon
+                    icon={tech.icon}
+                    size={22}
+                    className={tech.color || 'text-gray-300'}
+                  />
+                  <span className="flex-1 text-left text-sm text-gray-200">
+                    {tech.name}
+                  </span>
+                  {isAdded && (
+                    <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-400">
+                      Adicionada
+                    </span>
+                  )}
+                </button>
+              );
+            })}
             {filtered.length === 0 && (
               <p className="col-span-full text-sm text-gray-500">
                 Nenhuma tecnologia encontrada.
@@ -938,10 +1046,11 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
               onClick={() => handleOpenChange(false)}
               className="text-gray-400"
             >
-              Cancelar
+              Fechar
             </Button>
             <Button
               onClick={handleConfirm}
+              disabled={!selected && !search.trim()}
               className="bg-yellow-500 text-black hover:bg-yellow-600"
             >
               Adicionar
@@ -958,42 +1067,13 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
 
   return (
     <div className="bg-[#121318] rounded-[2rem] p-6 border border-white/5">
-      <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-        <span className="w-2 h-6 bg-yellow-500 rounded-full inline-block"></span>
-        Tech Stack
-      </h2>
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <span className="w-2 h-6 bg-yellow-500 rounded-full inline-block"></span>
+          Tech Stack
+        </h2>
 
-      <div className="flex flex-wrap gap-2 mb-4">
-        {(!data || data.length === 0) && (
-          <span className="text-gray-500 text-sm">
-            No technologies added yet.
-          </span>
-        )}
-        {data &&
-          data.map((tech) => (
-            <span
-              key={tech.id || tech.name}
-              className="group px-4 py-2 bg-[#18181b] hover:bg-[#202025] text-gray-300 font-medium rounded-xl border border-white/5 hover:border-yellow-500/30 transition-all cursor-default text-sm flex items-center gap-2"
-            >
-              <TechIcon
-                icon={tech.icon || 'lucide:code-2'}
-                size={18}
-                className={tech.color || 'text-yellow-400'}
-              />
-              <span className="group-hover:text-white">{tech.name}</span>
-              {onRemove && (
-                <button
-                  onClick={() => onRemove(tech)}
-                  className="hover:text-red-500 hidden group-hover:inline-block"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </span>
-          ))}
-      </div>
-
-      {onAdd && (
+        {onAdd && onRemove && (
         <>
           <Button
             size="sm"
@@ -1002,14 +1082,20 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
           >
             <Plus size={16} />
             Adicionar tecnologia
+            <span className="rounded-full bg-black/15 px-2 py-0.5 text-xs font-semibold text-black">
+              {data.length}
+            </span>
           </Button>
           <AddTechDialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
             onAdd={onAdd}
+            onRemove={onRemove}
+            selectedTechs={data}
           />
         </>
-      )}
+        )}
+      </div>
     </div>
   );
 };
@@ -1378,13 +1464,12 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       id: p.id,
       title: p.nome,
       description: p.descricao,
-      tags: [],
+      tags: p.tags || [],
       link: p.demoLink || p.codeLink,
       image: p.gif,
     }),
   );
-  const projectsData =
-    mappedProjects.length > 0 ? mappedProjects : DEMO_PROJECTS_DATA;
+  const projectsData = mappedProjects;
 
   const mappedTechStack: Technology[] =
     currentProfile.techStack?.technologies?.map((t, idx) => ({
@@ -1392,8 +1477,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       color: t.color || 'text-gray-700',
       ordem: t.ordem ?? idx,
     })) || [];
-  const techStackData =
-    mappedTechStack.length > 0 ? mappedTechStack : DEMO_TECH_STACK;
+  const techStackData = mappedTechStack;
 
   const handleResumeUpdate = async (resumeUrl: string) => {
     if (!currentProfile.id) return;
@@ -1645,23 +1729,19 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     }
   };
 
-  const handleAddNewFromChip = (optionId: string) => {
-    const option = SOCIAL_OPTIONS.find((o) => o.id === optionId);
-    if (!option) return;
-
-    const tempLink: SocialLink = {
-      id: option.id,
-      name: option.name,
-      handle: option.id,
-      icon: option.icon,
-      url: '',
-      colorClass: option.colorClass,
-    };
-    openSocialEdit(tempLink);
-  };
-
   const handleAddTech = async (newTech: Technology) => {
     const currentTechs = currentProfile.techStack?.technologies || [];
+
+    if (
+      currentTechs.some(
+        (tech) =>
+          tech.name.trim().toLowerCase() === newTech.name.trim().toLowerCase(),
+      )
+    ) {
+      toast.error('Essa tecnologia já foi adicionada');
+      return;
+    }
+
     const newTechObj: Technology = {
       ...newTech,
       id: newTech.id || Date.now().toString(),
@@ -1933,7 +2013,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         githubUrl: original.codeLink || '',
         deployUrl: original.demoLink || '',
         thumbnail: original.gif || '',
-        technologies: '',
+        technologies: original.tags?.join(', ') || '',
       });
       setIsProjModalOpen(true);
     } else {
@@ -1943,72 +2023,114 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   };
 
   const handleSaveProj = async () => {
-    // Helper function to validate URL
-    const isValidUrl = (url: string) => {
-      try {
-        const trimmed = url.trim();
-        if (/^https?:\/\//i.test(trimmed)) {
-          new URL(trimmed);
-          return true;
-        }
-        return trimmed.length > 0;
-      } catch {
-        return false;
-      }
-    };
-
-    // Create DTO payload - only include fields that have values
     const payload: any = {
-      nome: projForm.title || 'Project Title',
-      descricao: projForm.description || 'Project Description',
+      nome: projForm.title.trim() || 'Project Title',
+      descricao: projForm.description.trim() || 'Project Description',
     };
 
-    // Only include optional URL fields if they have valid URLs
-    if (projForm.githubUrl?.trim() && isValidUrl(projForm.githubUrl.trim())) {
-      payload.codeLink = projForm.githubUrl.trim();
+    const normalizedGithubUrl = normalizeHttpUrl(
+      projForm.githubUrl,
+      'GitHub URL',
+    );
+    if (normalizedGithubUrl.error) {
+      toast.error(normalizedGithubUrl.error);
+      return;
     }
 
-    if (projForm.deployUrl?.trim() && isValidUrl(projForm.deployUrl.trim())) {
-      payload.demoLink = projForm.deployUrl.trim();
+    const normalizedDemoUrl = normalizeHttpUrl(
+      projForm.deployUrl,
+      'Live URL',
+    );
+    if (normalizedDemoUrl.error) {
+      toast.error(normalizedDemoUrl.error);
+      return;
     }
 
-    if (projForm.thumbnail?.trim() && isValidUrl(projForm.thumbnail.trim())) {
-      payload.gif = projForm.thumbnail.trim();
+    const normalizedMediaUrl = normalizeHttpUrl(
+      projForm.thumbnail,
+      'Mídia do projeto',
+    );
+    if (normalizedMediaUrl.error) {
+      toast.error(normalizedMediaUrl.error);
+      return;
+    }
+
+    if (editingProj) {
+      payload.codeLink = normalizedGithubUrl.value || '';
+    } else if (normalizedGithubUrl.value) {
+      payload.codeLink = normalizedGithubUrl.value;
+    }
+
+    if (editingProj) {
+      payload.demoLink = normalizedDemoUrl.value || '';
+    } else if (normalizedDemoUrl.value) {
+      payload.demoLink = normalizedDemoUrl.value;
+    }
+
+    if (editingProj) {
+      payload.gif = normalizedMediaUrl.value || '';
+    } else if (normalizedMediaUrl.value) {
+      payload.gif = normalizedMediaUrl.value;
+    }
+
+    const projectTags = projForm.technologies
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
+    if (editingProj) {
+      payload.tags = projectTags;
+    } else if (projectTags.length > 0) {
+      payload.tags = projectTags;
     }
 
     try {
+      let savedProject: Projeto | undefined;
+
       if (editingProj) {
-        await projetosApi.update(editingProj.id, payload);
+        const response = await projetosApi.update(editingProj.id, payload);
+        savedProject = (response as any)?.projeto || (response as Projeto);
         toast.success('Project updated');
       } else {
-        // For create, profileId is required
         const createPayload = { ...payload, profileId: currentProfile.id };
-        // Don't send gif field if it's empty - it's optional in the DTO
-        await projetosApi.create(createPayload);
+        const response = await projetosApi.create(createPayload);
+        savedProject = (response as any)?.projeto || (response as Projeto);
         toast.success('Project added');
       }
 
-      // Local State Update
-      const newProjUI: Projeto = {
-        id: editingProj?.id || Date.now().toString(),
-        nome: payload.nome,
-        descricao: payload.descricao,
-        codeLink: payload.codeLink,
-        demoLink: payload.demoLink,
-        gif: payload.gif,
+      const persistedProject: Projeto = {
+        ...(editingProj || {
+          id: savedProject?.id || Date.now().toString(),
+          createdAt: new Date().toISOString(),
+          ordem: currentProfile.projetos?.length || 0,
+        }),
+        ...savedProject,
         profileId: currentProfile.id,
-        ordem: 0,
-        createdAt: new Date().toISOString(),
+        nome: savedProject?.nome || payload.nome,
+        descricao: savedProject?.descricao || payload.descricao,
+        codeLink: savedProject?.codeLink || payload.codeLink,
+        demoLink: savedProject?.demoLink || payload.demoLink,
+        gif: savedProject?.gif || payload.gif || '',
+        tags: savedProject?.tags || payload.tags || [],
+        ordem: savedProject?.ordem ?? editingProj?.ordem ?? currentProfile.projetos?.length ?? 0,
+        createdAt:
+          savedProject?.createdAt ||
+          editingProj?.createdAt ||
+          new Date().toISOString(),
       };
 
       const currentProjs = currentProfile.projetos || [];
       let newProjsList;
       if (editingProj) {
         newProjsList = currentProjs.map((p) =>
-          p.id === editingProj.id ? { ...p, ...newProjUI } : p,
+          p.id === editingProj.id ? { ...p, ...persistedProject } : p,
         );
       } else {
-        newProjsList = [...currentProjs, newProjUI];
+        newProjsList = currentProjs.some((p) => p.id === persistedProject.id)
+          ? currentProjs.map((p) =>
+              p.id === persistedProject.id ? { ...p, ...persistedProject } : p,
+            )
+          : [...currentProjs, persistedProject];
       }
 
       setCurrentProfile({ ...currentProfile, projetos: newProjsList });
@@ -2103,6 +2225,29 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                 placeholder="https://..."
                 className="bg-black/50 border-gray-700"
               />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Media URL (GIF ou imagem)</Label>
+              <Input
+                value={projForm.thumbnail}
+                onChange={(e) =>
+                  setProjForm({ ...projForm, thumbnail: e.target.value })
+                }
+                placeholder="https://exemplo.com/projeto.gif"
+                className="bg-black/50 border-gray-700"
+              />
+              {projForm.thumbnail.trim() && (
+                <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/30 aspect-[16/10]">
+                  <img
+                    src={
+                      normalizeHttpUrl(projForm.thumbnail, 'Mídia do projeto')
+                        .value || projForm.thumbnail
+                    }
+                    alt={projForm.title || 'Preview do projeto'}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <Label>Technologies (Comma separated)</Label>
@@ -2481,45 +2626,14 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
             </button>
           </section>
 
-          <div className="bg-[#121318] rounded-[2rem] p-6 border border-white/5 mt-8">
-            <p className="text-sm text-gray-400 mb-3 font-medium">
-              ➕ Add Social Media Profiles:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {SOCIAL_OPTIONS.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => handleAddNewFromChip(option.id)}
-                  className={`
-                                    flex items-center gap-2 px-3 py-2 rounded-xl border border-white/5 
-                                    transition-all duration-200 group bg-[#18181b] hover:scale-105
-                                    ${option.colorClass.replace(
-                                      'bg-',
-                                      'hover:bg-',
-                                    )} 
-                                `}
-                >
-                  <option.icon
-                    size={16}
-                    className="text-gray-300 group-hover:text-white"
-                  />
-                  <span className="text-xs font-medium text-gray-300 group-hover:text-white">
-                    {option.name}
-                  </span>
-                  <Plus size={12} className="text-gray-500 ml-1" />
-                </button>
-              ))}
-            </div>
-          </div>
-
           {socials.length === 0 && (
             <div className="bg-[#121318] rounded-[2rem] p-6 border border-white/5 text-center">
               <p className="text-gray-400 mb-2">
                 No social media profiles added yet
               </p>
               <p className="text-sm text-gray-500">
-                Add your social media links below to showcase your online
-                presence
+                Use o botão Add Social para criar seus links e manter essa área
+                organizada.
               </p>
             </div>
           )}
