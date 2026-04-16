@@ -1,417 +1,1454 @@
-import React, { useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
+import { Pencil, Plus, X } from 'lucide-react';
+
 import {
-  Github,
-  Linkedin,
-  Twitter,
-  Mail,
-  ExternalLink,
-  Pencil,
-} from "lucide-react";
-import { EditableField } from "./EditableField";
-import { EditableResumeButton } from "./EditableResumeButton";
-import { footerApi, legendaApi, profileApi } from "@/lib/api";
-import type { Footer, Legenda, ProfileComplete } from "@/types";
-import { toast } from "sonner";
+  footerApi,
+  legendaApi,
+  profileApi,
+  projetosApi,
+  socialApi,
+  techStackApi,
+  workExperienceApi,
+} from '@/lib/api';
+import type {
+  Footer,
+  Legenda,
+  ProfileComplete,
+  Projeto,
+  Technology,
+  WorkExperience,
+} from '@/types';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { EditableField } from './EditableField';
+import { TechIcon } from './TechIcon';
+import {
+  PORTFOLIO3_DEFAULT_HEADLINE,
+  PORTFOLIO3_SOCIAL_SLOTS,
+  Portfolio3FooterSection,
+  Portfolio3HeroSection,
+  Portfolio3Layout,
+  Portfolio3ProjectsSection,
+  Portfolio3TechStackSection,
+  Portfolio3ExperienceSection,
+  findPortfolio3Social,
+  getPortfolio3HeroHeadline,
+  getPortfolio3Initials,
+  getPortfolio3ProjectLink,
+  getPortfolio3ExperienceDescription,
+} from './portfolio3Shared';
+import {
+  TECH_OPTIONS,
+  type TechOption,
+} from './EditablePortfolio1';
+import {
+  showPortfolioEditorError,
+  showPortfolioEditorSuccess,
+} from './portfolioEditorToast';
 
 interface EditablePortfolio3Props {
   profile: ProfileComplete;
   onProfileUpdate?: () => void;
 }
 
+type LegendaEditableField =
+  | 'greeting'
+  | 'nome'
+  | 'titulo'
+  | 'descricao'
+  | 'legendaFoto';
+
+type FooterEditableField = 'subtitle' | 'email' | 'resumeUrl';
+
+type SocialSlotId = (typeof PORTFOLIO3_SOCIAL_SLOTS)[number]['id'];
+
+const actionButtonClassName =
+  'inline-flex items-center gap-2 rounded-full border border-[#2a2a2a] bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-colors hover:border-[#444] hover:bg-[#1e1e1e]';
+
+const normalizeUrl = (value: string) => {
+  const trimmed = value.trim();
+
+  if (!trimmed) return '';
+
+  if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return `https://${trimmed}`;
+};
+
+function EditablePortfolio3ResumeButton({
+  resumeUrl,
+  onResumeUpdate,
+}: {
+  resumeUrl?: string;
+  onResumeUpdate: (url: string) => Promise<void>;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [tempUrl, setTempUrl] = useState(resumeUrl || '');
+
+  useEffect(() => {
+    setTempUrl(resumeUrl || '');
+  }, [resumeUrl]);
+
+  const handleSave = async () => {
+    try {
+      await onResumeUpdate(tempUrl.trim());
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Erro ao atualizar currículo:', error);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="inline-flex items-center justify-center rounded-full border border-white px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+      >
+        {resumeUrl ? 'Edit CV Link' : 'Add CV Link'}
+      </button>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Editar link do currículo</DialogTitle>
+            <DialogDescription>
+              Cole o link direto do seu currículo.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="portfolio3-resume-url">URL do currículo</Label>
+              <Input
+                id="portfolio3-resume-url"
+                type="url"
+                value={tempUrl}
+                onChange={(event) => setTempUrl(event.target.value)}
+                placeholder="https://exemplo.com/curriculo.pdf"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setTempUrl(resumeUrl || '');
+                setIsOpen(false);
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={handleSave}>
+              Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+function AddTechDialog({
+  open,
+  onOpenChange,
+  onAdd,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onAdd: (tech: Technology) => void;
+}) {
+  const [search, setSearch] = useState('');
+  const [selected, setSelected] = useState<TechOption | null>(null);
+
+  const filtered = TECH_OPTIONS.filter((tech) =>
+    tech.name.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const handleConfirm = () => {
+    const base =
+      selected ||
+      (search.trim()
+        ? {
+            name: search.trim(),
+            icon: 'lucide:code-2',
+            color: 'text-[#FF6B35]',
+          }
+        : null);
+
+    if (!base) return;
+
+    onAdd({
+      id: Date.now().toString(),
+      techStackId: '',
+      name: base.name,
+      icon: base.icon,
+      color: base.color || 'text-[#FF6B35]',
+      ordem: 0,
+    });
+
+    setSearch('');
+    setSelected(null);
+    onOpenChange(false);
+  };
+
+  const handleDialogChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      setSearch('');
+      setSelected(null);
+    }
+
+    onOpenChange(isOpen);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleDialogChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Adicionar tecnologia</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <Input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Buscar tecnologia (ex: React, Python)..."
+          />
+
+          <div className="grid max-h-60 grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3">
+            {filtered.map((tech) => (
+              <button
+                key={tech.name}
+                type="button"
+                onClick={() => setSelected(tech)}
+                className={`rounded-xl border p-2 text-left transition-colors ${
+                  selected?.name === tech.name
+                    ? 'border-[#FF6B35] bg-[#FFF3ED]'
+                    : 'border-slate-200 bg-white hover:bg-slate-50'
+                }`}
+              >
+                <div className="mb-2">
+                  <TechIcon
+                    icon={tech.icon}
+                    size={22}
+                    className={tech.color || 'text-[#FF6B35]'}
+                  />
+                </div>
+                <span className="text-sm text-slate-900">{tech.name}</span>
+              </button>
+            ))}
+
+            {filtered.length === 0 && (
+              <p className="col-span-full text-sm text-slate-500">
+                Nenhuma tecnologia encontrada.
+              </p>
+            )}
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => handleDialogChange(false)}>
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirm}>Adicionar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function EditablePortfolio3({
   profile,
   onProfileUpdate,
 }: EditablePortfolio3Props) {
-  const [localProfile, setLocalProfile] = useState<ProfileComplete>(profile);
-  const legenda = localProfile.legendas?.[0];
-  const footer = localProfile.footer;
-  const techStack = localProfile.techStack?.technologies ?? [];
-  const workHistory = localProfile.workHistory ?? [];
-  const projects = localProfile.projetos ?? [];
+  const [localProfile, setLocalProfile] = useState(profile);
 
-  const handleLegendaUpdate = async (field: keyof Legenda, value: string) => {
-    if (!legenda?.id) {
-      toast.error("Legenda nao encontrada");
+  const [isTechDialogOpen, setIsTechDialogOpen] = useState(false);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [isWorkModalOpen, setIsWorkModalOpen] = useState(false);
+  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
+  const [isNameDialogOpen, setIsNameDialogOpen] = useState(false);
+  const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
+
+  const [editingProject, setEditingProject] = useState<Projeto | null>(null);
+  const [editingWork, setEditingWork] = useState<WorkExperience | null>(null);
+  const [editingSocialSlot, setEditingSocialSlot] = useState<SocialSlotId | null>(
+    null,
+  );
+
+  const [projectForm, setProjectForm] = useState({
+    nome: '',
+    subtitle: '',
+    link: '',
+    thumbnail: '',
+  });
+  const [workForm, setWorkForm] = useState({
+    company: '',
+    summary: '',
+    period: '',
+    description: '',
+  });
+  const [socialUrl, setSocialUrl] = useState('');
+  const [nameInput, setNameInput] = useState('');
+  const [avatarUrlInput, setAvatarUrlInput] = useState('');
+
+  useEffect(() => {
+    setLocalProfile(profile);
+  }, [profile]);
+
+  const legenda = localProfile.legendas?.[0];
+  const heroHeadline = getPortfolio3HeroHeadline(legenda);
+  const techs = localProfile.techStack?.technologies || [];
+  const projects = localProfile.projetos || [];
+  const workHistory = localProfile.workHistory || [];
+
+  const footerDescription =
+    localProfile.footer?.subtitle || legenda?.descricao || '';
+  const footerEmail = localProfile.footer?.email || '';
+
+  const socialLinks = useMemo(
+    () =>
+      PORTFOLIO3_SOCIAL_SLOTS.map((slot) => {
+        const existing = findPortfolio3Social(localProfile.social, slot.id);
+
+        return {
+          id: slot.id,
+          label: existing?.url ? slot.label : `Adicionar ${slot.label}`,
+          url: existing?.url,
+          icon: slot.icon,
+          onClick: () => openSocialModal(slot.id),
+        };
+      }),
+    [localProfile.social],
+  );
+
+  const buildLegendaDefaults = (
+    field?: LegendaEditableField,
+    value?: string,
+  ) => ({
+    profileId: localProfile.id,
+    legendaFoto:
+      field === 'legendaFoto'
+        ? value || ''
+        : legenda?.legendaFoto || localProfile.avatarUrl || '',
+    greeting:
+      field === 'greeting' ? value || '' : legenda?.greeting || '',
+    nome:
+      field === 'nome'
+        ? value || localProfile.username || 'M Portfolio'
+        : legenda?.nome || localProfile.username || 'M Portfolio',
+    titulo:
+      field === 'titulo'
+        ? value || PORTFOLIO3_DEFAULT_HEADLINE
+        : getPortfolio3HeroHeadline(legenda),
+    subtitulo: legenda?.subtitulo || '',
+    descricao:
+      field === 'descricao'
+        ? value || 'Describe what you build.'
+        : legenda?.descricao || 'Describe what you build.',
+  });
+
+  const handleHeadlineUpdate = async (value: string) => {
+    if (!localProfile.id) {
+      showPortfolioEditorError('Perfil não encontrado');
       return;
     }
 
     try {
-      await legendaApi.update(legenda.id, { [field]: value });
-      setLocalProfile((prev) => {
-        if (!prev.legendas || prev.legendas.length === 0) return prev;
-        return {
+      let legendaId = legenda?.id;
+
+      if (!legendaId) {
+        const response = await legendaApi.create({
+          ...buildLegendaDefaults('titulo', value),
+          greeting: '',
+          titulo: value,
+        });
+        legendaId = response.legenda.id;
+
+        setLocalProfile((prev) => ({
           ...prev,
           legendas: [
             {
-              ...prev.legendas![0],
-              [field]: value,
+              ...response.legenda,
+              greeting: '',
+              titulo: value,
             },
           ],
-        };
-      });
-      toast.success("Campo atualizado com sucesso!");
+        }));
+      } else {
+        await legendaApi.update(legendaId, { titulo: value, greeting: '' });
+
+        setLocalProfile((prev) => {
+          if (!prev.legendas?.length) return prev;
+
+          return {
+            ...prev,
+            legendas: [
+              {
+                ...prev.legendas[0],
+                greeting: '',
+                titulo: value,
+              },
+            ],
+          };
+        });
+      }
+
       onProfileUpdate?.();
     } catch (error) {
-      console.error("Erro ao atualizar legenda:", error);
-      toast.error("Erro ao atualizar campo");
+      console.error('Erro ao atualizar headline:', error);
+      showPortfolioEditorError('Erro ao atualizar headline');
+      throw error;
+    }
+  };
+
+  const buildFooterDefaults = (patch: Partial<Footer> = {}) => ({
+    profileId: localProfile.id,
+    title: localProfile.footer?.title || 'Contact',
+    subtitle: localProfile.footer?.subtitle || legenda?.descricao || '',
+    email: localProfile.footer?.email || '',
+    github: localProfile.footer?.github || undefined,
+    linkedin: localProfile.footer?.linkedin || undefined,
+    twitter: localProfile.footer?.twitter || undefined,
+    instagram: localProfile.footer?.instagram || undefined,
+    copyrightName:
+      localProfile.footer?.copyrightName ||
+      legenda?.nome ||
+      localProfile.username ||
+      'Bio4Dev',
+    madeWith: localProfile.footer?.madeWith || 'Made with Bio4Dev',
+    resumeUrl: localProfile.footer?.resumeUrl || undefined,
+    ...patch,
+  });
+
+  const handleLegendaUpdate = async (
+    field: LegendaEditableField,
+    value: string,
+  ) => {
+    if (!localProfile.id) {
+      showPortfolioEditorError('Perfil não encontrado');
+      return;
+    }
+
+    try {
+      let legendaId = legenda?.id;
+
+      if (!legendaId) {
+        const response = await legendaApi.create(buildLegendaDefaults(field, value));
+        legendaId = response.legenda.id;
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          legendas: [response.legenda],
+        }));
+      } else {
+        await legendaApi.update(legendaId, { [field]: value });
+
+        setLocalProfile((prev) => {
+          if (!prev.legendas?.length) return prev;
+
+          return {
+            ...prev,
+            legendas: [
+              {
+                ...prev.legendas[0],
+                [field]: value,
+              } as Legenda,
+            ],
+          };
+        });
+      }
+
+      onProfileUpdate?.();
+    } catch (error) {
+      console.error('Erro ao atualizar legenda:', error);
+      showPortfolioEditorError('Erro ao atualizar campo');
+      throw error;
     }
   };
 
   const handleAvatarUpdate = async (url: string) => {
     if (!localProfile.id) {
-      toast.error("Perfil nao encontrado");
+      showPortfolioEditorError('Perfil não encontrado');
       return;
     }
 
     try {
       await profileApi.update(localProfile.id, { avatarUrl: url });
-      setLocalProfile((prev) => ({ ...prev, avatarUrl: url }));
-      toast.success("Avatar atualizado com sucesso!");
+
+      setLocalProfile((prev) => ({
+        ...prev,
+        avatarUrl: url,
+      }));
+
       onProfileUpdate?.();
     } catch (error) {
-      console.error("Erro ao atualizar avatar:", error);
-      toast.error("Erro ao atualizar avatar");
+      console.error('Erro ao atualizar avatar:', error);
+      showPortfolioEditorError('Erro ao atualizar avatar');
+      throw error;
     }
   };
 
-  const handleFooterUpdate = async (field: keyof Footer, value: string) => {
-    if (!footer?.id) {
-      toast.error("Footer nao encontrado");
-      return;
-    }
-
+  const upsertFooter = async (
+    field: FooterEditableField,
+    value: string,
+  ) => {
     try {
-      await footerApi.update(footer.id, { [field]: value });
-      setLocalProfile((prev) => ({
-        ...prev,
-        footer: prev.footer ? { ...prev.footer, [field]: value } : undefined,
-      }));
-      toast.success("Campo atualizado com sucesso!");
+      if (localProfile.footer?.id) {
+        await footerApi.update(localProfile.footer.id, {
+          [field]: value || undefined,
+        });
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          footer: prev.footer
+            ? ({
+                ...prev.footer,
+                [field]: value || undefined,
+              } as Footer)
+            : prev.footer,
+        }));
+      } else {
+        const createPayload = buildFooterDefaults({
+          [field]: value || undefined,
+        });
+        const response: any = await footerApi.create(createPayload);
+        const createdFooter = response.footer || response;
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          footer: {
+            id: createdFooter.id || 'draft-footer',
+            profileId: prev.id,
+            title: createdFooter.title || createPayload.title,
+            subtitle: createdFooter.subtitle || createPayload.subtitle,
+            email: createdFooter.email || createPayload.email,
+            github: createdFooter.github || createPayload.github,
+            linkedin: createdFooter.linkedin || createPayload.linkedin,
+            twitter: createdFooter.twitter || createPayload.twitter,
+            instagram: createdFooter.instagram || createPayload.instagram,
+            copyrightName:
+              createdFooter.copyrightName || createPayload.copyrightName,
+            madeWith: createdFooter.madeWith || createPayload.madeWith,
+            resumeUrl: createdFooter.resumeUrl || createPayload.resumeUrl,
+          },
+        }));
+      }
+
       onProfileUpdate?.();
     } catch (error) {
-      console.error("Erro ao atualizar footer:", error);
-      toast.error("Erro ao atualizar campo");
+      console.error('Erro ao atualizar footer:', error);
+      showPortfolioEditorError('Erro ao atualizar contato');
+      throw error;
     }
+  };
+
+  const handleFooterFieldUpdate = async (
+    field: Exclude<FooterEditableField, 'resumeUrl'>,
+    value: string,
+  ) => {
+    await upsertFooter(field, value);
   };
 
   const handleResumeUpdate = async (url: string) => {
-    if (!footer?.id) {
-      toast.error("Footer nao encontrado");
+    await upsertFooter('resumeUrl', url);
+  };
+
+  const openNameDialog = () => {
+    setNameInput(legenda?.nome || localProfile.username || '');
+    setIsNameDialogOpen(true);
+  };
+
+  const saveNameDialog = async () => {
+    const nextName = nameInput.trim();
+
+    if (!nextName) return;
+
+    await handleLegendaUpdate('nome', nextName);
+    setIsNameDialogOpen(false);
+  };
+
+  const openAvatarDialog = () => {
+    setAvatarUrlInput(localProfile.avatarUrl || legenda?.legendaFoto || '');
+    setIsAvatarDialogOpen(true);
+  };
+
+  const saveAvatarDialog = async () => {
+    const nextUrl = avatarUrlInput.trim();
+
+    if (!nextUrl) return;
+
+    await handleAvatarUpdate(nextUrl);
+    setIsAvatarDialogOpen(false);
+  };
+
+  const handleAddTech = async (newTech: Technology) => {
+    const currentTechs = localProfile.techStack?.technologies || [];
+    const newTechnologies = [...currentTechs, newTech].map((item, index) => ({
+      ...item,
+      ordem: index,
+    }));
+
+    const payload = {
+      title: localProfile.techStack?.title || 'Experience With',
+      subtitle:
+        localProfile.techStack?.subtitle ||
+        'Tecnologias e ferramentas que utilizo no dia a dia',
+      technologies: newTechnologies.map((item, index) => ({
+        name: item.name,
+        icon: item.icon,
+        color: item.color || 'text-[#FF6B35]',
+        ordem: index,
+      })),
+    };
+
+    try {
+      if (localProfile.techStack?.id) {
+        await techStackApi.update(localProfile.id, payload);
+      } else {
+        await techStackApi.create(localProfile.id, payload);
+      }
+
+      setLocalProfile((prev) => ({
+        ...prev,
+        techStack: {
+          id: prev.techStack?.id || 'draft-tech-stack',
+          profileId: prev.id,
+          title: payload.title,
+          subtitle: payload.subtitle,
+          technologies: newTechnologies,
+        },
+      }));
+
+      onProfileUpdate?.();
+      showPortfolioEditorSuccess('Tecnologia adicionada');
+    } catch (error) {
+      console.error('Erro ao adicionar tecnologia:', error);
+      showPortfolioEditorError('Erro ao adicionar tecnologia');
+    }
+  };
+
+  const handleRemoveTech = async (tech: Technology) => {
+    const currentTechs = localProfile.techStack?.technologies || [];
+    const newTechnologies = currentTechs
+      .filter((item) => item.id !== tech.id)
+      .map((item, index) => ({
+        ...item,
+        ordem: index,
+      }));
+
+    const payload = {
+      title: localProfile.techStack?.title || 'Experience With',
+      subtitle:
+        localProfile.techStack?.subtitle ||
+        'Tecnologias e ferramentas que utilizo no dia a dia',
+      technologies: newTechnologies.map((item, index) => ({
+        name: item.name,
+        icon: item.icon,
+        color: item.color || 'text-[#FF6B35]',
+        ordem: index,
+      })),
+    };
+
+    try {
+      await techStackApi.update(localProfile.id, payload);
+
+      setLocalProfile((prev) => ({
+        ...prev,
+        techStack: prev.techStack
+          ? {
+              ...prev.techStack,
+              technologies: newTechnologies,
+            }
+          : prev.techStack,
+      }));
+
+      onProfileUpdate?.();
+      showPortfolioEditorSuccess('Tecnologia removida');
+    } catch (error) {
+      console.error('Erro ao remover tecnologia:', error);
+      showPortfolioEditorError('Erro ao remover tecnologia');
+    }
+  };
+
+  const openProjectModal = (project?: Projeto) => {
+    setEditingProject(project || null);
+    setProjectForm({
+      nome: project?.nome || '',
+      subtitle: project?.tags?.[0] || '',
+      link: project ? getPortfolio3ProjectLink(project) : '',
+      thumbnail: project?.gif || '',
+    });
+    setIsProjectModalOpen(true);
+  };
+
+  const handleProjectSave = async () => {
+    if (!localProfile.id) {
+      showPortfolioEditorError('Perfil não encontrado');
+      return;
+    }
+
+    const payload = {
+      nome: projectForm.nome.trim() || 'Novo Projeto',
+      descricao:
+        editingProject?.descricao ||
+        projectForm.nome.trim() ||
+        'Projeto em destaque',
+      demoLink: projectForm.link.trim()
+        ? normalizeUrl(projectForm.link)
+        : undefined,
+      codeLink: editingProject?.codeLink || undefined,
+      gif: projectForm.thumbnail.trim() || '#111111',
+      tags: projectForm.subtitle.trim() ? [projectForm.subtitle.trim()] : [],
+      ordem: editingProject?.ordem ?? projects.length,
+    };
+
+    try {
+      if (editingProject) {
+        const response: any = await projetosApi.update(editingProject.id, payload);
+        const updatedProject = response.projeto || {
+          ...editingProject,
+          ...payload,
+        };
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          projetos: (prev.projetos || []).map((project) =>
+            project.id === editingProject.id ? updatedProject : project,
+          ),
+        }));
+      } else {
+        const response: any = await projetosApi.create({
+          profileId: localProfile.id,
+          ...payload,
+        });
+        const createdProject = response.projeto || {
+          id: Date.now().toString(),
+          profileId: localProfile.id,
+          createdAt: new Date().toISOString(),
+          ...payload,
+        };
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          projetos: [...(prev.projetos || []), createdProject],
+        }));
+      }
+
+      setIsProjectModalOpen(false);
+      setEditingProject(null);
+      onProfileUpdate?.();
+      showPortfolioEditorSuccess('Projeto salvo');
+    } catch (error) {
+      console.error('Erro ao salvar projeto:', error);
+      showPortfolioEditorError('Erro ao salvar projeto');
+    }
+  };
+
+  const handleProjectDelete = async () => {
+    if (!editingProject) return;
+
+    try {
+      await projetosApi.delete(editingProject.id);
+
+      setLocalProfile((prev) => ({
+        ...prev,
+        projetos: (prev.projetos || []).filter(
+          (project) => project.id !== editingProject.id,
+        ),
+      }));
+
+      setIsProjectModalOpen(false);
+      setEditingProject(null);
+      onProfileUpdate?.();
+      showPortfolioEditorSuccess('Projeto removido');
+    } catch (error) {
+      console.error('Erro ao remover projeto:', error);
+      showPortfolioEditorError('Erro ao remover projeto');
+    }
+  };
+
+  const openWorkModal = (work?: WorkExperience) => {
+    setEditingWork(work || null);
+    setWorkForm({
+      company: work?.company || '',
+      summary: work?.summary || '',
+      period: work?.period || '',
+      description: work ? getPortfolio3ExperienceDescription(work) : '',
+    });
+    setIsWorkModalOpen(true);
+  };
+
+  const handleWorkSave = async () => {
+    if (!localProfile.id) {
+      showPortfolioEditorError('Perfil não encontrado');
+      return;
+    }
+
+    const payload = {
+      company: workForm.company.trim() || 'Empresa',
+      period: workForm.period.trim() || 'Atual',
+      summary: workForm.summary.trim() || 'Cargo',
+      impact: workForm.description.trim() || undefined,
+      ordem: editingWork?.ordem ?? workHistory.length,
+      technologies:
+        editingWork?.technologies?.map((item) => ({
+          technology: item.technology,
+        })) || [],
+      responsibilities:
+        editingWork?.responsibilities?.map((item, index) => ({
+          responsibility: item.responsibility,
+          ordem: index,
+        })) ||
+        (workForm.description.trim()
+          ? [{ responsibility: workForm.description.trim(), ordem: 0 }]
+          : []),
+    };
+
+    try {
+      if (editingWork) {
+        const response: any = await workExperienceApi.update(
+          editingWork.id,
+          payload,
+        );
+        const updatedWork = response.workExperience || {
+          ...editingWork,
+          ...payload,
+          technologies: editingWork.technologies,
+          responsibilities: editingWork.responsibilities,
+        };
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          workHistory: (prev.workHistory || []).map((work) =>
+            work.id === editingWork.id ? updatedWork : work,
+          ),
+        }));
+      } else {
+        const response: any = await workExperienceApi.create({
+          profileId: localProfile.id,
+          ...payload,
+        });
+        const createdWork = response.workExperience || {
+          id: Date.now().toString(),
+          profileId: localProfile.id,
+          company: payload.company,
+          period: payload.period,
+          summary: payload.summary,
+          impact: payload.impact,
+          ordem: payload.ordem,
+          technologies: [],
+          responsibilities: payload.responsibilities.map((item) => ({
+            id: `${Date.now()}-${item.ordem}`,
+            workExperienceId: '',
+            responsibility: item.responsibility,
+            ordem: item.ordem,
+          })),
+        };
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          workHistory: [...(prev.workHistory || []), createdWork],
+        }));
+      }
+
+      setIsWorkModalOpen(false);
+      setEditingWork(null);
+      onProfileUpdate?.();
+      showPortfolioEditorSuccess('Experiência salva');
+    } catch (error) {
+      console.error('Erro ao salvar experiência:', error);
+      showPortfolioEditorError('Erro ao salvar experiência');
+    }
+  };
+
+  const handleWorkDelete = async () => {
+    if (!editingWork) return;
+
+    try {
+      await workExperienceApi.delete(editingWork.id);
+
+      setLocalProfile((prev) => ({
+        ...prev,
+        workHistory: (prev.workHistory || []).filter(
+          (work) => work.id !== editingWork.id,
+        ),
+      }));
+
+      setIsWorkModalOpen(false);
+      setEditingWork(null);
+      onProfileUpdate?.();
+      showPortfolioEditorSuccess('Experiência removida');
+    } catch (error) {
+      console.error('Erro ao remover experiência:', error);
+      showPortfolioEditorError('Erro ao remover experiência');
+    }
+  };
+
+  function openSocialModal(slotId: SocialSlotId) {
+    const existing = findPortfolio3Social(localProfile.social, slotId);
+    setEditingSocialSlot(slotId);
+    setSocialUrl(existing?.url || '');
+    setIsSocialModalOpen(true);
+  }
+
+  const handleSocialSave = async () => {
+    if (!localProfile.id || !editingSocialSlot) {
+      showPortfolioEditorError('Perfil não encontrado');
+      return;
+    }
+
+    const slot = PORTFOLIO3_SOCIAL_SLOTS.find(
+      (item) => item.id === editingSocialSlot,
+    );
+
+    if (!slot) return;
+
+    const normalized = normalizeUrl(socialUrl);
+
+    if (!normalized) {
+      showPortfolioEditorError('Informe uma URL válida');
       return;
     }
 
     try {
-      await footerApi.update(footer.id, { resumeUrl: url });
+      const existing = findPortfolio3Social(localProfile.social, editingSocialSlot);
+      const nextSocials = [...(localProfile.social || [])];
+
+      if (existing) {
+        await socialApi.update(existing.id, {
+          plataforma: existing.plataforma,
+          url: normalized,
+        });
+
+        const index = nextSocials.findIndex((item) => item.id === existing.id);
+        if (index >= 0) {
+          nextSocials[index] = {
+            ...existing,
+            url: normalized,
+          };
+        }
+      } else {
+        const createdSocial = await socialApi.create({
+          profileId: localProfile.id,
+          plataforma: slot.preferredPlatform,
+          url: normalized,
+          ordem: nextSocials.length,
+        });
+
+        nextSocials.push(createdSocial);
+      }
+
       setLocalProfile((prev) => ({
         ...prev,
-        footer: prev.footer ? { ...prev.footer, resumeUrl: url } : undefined,
+        social: nextSocials,
       }));
-      toast.success("Curriculo atualizado com sucesso!");
+
+      setIsSocialModalOpen(false);
+      setEditingSocialSlot(null);
       onProfileUpdate?.();
+      showPortfolioEditorSuccess('Link social salvo');
     } catch (error) {
-      console.error("Erro ao atualizar curriculo:", error);
-      toast.error("Erro ao atualizar curriculo");
+      console.error('Erro ao salvar link social:', error);
+      showPortfolioEditorError('Erro ao salvar link social');
     }
   };
 
-  const handleAvatarClick = async () => {
-    const url = prompt("Digite a URL do avatar:");
-    if (url) {
-      await handleAvatarUpdate(url);
+  const handleSocialDelete = async () => {
+    if (!editingSocialSlot) return;
+
+    try {
+      const existing = findPortfolio3Social(localProfile.social, editingSocialSlot);
+
+      if (existing) {
+        await socialApi.delete(existing.id);
+      }
+
+      setLocalProfile((prev) => ({
+        ...prev,
+        social: (prev.social || []).filter((item) => item.id !== existing?.id),
+      }));
+
+      setIsSocialModalOpen(false);
+      setEditingSocialSlot(null);
+      onProfileUpdate?.();
+      showPortfolioEditorSuccess('Link social removido');
+    } catch (error) {
+      console.error('Erro ao remover link social:', error);
+      showPortfolioEditorError('Erro ao remover link social');
     }
   };
 
   return (
-    <div className="portfolio-3-scope min-h-screen bg-[#0F0F0F] text-white">
-      <style>{`
-        .portfolio-3-scope { font-family: 'Sora', sans-serif; }
-      `}</style>
+    <>
+      <Portfolio3Layout
+        initials={getPortfolio3Initials(localProfile)}
+        onInitialsClick={openNameDialog}
+        hero={
+          <Portfolio3HeroSection
+            avatar={
+              <button
+                type="button"
+                onClick={openAvatarDialog}
+                className="group relative h-full w-full cursor-pointer"
+              >
+                <img
+                  src={
+                    localProfile.avatarUrl ||
+                    legenda?.legendaFoto ||
+                    'https://api.dicebear.com/7.x/notionists/svg?seed=Bio4Dev&backgroundColor=transparent'
+                  }
+                  alt={legenda?.nome || localProfile.username}
+                  className="h-full w-full object-cover transition-opacity group-hover:opacity-80"
+                />
+                <span className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20">
+                  <Pencil className="h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                </span>
+              </button>
+            }
+            headline={
+              <EditableField
+                value={heroHeadline}
+                onSave={handleHeadlineUpdate}
+                placeholder={PORTFOLIO3_DEFAULT_HEADLINE}
+                className="w-full hover:bg-white/5"
+                valueClassName="bg-gradient-to-r from-[#FF6B35] to-[#FF1493] bg-clip-text text-transparent"
+                inputClassName="border-white/20 bg-white/5 text-white placeholder:text-white/30"
+              />
+            }
+            description={
+              <EditableField
+                value={legenda?.descricao || ''}
+                onSave={(value) => handleLegendaUpdate('descricao', value)}
+                placeholder="Descreva aqui sua atuação, experiência e o que você está construindo."
+                type="textarea"
+                multiline
+                className="text-[#a0a0a0] hover:bg-white/5"
+                inputClassName="border-white/20 bg-white/5 text-white placeholder:text-white/30"
+              />
+            }
+            primaryAction={
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-gray-200"
+              >
+                Get In Touch
+              </a>
+            }
+            secondaryAction={
+              <EditablePortfolio3ResumeButton
+                resumeUrl={localProfile.footer?.resumeUrl}
+                onResumeUpdate={handleResumeUpdate}
+              />
+            }
+          />
+        }
+        techStack={
+          <Portfolio3TechStackSection
+            items={techs}
+            action={
+              <button
+                type="button"
+                onClick={() => setIsTechDialogOpen(true)}
+                className={actionButtonClassName}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add
+              </button>
+            }
+            onRemoveTech={(tech) => void handleRemoveTech(tech)}
+          />
+        }
+        projects={
+          <Portfolio3ProjectsSection
+            projects={projects}
+            action={
+              <button
+                type="button"
+                onClick={() => openProjectModal()}
+                className={actionButtonClassName}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add
+              </button>
+            }
+            onProjectClick={openProjectModal}
+          />
+        }
+        experience={
+          <Portfolio3ExperienceSection
+            items={workHistory}
+            action={
+              <button
+                type="button"
+                onClick={() => openWorkModal()}
+                className={actionButtonClassName}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add
+              </button>
+            }
+            onExperienceClick={openWorkModal}
+          />
+        }
+        footer={
+          <Portfolio3FooterSection
+            description={
+              <EditableField
+                value={footerDescription}
+                onSave={(value) => handleFooterFieldUpdate('subtitle', value)}
+                placeholder="Descreva como as pessoas podem entrar em contato."
+                type="textarea"
+                multiline
+                className="text-[#a0a0a0] hover:bg-white/5"
+                inputClassName="border-white/20 bg-white/5 text-white placeholder:text-white/30"
+              />
+            }
+            email={
+              <EditableField
+                value={footerEmail}
+                onSave={(value) => handleFooterFieldUpdate('email', value)}
+                placeholder="your@email.com"
+                className="text-white hover:bg-white/5"
+                inputClassName="border-white/20 bg-white/5 text-white placeholder:text-white/30"
+              />
+            }
+            socialLinks={socialLinks}
+          />
+        }
+      />
 
-      <main className="w-full max-w-6xl mx-auto">
-        <section className="flex flex-col items-center text-center py-20 md:py-28 px-6">
-          <div className="relative mb-8">
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-tr from-[#C084FC] to-[#60A5FA] p-1 shadow-2xl shadow-[#C084FC]/20">
+      <AddTechDialog
+        open={isTechDialogOpen}
+        onOpenChange={setIsTechDialogOpen}
+        onAdd={(tech) => void handleAddTech(tech)}
+      />
+
+      <Dialog open={isNameDialogOpen} onOpenChange={setIsNameDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar nome</DialogTitle>
+            <DialogDescription>
+              O nome completo define as iniciais exibidas na navegação.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2 py-2">
+            <Label htmlFor="portfolio3-name">Nome completo</Label>
+            <Input
+              id="portfolio3-name"
+              value={nameInput}
+              onChange={(event) => setNameInput(event.target.value)}
+              placeholder="Seu nome"
+            />
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setNameInput(legenda?.nome || localProfile.username || '');
+                setIsNameDialogOpen(false);
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={saveNameDialog}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar avatar</DialogTitle>
+            <DialogDescription>
+              Cole a URL da imagem que deve aparecer no hero.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="mx-auto h-28 w-28 overflow-hidden rounded-full border border-white/10 bg-[#1a1a1a]">
               <img
                 src={
+                  avatarUrlInput ||
                   localProfile.avatarUrl ||
                   legenda?.legendaFoto ||
-                  "https://api.dicebear.com/7.x/avataaars/svg?seed=Developer"
+                  'https://api.dicebear.com/7.x/notionists/svg?seed=Bio4Dev&backgroundColor=transparent'
                 }
-                alt={legenda?.nome || "Developer Avatar"}
-                className="w-full h-full rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer"
-                onClick={handleAvatarClick}
+                alt={legenda?.nome || localProfile.username}
+                className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 rounded-full bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-                <Pencil className="h-6 w-6 text-white" />
-              </div>
             </div>
-            <div className="absolute -bottom-2 -right-2 bg-[#1A1A1A] p-2 rounded-lg border border-white/10 shadow-xl">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+
+            <div className="space-y-2">
+              <Label htmlFor="portfolio3-avatar-url">URL do avatar</Label>
+              <Input
+                id="portfolio3-avatar-url"
+                type="url"
+                value={avatarUrlInput}
+                onChange={(event) => setAvatarUrlInput(event.target.value)}
+                placeholder="https://exemplo.com/avatar.jpg"
+              />
             </div>
           </div>
 
-          <div className="mb-3 text-sm uppercase tracking-[0.3em] text-white/60">
-            <EditableField
-              value={legenda?.greeting || "Developer Portfolio"}
-              onSave={(value) => handleLegendaUpdate("greeting", value)}
-              className="text-white/60"
-            />
-          </div>
-
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6">
-            <EditableField
-              value={legenda?.nome || "Seu Nome"}
-              onSave={(value) => handleLegendaUpdate("nome", value)}
-              className="text-white"
-            />
-            <br />
-            <span className="bg-gradient-to-r from-[#C084FC] to-[#60A5FA] bg-clip-text text-transparent">
-              <EditableField
-                value={legenda?.titulo || "Full Stack Developer"}
-                onSave={(value) => handleLegendaUpdate("titulo", value)}
-                className="bg-gradient-to-r from-[#C084FC] to-[#60A5FA] bg-clip-text text-transparent"
-              />
-            </span>
-          </h1>
-
-          <p className="text-[#AAAAAA] text-lg md:text-xl max-w-2xl mb-10 leading-relaxed font-light">
-            <EditableField
-              value={
-                legenda?.descricao ||
-                "Especialista em software corporativo, engenharia de produtos e lideranca tecnica."
-              }
-              onSave={(value) => handleLegendaUpdate("descricao", value)}
-              multiline
-              type="textarea"
-              className="text-[#AAAAAA]"
-            />
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 mb-12 w-full sm:w-auto">
-            <a
-              href="#contact"
-              className="px-8 py-3 bg-white text-black font-bold rounded-lg hover:bg-neutral-200 transition-all duration-300 transform hover:-translate-y-1"
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAvatarUrlInput(
+                  localProfile.avatarUrl || legenda?.legendaFoto || '',
+                );
+                setIsAvatarDialogOpen(false);
+              }}
             >
-              Entre em Contato
-            </a>
-            <div className="relative group">
-              <EditableResumeButton
-                resumeUrl={footer?.resumeUrl}
-                onResumeUpdate={handleResumeUpdate}
-                className="w-full"
-              />
-            </div>
-          </div>
+              Cancelar
+            </Button>
+            <Button onClick={saveAvatarDialog}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-          <div className="flex flex-wrap justify-center gap-3">
-            {(techStack.length > 0
-              ? techStack.map((tech) => tech.name)
-              : ["TypeScript", "React", "Node", "Postgres", "AWS", "Docker"]
-            ).map((item) => (
-              <span
-                key={item}
-                className="px-3 py-1 rounded-full bg-white/5 text-xs uppercase tracking-widest text-white/70"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </section>
+      <Dialog open={isProjectModalOpen} onOpenChange={setIsProjectModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {editingProject ? 'Editar projeto' : 'Novo projeto'}
+            </DialogTitle>
+          </DialogHeader>
 
-        <section id="experience" className="py-20 px-6 bg-[#0B0B0B]">
-          <div className="flex items-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight shrink-0">
-              EXPERIENCIA
-            </h2>
-            <div className="h-px flex-grow ml-8 bg-gradient-to-r from-white/10 to-transparent"></div>
-          </div>
-
-          <div className="flex flex-col">
-            {workHistory.length === 0 && (
-              <p className="text-[#AAAAAA] text-sm">
-                Adicione experiencias para destacar sua trajetoria.
-              </p>
-            )}
-            {workHistory.map((item) => (
-              <div
-                key={item.id}
-                className="group py-8 flex flex-col md:flex-row gap-6 border-b border-white/5 last:border-0 hover:bg-white/[0.02] px-4 -mx-4 transition-colors rounded-xl"
-              >
-                <div className="md:w-1/4">
-                  <h4 className="font-bold text-white/90 text-lg">
-                    {item.company}
-                  </h4>
-                  <div className="text-sm text-[#AAAAAA] mt-1">
-                    {item.period}
-                  </div>
-                </div>
-                <div className="md:w-3/4 space-y-3">
-                  <h3 className="text-xl font-bold text-[#60A5FA]">
-                    {item.summary}
-                  </h3>
-                  {item.impact && (
-                    <p className="text-[#AAAAAA] leading-relaxed text-base">
-                      {item.impact}
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="projects" className="py-20 px-6">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-              PROJECTS
-            </h2>
-            <div className="h-px flex-grow ml-8 bg-gradient-to-r from-white/10 to-transparent"></div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {projects.length === 0 && (
-              <div className="col-span-full text-[#AAAAAA] text-sm">
-                Adicione projetos para exibir suas entregas mais relevantes.
-              </div>
-            )}
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="group relative bg-[#1A1A1A] rounded-2xl overflow-hidden border border-white/5 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60"
-              >
-                <div className="aspect-video w-full overflow-hidden">
-                  <img
-                    src={
-                      project.gif ||
-                      "https://picsum.photos/seed/corporate/800/450"
-                    }
-                    alt={project.nome}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F0F] via-transparent to-transparent opacity-60"></div>
-                </div>
-                <div className="p-8">
-                  <p className="text-[#C084FC] text-xs font-semibold tracking-wider uppercase mb-2">
-                    {project.tags?.[0] || "Case Study"}
-                  </p>
-                  <h3 className="text-2xl font-bold mb-4">{project.nome}</h3>
-                  <p className="text-sm text-[#AAAAAA] mb-6">
-                    {project.descricao}
-                  </p>
-                  <div className="flex gap-3">
-                    {project.codeLink && (
-                      <a
-                        href={project.codeLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
-                      >
-                        <Github size={20} />
-                      </a>
-                    )}
-                    {project.demoLink && (
-                      <a
-                        href={project.demoLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
-                      >
-                        <ExternalLink size={20} />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section
-          id="contact"
-          className="py-20 px-6 border-t border-white/5"
-        >
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 tracking-tight">
-              Contato
-            </h2>
-            <p className="text-xl text-[#AAAAAA] mb-12 leading-relaxed font-light">
-              <EditableField
-                value={
-                  footer?.subtitle ||
-                  "Disponivel para projetos, consultorias e oportunidades corporativas."
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Nome do projeto</Label>
+              <Input
+                value={projectForm.nome}
+                onChange={(event) =>
+                  setProjectForm((prev) => ({
+                    ...prev,
+                    nome: event.target.value,
+                  }))
                 }
-                onSave={(value) => handleFooterUpdate("subtitle", value)}
-                multiline
-                type="textarea"
-                className="text-[#AAAAAA]"
-              />
-            </p>
-
-            <div className="group inline-flex items-center gap-4 text-2xl md:text-4xl font-bold text-white hover:text-[#C084FC] transition-colors mb-12">
-              <Mail className="text-[#C084FC]" />
-              <EditableField
-                value={footer?.email || "email@dominio.com"}
-                onSave={(value) => handleFooterUpdate("email", value)}
-                className="text-white"
+                placeholder="HTML Tutorial"
               />
             </div>
 
-            <div className="flex justify-center gap-6 flex-wrap">
-              {footer?.github && (
-                <a
-                  href={footer.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 bg-[#1A1A1A] rounded-2xl border border-white/5 hover:border-[#C084FC]/50 transition-all duration-300 hover:-translate-y-2 group shadow-lg"
-                >
-                  <Github size={28} className="group-hover:text-[#C084FC]" />
-                </a>
-              )}
-              {footer?.linkedin && (
-                <a
-                  href={footer.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 bg-[#1A1A1A] rounded-2xl border border-white/5 hover:border-[#C084FC]/50 transition-all duration-300 hover:-translate-y-2 group shadow-lg"
-                >
-                  <Linkedin size={28} className="group-hover:text-[#C084FC]" />
-                </a>
-              )}
-              {footer?.twitter && (
-                <a
-                  href={footer.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 bg-[#1A1A1A] rounded-2xl border border-white/5 hover:border-[#C084FC]/50 transition-all duration-300 hover:-translate-y-2 group shadow-lg"
-                >
-                  <Twitter size={28} className="group-hover:text-[#C084FC]" />
-                </a>
-              )}
+            <div className="space-y-2">
+              <Label>Subtítulo inferior</Label>
+              <Input
+                value={projectForm.subtitle}
+                onChange={(event) =>
+                  setProjectForm((prev) => ({
+                    ...prev,
+                    subtitle: event.target.value,
+                  }))
+                }
+                placeholder="HTML TUTORIAL"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Link do projeto</Label>
+              <Input
+                value={projectForm.link}
+                onChange={(event) =>
+                  setProjectForm((prev) => ({
+                    ...prev,
+                    link: event.target.value,
+                  }))
+                }
+                placeholder="https://exemplo.com"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Cor ou imagem do thumbnail</Label>
+              <Input
+                value={projectForm.thumbnail}
+                onChange={(event) =>
+                  setProjectForm((prev) => ({
+                    ...prev,
+                    thumbnail: event.target.value,
+                  }))
+                }
+                placeholder="#111111 ou https://..."
+              />
             </div>
           </div>
-        </section>
-      </main>
 
-      <footer className="w-full bg-[#0B0B0B] border-t border-white/10 py-10 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#AAAAAA]">
-          <div className="flex items-center gap-2">
-            <EditableField
-              value={footer?.copyrightName || "Bio4Dev"}
-              onSave={(value) => handleFooterUpdate("copyrightName", value)}
-              className="text-[#AAAAAA]"
-            />
-            <span>-</span>
-            <EditableField
-              value={footer?.madeWith || "Handcrafted with passion and code."}
-              onSave={(value) => handleFooterUpdate("madeWith", value)}
-              className="text-[#AAAAAA]"
-            />
+          <DialogFooter className="flex items-center justify-between">
+            <div>
+              {editingProject && (
+                <Button variant="destructive" onClick={handleProjectDelete}>
+                  Remover
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsProjectModalOpen(false);
+                  setEditingProject(null);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button onClick={handleProjectSave}>Salvar</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isWorkModalOpen} onOpenChange={setIsWorkModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {editingWork ? 'Editar experiência' : 'Nova experiência'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Empresa</Label>
+              <Input
+                value={workForm.company}
+                onChange={(event) =>
+                  setWorkForm((prev) => ({
+                    ...prev,
+                    company: event.target.value,
+                  }))
+                }
+                placeholder="Google"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Cargo / resumo</Label>
+              <Input
+                value={workForm.summary}
+                onChange={(event) =>
+                  setWorkForm((prev) => ({
+                    ...prev,
+                    summary: event.target.value,
+                  }))
+                }
+                placeholder="Lead Software Engineer"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Período</Label>
+              <Input
+                value={workForm.period}
+                onChange={(event) =>
+                  setWorkForm((prev) => ({
+                    ...prev,
+                    period: event.target.value,
+                  }))
+                }
+                placeholder="Nov 2019 – Present"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Descrição</Label>
+              <Textarea
+                value={workForm.description}
+                onChange={(event) =>
+                  setWorkForm((prev) => ({
+                    ...prev,
+                    description: event.target.value,
+                  }))
+                }
+                placeholder="Descreva o impacto desta experiência."
+                rows={4}
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-3 text-xs text-white/40">
-            <span>Template Corporate Dev</span>
+
+          <DialogFooter className="flex items-center justify-between">
+            <div>
+              {editingWork && (
+                <Button variant="destructive" onClick={handleWorkDelete}>
+                  Remover
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsWorkModalOpen(false);
+                  setEditingWork(null);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button onClick={handleWorkSave}>Salvar</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isSocialModalOpen} onOpenChange={setIsSocialModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingSocialSlot
+                ? `Editar ${PORTFOLIO3_SOCIAL_SLOTS.find((slot) => slot.id === editingSocialSlot)?.label}`
+                : 'Editar link social'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>URL</Label>
+              <Input
+                value={socialUrl}
+                onChange={(event) => setSocialUrl(event.target.value)}
+                placeholder="https://instagram.com/seu-perfil"
+              />
+            </div>
           </div>
-        </div>
-      </footer>
-    </div>
+
+          <DialogFooter className="flex items-center justify-between">
+            <div>
+              {editingSocialSlot &&
+                findPortfolio3Social(localProfile.social, editingSocialSlot) && (
+                  <Button variant="destructive" onClick={handleSocialDelete}>
+                    Remover
+                  </Button>
+                )}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsSocialModalOpen(false);
+                  setEditingSocialSlot(null);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button onClick={handleSocialSave}>Salvar</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

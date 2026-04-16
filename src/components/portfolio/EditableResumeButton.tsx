@@ -13,12 +13,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { template01Theme } from '@/theme/template01Theme';
-import { toast } from 'sonner';
 import { uploadApi } from '@/lib/api';
+import { showPortfolioEditorError } from './portfolioEditorToast';
 
 interface EditableResumeButtonProps {
   resumeUrl?: string;
-  onResumeUpdate: (url: string) => void;
+  onResumeUpdate: (url: string) => Promise<void>;
   className?: string;
 }
 
@@ -31,10 +31,13 @@ export function EditableResumeButton({
   const [tempUrl, setTempUrl] = useState(resumeUrl || '');
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleSave = () => {
-    onResumeUpdate(tempUrl);
-    setIsEditing(false);
-    toast.success('URL do currículo atualizado!');
+  const handleSave = async () => {
+    try {
+      await onResumeUpdate(tempUrl);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Erro ao atualizar currículo:', error);
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,12 +48,11 @@ export function EditableResumeButton({
       setIsUploading(true);
       const response = await uploadApi.uploadResume(file);
       setTempUrl(response.url);
-      onResumeUpdate(response.url);
+      await onResumeUpdate(response.url);
       setIsEditing(false);
-      toast.success('Currículo enviado com sucesso!');
     } catch (error: any) {
       console.error('Erro ao fazer upload:', error);
-      toast.error(
+      showPortfolioEditorError(
         error.response?.data?.message || 'Erro ao fazer upload do currículo',
       );
     } finally {

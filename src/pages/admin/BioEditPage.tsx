@@ -9,6 +9,8 @@ import { EditablePortfolio1 } from "@/components/portfolio/EditablePortfolio1";
 import { EditablePortfolio2 } from "@/components/portfolio/EditablePortfolio2";
 import { EditablePortfolio3 } from "@/components/portfolio/EditablePortfolio3";
 
+const BIO_EDIT_SAVE_TOAST_ID = "bio-edit-save-toast";
+
 export default function BioEditPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -37,17 +39,25 @@ export default function BioEditPage() {
     loadBio();
   }, [id]);
 
-  const handleProfileUpdate = async () => {
+  const handleProfileUpdate = async (showToast = false) => {
     // Recarregar perfil após atualização
     if (!id) return;
     try {
       setIsSaving(true);
       const updatedProfile = await profileApi.getComplete(id);
       setProfile(updatedProfile);
-      toast.success("Alterações salvas com sucesso!");
+      if (showToast) {
+        toast.success("Alterações salvas com sucesso!", {
+          id: BIO_EDIT_SAVE_TOAST_ID,
+        });
+      }
     } catch (error) {
       console.error("Erro ao recarregar perfil:", error);
-      toast.error("Erro ao salvar alterações");
+      if (showToast) {
+        toast.error("Erro ao salvar alterações", {
+          id: BIO_EDIT_SAVE_TOAST_ID,
+        });
+      }
     } finally {
       setIsSaving(false);
     }
@@ -182,7 +192,7 @@ export default function BioEditPage() {
           </div>
           <div className="flex items-center gap-3">
             <Button
-              onClick={handleProfileUpdate}
+              onClick={() => void handleProfileUpdate(true)}
               disabled={isSaving}
               className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
             >
@@ -234,7 +244,7 @@ export default function BioEditPage() {
           profile.templateType === "template_02"
             ? "bg-[#050505]"
             : profile.templateType === "template_03"
-              ? "bg-[#0F0F0F]"
+              ? "bg-[#0d0d0d]"
               : "bg-[#c5b9b7]"
         }
       >
@@ -243,19 +253,19 @@ export default function BioEditPage() {
             {profile.templateType === "template_01" && (
               <EditablePortfolio1
                 profile={profile}
-                onProfileUpdate={handleProfileUpdate}
+                onProfileUpdate={() => void handleProfileUpdate(false)}
               />
             )}
             {profile.templateType === "template_02" && (
               <EditablePortfolio2
                 profile={profile}
-                onProfileUpdate={handleProfileUpdate}
+                onProfileUpdate={() => void handleProfileUpdate(false)}
               />
             )}
             {profile.templateType === "template_03" && (
               <EditablePortfolio3
                 profile={profile}
-                onProfileUpdate={handleProfileUpdate}
+                onProfileUpdate={() => void handleProfileUpdate(false)}
               />
             )}
           </>

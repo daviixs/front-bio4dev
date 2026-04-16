@@ -11,6 +11,8 @@ interface EditableFieldProps {
   type?: "text" | "textarea";
   placeholder?: string;
   className?: string;
+  valueClassName?: string;
+  inputClassName?: string;
   label?: string;
   multiline?: boolean;
 }
@@ -21,6 +23,8 @@ export function EditableField({
   type = "text",
   placeholder,
   className,
+  valueClassName,
+  inputClassName,
   label,
   multiline = false,
 }: EditableFieldProps) {
@@ -94,7 +98,7 @@ export function EditableField({
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className="flex-1 min-h-[100px]"
+              className={cn("flex-1 min-h-[100px]", inputClassName)}
               rows={multiline ? 4 : 2}
             />
           ) : (
@@ -104,7 +108,7 @@ export function EditableField({
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className="flex-1"
+              className={cn("flex-1", inputClassName)}
             />
           )}
           <div className="flex gap-1">
@@ -148,7 +152,8 @@ export function EditableField({
       <div className="flex items-center gap-2">
         <span className={cn(
           "flex-1",
-          !value && "text-gray-400 italic"
+          !value && "text-gray-400 italic",
+          valueClassName
         )}>
           {value || placeholder || "Clique para editar"}
         </span>
@@ -157,4 +162,3 @@ export function EditableField({
     </div>
   );
 }
-

@@ -21,7 +21,10 @@ import type {
   Technology,
   WorkExperience,
 } from '@/types';
-import { toast } from 'sonner';
+import {
+  showPortfolioEditorError,
+  showPortfolioEditorSuccess,
+} from './portfolioEditorToast';
 import {
   Dialog,
   DialogContent,
@@ -46,7 +49,7 @@ interface TechStackProps {
   onRemove?: (tech: Technology) => void;
 }
 
-interface TechOption {
+export interface TechOption {
   name: string;
   icon: string;
   color?: string;
@@ -78,7 +81,7 @@ const normalizeSlug = (value: string) =>
     .replace(/^-+|-+$/g, '')
     .slice(0, 60);
 
-const TECH_OPTIONS: TechOption[] = [
+export const TECH_OPTIONS: TechOption[] = [
   // Frontend
   { name: 'HTML5', icon: 'logos:html-5', color: 'text-orange-600' },
   { name: 'CSS3', icon: 'logos:css-3', color: 'text-blue-600' },
@@ -829,7 +832,7 @@ export function EditablePortfolio1({
       console.log('Criando profile para edição');
       try {
         if (!profile?.userId) {
-          toast.error('Usuário não encontrado para criar perfil');
+          showPortfolioEditorError('Usuário não encontrado para criar perfil');
           return;
         }
 
@@ -855,7 +858,7 @@ export function EditablePortfolio1({
         setCurrentProfile(completeProfile);
       } catch (error) {
         console.error('Erro ao criar profile:', error);
-        toast.error('Erro ao inicializar perfil');
+        showPortfolioEditorError('Erro ao inicializar perfil');
       }
     };
 
@@ -869,7 +872,7 @@ export function EditablePortfolio1({
     value: string,
   ) => {
     if (!localProfile.id) {
-      toast.error('Perfil não encontrado');
+      showPortfolioEditorError('Perfil não encontrado');
       return;
     }
 
@@ -913,18 +916,17 @@ export function EditablePortfolio1({
         };
       });
 
-      toast.success('Campo atualizado com sucesso!');
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao atualizar legenda:', error);
-      toast.error('Erro ao atualizar campo');
+      showPortfolioEditorError('Erro ao atualizar campo');
       throw error;
     }
   };
 
   const handleAvatarUpdate = async (url: string) => {
     if (!localProfile.id) {
-      toast.error('Perfil não encontrado');
+      showPortfolioEditorError('Perfil não encontrado');
       return;
     }
 
@@ -936,18 +938,17 @@ export function EditablePortfolio1({
         avatarUrl: url,
       }));
 
-      toast.success('Avatar atualizado com sucesso!');
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao atualizar avatar:', error);
-      toast.error('Erro ao atualizar avatar');
+      showPortfolioEditorError('Erro ao atualizar avatar');
       throw error;
     }
   };
 
   const handleResumeUpdate = async (url: string) => {
     if (!localProfile.footer?.id) {
-      toast.error('Footer não encontrado');
+      showPortfolioEditorError('Footer não encontrado');
       return;
     }
 
@@ -964,11 +965,10 @@ export function EditablePortfolio1({
           : undefined,
       }));
 
-      toast.success('Currículo atualizado com sucesso!');
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao atualizar currículo:', error);
-      toast.error('Erro ao atualizar currículo');
+      showPortfolioEditorError('Erro ao atualizar currículo');
       throw error;
     }
   };
@@ -1016,7 +1016,7 @@ export function EditablePortfolio1({
       } else {
         await techStackApi.update(currentProfile.id, payload);
       }
-      toast.success('Tech added');
+      showPortfolioEditorSuccess('Tech added');
       onProfileUpdate?.();
     } catch (e) {
       // Rollback se falhar
@@ -1032,7 +1032,7 @@ export function EditablePortfolio1({
         ...prev,
         techStack: rolledBackTechStack as any,
       }));
-      toast.error('Error adding tech');
+      showPortfolioEditorError('Error adding tech');
     }
   };
 
@@ -1070,11 +1070,11 @@ export function EditablePortfolio1({
           })),
         };
         await techStackApi.update(currentProfile.id, payload);
-        toast.success('Tech removed');
+        showPortfolioEditorSuccess('Tech removed');
         onProfileUpdate?.();
       }
     } catch (e) {
-      toast.error('Error removing tech');
+      showPortfolioEditorError('Error removing tech');
     }
   };
 
@@ -1155,12 +1155,12 @@ export function EditablePortfolio1({
         }));
       }
 
-      toast.success('Experiencia atualizada!');
+      showPortfolioEditorSuccess('Experiencia atualizada!');
       setIsWorkModalOpen(false);
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao atualizar experiencia:', error);
-      toast.error('Erro ao atualizar experiencia');
+      showPortfolioEditorError('Erro ao atualizar experiencia');
     }
   };
 
@@ -1174,12 +1174,12 @@ export function EditablePortfolio1({
           (item) => item.id !== editingWork.id,
         ),
       }));
-      toast.success('Experiencia removida!');
+      showPortfolioEditorSuccess('Experiencia removida!');
       setIsWorkModalOpen(false);
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao remover experiencia:', error);
-      toast.error('Erro ao remover experiencia');
+      showPortfolioEditorError('Erro ao remover experiencia');
     }
   };
 
@@ -1212,7 +1212,7 @@ export function EditablePortfolio1({
     console.log('handleProjectSave - Iniciando salvamento');
     if (!localProfile.id) {
       console.error('Profile ID não encontrado:', localProfile);
-      toast.error('Perfil não encontrado');
+      showPortfolioEditorError('Perfil não encontrado');
       return;
     }
 
@@ -1258,7 +1258,7 @@ export function EditablePortfolio1({
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       if (!uuidRegex.test(localProfile.id)) {
         console.error('Profile ID não é um UUID válido:', localProfile.id);
-        toast.error('ID do perfil inválido');
+        showPortfolioEditorError('ID do perfil inválido');
         return;
       }
 
@@ -1303,19 +1303,19 @@ export function EditablePortfolio1({
           }));
         } else {
           console.error('Resposta inválida da API:', response);
-          toast.error('Resposta inválida do servidor');
+          showPortfolioEditorError('Resposta inválida do servidor');
           return;
         }
       }
 
       console.log('handleProjectSave - Salvamento concluído');
-      toast.success('Projeto atualizado!');
+      showPortfolioEditorSuccess('Projeto atualizado!');
       setIsProjectModalOpen(false);
       onProfileUpdate?.();
     } catch (error: any) {
       console.error('Erro ao atualizar projeto:', error);
       console.error('Detalhes do erro:', error.response?.data);
-      toast.error(
+      showPortfolioEditorError(
         'Erro ao atualizar projeto: ' +
           (error.response?.data?.message || error.message),
       );
@@ -1332,12 +1332,12 @@ export function EditablePortfolio1({
           (item) => item.id !== editingProject.id,
         ),
       }));
-      toast.success('Projeto removido!');
+      showPortfolioEditorSuccess('Projeto removido!');
       setIsProjectModalOpen(false);
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao remover projeto:', error);
-      toast.error('Erro ao remover projeto');
+      showPortfolioEditorError('Erro ao remover projeto');
     }
   };
 
@@ -1401,12 +1401,12 @@ export function EditablePortfolio1({
         },
       }));
 
-      toast.success('Footer atualizado!');
+      showPortfolioEditorSuccess('Footer atualizado!');
       setIsFooterModalOpen(false);
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao atualizar footer:', error);
-      toast.error('Erro ao atualizar footer');
+      showPortfolioEditorError('Erro ao atualizar footer');
     }
   };
 
@@ -1415,12 +1415,12 @@ export function EditablePortfolio1({
     try {
       await footerApi.delete(localProfile.footer.id);
       setLocalProfile((prev) => ({ ...prev, footer: undefined }));
-      toast.success('Footer removido!');
+      showPortfolioEditorSuccess('Footer removido!');
       setIsFooterModalOpen(false);
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao remover footer:', error);
-      toast.error('Erro ao remover footer');
+      showPortfolioEditorError('Erro ao remover footer');
     }
   };
 
