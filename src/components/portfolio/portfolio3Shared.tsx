@@ -1,18 +1,16 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
+import type { IconType } from 'react-icons';
 import {
   ArrowUpRight,
-  Instagram,
   Mail,
   Menu,
   Pencil,
-  Twitter,
   X,
-  Youtube,
 } from 'lucide-react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/components/ui/utils';
+import { getSocialIconComponent } from '@/lib/socialIcons';
 import { TechIcon } from './TechIcon';
 import type {
   Legenda,
@@ -29,14 +27,14 @@ export interface Portfolio3SocialSlot {
   label: string;
   aliases: PlataformaSocial[];
   preferredPlatform: PlataformaSocial;
-  icon: LucideIcon;
+  icon: IconType;
 }
 
 export interface Portfolio3FooterSocialLink {
   id: string;
   label: string;
   url?: string;
-  icon: LucideIcon;
+  icon: IconType;
   onClick?: () => void;
 }
 
@@ -46,21 +44,21 @@ export const PORTFOLIO3_SOCIAL_SLOTS: Portfolio3SocialSlot[] = [
     label: 'Instagram',
     aliases: ['instagram'],
     preferredPlatform: 'instagram',
-    icon: Instagram,
+    icon: getSocialIconComponent('instagram'),
   },
   {
     id: 'twitter',
     label: 'X (Twitter)',
     aliases: ['twitter', 'x'],
     preferredPlatform: 'twitter',
-    icon: Twitter,
+    icon: getSocialIconComponent('twitter'),
   },
   {
     id: 'youtube',
     label: 'YouTube',
     aliases: ['youtube'],
     preferredPlatform: 'youtube',
-    icon: Youtube,
+    icon: getSocialIconComponent('youtube'),
   },
 ];
 

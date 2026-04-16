@@ -3,22 +3,16 @@ import {
   MapPin,
   User,
   Mail,
-  Github,
-  Linkedin,
-  Instagram,
-  Youtube,
-  Twitter,
-  Facebook,
-  Figma,
-  Code2,
   ArrowUpRight,
   FolderGit2,
   ExternalLink,
   Cpu,
   FileDown,
 } from "lucide-react";
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import type { IconType } from "react-icons";
 import { TechIcon } from "@/components/portfolio/TechIcon";
+import { getSocialIconComponent } from "@/lib/socialIcons";
 import type {
   ProfileComplete,
   Social,
@@ -35,7 +29,7 @@ export interface SocialLink {
   id: string;
   name: string;
   handle: string;
-  icon: LucideIcon;
+  icon: IconType;
   url: string;
   colorClass: string;
   textColorClass?: string;
@@ -323,21 +317,6 @@ const TechStack: React.FC<TechStackProps> = ({ data }) => {
 const convertToSocialLink = (social: Social): SocialLink => {
   const platform = social.plataforma.toLowerCase();
 
-  const getIcon = (plat: string): LucideIcon => {
-    const icons: Record<string, LucideIcon> = {
-      github: Github,
-      linkedin: Linkedin,
-      instagram: Instagram,
-      youtube: Youtube,
-      twitter: Twitter,
-      facebook: Facebook,
-      figma: Figma,
-      email: Mail,
-      dev: Code2,
-    };
-    return icons[plat] || Mail;
-  };
-
   const getColorClass = (plat: string): string => {
     // Styles from Portifolios/portifolio-2/constants.tsx + fallbacks
     const colors: Record<string, string> = {
@@ -359,7 +338,7 @@ const convertToSocialLink = (social: Social): SocialLink => {
     handle: social.url
       ? social.url.replace("https://", "").replace("http://", "")
       : social.plataforma,
-    icon: getIcon(platform),
+    icon: getSocialIconComponent(platform),
     url: social.url || `https://${platform}.com`,
     colorClass: getColorClass(platform),
     textColorClass: platform === "dev" ? "text-black" : undefined,
@@ -378,7 +357,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: "github",
     name: "GitHub",
     handle: "@m-aqsam",
-    icon: Github,
+    icon: getSocialIconComponent("github"),
     url: "https://github.com",
     colorClass: "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
     colSpan: 2,
@@ -387,7 +366,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: "email",
     name: "Email",
     handle: "maqsam1155@gmail.com",
-    icon: Mail,
+    icon: getSocialIconComponent("email"),
     url: "mailto:maqsam1155@gmail.com",
     colorClass: "bg-[#1e293b] hover:bg-[#263345]",
     colSpan: 1,
@@ -396,7 +375,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: "facebook",
     name: "Facebook",
     handle: "@m_aqsam",
-    icon: Facebook,
+    icon: getSocialIconComponent("facebook"),
     url: "https://facebook.com",
     colorClass: "bg-[#3b82f6] hover:bg-[#2563eb]",
     colSpan: 1,
@@ -405,7 +384,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: "figma",
     name: "Figma",
     handle: "@maqsam",
-    icon: Figma,
+    icon: getSocialIconComponent("figma"),
     url: "https://figma.com",
     colorClass: "bg-[#1e1e1e] hover:bg-[#2d2d2d]",
     colSpan: 1,
@@ -414,7 +393,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: "dev",
     name: "DEV",
     handle: "@maqsam",
-    icon: Code2,
+    icon: getSocialIconComponent("dev"),
     url: "https://dev.to",
     colorClass: "bg-white hover:bg-gray-100",
     textColorClass: "text-black",

@@ -2,32 +2,17 @@ import React, { useState } from 'react';
 import {
   MapPin,
   User,
-  Mail,
-  Github,
-  Linkedin,
-  Instagram,
-  Youtube,
-  Twitter,
-  Facebook,
-  Figma,
-  Code2,
   ArrowUpRight,
   FolderGit2,
   ExternalLink,
   Cpu,
-  MessageCircle,
-  Phone,
-  Send,
   Trash2,
   Plus,
   Pencil,
-  Dribbble,
-  Gitlab,
-  Codepen,
-  Pin,
   X,
 } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
+import type { IconType } from 'react-icons';
 import { EditableResumeButton } from './EditableResumeButton';
 import { toast } from 'sonner';
 import {
@@ -62,6 +47,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { TechIcon } from './TechIcon';
+import { getSocialIconComponent } from '@/lib/socialIcons';
 
 // ==========================================
 // TYPES
@@ -71,7 +57,7 @@ export interface SocialLink {
   id: string;
   name: string;
   handle: string;
-  icon: LucideIcon;
+  icon: IconType;
   url: string;
   platformCode?: string;
   colorClass: string;
@@ -1165,21 +1151,6 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
 const convertToSocialLink = (social: Social): SocialLink => {
   const platform = social.plataforma.toLowerCase();
 
-  const getIcon = (plat: string): LucideIcon => {
-    const icons: Record<string, LucideIcon> = {
-      github: Github,
-      linkedin: Linkedin,
-      instagram: Instagram,
-      youtube: Youtube,
-      twitter: Twitter,
-      facebook: Facebook,
-      figma: Figma,
-      email: Mail,
-      dev: Code2,
-    };
-    return icons[plat] || Mail;
-  };
-
   const getColorClass = (plat: string): string => {
     const colors: Record<string, string> = {
       github: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800',
@@ -1202,7 +1173,7 @@ const convertToSocialLink = (social: Social): SocialLink => {
       .replace('http://', '')
       .replace('mailto:', '')
       .replace('tel:', ''),
-    icon: getIcon(platform),
+    icon: getSocialIconComponent(platform),
     url: social.url,
     platformCode: platform,
     colorClass: getColorClass(platform),
@@ -1220,7 +1191,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: 'github',
     name: 'GitHub',
     handle: '@m-aqsam',
-    icon: Github,
+    icon: getSocialIconComponent('github'),
     url: 'https://github.com',
     colorClass: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800',
     colSpan: 2,
@@ -1229,7 +1200,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: 'email',
     name: 'Email',
     handle: 'maqsam1155@gmail.com',
-    icon: Mail,
+    icon: getSocialIconComponent('email'),
     url: 'mailto:maqsam1155@gmail.com',
     colorClass: 'bg-[#1e293b] hover:bg-[#263345]',
     colSpan: 1,
@@ -1238,7 +1209,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: 'facebook',
     name: 'Facebook',
     handle: '@m_aqsam',
-    icon: Facebook,
+    icon: getSocialIconComponent('facebook'),
     url: 'https://facebook.com',
     colorClass: 'bg-[#3b82f6] hover:bg-[#2563eb]',
     colSpan: 1,
@@ -1247,7 +1218,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: 'figma',
     name: 'Figma',
     handle: '@maqsam',
-    icon: Figma,
+    icon: getSocialIconComponent('figma'),
     url: 'https://figma.com',
     colorClass: 'bg-[#1e1e1e] hover:bg-[#2d2d2d]',
     colSpan: 1,
@@ -1256,7 +1227,7 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     id: 'dev',
     name: 'DEV',
     handle: '@maqsam',
-    icon: Code2,
+    icon: getSocialIconComponent('dev'),
     url: 'https://dev.to',
     colorClass: 'bg-white hover:bg-gray-100',
     textColorClass: 'text-black',
@@ -1334,63 +1305,63 @@ const SOCIAL_OPTIONS = [
   {
     id: 'dribbble',
     name: 'Dribbble',
-    icon: Dribbble,
+    icon: getSocialIconComponent('dribbble'),
     colorClass: 'bg-[#ea4c89] hover:bg-[#ff5da0]',
     url: 'https://dribbble.com/',
   },
   {
     id: 'behance',
     name: 'Behance',
-    icon: Linkedin,
+    icon: getSocialIconComponent('behance'),
     colorClass: 'bg-[#1769ff] hover:bg-[#4080ff]',
     url: 'https://behance.net/',
   },
   {
     id: 'pinterest',
     name: 'Pinterest',
-    icon: Pin,
+    icon: getSocialIconComponent('pinterest'),
     colorClass: 'bg-[#e60023] hover:bg-[#ff1a3c]',
     url: 'https://pinterest.com/',
   },
   {
     id: 'github',
     name: 'GitHub',
-    icon: Github,
+    icon: getSocialIconComponent('github'),
     colorClass: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800',
     url: 'https://github.com/',
   },
   {
     id: 'gitlab',
     name: 'GitLab',
-    icon: Gitlab,
+    icon: getSocialIconComponent('gitlab'),
     colorClass: 'bg-[#fc6d26] hover:bg-[#fd8c52]',
     url: 'https://gitlab.com/',
   },
   {
     id: 'bitbucket',
     name: 'Bitbucket',
-    icon: FolderGit2,
+    icon: getSocialIconComponent('bitbucket'),
     colorClass: 'bg-[#0052cc] hover:bg-[#2684ff]',
     url: 'https://bitbucket.org/',
   },
   {
     id: 'stackoverflow',
     name: 'StackOverflow',
-    icon: Code2,
+    icon: getSocialIconComponent('stackoverflow'),
     colorClass: 'bg-[#f48024] hover:bg-[#ff9a4d]',
     url: 'https://stackoverflow.com/',
   },
   {
     id: 'codepen',
     name: 'CodePen',
-    icon: Codepen,
+    icon: getSocialIconComponent('codepen'),
     colorClass: 'bg-black hover:bg-gray-800 border border-gray-800',
     url: 'https://codepen.io/',
   },
   {
     id: 'dev',
     name: 'DEV.to',
-    icon: Code2,
+    icon: getSocialIconComponent('dev'),
     colorClass: 'bg-white hover:bg-gray-100',
     textColorClass: 'text-black',
     url: 'https://dev.to/',
@@ -1398,14 +1369,14 @@ const SOCIAL_OPTIONS = [
   {
     id: 'linkedin',
     name: 'LinkedIn',
-    icon: Linkedin,
+    icon: getSocialIconComponent('linkedin'),
     colorClass: 'bg-[#0077b5] hover:bg-[#006399]',
     url: 'https://linkedin.com/in/',
   },
   {
     id: 'medium',
     name: 'Medium',
-    icon: Mail,
+    icon: getSocialIconComponent('medium'),
     colorClass: 'bg-white hover:bg-gray-100',
     textColorClass: 'text-black',
     url: 'https://medium.com/',
@@ -1413,14 +1384,14 @@ const SOCIAL_OPTIONS = [
   {
     id: 'youtube',
     name: 'YouTube',
-    icon: Youtube,
+    icon: getSocialIconComponent('youtube'),
     colorClass: 'bg-[#FF0000] hover:bg-[#ff3333]',
     url: 'https://youtube.com/',
   },
   {
     id: 'instagram',
     name: 'Instagram',
-    icon: Instagram,
+    icon: getSocialIconComponent('instagram'),
     colorClass:
       'bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600',
     url: 'https://instagram.com/',
@@ -1428,42 +1399,42 @@ const SOCIAL_OPTIONS = [
   {
     id: 'facebook',
     name: 'Facebook',
-    icon: Facebook,
+    icon: getSocialIconComponent('facebook'),
     colorClass: 'bg-[#1877F2] hover:bg-[#3b87f4]',
     url: 'https://facebook.com/',
   },
   {
     id: 'twitter',
     name: 'Twitter',
-    icon: Twitter,
+    icon: getSocialIconComponent('twitter'),
     colorClass: 'bg-[#1DA1F2] hover:bg-[#4cb5f5]',
     url: 'https://twitter.com/',
   },
   {
     id: 'discord',
     name: 'Discord',
-    icon: MessageCircle,
+    icon: getSocialIconComponent('discord'),
     colorClass: 'bg-[#5865F2] hover:bg-[#7983f5]',
     url: 'https://discord.com/',
   },
   {
     id: 'whatsapp',
     name: 'WhatsApp',
-    icon: Phone,
+    icon: getSocialIconComponent('whatsapp'),
     colorClass: 'bg-[#25D366] hover:bg-[#4ce285]',
     url: 'https://wa.me/',
   },
   {
     id: 'telegram',
     name: 'Telegram',
-    icon: Send,
+    icon: getSocialIconComponent('telegram'),
     colorClass: 'bg-[#0088cc] hover:bg-[#2cabeb]',
     url: 'https://t.me/',
   },
   {
     id: 'email',
     name: 'Email',
-    icon: Mail,
+    icon: getSocialIconComponent('email'),
     colorClass: 'bg-[#1e293b] hover:bg-[#263345]',
     url: 'mailto:',
   },

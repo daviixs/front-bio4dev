@@ -1,31 +1,18 @@
 import React from "react";
 import { ProfileData } from "@/temas-lintree/types";
 import {
-  Instagram,
-  Twitter,
-  Youtube,
-  Linkedin,
-  Facebook,
-  AtSign,
-  Camera,
-  Mail,
   Music,
-  Video,
-  MessageCircle,
   Calendar,
   Disc,
   Square,
   Layout,
   PenTool,
-  Globe,
   ShoppingBag,
   MapPin,
-  Pin,
   Phone,
   Star,
   Send,
   Terminal,
-  Heart,
   Sparkles,
   Recycle,
   Utensils,
@@ -35,12 +22,12 @@ import {
   Zap,
   Box,
   Radio,
-  Twitch,
   Gamepad2,
   Pencil,
   Edit3,
   Trash2,
 } from "lucide-react";
+import { SocialIcon } from "@/lib/socialIcons";
 
 interface DynamicThemeRendererProps {
   profileData: ProfileData;
@@ -90,44 +77,7 @@ export function DynamicThemeRenderer({
 
   // Get icon component for social platform
   const getSocialIcon = (platform: string, size: number = 20) => {
-    switch (platform) {
-      case "instagram":
-        return <Instagram size={size} />;
-      case "twitter":
-        return <Twitter size={size} />;
-      case "youtube":
-        return <Youtube size={size} />;
-      case "linkedin":
-        return <Linkedin size={size} />;
-      case "facebook":
-        return <Facebook size={size} />;
-      case "x":
-        return <Twitter size={size} />;
-      case "threads":
-        return <AtSign size={size} />;
-      case "website":
-        return <Globe size={size} />;
-      case "spotify":
-        return <Music size={size} />;
-      case "soundcloud":
-        return <Radio size={size} />;
-      case "tiktok":
-        return <Video size={size} />;
-      case "whatsapp":
-        return <MessageCircle size={size} />;
-      case "snapchat":
-        return <Camera size={size} />;
-      case "patreon":
-        return <Heart size={size} />;
-      case "twitch":
-        return <Twitch size={size} />;
-      case "applemusic":
-        return <Disc size={size} />;
-      case "pinterest":
-        return <Pin size={size} />;
-      default:
-        return <Instagram size={size} />;
-    }
+    return <SocialIcon platform={platform} size={size} />;
   };
 
   // Render Activist Theme

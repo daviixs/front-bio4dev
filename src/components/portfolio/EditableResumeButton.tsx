@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FileDown, Pencil, Upload, Loader2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { FileDown, Pencil } from 'lucide-react';
 import { cn } from '@/components/ui/utils';
 import {
   Dialog,
@@ -13,8 +13,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { template01Theme } from '@/theme/template01Theme';
-import { uploadApi } from '@/lib/api';
-import { showPortfolioEditorError } from './portfolioEditorToast';
 
 interface EditableResumeButtonProps {
   resumeUrl?: string;
@@ -29,34 +27,17 @@ export function EditableResumeButton({
 }: EditableResumeButtonProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [tempUrl, setTempUrl] = useState(resumeUrl || '');
-  const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    setTempUrl(resumeUrl || '');
+  }, [resumeUrl]);
 
   const handleSave = async () => {
     try {
-      await onResumeUpdate(tempUrl);
+      await onResumeUpdate(tempUrl.trim());
       setIsEditing(false);
     } catch (error) {
       console.error('Erro ao atualizar currículo:', error);
-    }
-  };
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setIsUploading(true);
-      const response = await uploadApi.uploadResume(file);
-      setTempUrl(response.url);
-      await onResumeUpdate(response.url);
-      setIsEditing(false);
-    } catch (error: any) {
-      console.error('Erro ao fazer upload:', error);
-      showPortfolioEditorError(
-        error.response?.data?.message || 'Erro ao fazer upload do currículo',
-      );
-    } finally {
-      setIsUploading(false);
     }
   };
 
@@ -91,7 +72,7 @@ export function EditableResumeButton({
               'shadow-md hover:shadow-lg',
             )}
           >
-            <Upload size={16} />
+            <FileDown size={16} />
             <span>Adicionar CV</span>
           </button>
         )}
@@ -120,48 +101,11 @@ export function EditableResumeButton({
           <DialogHeader>
             <DialogTitle>Editar Currículo</DialogTitle>
             <DialogDescription>
-              Faça upload de um novo arquivo ou cole a URL do seu currículo
+              Cole apenas o link do seu currículo hospedado online
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            {/* Upload de Arquivo */}
-            <div className="space-y-2">
-              <Label htmlFor="file-upload" className="text-sm font-bold">
-                Upload de Arquivo
-              </Label>
-              <Input
-                id="file-upload"
-                type="file"
-                onChange={handleFileUpload}
-                accept=".pdf,.doc,.docx"
-                disabled={isUploading}
-                className="cursor-pointer"
-              />
-              {isUploading && (
-                <div className="flex items-center gap-2 text-sm text-blue-600 animate-pulse">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Fazendo upload...
-                </div>
-              )}
-              <p className="text-xs text-muted-foreground">
-                Formatos aceitos: PDF, DOC, DOCX (máx. 5MB)
-              </p>
-            </div>
-
-            {/* Divisor */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Ou
-                </span>
-              </div>
-            </div>
-
-            {/* URL Manual */}
             <div className="space-y-2">
               <Label htmlFor="resume-url" className="text-sm font-bold">
                 URL do Currículo
@@ -189,7 +133,7 @@ export function EditableResumeButton({
             >
               Cancelar
             </Button>
-            <Button onClick={handleSave} disabled={!tempUrl || isUploading}>
+            <Button onClick={handleSave} disabled={!tempUrl.trim()}>
               Salvar
             </Button>
           </DialogFooter>

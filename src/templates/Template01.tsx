@@ -2,17 +2,15 @@ import React from 'react';
 import {
   ExternalLink,
   Github,
-  Linkedin,
   Mail,
-  Twitter,
   Coffee,
-  Instagram,
-  Youtube,
   FileDown,
   Briefcase,
   Calendar,
 } from 'lucide-react';
+import type { IconType } from 'react-icons';
 import { TechIcon } from '@/components/portfolio/TechIcon';
+import { getSocialIconComponent } from '@/lib/socialIcons';
 import { template01Theme } from '@/theme/template01Theme';
 import type {
   ProfileComplete,
@@ -416,14 +414,6 @@ interface FooterProps {
   socials?: Social[];
 }
 
-const socialIconMap: Record<string, React.ReactNode> = {
-  github: <Github size={24} />,
-  linkedin: <Linkedin size={24} />,
-  twitter: <Twitter size={24} />,
-  instagram: <Instagram size={24} />,
-  youtube: <Youtube size={24} />,
-};
-
 function Footer({ footer, socials }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
@@ -431,36 +421,34 @@ function Footer({ footer, socials }: FooterProps) {
     footer?.github && {
       href: footer.github,
       label: 'GitHub',
-      icon: <Github size={24} />,
+      icon: getSocialIconComponent('github'),
     },
     footer?.linkedin && {
       href: footer.linkedin,
       label: 'LinkedIn',
-      icon: <Linkedin size={24} />,
+      icon: getSocialIconComponent('linkedin'),
     },
     footer?.twitter && {
       href: footer.twitter,
       label: 'Twitter',
-      icon: <Twitter size={24} />,
+      icon: getSocialIconComponent('twitter'),
     },
     footer?.email && {
       href: `mailto:${footer.email}`,
       label: 'Email',
-      icon: <Mail size={24} />,
+      icon: getSocialIconComponent('email'),
     },
   ].filter(Boolean) as Array<{
     href: string;
     label: string;
-    icon: React.ReactNode;
+    icon: IconType;
   }>;
 
   const legacySocials =
     socials?.map((social) => ({
       href: social.url,
       label: social.plataforma,
-      icon: socialIconMap[social.plataforma.toLowerCase()] || (
-        <Mail size={24} />
-      ),
+      icon: getSocialIconComponent(social.plataforma),
       id: social.id,
     })) || [];
 
@@ -506,18 +494,22 @@ function Footer({ footer, socials }: FooterProps) {
         </div>
 
         <div className="flex justify-center gap-6 mb-8">
-          {socialLinks.map((social) => (
-            <a
-              key={social.label}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
-              aria-label={social.label}
-            >
-              {social.icon}
-            </a>
-          ))}
+          {socialLinks.map((social) => {
+            const Icon = social.icon;
+
+            return (
+              <a
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
+                aria-label={social.label}
+              >
+                <Icon size={24} />
+              </a>
+            );
+          })}
           {!socialLinks.length && (
             <>
               <a
@@ -527,7 +519,9 @@ function Footer({ footer, socials }: FooterProps) {
                 className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
                 aria-label="GitHub"
               >
-                <Github size={24} />
+                {React.createElement(getSocialIconComponent('github'), {
+                  size: 24,
+                })}
               </a>
               <a
                 href="https://linkedin.com"
@@ -536,7 +530,9 @@ function Footer({ footer, socials }: FooterProps) {
                 className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
                 aria-label="LinkedIn"
               >
-                <Linkedin size={24} />
+                {React.createElement(getSocialIconComponent('linkedin'), {
+                  size: 24,
+                })}
               </a>
             </>
           )}
