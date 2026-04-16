@@ -73,6 +73,7 @@ export interface SocialLink {
   handle: string;
   icon: LucideIcon;
   url: string;
+  platformCode?: string;
   colorClass: string;
   textColorClass?: string;
   colSpan?: 1 | 2;
@@ -125,6 +126,63 @@ const normalizeHttpUrl = (value: string, fieldLabel: string) => {
   } catch {
     return { error: `${fieldLabel} precisa ser uma URL válida` };
   }
+};
+
+const isValidUuid = (id?: string) =>
+  !!id &&
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+const normalizeSocialUrl = (value: string, platformCode: string) => {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return { error: 'Informe um link ou usuário' };
+  }
+
+  if (platformCode === 'email') {
+    if (/^mailto:/i.test(trimmed)) {
+      return { value: trimmed };
+    }
+
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      return { value: `mailto:${trimmed}` };
+    }
+  }
+
+  if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) {
+    if (/^https?:\/\//i.test(trimmed)) {
+      return normalizeHttpUrl(trimmed, 'URL');
+    }
+
+    return { value: trimmed };
+  }
+
+  if (platformCode === 'whatsapp') {
+    const digits = trimmed.replace(/[^\d]/g, '');
+    if (digits) {
+      return { value: `https://wa.me/${digits}` };
+    }
+  }
+
+  if (platformCode === 'telegram') {
+    const handle = trimmed.replace(/^@/, '').replace(/^\/+/, '');
+    if (handle) {
+      return { value: `https://t.me/${handle}` };
+    }
+  }
+
+  if (trimmed.includes('.') || trimmed.includes('/')) {
+    return normalizeHttpUrl(trimmed, 'URL');
+  }
+
+  const option = SOCIAL_OPTIONS.find((item) => item.id === platformCode);
+  const sanitizedHandle = trimmed.replace(/^@/, '').replace(/^\/+/, '');
+
+  if (option && sanitizedHandle) {
+    return { value: `${option.url}${sanitizedHandle}` };
+  }
+
+  return { error: 'Informe um link ou usuário válido' };
 };
 
 // ==========================================
@@ -1139,9 +1197,14 @@ const convertToSocialLink = (social: Social): SocialLink => {
   return {
     id: social.id?.toString() || platform,
     name: social.plataforma,
-    handle: social.url.replace('https://', '').replace('http://', ''),
+    handle: social.url
+      .replace('https://', '')
+      .replace('http://', '')
+      .replace('mailto:', '')
+      .replace('tel:', ''),
     icon: getIcon(platform),
     url: social.url,
+    platformCode: platform,
     colorClass: getColorClass(platform),
     textColorClass: platform === 'dev' ? 'text-black' : undefined,
     colSpan: platform === 'github' ? 2 : 1,
@@ -1536,7 +1599,10 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
           nome: field === 'nome' ? value : legenda?.nome || '',
           titulo: field === 'titulo' ? value : legenda?.titulo || '',
           subtitulo: field === 'subtitulo' ? value : legenda?.subtitulo || '',
-          descricao: legenda?.descricao || 'Professional Description',
+          descricao:
+            field === 'descricao'
+              ? value
+              : legenda?.descricao || 'Professional Description',
           legendaFoto:
             field === 'legendaFoto' ? value : legenda?.legendaFoto || '', // Add this
           // Ensure other required fields if any
@@ -1614,31 +1680,20 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
 
     try {
       const newSocials = [...(currentProfile.social || [])];
+      const platformCode = (
+        editingSocial.platformCode ||
+        (isValidUuid(editingSocial.id)
+          ? editingSocial.name.toLowerCase()
+          : editingSocial.id.toLowerCase())
+      ).toLowerCase();
+      const normalizedSocial = normalizeSocialUrl(editUrl, platformCode);
 
-      // Normalize URL
-      let normalizedUrl = editUrl.trim();
-      if (
-        normalizedUrl &&
-        !normalizedUrl.match(/^(https?:\/\/|mailto:|tel:)/i)
-      ) {
-        normalizedUrl = 'https://' + normalizedUrl;
+      if (normalizedSocial.error) {
+        toast.error(normalizedSocial.error);
+        return;
       }
 
-      const isValidUuid = (id?: string) => {
-        return (
-          id &&
-          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-            id,
-          )
-        );
-      };
-
-      // Determine platform code:
-      // If editing existing (UUID), name is the code (from convertToSocialLink).
-      // If adding new (ID is platform code), id is the code.
-      const platformCode = isValidUuid(editingSocial.id)
-        ? editingSocial.name.toLowerCase()
-        : editingSocial.id.toLowerCase();
+      const normalizedUrl = normalizedSocial.value as string;
 
       // Check if we are editing an existing social record from DB
       const existingSocial = newSocials.find(
@@ -1695,21 +1750,18 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     if (!editingSocial) return;
 
     try {
+      const platformCode = (
+        editingSocial.platformCode ||
+        editingSocial.name ||
+        editingSocial.id
+      ).toLowerCase();
+
       // Find the social to delete
       const socialToDelete = currentProfile.social?.find(
         (s) =>
-          s.plataforma.toLowerCase() === editingSocial.name.toLowerCase() ||
+          s.plataforma.toLowerCase() === platformCode ||
           s.id.toString() === editingSocial.id,
       );
-
-      const isValidUuid = (id?: string) => {
-        return (
-          id &&
-          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-            id,
-          )
-        );
-      };
 
       if (socialToDelete && isValidUuid(socialToDelete.id)) {
         await socialApi.delete(socialToDelete.id);
@@ -1717,7 +1769,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
 
       const newSocials = (currentProfile.social || []).filter(
         (s) =>
-          s.plataforma.toLowerCase() !== editingSocial.name.toLowerCase() &&
+          s.plataforma.toLowerCase() !== platformCode &&
           s.id.toString() !== editingSocial.id,
       );
       setCurrentProfile({ ...currentProfile, social: newSocials });
@@ -2468,6 +2520,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                         handle: '',
                         icon: option.icon,
                         url: '',
+                        platformCode: option.id,
                         colorClass: option.colorClass,
                       } as SocialLink);
                     }
@@ -2497,7 +2550,12 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
             {editingSocial &&
             currentProfile.social?.some(
               (s) =>
-                s.plataforma === editingSocial.name ||
+                s.plataforma.toLowerCase() ===
+                  (
+                    editingSocial.platformCode ||
+                    editingSocial.name ||
+                    editingSocial.id
+                  ).toLowerCase() ||
                 s.id.toString() === editingSocial.id,
             ) ? (
               <Button variant="destructive" onClick={deleteSocial} size="sm">
@@ -2582,8 +2640,8 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                   <div className="flex items-center gap-2 text-gray-400">
                     <MapPin size={16} />
                     <EditableField
-                      value={legenda?.subtitulo || 'Location/Contact'}
-                      onSave={(val) => handleProfileUpdate('subtitulo', val)}
+                      value={legenda?.descricao || 'Location'}
+                      onSave={(val) => handleProfileUpdate('descricao', val)}
                       className="text-sm hover:bg-white/5 p-1 rounded"
                     />
                   </div>

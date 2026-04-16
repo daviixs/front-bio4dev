@@ -745,10 +745,10 @@ export function Template02({ profile }: TemplateProps) {
                       text={"Building digital products that matter."}
                     />
                   )}
-                  {profile.footer?.email ? (
-                    <InfoRow icon={MapPin} text={profile.footer.email} />
+                  {legenda?.descricao ? (
+                    <InfoRow icon={MapPin} text={legenda.descricao} />
                   ) : (
-                    <InfoRow icon={MapPin} text={"Bahawalpur, Pakistan"} />
+                    <InfoRow icon={MapPin} text={"Location"} />
                   )}
                 </div>
 
