@@ -66,6 +66,52 @@ type PlatformConfig = {
   type: PlatformInputType;
 };
 
+type OnboardingChrome = {
+  root: string;
+  page: string;
+  contentCard: string;
+  buttonPrimary: string;
+  buttonSecondary: string;
+  input: string;
+  accentText: string;
+  accentTextHover: string;
+  accentBg: string;
+  accentSoft: string;
+  accentBorder: string;
+  focusRing: string;
+  topBarText: string;
+  progressLabel: string;
+  progressTrack: string;
+  heading: string;
+  subtitle: string;
+  sectionLabel: string;
+  defaultCard: string;
+  iconBadge: string;
+  surfaceCard: string;
+  bodyText: string;
+  captionText: string;
+  helperText: string;
+  warningText: string;
+  successText: string;
+  removeButton: string;
+  previewShell: string;
+  previewCard: string;
+  previewRow: string;
+  previewValue: string;
+  infoBar: string;
+  infoText: string;
+  emptyState: string;
+  modalBackdrop: string;
+  modalCard: string;
+  modalAccentLine: string;
+  modalEyebrow: string;
+  modalTitle: string;
+  modalBody: string;
+  modalError: string;
+  modalContinue: string;
+  modalClose: string;
+};
+
 const PLATFORM_OPTIONS: PlatformConfig[] = [
   {
     id: 'instagram',
@@ -284,6 +330,118 @@ const trackOnboardingEvent = (
   console.log('[onboarding]', record);
 };
 
+const PUBLIC_ONBOARDING_CHROME: OnboardingChrome = {
+  root:
+    'influencer-theme-scope flex min-h-screen flex-col bg-[#221e1b] text-[#ece5d9]',
+  page:
+    'bg-[radial-gradient(circle_at_top,rgba(195,152,107,0.18),transparent_35%),radial-gradient(circle_at_84%_6%,rgba(255,255,255,0.05),transparent_24%)]',
+  contentCard:
+    'rounded-3xl border border-[#4a4038] bg-[#261f1a]/92 p-6 shadow-[0_36px_90px_-48px_rgba(0,0,0,0.72)] backdrop-blur sm:p-10',
+  buttonPrimary:
+    'h-11 rounded-full border border-[#d3ab7d] bg-[#c3986b] px-5 font-semibold text-[#1c140f] shadow-[0_18px_42px_-26px_rgba(195,152,107,0.7)] transition-[transform,background-color,border-color,box-shadow] duration-200 ease-out hover:-translate-y-[1px] hover:bg-[#d2a67a] active:scale-[0.98]',
+  buttonSecondary:
+    'border border-[#4a4038] bg-[#2d241f] text-[#ece5d9] shadow-[0_16px_36px_-28px_rgba(0,0,0,0.45)] transition-[transform,background-color,border-color] duration-200 ease-out hover:-translate-y-[1px] hover:bg-[#382e27] active:scale-[0.98]',
+  input:
+    'border-[#4a4038] bg-[#1f1916] text-[#f5ede4] placeholder:text-[#8f8073] focus-visible:border-[#c3986b] focus-visible:ring-[#c3986b]/20',
+  accentText: 'text-[#d6b18b]',
+  accentTextHover: 'hover:text-[#edd0af]',
+  accentBg: 'bg-[#c3986b]',
+  accentSoft: 'bg-[#35291f] text-[#f5ede4]',
+  accentBorder: 'border-[#7d6041]',
+  focusRing: 'focus-visible:ring-2 focus-visible:ring-[#c3986b]/20',
+  topBarText: 'text-[#cbbcae]',
+  progressLabel: 'text-[#b69f88]',
+  progressTrack: 'bg-[#3a3028]',
+  heading: 'text-[#f5ede4]',
+  subtitle: 'text-[#cbbcae]',
+  sectionLabel: 'text-[#b69f88]',
+  defaultCard: 'border-[#433931] bg-[#2d241f] hover:border-[#5c4e43]',
+  iconBadge: 'bg-[#3a3028] text-[#e7d7c6]',
+  surfaceCard: 'border border-[#4a4038] bg-[#2d241f]/95',
+  bodyText: 'text-[#f0e6db]',
+  captionText: 'text-[#cbbcae]',
+  helperText: 'text-[#ab9a8a]',
+  warningText: 'text-[#dcb37c]',
+  successText: 'text-[#8cc29f]',
+  removeButton:
+    'h-10 w-10 rounded-full border border-[#5c4e43] text-[#cbbcae] transition-[transform,background-color,border-color,color] duration-200 ease-out hover:border-rose-400 hover:bg-[#3a3028] hover:text-rose-200 active:scale-[0.98]',
+  previewShell: 'border border-[#4a4038] bg-[#211a16] text-[#f0e6db]',
+  previewCard: 'border border-[#4a4038] bg-[#2b231e]',
+  previewRow: 'border border-[#41372f] bg-[#332923] text-[#ece5d9]',
+  previewValue: 'text-[#bcae9f]',
+  infoBar: 'border border-[#4a4038] bg-[#302822]',
+  infoText: 'text-[#cbbcae]',
+  emptyState: 'border border-dashed border-[#4a4038] text-[#bcae9f]',
+  modalBackdrop: 'bg-[#120f0d]/75 backdrop-blur-[2px]',
+  modalCard:
+    'border border-[#4a4038] bg-[#261f1a] text-[#f5ede4] shadow-[0_24px_80px_-32px_rgba(0,0,0,0.65)]',
+  modalAccentLine:
+    'bg-gradient-to-r from-transparent via-[#c3986b]/70 to-transparent',
+  modalEyebrow: 'text-[#b69f88]',
+  modalTitle: 'text-[#f5ede4]',
+  modalBody: 'text-[#cbbcae]',
+  modalError:
+    'rounded-2xl border border-[#8c5b5b] bg-[#3a2222] px-4 py-3 text-sm text-[#ffd7d7]',
+  modalContinue:
+    'inline-flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-[#d9c2a8] bg-[#f5ede4] px-4 text-sm font-semibold text-[#1c140f] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)] transition-[transform,background-color,border-color] duration-200 ease-out hover:-translate-y-[1px] hover:border-[#f3e2ce] hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0',
+  modalClose:
+    'w-full rounded-2xl border border-[#4a4038] bg-[#302822] px-4 py-3 text-sm text-[#ece5d9] transition-[transform,background-color,border-color] duration-200 ease-out hover:bg-[#3a3028] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60',
+};
+
+const createEditorOnboardingChrome = (
+  chrome: InfluencerThemeChrome,
+): OnboardingChrome => ({
+  root: 'influencer-theme-scope flex min-h-screen flex-col bg-white',
+  page: chrome.page,
+  contentCard: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10',
+  buttonPrimary: chrome.buttonPrimary,
+  buttonSecondary: chrome.buttonSecondary,
+  input: chrome.input,
+  accentText: chrome.accentText,
+  accentTextHover: chrome.accentTextHover,
+  accentBg: chrome.accentBg,
+  accentSoft: chrome.accentSoft,
+  accentBorder: chrome.accentBorder,
+  focusRing: chrome.focusRing,
+  topBarText: 'text-slate-600',
+  progressLabel: 'text-slate-500',
+  progressTrack: 'bg-slate-200',
+  heading: 'text-slate-900',
+  subtitle: 'text-slate-600',
+  sectionLabel: 'text-slate-500',
+  defaultCard: 'border-slate-200 bg-white hover:border-slate-300',
+  iconBadge: 'bg-slate-100 text-slate-700',
+  surfaceCard: 'border border-slate-200 bg-white',
+  bodyText: 'text-slate-900',
+  captionText: 'text-slate-500',
+  helperText: 'text-slate-400',
+  warningText: 'text-amber-600',
+  successText: 'text-emerald-600',
+  removeButton:
+    'h-10 w-10 rounded-full border border-slate-700/60 text-slate-300 hover:border-rose-400 hover:text-rose-300',
+  previewShell: 'border border-slate-200 bg-slate-50 text-slate-900',
+  previewCard: 'border border-slate-200 bg-white',
+  previewRow: 'border border-slate-200 bg-white text-slate-700',
+  previewValue: 'text-slate-500',
+  infoBar: 'border border-slate-200 bg-slate-50',
+  infoText: 'text-slate-600',
+  emptyState: 'border border-dashed border-slate-200 text-slate-500',
+  modalBackdrop: 'bg-slate-950/45 backdrop-blur-[2px]',
+  modalCard:
+    'border border-slate-200 bg-white shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)]',
+  modalAccentLine:
+    'bg-gradient-to-r from-transparent via-slate-300/80 to-transparent',
+  modalEyebrow: 'text-slate-500',
+  modalTitle: 'text-slate-900',
+  modalBody: 'text-slate-600',
+  modalError:
+    'rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700',
+  modalContinue:
+    'inline-flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0',
+  modalClose:
+    'w-full rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-800 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60',
+});
+
 const TopBar = ({
   onBack,
   onSkip,
@@ -293,9 +451,9 @@ const TopBar = ({
   onBack: () => void;
   onSkip: () => void;
   showSkip: boolean;
-  chrome: InfluencerThemeChrome;
+  chrome: OnboardingChrome;
 }) => (
-  <div className="mb-8 flex items-center justify-between text-sm text-slate-600">
+  <div className={`mb-8 flex items-center justify-between text-sm ${chrome.topBarText}`}>
     <button
       type="button"
       onClick={onBack}
@@ -325,16 +483,18 @@ const ProgressBar = ({
   step: number;
   totalSteps: number;
   selectedCount: number;
-  chrome: InfluencerThemeChrome;
+  chrome: OnboardingChrome;
 }) => {
   const progress = Math.min(100, (step / totalSteps) * 100);
   return (
     <div className="mb-6 space-y-3">
-      <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-slate-500">
+      <div
+        className={`flex items-center justify-between text-xs uppercase tracking-[0.3em] ${chrome.progressLabel}`}
+      >
         <span>Etapa {step} de 3</span>
         <span>{selectedCount}/5 selecionadas</span>
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
+      <div className={`h-2 w-full overflow-hidden rounded-full ${chrome.progressTrack}`}>
         <div
           className={`h-full rounded-full ${chrome.accentBg} transition-all`}
           style={{ width: `${progress}%` }}
@@ -347,15 +507,17 @@ const ProgressBar = ({
 const StepHeader = ({
   title,
   subtitle,
+  chrome,
 }: {
   title: string;
   subtitle: string;
+  chrome: OnboardingChrome;
 }) => (
   <div className="space-y-3">
-    <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
+    <h1 className={`text-3xl font-semibold sm:text-4xl ${chrome.heading}`}>
       {title}
     </h1>
-    <p className="text-base text-slate-600">{subtitle}</p>
+    <p className={`text-base ${chrome.subtitle}`}>{subtitle}</p>
   </div>
 );
 
@@ -372,7 +534,7 @@ const PlatformCard = ({
   order: number;
   disabled: boolean;
   onToggle: () => void;
-  chrome: InfluencerThemeChrome;
+  chrome: OnboardingChrome;
 }) => {
   const Icon = platform.icon;
   return (
@@ -385,17 +547,19 @@ const PlatformCard = ({
       className={`relative flex items-center gap-4 rounded-2xl border px-4 py-4 text-left transition ${chrome.focusRing} ${
         isSelected
           ? `${chrome.accentBorder} ${chrome.accentSoft}`
-          : 'border-slate-200 bg-white hover:border-slate-300'
+          : chrome.defaultCard
       } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
     >
-      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
+      <span
+        className={`flex h-12 w-12 items-center justify-center rounded-2xl ${chrome.iconBadge}`}
+      >
         <Icon className="h-6 w-6" />
       </span>
       <div>
-        <p className="text-base font-semibold text-slate-900">
+        <p className={`text-base font-semibold ${chrome.bodyText}`}>
           {platform.label}
         </p>
-        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+        <p className={`text-xs uppercase tracking-[0.2em] ${chrome.captionText}`}>
           {platform.type === 'handle' ? 'usuario' : platform.type}
         </p>
       </div>
@@ -423,21 +587,23 @@ const SelectedPlatformInput = ({
   error: string | null;
   showWarning: boolean;
   onChange: (nextValue: string) => void;
-  chrome: InfluencerThemeChrome;
+  chrome: OnboardingChrome;
 }) => {
   const Icon = platform.icon;
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+    <div className={`rounded-2xl p-4 ${chrome.surfaceCard}`}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+          <span
+            className={`flex h-10 w-10 items-center justify-center rounded-xl ${chrome.iconBadge}`}
+          >
             <Icon className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-sm font-semibold text-slate-900">
+            <p className={`text-sm font-semibold ${chrome.bodyText}`}>
               {platform.label}
             </p>
-            <p className="text-xs text-slate-500">{platform.placeholder}</p>
+            <p className={`text-xs ${chrome.captionText}`}>{platform.placeholder}</p>
           </div>
         </div>
         <div className="flex-1">
@@ -458,11 +624,11 @@ const SelectedPlatformInput = ({
         {error ? (
           <span className="text-rose-400">{error}</span>
         ) : showWarning ? (
-          <span className="text-amber-300">
+          <span className={chrome.warningText}>
             Opcional, mas recomendado para lancamento.
           </span>
         ) : (
-          <span className="text-emerald-300">Parece correto.</span>
+          <span className={chrome.successText}>Parece correto.</span>
         )}
       </div>
     </div>
@@ -480,10 +646,12 @@ const AdditionalLinkRow = ({
   error: { label?: string | null; url?: string | null } | null;
   onChange: (updates: Partial<AdditionalLink>) => void;
   onRemove: () => void;
-  chrome: InfluencerThemeChrome;
+  chrome: OnboardingChrome;
 }) => (
-  <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
-    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+  <div className={`flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center ${chrome.surfaceCard}`}>
+    <span
+      className={`flex h-10 w-10 items-center justify-center rounded-xl ${chrome.iconBadge}`}
+    >
       <FiLink2 className="h-5 w-5" />
     </span>
     <div className="flex-1">
@@ -526,7 +694,7 @@ const AdditionalLinkRow = ({
       type="button"
       variant="ghost"
       onClick={onRemove}
-      className="h-10 w-10 rounded-full border border-slate-700/60 text-slate-300 hover:border-rose-400 hover:text-rose-300"
+      className={chrome.removeButton}
     >
       <FiTrash2 className="h-4 w-4" />
     </Button>
@@ -544,12 +712,14 @@ const AvatarCard = ({
   avatarError: string | null;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: () => void;
-  chrome: InfluencerThemeChrome;
+  chrome: OnboardingChrome;
 }) => (
-  <div className="rounded-2xl border border-slate-200 bg-white p-5">
-    <p className="text-sm font-semibold text-slate-900">Imagem do perfil</p>
+  <div className={`rounded-2xl p-5 ${chrome.surfaceCard}`}>
+    <p className={`text-sm font-semibold ${chrome.bodyText}`}>Imagem do perfil</p>
     <div className="mt-4 flex flex-wrap items-center gap-4">
-      <div className="h-24 w-24 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+      <div
+        className={`h-24 w-24 overflow-hidden rounded-full border ${chrome.accentBorder} ${chrome.iconBadge}`}
+      >
         {avatarDataUrl ? (
           <img
             src={avatarDataUrl}
@@ -557,7 +727,7 @@ const AvatarCard = ({
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-slate-500">
+          <div className={`flex h-full w-full items-center justify-center ${chrome.captionText}`}>
             <FiImage className="h-8 w-8" />
           </div>
         )}
@@ -565,7 +735,7 @@ const AvatarCard = ({
       <div className="space-y-2">
         <label
           htmlFor="avatar-upload"
-          className="text-sm font-semibold text-slate-700"
+          className={`text-sm font-semibold ${chrome.bodyText}`}
         >
           Link da imagem
         </label>
@@ -581,12 +751,12 @@ const AvatarCard = ({
           <button
             type="button"
             onClick={onRemove}
-            className="block text-xs text-rose-300 hover:text-rose-200"
+            className="block text-xs text-rose-300 transition-colors hover:text-rose-200"
           >
             Remover imagem
           </button>
         )}
-        <p className="text-xs text-slate-400">Use um link publico de imagem.</p>
+        <p className={`text-xs ${chrome.helperText}`}>Use um link publico de imagem.</p>
         {avatarError && <p className="text-xs text-rose-400">{avatarError}</p>}
       </div>
     </div>
@@ -599,20 +769,24 @@ const PreviewCard = ({
   bio,
   selectedPlatforms,
   platformLinks,
+  chrome,
 }: {
   avatarDataUrl: string | null | undefined;
   displayName: string;
   bio: string;
   selectedPlatforms: PlatformId[];
   platformLinks: Partial<Record<PlatformId, string>>;
+  chrome: OnboardingChrome;
 }) => (
-  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-slate-900">
-    <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
+  <div className={`rounded-2xl p-6 ${chrome.previewShell}`}>
+    <h2 className={`text-sm font-semibold uppercase tracking-[0.3em] ${chrome.sectionLabel}`}>
       Pre-visualizacao
     </h2>
-    <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
+    <div className={`mt-6 rounded-2xl p-6 ${chrome.previewCard}`}>
       <div className="flex items-center gap-4">
-        <div className="h-16 w-16 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+        <div
+          className={`h-16 w-16 overflow-hidden rounded-full border ${chrome.accentBorder} ${chrome.iconBadge}`}
+        >
           {avatarDataUrl ? (
             <img
               src={avatarDataUrl}
@@ -620,16 +794,18 @@ const PreviewCard = ({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-slate-500">
-            <FiImage className="h-6 w-6" />
-          </div>
-        )}
+            <div
+              className={`flex h-full w-full items-center justify-center ${chrome.captionText}`}
+            >
+              <FiImage className="h-6 w-6" />
+            </div>
+          )}
         </div>
         <div>
-          <p className="text-lg font-semibold text-slate-900">
+          <p className={`text-lg font-semibold ${chrome.bodyText}`}>
             {displayName.trim() || 'Seu nome'}
           </p>
-          <p className="text-sm text-slate-600">
+          <p className={`text-sm ${chrome.captionText}`}>
             {bio.trim() || 'Sua bio aparecera aqui.'}
           </p>
         </div>
@@ -644,13 +820,13 @@ const PreviewCard = ({
           return (
             <div
               key={`preview-${platformId}`}
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+              className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm ${chrome.previewRow}`}
             >
               <div className="flex items-center gap-3">
                 <Icon className="h-4 w-4" />
                 <span>{platform.label}</span>
               </div>
-              <span className="text-xs text-slate-500">
+              <span className={`text-xs ${chrome.previewValue}`}>
                 {platformLinks[platformId] || 'Adicionar link'}
               </span>
             </div>
@@ -688,47 +864,49 @@ const GoogleAuthGate = ({
   error,
   onClose,
   onContinue,
+  chrome,
 }: {
   open: boolean;
   isLoading: boolean;
   error: string | null;
   onClose: () => void;
   onContinue: () => Promise<void>;
+  chrome: OnboardingChrome;
 }) => {
   if (!open) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 py-6 backdrop-blur-[2px]"
+      className={`fixed inset-0 z-50 flex items-center justify-center px-4 py-6 ${chrome.modalBackdrop}`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-google-gate-title"
     >
-      <div className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)]">
-        <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-slate-300/80 to-transparent" />
+      <div
+        className={`relative w-full max-w-md overflow-hidden rounded-[28px] p-6 ${chrome.modalCard}`}
+      >
+        <div
+          className={`pointer-events-none absolute inset-x-6 top-0 h-px ${chrome.modalAccentLine}`}
+        />
 
         <div className="space-y-5">
           <div className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            <p className={`text-xs uppercase tracking-[0.3em] ${chrome.modalEyebrow}`}>
               Finalizar cadastro
             </p>
             <h2
               id="onboarding-google-gate-title"
-              className="text-2xl font-semibold tracking-tight text-slate-900"
+              className={`text-2xl font-semibold tracking-tight ${chrome.modalTitle}`}
             >
               Seu perfil esta quase pronto
             </h2>
-            <p className="text-sm leading-6 text-slate-600">
+            <p className={`text-sm leading-6 ${chrome.modalBody}`}>
               Entre com Google para salvar seu primeiro perfil e concluir
               criacao automaticamente.
             </p>
           </div>
 
-          {error && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </div>
-          )}
+          {error && <div className={chrome.modalError}>{error}</div>}
 
           <button
             type="button"
@@ -736,7 +914,7 @@ const GoogleAuthGate = ({
               void onContinue();
             }}
             disabled={isLoading}
-            className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+            className={chrome.modalContinue}
           >
             <GoogleGlyph />
             {isLoading ? 'Conectando com Google...' : 'Continuar com Google'}
@@ -746,7 +924,7 @@ const GoogleAuthGate = ({
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="w-full rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-800 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+            className={chrome.modalClose}
           >
             Continuar editando
           </button>
@@ -766,6 +944,7 @@ export function InfluencerOnboardingPage({
     templateId?: string;
   }>();
   const location = useLocation();
+  const isDashboardEditor = location.pathname.startsWith('/dashboard/influencer/');
   const navigate = useNavigate();
   const {
     isAuthenticated,
@@ -854,24 +1033,30 @@ export function InfluencerOnboardingPage({
     }
   }, [profileId, resolvedTemplateId]);
 
+  const unresolvedStateClass = isDashboardEditor
+    ? 'min-h-screen flex items-center justify-center text-slate-500'
+    : 'min-h-screen flex items-center justify-center bg-[#221e1b] text-[#cbbcae]';
+
   if (!profileId) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500">
+      <div className={unresolvedStateClass}>
         Perfil nao encontrado.
       </div>
     );
   }
   if (!resolvedTemplateId) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500">
+      <div className={unresolvedStateClass}>
         {isResolvingTemplate ? 'Carregando template...' : null}
       </div>
     );
   }
 
-  const themeId = resolveThemeId(resolvedTemplateId);
-  const themeChrome = getInfluencerThemePreset(themeId).chrome;
-  const isDashboardEditor = location.pathname.startsWith('/dashboard/influencer/');
+  const onboardingChrome = isDashboardEditor
+    ? createEditorOnboardingChrome(
+        getInfluencerThemePreset(resolveThemeId(resolvedTemplateId)).chrome,
+      )
+    : PUBLIC_ONBOARDING_CHROME;
   const totalSteps = 3;
   const selectedCount = state.selectedPlatforms.length;
   const selectedSet = new Set(state.selectedPlatforms);
@@ -1230,12 +1415,12 @@ export function InfluencerOnboardingPage({
   };
 
   return (
-    <div className="influencer-theme-scope flex min-h-screen flex-col bg-white">
+    <div className={onboardingChrome.root}>
       {!isDashboardEditor && <Header />}
-      <div className={`flex-1 px-4 py-10 sm:px-6 lg:px-8 ${themeChrome.page}`}>
+      <div className={`flex-1 px-4 py-10 sm:px-6 lg:px-8 ${onboardingChrome.page}`}>
         <div className="mx-auto flex w-full max-w-5xl flex-col">
           <TopBar
-            chrome={themeChrome}
+            chrome={onboardingChrome}
             onBack={() =>
               state.step === 1
                 ? navigate('/profile/create')
@@ -1257,15 +1442,16 @@ export function InfluencerOnboardingPage({
             step={state.step}
             totalSteps={totalSteps}
             selectedCount={selectedCount}
-            chrome={themeChrome}
+            chrome={onboardingChrome}
           />
 
-          <div className="flex-1 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+          <div className={`flex-1 ${onboardingChrome.contentCard}`}>
             {state.step === 1 && (
               <div className="space-y-8 onboard-fade">
                 <StepHeader
                   title="Em quais plataformas voce esta?"
                   subtitle="Escolha ate cinco para comecar. Voce pode atualizar quando quiser."
+                  chrome={onboardingChrome}
                 />
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -1282,14 +1468,16 @@ export function InfluencerOnboardingPage({
                         isSelected={isSelected}
                         order={order}
                         disabled={disabled}
-                        chrome={themeChrome}
+                        chrome={onboardingChrome}
                         onToggle={() => handlePlatformToggle(platform.id)}
                       />
                     );
                   })}
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-600">
+                <div
+                  className={`flex flex-wrap items-center justify-between gap-4 rounded-2xl px-5 py-4 text-sm ${onboardingChrome.infoBar} ${onboardingChrome.infoText}`}
+                >
                   <span>
                     {selectedCount === 0
                       ? 'Selecione ao menos uma plataforma para continuar.'
@@ -1299,7 +1487,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     onClick={() => updateState({ step: 2 })}
                     disabled={selectedCount === 0}
-                    className={themeChrome.buttonPrimary}
+                    className={onboardingChrome.buttonPrimary}
                   >
                     Continuar
                     <FiArrowRight className="h-4 w-4" />
@@ -1313,15 +1501,20 @@ export function InfluencerOnboardingPage({
                 <StepHeader
                   title="Adicione seus links"
                   subtitle="Preencha os campos abaixo para adicionar seus conteudos ao seu novo Linktree."
+                  chrome={onboardingChrome}
                 />
 
                 <div className="space-y-6">
                   <div className="space-y-4">
-                    <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
+                    <h2
+                      className={`text-sm font-semibold uppercase tracking-[0.3em] ${onboardingChrome.sectionLabel}`}
+                    >
                       Suas selecoes
                     </h2>
                     {state.selectedPlatforms.length === 0 ? (
-                      <div className="rounded-2xl border border-dashed border-slate-200 px-6 py-8 text-sm text-slate-500">
+                      <div
+                        className={`rounded-2xl px-6 py-8 text-sm ${onboardingChrome.emptyState}`}
+                      >
                         Nenhuma plataforma selecionada. Voce ainda pode
                         adicionar links personalizados abaixo.
                       </div>
@@ -1339,7 +1532,7 @@ export function InfluencerOnboardingPage({
                               value={state.platformLinks[platformId] || ''}
                               error={platformErrors[platformId]}
                               showWarning={platformWarnings[platformId]}
-                              chrome={themeChrome}
+                              chrome={onboardingChrome}
                               onChange={(nextValue) =>
                                 updateState({
                                   platformLinks: {
@@ -1357,13 +1550,15 @@ export function InfluencerOnboardingPage({
 
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
+                      <h2
+                        className={`text-sm font-semibold uppercase tracking-[0.3em] ${onboardingChrome.sectionLabel}`}
+                      >
                         Links adicionais
                       </h2>
                       <button
                         type="button"
                         onClick={handleAddAdditionalLink}
-                        className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${themeChrome.buttonSecondary} ${themeChrome.focusRing}`}
+                        className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] ${onboardingChrome.buttonSecondary} ${onboardingChrome.focusRing}`}
                       >
                         <FiPlus className="h-4 w-4" />
                         Adicionar link
@@ -1376,7 +1571,7 @@ export function InfluencerOnboardingPage({
                           key={link.id}
                           link={link}
                           error={additionalErrors[link.id]}
-                          chrome={themeChrome}
+                          chrome={onboardingChrome}
                           onChange={(updates) => {
                             const nextLinks = state.additionalLinks.map(
                               (item) =>
@@ -1393,12 +1588,14 @@ export function InfluencerOnboardingPage({
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                <div
+                  className={`flex flex-wrap items-center justify-between gap-4 rounded-2xl px-5 py-4 ${onboardingChrome.infoBar}`}
+                >
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => updateState({ step: 1 })}
-                    className={themeChrome.buttonSecondary}
+                    className={onboardingChrome.buttonSecondary}
                   >
                     <FiArrowLeft className="h-4 w-4" />
                     Voltar
@@ -1407,7 +1604,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     onClick={handleContinueFromLinks}
                     disabled={hasInvalidLinks}
-                    className={themeChrome.buttonPrimary}
+                    className={onboardingChrome.buttonPrimary}
                   >
                     {isSavingLinks ? 'Salvando...' : 'Continuar'}
                     <FiArrowRight className="h-4 w-4" />
@@ -1421,6 +1618,7 @@ export function InfluencerOnboardingPage({
                 <StepHeader
                   title="Adicione os detalhes do perfil"
                   subtitle="Adicione sua imagem, nome e bio."
+                  chrome={onboardingChrome}
                 />
 
                 <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
@@ -1428,7 +1626,7 @@ export function InfluencerOnboardingPage({
                     <AvatarCard
                       avatarDataUrl={state.avatarDataUrl}
                       avatarError={avatarError}
-                      chrome={themeChrome}
+                      chrome={onboardingChrome}
                       onChange={handleAvatarChange}
                       onRemove={() =>
                         updateState({
@@ -1438,9 +1636,9 @@ export function InfluencerOnboardingPage({
                       }
                     />
 
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div className={`rounded-2xl p-5 ${onboardingChrome.surfaceCard}`}>
                       <label
-                        className="text-sm font-semibold text-slate-900"
+                        className={`text-sm font-semibold ${onboardingChrome.bodyText}`}
                         htmlFor="display-name"
                       >
                         Nome de exibicao
@@ -1456,7 +1654,7 @@ export function InfluencerOnboardingPage({
                         }
                         placeholder="Seu nome"
                         aria-invalid={!isDisplayNameValid}
-                        className={`mt-3 h-11 ${themeChrome.input}`}
+                        className={`mt-3 h-11 ${onboardingChrome.input}`}
                       />
                       {!isDisplayNameValid && (
                         <p className="mt-2 text-xs text-rose-400">
@@ -1465,9 +1663,9 @@ export function InfluencerOnboardingPage({
                       )}
                     </div>
 
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div className={`rounded-2xl p-5 ${onboardingChrome.surfaceCard}`}>
                       <label
-                        className="text-sm font-semibold text-slate-900"
+                        className={`text-sm font-semibold ${onboardingChrome.bodyText}`}
                         htmlFor="bio"
                       >
                         Bio
@@ -1479,9 +1677,11 @@ export function InfluencerOnboardingPage({
                           updateState({ bio: event.target.value.slice(0, 160) })
                         }
                         placeholder="Escreva uma bio curta..."
-                        className={`mt-3 min-h-[120px] ${themeChrome.input}`}
+                        className={`mt-3 min-h-[120px] ${onboardingChrome.input}`}
                       />
-                      <div className="mt-2 flex items-center justify-between text-xs text-slate-400">
+                      <div
+                        className={`mt-2 flex items-center justify-between text-xs ${onboardingChrome.helperText}`}
+                      >
                         <span>Mantenha curto e objetivo.</span>
                         <span>{state.bio.length}/160</span>
                       </div>
@@ -1494,15 +1694,18 @@ export function InfluencerOnboardingPage({
                     bio={state.bio}
                     selectedPlatforms={state.selectedPlatforms}
                     platformLinks={state.platformLinks}
+                    chrome={onboardingChrome}
                   />
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                <div
+                  className={`flex flex-wrap items-center justify-between gap-4 rounded-2xl px-5 py-4 ${onboardingChrome.infoBar}`}
+                >
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => updateState({ step: 2 })}
-                    className={themeChrome.buttonSecondary}
+                    className={onboardingChrome.buttonSecondary}
                   >
                     <FiArrowLeft className="h-4 w-4" />
                     Voltar
@@ -1511,7 +1714,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     onClick={handleFinish}
                     disabled={!isDisplayNameValid}
-                    className={themeChrome.buttonPrimary}
+                    className={onboardingChrome.buttonPrimary}
                   >
                     {isSavingAll ? 'Salvando...' : 'Continuar'}
                     <FiArrowRight className="h-4 w-4" />
@@ -1526,6 +1729,7 @@ export function InfluencerOnboardingPage({
         open={isGoogleGateOpen}
         isLoading={isAuthLoading}
         error={authError}
+        chrome={onboardingChrome}
         onClose={closeGoogleGate}
         onContinue={handleStartGoogleAuth}
       />
