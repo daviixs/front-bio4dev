@@ -1,28 +1,29 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { FaGlobe } from 'react-icons/fa6';
 import {
-  Instagram,
-  MessageCircle,
-  PlaySquare,
-  Youtube,
-  Globe,
-  Disc3,
-  AtSign,
-  Facebook,
-  Twitter,
-  Radio,
-  Camera,
-  Pin,
-  HandHelping,
-  Twitch,
-  Apple,
-  Link2,
-  Plus,
-  Trash2,
-  ArrowLeft,
-  ArrowRight,
-  Image,
-} from 'lucide-react';
+  FiArrowLeft,
+  FiArrowRight,
+  FiImage,
+  FiLink2,
+  FiPlus,
+  FiTrash2,
+} from 'react-icons/fi';
+import {
+  SiFacebook,
+  SiInstagram,
+  SiPatreon,
+  SiPinterest,
+  SiSnapchat,
+  SiSoundcloud,
+  SiSpotify,
+  SiThreads,
+  SiTiktok,
+  SiTwitch,
+  SiWhatsapp,
+  SiX,
+  SiYoutube,
+} from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -65,190 +66,99 @@ const PLATFORM_OPTIONS: PlatformConfig[] = [
   {
     id: 'instagram',
     label: 'Instagram',
-    icon: Instagram,
+    icon: SiInstagram,
     placeholder: '@usuario',
     type: 'handle',
   },
   {
     id: 'whatsapp',
     label: 'WhatsApp',
-    icon: MessageCircle,
+    icon: SiWhatsapp,
     placeholder: 'Numero do WhatsApp',
     type: 'phone',
   },
   {
     id: 'tiktok',
     label: 'TikTok',
-    icon: PlaySquare,
+    icon: SiTiktok,
     placeholder: 'tiktok.com/usuario',
     type: 'url',
   },
   {
     id: 'youtube',
     label: 'YouTube',
-    icon: Youtube,
+    icon: SiYoutube,
     placeholder: 'youtube.com/usuario',
     type: 'url',
   },
   {
     id: 'website',
     label: 'Website',
-    icon: Globe,
+    icon: FaGlobe,
     placeholder: 'seusite.com',
     type: 'url',
   },
   {
     id: 'spotify',
     label: 'Spotify',
-    icon: Disc3,
+    icon: SiSpotify,
     placeholder: 'open.spotify.com/usuario',
     type: 'url',
   },
   {
     id: 'threads',
     label: 'Threads',
-    icon: AtSign,
+    icon: SiThreads,
     placeholder: '@usuario',
     type: 'handle',
   },
   {
     id: 'facebook',
     label: 'Facebook',
-    icon: Facebook,
+    icon: SiFacebook,
     placeholder: 'facebook.com/usuario',
     type: 'url',
   },
   {
     id: 'x',
     label: 'X',
-    icon: Twitter,
+    icon: SiX,
     placeholder: '@usuario',
     type: 'handle',
   },
   {
     id: 'soundcloud',
     label: 'SoundCloud',
-    icon: Radio,
+    icon: SiSoundcloud,
     placeholder: 'soundcloud.com/usuario',
     type: 'url',
   },
   {
     id: 'snapchat',
     label: 'Snapchat',
-    icon: Camera,
+    icon: SiSnapchat,
     placeholder: '@usuario',
     type: 'handle',
   },
   {
     id: 'pinterest',
     label: 'Pinterest',
-    icon: Pin,
+    icon: SiPinterest,
     placeholder: 'pinterest.com/usuario',
     type: 'url',
   },
   {
     id: 'patreon',
     label: 'Patreon',
-    icon: HandHelping,
+    icon: SiPatreon,
     placeholder: 'patreon.com/usuario',
     type: 'url',
   },
   {
     id: 'twitch',
     label: 'Twitch',
-    icon: Twitch,
+    icon: SiTwitch,
     placeholder: 'twitch.tv/usuario',
-    type: 'url',
-  },
-  {
-    id: 'applemusic',
-    label: 'Apple Music',
-    icon: Apple,
-    placeholder: 'music.apple.com/usuario',
-    type: 'url',
-  },
-  {
-    id: 'youtube',
-    label: 'YouTube',
-    icon: Youtube,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'website',
-    label: 'Website',
-    icon: Globe,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'spotify',
-    label: 'Spotify',
-    icon: Disc3,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'threads',
-    label: 'Threads',
-    icon: AtSign,
-    placeholder: '@usuario',
-    type: 'handle',
-  },
-  {
-    id: 'facebook',
-    label: 'Facebook',
-    icon: Facebook,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'x',
-    label: 'X',
-    icon: Twitter,
-    placeholder: '@usuario',
-    type: 'handle',
-  },
-  {
-    id: 'soundcloud',
-    label: 'SoundCloud',
-    icon: Radio,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'snapchat',
-    label: 'Snapchat',
-    icon: Camera,
-    placeholder: '@usuario',
-    type: 'handle',
-  },
-  {
-    id: 'pinterest',
-    label: 'Pinterest',
-    icon: Pin,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'patreon',
-    label: 'Patreon',
-    icon: HandHelping,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'twitch',
-    label: 'Twitch',
-    icon: Twitch,
-    placeholder: 'URL',
-    type: 'url',
-  },
-  {
-    id: 'applemusic',
-    label: 'Apple Music',
-    icon: Apple,
-    placeholder: 'URL',
     type: 'url',
   },
 ];
@@ -385,7 +295,7 @@ const TopBar = ({
       onClick={onBack}
       className={`inline-flex items-center gap-2 rounded-full px-4 py-2 transition ${landingTheme.buttonSecondary} ${landingTheme.focusRing}`}
     >
-      <ArrowLeft className="h-4 w-4" />
+      <FiArrowLeft className="h-4 w-4" />
       Voltar
     </button>
     {showSkip && (
@@ -560,7 +470,7 @@ const AdditionalLinkRow = ({
 }) => (
   <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-      <Link2 className="h-5 w-5" />
+      <FiLink2 className="h-5 w-5" />
     </span>
     <div className="flex-1">
       <div className="grid gap-2 sm:grid-cols-2">
@@ -604,7 +514,7 @@ const AdditionalLinkRow = ({
       onClick={onRemove}
       className="h-10 w-10 rounded-full border border-slate-700/60 text-slate-300 hover:border-rose-400 hover:text-rose-300"
     >
-      <Trash2 className="h-4 w-4" />
+      <FiTrash2 className="h-4 w-4" />
     </Button>
   </div>
 );
@@ -632,7 +542,7 @@ const AvatarCard = ({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-slate-500">
-            <Image className="h-8 w-8" />
+            <FiImage className="h-8 w-8" />
           </div>
         )}
       </div>
@@ -695,9 +605,9 @@ const PreviewCard = ({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-slate-500">
-              <Image className="h-6 w-6" />
-            </div>
-          )}
+            <FiImage className="h-6 w-6" />
+          </div>
+        )}
         </div>
         <div>
           <p className="text-lg font-semibold text-slate-900">
@@ -1238,7 +1148,7 @@ export function InfluencerOnboardingPage({
                     className={landingTheme.buttonPrimary}
                   >
                     Continuar
-                    <ArrowRight className="h-4 w-4" />
+                    <FiArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -1300,7 +1210,7 @@ export function InfluencerOnboardingPage({
                         onClick={handleAddAdditionalLink}
                         className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${landingTheme.buttonSecondary}`}
                       >
-                        <Plus className="h-4 w-4" />
+                        <FiPlus className="h-4 w-4" />
                         Adicionar link
                       </button>
                     </div>
@@ -1334,7 +1244,7 @@ export function InfluencerOnboardingPage({
                     onClick={() => updateState({ step: 1 })}
                     className={landingTheme.buttonSecondary}
                   >
-                    <ArrowLeft className="h-4 w-4" />
+                    <FiArrowLeft className="h-4 w-4" />
                     Voltar
                   </Button>
                   <Button
@@ -1344,7 +1254,7 @@ export function InfluencerOnboardingPage({
                     className={landingTheme.buttonPrimary}
                   >
                     {isSavingLinks ? 'Salvando...' : 'Continuar'}
-                    <ArrowRight className="h-4 w-4" />
+                    <FiArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -1437,7 +1347,7 @@ export function InfluencerOnboardingPage({
                     onClick={() => updateState({ step: 2 })}
                     className={landingTheme.buttonSecondary}
                   >
-                    <ArrowLeft className="h-4 w-4" />
+                    <FiArrowLeft className="h-4 w-4" />
                     Voltar
                   </Button>
                   <Button
@@ -1447,7 +1357,7 @@ export function InfluencerOnboardingPage({
                     className={landingTheme.buttonPrimary}
                   >
                     {isSavingAll ? 'Salvando...' : 'Continuar'}
-                    <ArrowRight className="h-4 w-4" />
+                    <FiArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
