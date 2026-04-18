@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FaGlobe } from 'react-icons/fa6';
 import {
   FiArrowLeft,
@@ -45,12 +45,16 @@ import {
 } from '@/features/onboarding/types';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
-import { landingTheme } from '@/theme/landingTheme';
 import { onboardingApi, profileApi, socialApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
 import { useSaveTemplate } from '@/hooks/useSaveTemplate';
 import { useAuthStore } from '@/stores/authStore';
 import type { TemplateType } from '@/types';
+import {
+  getInfluencerThemePreset,
+  type InfluencerThemeChrome,
+} from '@/pages/influencers/shared/themePresets';
+import { resolveThemeId } from '@/pages/influencers/shared/templateMap';
 
 type PlatformInputType = 'handle' | 'url' | 'phone';
 
@@ -284,16 +288,18 @@ const TopBar = ({
   onBack,
   onSkip,
   showSkip,
+  chrome,
 }: {
   onBack: () => void;
   onSkip: () => void;
   showSkip: boolean;
+  chrome: InfluencerThemeChrome;
 }) => (
   <div className="mb-8 flex items-center justify-between text-sm text-slate-600">
     <button
       type="button"
       onClick={onBack}
-      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 transition ${landingTheme.buttonSecondary} ${landingTheme.focusRing}`}
+      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 transition ${chrome.buttonSecondary} ${chrome.focusRing}`}
     >
       <FiArrowLeft className="h-4 w-4" />
       Voltar
@@ -302,7 +308,7 @@ const TopBar = ({
       <button
         type="button"
         onClick={onSkip}
-        className={`rounded-full px-4 py-2 transition ${landingTheme.accentText} ${landingTheme.accentTextHover}`}
+        className={`rounded-full px-4 py-2 transition ${chrome.accentText} ${chrome.accentTextHover}`}
       >
         Pular
       </button>
@@ -314,10 +320,12 @@ const ProgressBar = ({
   step,
   totalSteps,
   selectedCount,
+  chrome,
 }: {
   step: number;
   totalSteps: number;
   selectedCount: number;
+  chrome: InfluencerThemeChrome;
 }) => {
   const progress = Math.min(100, (step / totalSteps) * 100);
   return (
@@ -328,7 +336,7 @@ const ProgressBar = ({
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
         <div
-          className={`h-full rounded-full ${landingTheme.accentBg} transition-all`}
+          className={`h-full rounded-full ${chrome.accentBg} transition-all`}
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -357,12 +365,14 @@ const PlatformCard = ({
   order,
   disabled,
   onToggle,
+  chrome,
 }: {
   platform: PlatformConfig;
   isSelected: boolean;
   order: number;
   disabled: boolean;
   onToggle: () => void;
+  chrome: InfluencerThemeChrome;
 }) => {
   const Icon = platform.icon;
   return (
@@ -372,9 +382,9 @@ const PlatformCard = ({
       aria-pressed={isSelected}
       aria-label={`${platform.label} platform`}
       disabled={disabled}
-      className={`relative flex items-center gap-4 rounded-2xl border px-4 py-4 text-left transition ${landingTheme.focusRing} ${
+      className={`relative flex items-center gap-4 rounded-2xl border px-4 py-4 text-left transition ${chrome.focusRing} ${
         isSelected
-          ? `${landingTheme.accentBorder} ${landingTheme.accentSoft}`
+          ? `${chrome.accentBorder} ${chrome.accentSoft}`
           : 'border-slate-200 bg-white hover:border-slate-300'
       } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
     >
@@ -391,7 +401,7 @@ const PlatformCard = ({
       </div>
       {isSelected && (
         <span
-          className={`absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full ${landingTheme.accentBg} text-xs font-semibold text-white`}
+          className={`absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full ${chrome.accentBg} text-xs font-semibold text-white`}
         >
           {order}
         </span>
@@ -406,12 +416,14 @@ const SelectedPlatformInput = ({
   error,
   showWarning,
   onChange,
+  chrome,
 }: {
   platform: PlatformConfig;
   value: string;
   error: string | null;
   showWarning: boolean;
   onChange: (nextValue: string) => void;
+  chrome: InfluencerThemeChrome;
 }) => {
   const Icon = platform.icon;
   return (
@@ -438,7 +450,7 @@ const SelectedPlatformInput = ({
             onChange={(event) => onChange(event.target.value)}
             placeholder={platform.placeholder}
             aria-invalid={Boolean(error)}
-            className={`h-11 ${landingTheme.input}`}
+            className={`h-11 ${chrome.input}`}
           />
         </div>
       </div>
@@ -462,11 +474,13 @@ const AdditionalLinkRow = ({
   error,
   onChange,
   onRemove,
+  chrome,
 }: {
   link: AdditionalLink;
   error: { label?: string | null; url?: string | null } | null;
   onChange: (updates: Partial<AdditionalLink>) => void;
   onRemove: () => void;
+  chrome: InfluencerThemeChrome;
 }) => (
   <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
@@ -484,7 +498,7 @@ const AdditionalLinkRow = ({
             onChange={(event) => onChange({ label: event.target.value })}
             placeholder="Nome do link"
             aria-invalid={Boolean(error?.label)}
-            className={`h-11 ${landingTheme.input}`}
+            className={`h-11 ${chrome.input}`}
           />
         </div>
         <div>
@@ -497,7 +511,7 @@ const AdditionalLinkRow = ({
             onChange={(event) => onChange({ url: event.target.value })}
             placeholder="seusite.com"
             aria-invalid={Boolean(error?.url)}
-            className={`h-11 ${landingTheme.input}`}
+            className={`h-11 ${chrome.input}`}
           />
         </div>
       </div>
@@ -524,11 +538,13 @@ const AvatarCard = ({
   avatarError,
   onChange,
   onRemove,
+  chrome,
 }: {
   avatarDataUrl: string | null | undefined;
   avatarError: string | null;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: () => void;
+  chrome: InfluencerThemeChrome;
 }) => (
   <div className="rounded-2xl border border-slate-200 bg-white p-5">
     <p className="text-sm font-semibold text-slate-900">Imagem do perfil</p>
@@ -559,7 +575,7 @@ const AvatarCard = ({
           value={avatarDataUrl || ''}
           onChange={onChange}
           placeholder="exemplo.com/minha-foto.jpg"
-          className={`h-11 ${landingTheme.input}`}
+          className={`h-11 ${chrome.input}`}
         />
         {avatarDataUrl && (
           <button
@@ -645,6 +661,101 @@ const PreviewCard = ({
   </div>
 );
 
+const GoogleGlyph = () => (
+  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      fill="#4285F4"
+    />
+    <path
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      fill="#34A853"
+    />
+    <path
+      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      fill="#FBBC05"
+    />
+    <path
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      fill="#EA4335"
+    />
+  </svg>
+);
+
+const GoogleAuthGate = ({
+  open,
+  isLoading,
+  error,
+  onClose,
+  onContinue,
+}: {
+  open: boolean;
+  isLoading: boolean;
+  error: string | null;
+  onClose: () => void;
+  onContinue: () => Promise<void>;
+}) => {
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 py-6 backdrop-blur-[2px]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-google-gate-title"
+    >
+      <div className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.45)]">
+        <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-slate-300/80 to-transparent" />
+
+        <div className="space-y-5">
+          <div className="space-y-3">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+              Finalizar cadastro
+            </p>
+            <h2
+              id="onboarding-google-gate-title"
+              className="text-2xl font-semibold tracking-tight text-slate-900"
+            >
+              Seu perfil esta quase pronto
+            </h2>
+            <p className="text-sm leading-6 text-slate-600">
+              Entre com Google para salvar seu primeiro perfil e concluir
+              criacao automaticamente.
+            </p>
+          </div>
+
+          {error && (
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              void onContinue();
+            }}
+            disabled={isLoading}
+            className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+          >
+            <GoogleGlyph />
+            {isLoading ? 'Conectando com Google...' : 'Continuar com Google'}
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isLoading}
+            className="w-full rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-800 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Continuar editando
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export function InfluencerOnboardingPage({
   templateId: templateIdProp,
 }: {
@@ -654,13 +765,22 @@ export function InfluencerOnboardingPage({
     profileId: string;
     templateId?: string;
   }>();
+  const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, loginWithGoogle, loadProfile } = useAuthStore();
+  const {
+    isAuthenticated,
+    isLoading: isAuthLoading,
+    error: authError,
+    loginWithGoogle,
+    loadProfile,
+    clearError,
+  } = useAuthStore();
   const draftRef = React.useRef<OnboardingDraft | null>(null);
   const [state, setState] = React.useState<OnboardingState>(
     createDefaultOnboardingState,
   );
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
+  const [isGoogleGateOpen, setIsGoogleGateOpen] = React.useState(false);
   const [isSavingLinks, setIsSavingLinks] = React.useState(false);
   const [isSavingAll, setIsSavingAll] = React.useState(false);
   const [resolvedTemplateId, setResolvedTemplateId] = React.useState<
@@ -749,6 +869,9 @@ export function InfluencerOnboardingPage({
     );
   }
 
+  const themeId = resolveThemeId(resolvedTemplateId);
+  const themeChrome = getInfluencerThemePreset(themeId).chrome;
+  const isDashboardEditor = location.pathname.startsWith('/dashboard/influencer/');
   const totalSteps = 3;
   const selectedCount = state.selectedPlatforms.length;
   const selectedSet = new Set(state.selectedPlatforms);
@@ -801,6 +924,21 @@ export function InfluencerOnboardingPage({
 
   const updateState = (updates: Partial<OnboardingState>) =>
     setState((prev) => ({ ...prev, ...updates }));
+
+  const openGoogleGate = () => {
+    clearError();
+    setIsGoogleGateOpen(true);
+    trackOnboardingEvent('auth_gate_opened', {
+      profileId,
+      step: state.step,
+    });
+  };
+
+  const closeGoogleGate = () => {
+    if (isAuthLoading) return;
+    clearError();
+    setIsGoogleGateOpen(false);
+  };
 
   const handlePlatformToggle = (id: PlatformId) => {
     const alreadySelected = selectedSet.has(id);
@@ -955,6 +1093,28 @@ export function InfluencerOnboardingPage({
     navigate(result.redirectTo);
   };
 
+  const handleStartGoogleAuth = async () => {
+    const currentDraft = persistCurrentDraft('pending_auth');
+
+    if (!currentDraft) {
+      toast.error('Rascunho do onboarding não encontrado.');
+      navigate('/profile/create');
+      return;
+    }
+
+    clearError();
+    setAuthIntent({
+      intent: 'onboarding_finalize',
+      draftId: currentDraft.draftId,
+      returnTo: window.location.pathname + window.location.search,
+      createdAt: new Date().toISOString(),
+    });
+    trackOnboardingEvent('google_auth_started', {
+      profileId: currentDraft.draftId,
+    });
+    await loginWithGoogle();
+  };
+
   const handleContinueFromLinks = async () => {
     setIsSavingLinks(true);
     try {
@@ -989,33 +1149,24 @@ export function InfluencerOnboardingPage({
   };
 
   const handleFinish = async () => {
+    if (!profileId) {
+      toast.error('Perfil não encontrado.');
+      return;
+    }
+
+    if (profileId.startsWith('draft-') && !isAuthenticated) {
+      openGoogleGate();
+      return;
+    }
+
     setIsSavingAll(true);
     try {
-      if (!profileId) {
-        toast.error('Perfil não encontrado.');
-        return;
-      }
-
       if (profileId.startsWith('draft-')) {
-        const currentDraft = persistCurrentDraft(
-          isAuthenticated ? 'collecting' : 'pending_auth',
-        );
+        const currentDraft = persistCurrentDraft('collecting');
 
         if (!currentDraft) {
           toast.error('Rascunho do onboarding não encontrado.');
           navigate('/profile/create');
-          return;
-        }
-
-        if (!isAuthenticated) {
-          toast.error('Faça login com Google para salvar seu perfil.');
-          setAuthIntent({
-            intent: 'onboarding_finalize',
-            draftId: currentDraft.draftId,
-            returnTo: window.location.pathname + window.location.search,
-            createdAt: new Date().toISOString(),
-          });
-          await loginWithGoogle();
           return;
         }
 
@@ -1079,11 +1230,12 @@ export function InfluencerOnboardingPage({
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
-      <Header />
-      <div className="flex-1 bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+    <div className="influencer-theme-scope flex min-h-screen flex-col bg-white">
+      {!isDashboardEditor && <Header />}
+      <div className={`flex-1 px-4 py-10 sm:px-6 lg:px-8 ${themeChrome.page}`}>
         <div className="mx-auto flex w-full max-w-5xl flex-col">
           <TopBar
+            chrome={themeChrome}
             onBack={() =>
               state.step === 1
                 ? navigate('/profile/create')
@@ -1105,6 +1257,7 @@ export function InfluencerOnboardingPage({
             step={state.step}
             totalSteps={totalSteps}
             selectedCount={selectedCount}
+            chrome={themeChrome}
           />
 
           <div className="flex-1 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
@@ -1129,6 +1282,7 @@ export function InfluencerOnboardingPage({
                         isSelected={isSelected}
                         order={order}
                         disabled={disabled}
+                        chrome={themeChrome}
                         onToggle={() => handlePlatformToggle(platform.id)}
                       />
                     );
@@ -1145,7 +1299,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     onClick={() => updateState({ step: 2 })}
                     disabled={selectedCount === 0}
-                    className={landingTheme.buttonPrimary}
+                    className={themeChrome.buttonPrimary}
                   >
                     Continuar
                     <FiArrowRight className="h-4 w-4" />
@@ -1185,6 +1339,7 @@ export function InfluencerOnboardingPage({
                               value={state.platformLinks[platformId] || ''}
                               error={platformErrors[platformId]}
                               showWarning={platformWarnings[platformId]}
+                              chrome={themeChrome}
                               onChange={(nextValue) =>
                                 updateState({
                                   platformLinks: {
@@ -1208,7 +1363,7 @@ export function InfluencerOnboardingPage({
                       <button
                         type="button"
                         onClick={handleAddAdditionalLink}
-                        className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${landingTheme.buttonSecondary}`}
+                        className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${themeChrome.buttonSecondary} ${themeChrome.focusRing}`}
                       >
                         <FiPlus className="h-4 w-4" />
                         Adicionar link
@@ -1221,6 +1376,7 @@ export function InfluencerOnboardingPage({
                           key={link.id}
                           link={link}
                           error={additionalErrors[link.id]}
+                          chrome={themeChrome}
                           onChange={(updates) => {
                             const nextLinks = state.additionalLinks.map(
                               (item) =>
@@ -1242,7 +1398,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     variant="outline"
                     onClick={() => updateState({ step: 1 })}
-                    className={landingTheme.buttonSecondary}
+                    className={themeChrome.buttonSecondary}
                   >
                     <FiArrowLeft className="h-4 w-4" />
                     Voltar
@@ -1251,7 +1407,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     onClick={handleContinueFromLinks}
                     disabled={hasInvalidLinks}
-                    className={landingTheme.buttonPrimary}
+                    className={themeChrome.buttonPrimary}
                   >
                     {isSavingLinks ? 'Salvando...' : 'Continuar'}
                     <FiArrowRight className="h-4 w-4" />
@@ -1272,6 +1428,7 @@ export function InfluencerOnboardingPage({
                     <AvatarCard
                       avatarDataUrl={state.avatarDataUrl}
                       avatarError={avatarError}
+                      chrome={themeChrome}
                       onChange={handleAvatarChange}
                       onRemove={() =>
                         updateState({
@@ -1299,7 +1456,7 @@ export function InfluencerOnboardingPage({
                         }
                         placeholder="Seu nome"
                         aria-invalid={!isDisplayNameValid}
-                        className={`mt-3 h-11 ${landingTheme.input}`}
+                        className={`mt-3 h-11 ${themeChrome.input}`}
                       />
                       {!isDisplayNameValid && (
                         <p className="mt-2 text-xs text-rose-400">
@@ -1322,7 +1479,7 @@ export function InfluencerOnboardingPage({
                           updateState({ bio: event.target.value.slice(0, 160) })
                         }
                         placeholder="Escreva uma bio curta..."
-                        className={`mt-3 min-h-[120px] ${landingTheme.input}`}
+                        className={`mt-3 min-h-[120px] ${themeChrome.input}`}
                       />
                       <div className="mt-2 flex items-center justify-between text-xs text-slate-400">
                         <span>Mantenha curto e objetivo.</span>
@@ -1345,7 +1502,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     variant="outline"
                     onClick={() => updateState({ step: 2 })}
-                    className={landingTheme.buttonSecondary}
+                    className={themeChrome.buttonSecondary}
                   >
                     <FiArrowLeft className="h-4 w-4" />
                     Voltar
@@ -1354,7 +1511,7 @@ export function InfluencerOnboardingPage({
                     type="button"
                     onClick={handleFinish}
                     disabled={!isDisplayNameValid}
-                    className={landingTheme.buttonPrimary}
+                    className={themeChrome.buttonPrimary}
                   >
                     {isSavingAll ? 'Salvando...' : 'Continuar'}
                     <FiArrowRight className="h-4 w-4" />
@@ -1365,7 +1522,14 @@ export function InfluencerOnboardingPage({
           </div>
         </div>
       </div>
-      <Footer />
+      <GoogleAuthGate
+        open={isGoogleGateOpen}
+        isLoading={isAuthLoading}
+        error={authError}
+        onClose={closeGoogleGate}
+        onContinue={handleStartGoogleAuth}
+      />
+      {!isDashboardEditor && <Footer />}
     </div>
   );
 }

@@ -28,6 +28,10 @@ export function AuthCallbackPage() {
       return;
     }
 
+    const hydrateProfile = () => {
+      void useAuthStore.getState().loadProfile();
+    };
+
     handleOAuthCallback(code, state)
       .then(async () => {
         const authIntent = consumeAuthIntent();
@@ -48,7 +52,7 @@ export function AuthCallbackPage() {
             persistLegacyProfilePointers(result.profileId, result.templateType);
             clearDraft(draft.draftId);
             localStorage.removeItem('bio4dev_post_auth_redirect');
-            await useAuthStore.getState().loadProfile();
+            hydrateProfile();
 
             if (result.skippedPlatforms.length > 0) {
               toast.warning(
@@ -82,10 +86,12 @@ export function AuthCallbackPage() {
         );
         if (storedRedirect) {
           localStorage.removeItem('bio4dev_post_auth_redirect');
+          hydrateProfile();
           navigate(storedRedirect, { replace: true });
           return;
         }
 
+        hydrateProfile();
         navigate('/dashboard', { replace: true });
       })
       .catch((error: unknown) => {

@@ -222,11 +222,14 @@ export function CreateProfilePage() {
         }
       }
 
-      const availability = await profileApi.checkSlug(slugValue);
-      if (!availability.available) {
-        setSlugError(availability.message || "Slug já está em uso");
-        setIsSlugModalOpen(true);
-        return;
+      // Public first-time flow stays local until auth is completed.
+      if (user?.id) {
+        const availability = await profileApi.checkSlug(slugValue);
+        if (!availability.available) {
+          setSlugError(availability.message || "Slug já está em uso");
+          setIsSlugModalOpen(true);
+          return;
+        }
       }
 
       const draftProfileId =
@@ -252,7 +255,6 @@ export function CreateProfilePage() {
         }),
       );
 
-      toast.info("Vamos montar sua bio primeiro. Conta será criada no final.");
       navigate(`/onboarding/${draftProfileId}`);
     } catch (error: any) {
       console.error("Error preparing draft profile:", error);

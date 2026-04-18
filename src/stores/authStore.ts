@@ -81,9 +81,9 @@ export const useAuthStore = create<AuthState>()(
             accessToken: data.accessToken,
             isAuthenticated: true,
             isLoading: false,
+            error: null,
           });
 
-          await get().loadProfile();
           return data.isNew as boolean;
         } catch (error: any) {
           set({

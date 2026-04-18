@@ -55,7 +55,14 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isLanding = location.pathname === "/" || location.pathname === "/home";
-  return <div className={isLanding ? "" : "app-shell"}>{children}</div>;
+  const isInfluencerWorkspace =
+    location.pathname.startsWith("/onboarding/") ||
+    location.pathname.startsWith("/dashboard/influencer/");
+  return (
+    <div className={isLanding || isInfluencerWorkspace ? "" : "app-shell"}>
+      {children}
+    </div>
+  );
 }
 
 export default function App() {

@@ -209,6 +209,13 @@ export function persistLegacyProfilePointers(
 }
 
 export function toFinalizeOnboardingPayload(draft: OnboardingDraft) {
+  const additionalLinks = draft.data.additionalLinks
+    .map((link) => ({
+      label: link.label.trim(),
+      url: link.url.trim(),
+    }))
+    .filter((link) => link.label && link.url);
+
   return {
     draftId: draft.draftId,
     templateType: draft.templateType,
@@ -219,6 +226,6 @@ export function toFinalizeOnboardingPayload(draft: OnboardingDraft) {
     avatarDataUrl: draft.data.avatarDataUrl?.trim() || '',
     selectedPlatforms: draft.data.selectedPlatforms,
     platformLinks: draft.data.platformLinks,
-    additionalLinks: draft.data.additionalLinks,
+    additionalLinks: additionalLinks.length > 0 ? additionalLinks : undefined,
   };
 }
