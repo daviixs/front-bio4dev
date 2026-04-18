@@ -26,6 +26,7 @@ import type {
   UpdateFooterDTO,
   LoginDTO,
   Footer,
+  TemplateType,
 } from '@/types';
 
 // Detecta automaticamente o host atual (localhost ou IP local) para acessar a API
@@ -317,6 +318,38 @@ export const profileApi = {
 
   delete: async (id: string) => {
     const response = await api.delete<{ message: string }>(`/profile/${id}`);
+    return response.data;
+  },
+};
+
+export interface FinalizeOnboardingRequest {
+  draftId: string;
+  templateType: TemplateType;
+  slug: string;
+  displayName: string;
+  bio?: string;
+  avatarDataUrl?: string;
+  selectedPlatforms?: string[];
+  platformLinks?: Record<string, string>;
+  additionalLinks?: Array<{
+    label: string;
+    url: string;
+  }>;
+}
+
+export interface FinalizeOnboardingResponse {
+  profileId: string;
+  templateType: TemplateType;
+  redirectTo: string;
+  skippedPlatforms: string[];
+}
+
+export const onboardingApi = {
+  finalize: async (data: FinalizeOnboardingRequest) => {
+    const response = await api.post<FinalizeOnboardingResponse>(
+      '/onboarding/finalize',
+      data,
+    );
     return response.data;
   },
 };

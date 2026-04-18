@@ -27,34 +27,29 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import {
+  clearDraft,
+  loadDraft,
+  persistLegacyProfilePointers,
+  saveDraft,
+  setAuthIntent,
+  toFinalizeOnboardingPayload,
+} from '@/features/onboarding/storage';
+import {
+  createDefaultOnboardingState,
+  type AdditionalLink,
+  type OnboardingDraft,
+  type OnboardingState,
+  type PlatformId,
+} from '@/features/onboarding/types';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { landingTheme } from '@/theme/landingTheme';
-import { profileApi, socialApi } from '@/lib/api';
+import { onboardingApi, profileApi, socialApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
-import {
-  hasReachedProfileLimit,
-  PROFILE_LIMIT_MESSAGE,
-} from '@/lib/profile-limits';
 import { useSaveTemplate } from '@/hooks/useSaveTemplate';
 import { useAuthStore } from '@/stores/authStore';
-
-type PlatformId =
-  | 'instagram'
-  | 'whatsapp'
-  | 'tiktok'
-  | 'youtube'
-  | 'website'
-  | 'spotify'
-  | 'threads'
-  | 'facebook'
-  | 'x'
-  | 'soundcloud'
-  | 'snapchat'
-  | 'pinterest'
-  | 'patreon'
-  | 'twitch'
-  | 'applemusic';
+import type { TemplateType } from '@/types';
 
 type PlatformInputType = 'handle' | 'url' | 'phone';
 
@@ -64,23 +59,6 @@ type PlatformConfig = {
   icon: React.ElementType;
   placeholder: string;
   type: PlatformInputType;
-};
-
-type AdditionalLink = {
-  id: string;
-  label: string;
-  url: string;
-};
-
-type OnboardingState = {
-  step: number;
-  selectedPlatforms: PlatformId[];
-  platformLinks: Partial<Record<PlatformId, string>>;
-  additionalLinks: AdditionalLink[];
-  displayName: string;
-  bio: string;
-  avatarDataUrl?: string | null;
-  avatarFileName?: string | null;
 };
 
 const PLATFORM_OPTIONS: PlatformConfig[] = [
@@ -302,23 +280,6 @@ const API_SUPPORTED_PLATFORMS = new Set<PlatformId>([
   'facebook',
   'pinterest',
 ]);
-
-const INITIAL_ADDITIONAL_LINKS: AdditionalLink[] = [
-  { id: 'additional-1', label: '', url: '' },
-  { id: 'additional-2', label: '', url: '' },
-  { id: 'additional-3', label: '', url: '' },
-];
-
-const getDefaultState = (): OnboardingState => ({
-  step: 1,
-  selectedPlatforms: [],
-  platformLinks: {},
-  additionalLinks: INITIAL_ADDITIONAL_LINKS,
-  displayName: '',
-  bio: '',
-  avatarDataUrl: null,
-  avatarFileName: null,
-});
 
 const isValidUrl = (value: string) => {
   if (!value.trim()) return true;
@@ -784,14 +745,17 @@ export function InfluencerOnboardingPage({
     templateId?: string;
   }>();
   const navigate = useNavigate();
-  const { user, isAuthenticated, loginWithGoogle, logout } = useAuthStore();
-  const [state, setState] = React.useState<OnboardingState>(getDefaultState);
+  const { isAuthenticated, loginWithGoogle, loadProfile } = useAuthStore();
+  const draftRef = React.useRef<OnboardingDraft | null>(null);
+  const [state, setState] = React.useState<OnboardingState>(
+    createDefaultOnboardingState,
+  );
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
   const [isSavingLinks, setIsSavingLinks] = React.useState(false);
   const [isSavingAll, setIsSavingAll] = React.useState(false);
   const [resolvedTemplateId, setResolvedTemplateId] = React.useState<
-    string | null
-  >(templateIdProp || templateIdParam || null);
+    TemplateType | null
+  >((templateIdProp || templateIdParam || null) as TemplateType | null);
   const [isResolvingTemplate, setIsResolvingTemplate] = React.useState(
     !resolvedTemplateId && Boolean(profileId),
   );
@@ -799,58 +763,57 @@ export function InfluencerOnboardingPage({
 
   React.useEffect(() => {
     if (!profileId) return;
-    const saved = localStorage.getItem(`bio4dev_onboarding_${profileId}`);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as Partial<OnboardingState>;
-        const additionalLinks =
-          parsed.additionalLinks && parsed.additionalLinks.length > 0
-            ? parsed.additionalLinks.map((link, index) => ({
-                id: link.id || `additional-${index + 1}`,
-                label: link.label || '',
-                url: link.url || '',
-              }))
-            : INITIAL_ADDITIONAL_LINKS;
-        setState({
-          ...getDefaultState(),
-          ...parsed,
-          additionalLinks,
-        });
-      } catch {
-        setState(getDefaultState());
-      }
+    const draft = loadDraft(profileId);
+    draftRef.current = draft;
+
+    if (draft) {
+      setState(createDefaultOnboardingState(draft.data));
+      setResolvedTemplateId(draft.templateType);
+      setIsResolvingTemplate(false);
+      return;
     }
+
+    setState(createDefaultOnboardingState());
   }, [profileId]);
 
   React.useEffect(() => {
-    if (!profileId) return;
-    try {
-      localStorage.setItem(
-        `bio4dev_onboarding_${profileId}`,
-        JSON.stringify(state),
-      );
-    } catch {
-      // Ignore storage quota errors.
+    if (
+      !profileId ||
+      !profileId.startsWith('draft-') ||
+      !resolvedTemplateId ||
+      !draftRef.current
+    ) {
+      return;
     }
-  }, [state, profileId]);
+
+    const nextDraft: OnboardingDraft = {
+      ...draftRef.current,
+      status: draftRef.current.status === 'pending_auth' ? 'pending_auth' : 'collecting',
+      templateType: resolvedTemplateId,
+      displayName: state.displayName.trim() || draftRef.current.displayName,
+      data: createDefaultOnboardingState(state),
+      updatedAt: new Date().toISOString(),
+    };
+
+    draftRef.current = nextDraft;
+    saveDraft(nextDraft);
+  }, [state, profileId, resolvedTemplateId]);
 
   React.useEffect(() => {
     if (!profileId || resolvedTemplateId) return;
 
-    // Fallback: recuperar tema salvo localmente (ex: modo rascunho sem login)
-    const savedTheme = localStorage.getItem(`bio4dev_theme_${profileId}`);
-    if (savedTheme) {
-      setResolvedTemplateId(savedTheme);
+    const draft = draftRef.current;
+    if (draft?.templateType) {
+      setResolvedTemplateId(draft.templateType);
       return;
     }
 
-    // Se não for rascunho, tentar no backend
     if (!profileId.startsWith('draft-')) {
       setIsResolvingTemplate(true);
       profileApi
         .getComplete(profileId)
         .then((profile) => {
-          setResolvedTemplateId(profile.templateType);
+          setResolvedTemplateId(profile.templateType as TemplateType);
         })
         .catch(() => {
           setResolvedTemplateId(null);
@@ -1035,6 +998,53 @@ export function InfluencerOnboardingPage({
     }
   };
 
+  const persistCurrentDraft = (status: OnboardingDraft['status']) => {
+    if (
+      !profileId ||
+      !profileId.startsWith('draft-') ||
+      !resolvedTemplateId ||
+      !draftRef.current
+    ) {
+      return null;
+    }
+
+    const nextDraft: OnboardingDraft = {
+      ...draftRef.current,
+      status,
+      templateType: resolvedTemplateId,
+      displayName: state.displayName.trim() || draftRef.current.displayName,
+      data: createDefaultOnboardingState(state),
+      updatedAt: new Date().toISOString(),
+    };
+
+    draftRef.current = nextDraft;
+    saveDraft(nextDraft);
+    return nextDraft;
+  };
+
+  const finalizeDraftOnServer = async (draft: OnboardingDraft) => {
+    const result = await onboardingApi.finalize(toFinalizeOnboardingPayload(draft));
+
+    persistLegacyProfilePointers(result.profileId, result.templateType);
+    clearDraft(draft.draftId);
+    draftRef.current = null;
+    await loadProfile();
+
+    if (result.skippedPlatforms.length > 0) {
+      toast.warning(
+        `Algumas plataformas ainda nao sao suportadas pela API: ${result.skippedPlatforms.join(', ')}.`,
+      );
+    }
+
+    trackOnboardingEvent('onboarding_completed', {
+      profileId: result.profileId,
+      selectedPlatforms: draft.data.selectedPlatforms,
+      skippedPlatforms: result.skippedPlatforms,
+    });
+
+    navigate(result.redirectTo);
+  };
+
   const handleContinueFromLinks = async () => {
     setIsSavingLinks(true);
     try {
@@ -1076,95 +1086,34 @@ export function InfluencerOnboardingPage({
         return;
       }
 
-      // Exigir login antes de criar perfil real
-      if (!isAuthenticated) {
-        toast.error('Faça login com Google para salvar seu perfil.');
-        try {
-          localStorage.setItem(
-            'bio4dev_post_auth_redirect',
-            window.location.pathname + window.location.search,
-          );
-        } catch {
-          // ignorar se storage indisponível
-        }
-        await loginWithGoogle();
-        return;
-      }
-
-      if (!user?.id) {
-        toast.error(
-          'Não foi possível identificar seu usuário. Faça login novamente.',
-        );
-        await logout();
-        await loginWithGoogle();
-        return;
-      }
-
-      let effectiveProfileId = profileId;
-
-      // Converter draft em perfil real se logado
       if (profileId.startsWith('draft-')) {
-        const reachedLimit = await hasReachedProfileLimit(user.id);
-        if (reachedLimit) {
-          toast.error(PROFILE_LIMIT_MESSAGE);
-          navigate('/dashboard/bio');
-          return;
-        }
-
-        const draftDataRaw = localStorage.getItem(
-          `bio4dev_draft_profile_${profileId}`,
+        const currentDraft = persistCurrentDraft(
+          isAuthenticated ? 'collecting' : 'pending_auth',
         );
-        const draftData = draftDataRaw ? JSON.parse(draftDataRaw) : {};
-        const templateType = draftData.templateType || resolvedTemplateId;
 
-        const createPayload = {
-          userId: user.id,
-          username: draftData.username || state.displayName || '',
-          slug: draftData.slug || state.displayName || '',
-          templateType: templateType || 'template_04',
-          published: false,
-        } as const;
-
-        try {
-          if (import.meta.env.DEV) {
-            console.log('Criando perfil a partir do draft:', createPayload);
-          }
-          const response = await profileApi.create(createPayload);
-          effectiveProfileId = response.profile?.id || response.id;
-
-          localStorage.setItem('bio4dev_profile_id', effectiveProfileId);
-          localStorage.setItem(
-            `bio4dev_theme_${effectiveProfileId}`,
-            templateType,
-          );
-        } catch (error: any) {
-          const backendMessage = getApiErrorMessage(error);
-          const normalizedMessage = backendMessage.toLowerCase();
-          if (
-            backendMessage &&
-            normalizedMessage.includes('usuário não encontrado')
-          ) {
-            toast.error('Sessão expirada. Faça login novamente.');
-            await logout();
-            await loginWithGoogle();
-          } else {
-            console.error(
-              'Erro ao criar perfil real a partir do draft:',
-              error,
-            );
-            toast.error(
-              backendMessage ||
-                'Não foi possível criar seu perfil. Tente novamente.',
-            );
-            if (normalizedMessage.includes('limite')) {
-              navigate('/dashboard/bio');
-            }
-          }
+        if (!currentDraft) {
+          toast.error('Rascunho do onboarding não encontrado.');
+          navigate('/profile/create');
           return;
         }
+
+        if (!isAuthenticated) {
+          toast.error('Faça login com Google para salvar seu perfil.');
+          setAuthIntent({
+            intent: 'onboarding_finalize',
+            draftId: currentDraft.draftId,
+            returnTo: window.location.pathname + window.location.search,
+            createdAt: new Date().toISOString(),
+          });
+          await loginWithGoogle();
+          return;
+        }
+
+        await finalizeDraftOnServer(currentDraft);
+        return;
       }
 
-      await saveSocialsFromPlatforms(effectiveProfileId);
+      await saveSocialsFromPlatforms(profileId);
 
       const buttons = state.additionalLinks
         .filter((link) => link.url.trim() && link.label.trim())
@@ -1176,7 +1125,7 @@ export function InfluencerOnboardingPage({
           style: 'primary',
         }));
 
-      await save(effectiveProfileId, {
+      await save(profileId, {
         themeId: resolvedTemplateId,
         name: state.displayName.trim(),
         bio: state.bio.trim(),
@@ -1198,15 +1147,22 @@ export function InfluencerOnboardingPage({
       });
 
       trackOnboardingEvent('onboarding_completed', {
-        profileId: effectiveProfileId,
+        profileId,
         selectedPlatforms: state.selectedPlatforms,
       });
 
-      navigate(
-        `/dashboard/influencer/${resolvedTemplateId}/${effectiveProfileId}/preview`,
-      );
-    } catch {
-      toast.error('Nao foi possivel salvar seu perfil.');
+      navigate(`/dashboard/influencer/${resolvedTemplateId}/${profileId}/preview`);
+    } catch (error: unknown) {
+      const backendMessage = getApiErrorMessage(error);
+      const normalizedMessage = backendMessage.toLowerCase();
+
+      if (normalizedMessage.includes('limite')) {
+        toast.error(backendMessage);
+        navigate('/dashboard/bio');
+        return;
+      }
+
+      toast.error(backendMessage || 'Nao foi possivel salvar seu perfil.');
     } finally {
       setIsSavingAll(false);
     }
@@ -1225,12 +1181,14 @@ export function InfluencerOnboardingPage({
             }
             onSkip={() =>
               state.step === 3
-                ? navigate(
-                    `/dashboard/influencer/${resolvedTemplateId}/${profileId}/preview`,
-                  )
+                ? !profileId.startsWith('draft-')
+                  ? navigate(
+                      `/dashboard/influencer/${resolvedTemplateId}/${profileId}/preview`,
+                    )
+                  : undefined
                 : updateState({ step: 2 })
             }
-            showSkip={state.step === 1 || state.step === 3}
+            showSkip={state.step === 1 || (state.step === 3 && !profileId.startsWith('draft-'))}
           />
 
           <ProgressBar

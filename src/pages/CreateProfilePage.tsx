@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Loader2, Palette, Zap, Rocket, Users } from "lucide-react";
 import { profileApi } from "@/lib/api";
 import { getApiErrorMessage } from "@/lib/api-errors";
+import { createDraft } from "@/features/onboarding/storage";
 import {
   hasReachedProfileLimit,
   PROFILE_LIMIT_MESSAGE,
 } from "@/lib/profile-limits";
 import { useAuthStore } from "@/stores/authStore";
+import type { TemplateType } from "@/types";
 import { toast } from "sonner";
 import { Footer } from "@/components/landing/Footer";
 import { landingTheme } from "@/theme/landingTheme";
@@ -207,7 +209,7 @@ export function CreateProfilePage() {
       streamer: "template_14",
     };
 
-    const templateType = templateMap[selectedTemplate] || "template_04";
+    const templateType = (templateMap[selectedTemplate] || "template_04") as TemplateType;
 
     setIsLoading(true);
     try {
@@ -231,6 +233,13 @@ export function CreateProfilePage() {
         typeof crypto !== "undefined" && crypto.randomUUID
           ? `draft-${crypto.randomUUID()}`
           : `draft-${Date.now().toString(36)}`;
+
+      createDraft({
+        draftId: draftProfileId,
+        templateType,
+        slug: slugValue,
+        displayName,
+      });
 
       localStorage.setItem("bio4dev_profile_id", draftProfileId);
       localStorage.setItem(`bio4dev_theme_${draftProfileId}`, templateType);
