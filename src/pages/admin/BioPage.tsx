@@ -464,7 +464,7 @@ export default function BioPage() {
                               <CheckCircle className="h-4 w-4" />
                             )}
                             <span className="hidden sm:inline">
-                              {bio.published ? "Unpublish" : "Publish"}
+                              {bio.published ? 'Unpublish' : 'Publish'}
                             </span>
                           </Button>
                           <Button
@@ -502,7 +502,7 @@ export default function BioPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja deletar a bio{" "}
+              Tem certeza que deseja deletar a bio{' '}
               <strong>"{selectedBio?.name}"</strong>? Esta ação não pode ser
               desfeita e todos os dados relacionados serão permanentemente
               removidos.

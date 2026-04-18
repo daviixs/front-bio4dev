@@ -84,7 +84,7 @@ export function TestimonialsSection() {
                       'h-2 rounded-full transition-all',
                       index === currentIndex
                         ? 'w-8 bg-blue-600'
-                        : 'w-2 bg-slate-300 hover:bg-slate-400'
+                        : 'w-2 bg-slate-300 hover:bg-slate-400',
                     )}
                     aria-label={`Go to testimonial ${index + 1}`}
                   />

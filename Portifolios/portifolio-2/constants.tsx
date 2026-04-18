@@ -130,6 +130,6 @@ export const PROJECTS_DATA: Project[] = [
     title: "Finance AI",
     description: "Personal finance assistant powered by generative AI to help users save money.",
     tags: ["TypeScript", "OpenAI API", "Node.js"],
-    link: "#"
-  }
+    link: '#',
+  },
 ];

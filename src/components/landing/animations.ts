@@ -1,9 +1,9 @@
 export const sectionFade = {
-  hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
+  hidden: { opacity: 0, y: 28, filter: 'blur(8px)' },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
+    filter: 'blur(0px)',
     transition: {
       duration: 0.8,
       ease: [0.32, 0.72, 0, 1],

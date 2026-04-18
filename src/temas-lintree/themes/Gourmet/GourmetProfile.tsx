@@ -29,7 +29,7 @@ const GourmetProfile: React.FC = () => {
           className="bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl"
         />
         <SharedLink 
-          label="Nossas Unidades"
+         label="Nossas Unidades"
           icon={<MapPin size={18} />}
           className="bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl"
         />

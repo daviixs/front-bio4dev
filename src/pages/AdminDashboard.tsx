@@ -69,7 +69,7 @@ export default function AdminDashboard() {
         title="Crie um perfil para ver seu dashboard"
         description="Você ainda não tem portfólios publicados."
         actionLabel="Criar perfil"
-        onAction={() => navigate("/profile/create")}
+        onAction={() => navigate('/profile/create')}
       />
     );
   }
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
         subtitle="Overview of your portfolio performance."
         actions={
           <button
-            onClick={() => navigate("/profile/create")}
+            onClick={() => navigate('/profile/create')}
             className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition"
           >
             Criar perfil

@@ -205,7 +205,9 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
 
                     {/* Impacto */}
                     <div className={`pt-4 border-t ${template01Theme.divider}`}>
-                      <h4 className={`text-sm mb-2 ${template01Theme.textPrimary}`}>
+                      <h4
+                        className={`text-sm mb-2 ${template01Theme.textPrimary}`}
+                      >
                         Impacto:
                       </h4>
                       <p

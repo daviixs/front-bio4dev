@@ -25,22 +25,30 @@ const AltMusicProfile: React.FC = () => {
         {/* Brutalist Buttons */}
         <div className="w-full flex flex-col gap-2">
           <button className="w-full bg-white text-black p-5 flex items-center justify-between hover:bg-zinc-200 transition-colors">
-            <span className="font-black uppercase text-sm italic">Datas de Shows</span>
+            <span className="font-black uppercase text-sm italic">
+              Datas de Shows
+            </span>
             <Calendar size={18} strokeWidth={3} />
           </button>
 
           <button className="w-full bg-zinc-900 border border-zinc-800 text-white p-5 flex items-center justify-between hover:bg-zinc-800 transition-all">
-            <span className="font-bold uppercase text-xs tracking-widest">Ouça a Playlist</span>
+            <span className="font-bold uppercase text-xs tracking-widest">
+              Ouça a Playlist
+            </span>
             <Music size={18} />
           </button>
 
           <button className="w-full bg-zinc-900 border border-zinc-800 text-white p-5 flex items-center justify-between hover:bg-zinc-800 transition-all">
-            <span className="font-bold uppercase text-xs tracking-widest">Instagram</span>
+            <span className="font-bold uppercase text-xs tracking-widest">
+              Instagram
+            </span>
             <Instagram size={18} />
           </button>
 
           <button className="w-full bg-zinc-900 border border-zinc-800 text-white p-5 flex items-center justify-between hover:bg-zinc-800 transition-all">
-            <span className="font-bold uppercase text-xs tracking-widest">Contato</span>
+            <span className="font-bold uppercase text-xs tracking-widest">
+              Contato
+            </span>
             <Mail size={18} />
           </button>
         </div>

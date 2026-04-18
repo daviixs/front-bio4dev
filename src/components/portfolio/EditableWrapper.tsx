@@ -49,9 +49,9 @@ export function EditableWrapper({
     try {
       setIsUploading(true);
       setUploadProgress(10);
-      
+
       const response = await uploadApi.uploadResume(file);
-      
+
       setUploadProgress(100);
       onChange(response.url);
       setTempValue(response.url);
@@ -140,9 +140,11 @@ export function EditableWrapper({
                     placeholder="URL do arquivo..."
                   />
                 </div>
-                
+
                 <div className="relative pt-4 border-t">
-                  <Label className="block mb-2 text-sm font-bold">Ou fazer upload de novo arquivo</Label>
+                  <Label className="block mb-2 text-sm font-bold">
+                    Ou fazer upload de novo arquivo
+                  </Label>
                   <Input
                     type="file"
                     onChange={handleFileUpload}

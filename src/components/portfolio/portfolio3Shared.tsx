@@ -194,7 +194,8 @@ export function Portfolio3Navbar({
           : {})}
         className={cn(
           'font-serif text-3xl font-bold italic',
-          onInitialsClick && 'cursor-pointer transition-opacity hover:opacity-80',
+          onInitialsClick &&
+            'cursor-pointer transition-opacity hover:opacity-80',
         )}
       >
         {initials}
@@ -471,7 +472,9 @@ export function Portfolio3ProjectsSection({
           })}
         </div>
       ) : (
-        <div className="text-xs text-[#777]">{emptyState || 'Nenhum projeto.'}</div>
+        <div className="text-xs text-[#777]">
+          {emptyState || 'Nenhum projeto.'}
+        </div>
       )}
     </section>
   );

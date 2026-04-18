@@ -6,8 +6,8 @@ export { default as ProfileCard } from "./ProfileCard";
 export { default as ProjectCard } from "./ProjectCard";
 export { default as ProjectsGrid } from "./ProjectsGrid";
 export { default as SocialCard } from "./SocialCard";
-export { default as SocialLinksGrid } from "./SocialLinksGrid";
-export { default as TechStack } from "./TechStack";
+export { default as SocialLinksGrid } from './SocialLinksGrid';
+export { default as TechStack } from './TechStack';
 
 // UI Components
-export * from "./ui";
+export * from './ui';

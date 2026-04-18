@@ -59,7 +59,7 @@ export default function ErrorMessage({ error }: ErrorMessageProps) {
           padding: "0.5rem 1rem",
           border: "1px solid #3b82f6",
           borderRadius: "0.5rem",
-          transition: "all 0.3s",
+          transition: 'all 0.3s',
         }}
       >
         ← Voltar para página inicial

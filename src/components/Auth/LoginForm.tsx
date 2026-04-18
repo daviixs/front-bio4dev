@@ -1,6 +1,6 @@
-import React from "react";
-import { SocialLoginButton } from "./SocialLoginButton";
-import { useAuthStore } from "@/stores/authStore";
+import React from 'react';
+import { SocialLoginButton } from './SocialLoginButton';
+import { useAuthStore } from '@/stores/authStore';
 
 export function LoginForm() {
   const { loginWithGoogle, isLoading, error } = useAuthStore();
@@ -28,7 +28,7 @@ export function LoginForm() {
         provider="google"
         onClick={loginWithGoogle}
         disabled={isLoading}
-        label={isLoading ? "Redirecionando..." : "Continuar com Google"}
+        label={isLoading ? 'Redirecionando...' : 'Continuar com Google'}
       />
     </div>
   );

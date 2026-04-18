@@ -64,9 +64,9 @@ export function mapPortfolioDataToInfluencerData(
     buttons:
       profile.linkButtons?.map((button) => ({
         id: button.id,
-        label: button.label || "Link",
-        url: button.url || "#",
-        subtext: button.subtext || "",
+        label: button.label || 'Link',
+        url: button.url || '#',
+        subtext: button.subtext || '',
         icon: button.icon,
         style: button.style,
       })) || [],

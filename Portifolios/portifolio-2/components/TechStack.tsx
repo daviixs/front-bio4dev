@@ -1,5 +1,5 @@
 import React from "react";
-import { Section, SectionTitle, EmptyState, Tag } from "./ui";
+import { Section, SectionTitle, EmptyState, Tag } from './ui';
 
 interface TechStackProps {
   technologies: string[];

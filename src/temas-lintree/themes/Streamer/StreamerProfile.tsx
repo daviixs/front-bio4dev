@@ -27,7 +27,7 @@ const StreamerProfile: React.FC<StreamerProfileProps> = ({ data }) => {
       
       <div className="w-full flex flex-col gap-3 mt-10 max-w-md relative z-10 mb-20">
         {data.buttons.map((btn, idx) => (
-          <SharedLink 
+          <SharedLink
             key={idx}
             label={btn.label}
             subtext={btn.subtext}

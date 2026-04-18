@@ -24,7 +24,7 @@ export const TEMPLATE_THEME_MAP = {
   template_11: "ecofashion",
   template_12: "gourmet",
   template_13: "innovation",
-  template_14: "streamer",
+  template_14: 'streamer',
 } as const satisfies Partial<Record<TemplateType, ThemeId>>;
 
 export type InfluencerTemplateId = keyof typeof TEMPLATE_THEME_MAP;
@@ -36,4 +36,4 @@ export const isInfluencerTemplate = (
 
 export const resolveThemeId = (templateId?: string): ThemeId =>
   (templateId && TEMPLATE_THEME_MAP[templateId as InfluencerTemplateId]) ||
-  "creator";
+  'creator';

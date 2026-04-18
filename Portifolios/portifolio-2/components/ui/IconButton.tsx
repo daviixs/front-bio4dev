@@ -13,8 +13,8 @@ interface IconButtonProps {
 const variantStyles = {
   default: "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white",
   save: "bg-green-500/10 text-green-500 hover:bg-green-500/20",
-  cancel: "bg-red-500/10 text-red-500 hover:bg-red-500/20",
-  edit: "text-gray-500 hover:text-yellow-500 opacity-0 group-hover:opacity-100",
+  cancel: 'bg-red-500/10 text-red-500 hover:bg-red-500/20',
+  edit: 'text-gray-500 hover:text-yellow-500 opacity-0 group-hover:opacity-100',
 };
 
 /**
@@ -23,9 +23,9 @@ const variantStyles = {
 const IconButton: React.FC<IconButtonProps> = ({
   icon: Icon,
   onClick,
-  variant = "default",
+  variant = 'default',
   size = 16,
-  className = "",
+  className = '',
   title,
 }) => {
   return (

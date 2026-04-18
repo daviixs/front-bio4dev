@@ -12,7 +12,7 @@ const SkillsChart: React.FC = () => {
           <p className="text-gray-400 text-xs">Technical Proficiency</p>
         </div>
         <div className="px-3 py-1 bg-gray-800 rounded-full text-xs text-gray-300 font-mono">
-           Level 99
+          Level 99
         </div>
       </div>
 
@@ -20,7 +20,10 @@ const SkillsChart: React.FC = () => {
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILL_DATA}>
             <PolarGrid stroke="#334155" strokeDasharray="3 3" />
-            <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }} />
+            <PolarAngleAxis
+              dataKey="subject"
+              tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
+            />
             <Radar
               name="Skills"
               dataKey="A"

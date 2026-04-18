@@ -38,7 +38,9 @@ export function ChartShell({
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/3 via-transparent to-transparent opacity-60" />
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-        <CardTitle className="text-lg sm:text-xl text-foreground tracking-tight">{title}</CardTitle>
+        <CardTitle className="text-lg sm:text-xl text-foreground tracking-tight">
+          {title}
+        </CardTitle>
         {action}
       </CardHeader>
       <CardContent className="pl-0 sm:pl-2 relative z-10">

@@ -46,7 +46,7 @@ export default function Navbar({ initials }: NavbarProps) {
           {navLinks.map((link) => (
             <a 
               key={link.name}
-              href={link.href} 
+              href={link.href}
               className="py-3 text-lg font-medium border-b border-[#1a1a1a] last:border-none"
               onClick={() => setIsOpen(false)}
             >

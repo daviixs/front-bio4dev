@@ -75,12 +75,14 @@ export default function UserTypeSelectionPage() {
                 className={`relative p-8 rounded-2xl border-2 transition-all text-left ${
                   selectedType === type.id
                     ? `${landingTheme.accentBorder} ring-2 ${landingTheme.accentRing} shadow-lg`
-                    : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                    : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
                 }`}
               >
                 {/* Selected Indicator */}
                 {selectedType === type.id && (
-                  <div className={`absolute top-4 right-4 w-8 h-8 rounded-full ${landingTheme.accentBg} flex items-center justify-center`}>
+                  <div
+                    className={`absolute top-4 right-4 w-8 h-8 rounded-full ${landingTheme.accentBg} flex items-center justify-center`}
+                  >
                     <svg
                       className="w-5 h-5 text-white"
                       fill="none"

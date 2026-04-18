@@ -1602,7 +1602,7 @@ export function DynamicThemeRenderer({
                         `buttons[${i}]`,
                         "link",
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -1625,9 +1625,9 @@ export function DynamicThemeRenderer({
                       e.preventDefault();
                       handleEdit(
                         `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
+                        'social',
+                        'Rede Social',
+                        social,
                       );
                     }}
                     className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"

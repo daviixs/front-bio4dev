@@ -4,7 +4,13 @@ import React, { useEffect, useRef, useState } from "react";
  * Lightweight reveal wrapper using IntersectionObserver.
  * Animates opacity/translate via .reveal/.is-visible classes defined in index.css.
  */
-export function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+export function Reveal({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -21,7 +27,7 @@ export function Reveal({ children, delay = 0 }: { children: React.ReactNode; del
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     observer.observe(el);
@@ -31,7 +37,7 @@ export function Reveal({ children, delay = 0 }: { children: React.ReactNode; del
   return (
     <div
       ref={ref}
-      className={`reveal ${visible ? "is-visible" : ""}`}
+      className={`reveal ${visible ? 'is-visible' : ''}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}

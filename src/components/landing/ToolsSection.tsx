@@ -64,8 +64,12 @@ export function ToolsSection() {
                     {t.initials}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-[#ece5d9] leading-tight">{t.name}</span>
-                    <span className="text-xs text-[#ece5d9]/40 leading-tight">{t.handle}</span>
+                    <span className="text-sm font-semibold text-[#ece5d9] leading-tight">
+                      {t.name}
+                    </span>
+                    <span className="text-xs text-[#ece5d9]/40 leading-tight">
+                      {t.handle}
+                    </span>
                   </div>
                 </div>
               </div>

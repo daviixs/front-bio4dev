@@ -28,4 +28,5 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ profileData, themeId }) => 
   );
 };
 
-export default PreviewPanel;
+export default PreviewPanel
+;

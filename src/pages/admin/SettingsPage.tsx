@@ -369,7 +369,11 @@ export default function AdminSettingsPage() {
               <option value="America/Los_Angeles">PST</option>
             </select>
           </div>
-          <Button className="gap-2" onClick={handleSaveGeneral} disabled={savingGeneral}>
+          <Button
+            className="gap-2"
+            onClick={handleSaveGeneral}
+            disabled={savingGeneral}
+          >
             {savingGeneral && <Loader2 className="h-4 w-4 animate-spin" />}
             <Save className="h-4 w-4" />
             Save General Settings

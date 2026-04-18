@@ -971,7 +971,10 @@ export function EditablePortfolio3({
     if (!editingSocialSlot) return;
 
     try {
-      const existing = findPortfolio3Social(localProfile.social, editingSocialSlot);
+      const existing = findPortfolio3Social(
+        localProfile.social,
+        editingSocialSlot,
+      );
 
       if (existing) {
         await socialApi.delete(existing.id);
@@ -1428,7 +1431,10 @@ export function EditablePortfolio3({
           <DialogFooter className="flex items-center justify-between">
             <div>
               {editingSocialSlot &&
-                findPortfolio3Social(localProfile.social, editingSocialSlot) && (
+                findPortfolio3Social(
+                  localProfile.social,
+                  editingSocialSlot,
+                ) && (
                   <Button variant="destructive" onClick={handleSocialDelete}>
                     Remover
                   </Button>

@@ -64,15 +64,23 @@ const EcoFashionProfile: React.FC = () => {
 
           <button className="w-full bg-[#8B7E66] text-white shadow-lg shadow-[#8B7E66]/20 p-5 rounded-3xl flex items-center justify-center gap-3 hover:bg-[#726754] transition-colors mt-2">
             <MessageCircle size={18} />
-            <span className="font-bold text-sm uppercase tracking-widest">Fale Conosco</span>
+            <span className="font-bold text-sm uppercase tracking-widest">
+              Fale Conosco
+            </span>
           </button>
         </div>
 
         {/* Earthy Socials */}
         <div className="flex gap-10 mt-16 text-[#8B7E66]/50">
-          <a href="#" className="hover:text-[#8B7E66] transition-colors"><Instagram size={22} /></a>
-          <a href="#" className="hover:text-[#8B7E66] transition-colors"><Twitter size={22} /></a>
-          <a href="#" className="hover:text-[#8B7E66] transition-colors"><Music size={22} /></a>
+          <a href="#" className="hover:text-[#8B7E66] transition-colors">
+            <Instagram size={22} />
+          </a>
+          <a href="#" className="hover:text-[#8B7E66] transition-colors">
+            <Twitter size={22} />
+          </a>
+          <a href="#" className="hover:text-[#8B7E66] transition-colors">
+            <Music size={22} />
+          </a>
         </div>
       </div>
     </div>

@@ -165,9 +165,9 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
 
                 {isEditing ? (
                   <textarea
-                    value={editData.description || ""}
+                    value={editData.description || ''}
                     onChange={(e) =>
-                      handleInputChange("description", e.target.value)
+                      handleInputChange('description', e.target.value)
                     }
                     className="bg-white/10 border border-white/20 rounded px-2 py-1 text-gray-400 text-sm leading-relaxed focus:outline-none focus:border-yellow-500 w-full resize-none"
                     placeholder="Description"

@@ -78,9 +78,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile }) => {
         {/* Social Icons */}
         <div className="flex gap-6 mt-10 mb-8">
           {profile.socials.map((social, index) => (
-            <a 
-              key={index} 
-              href={social.url} 
+            <a
+              key={index}
+              href={social.url}
               className={`p-3 rounded-full bg-white/10 hover:bg-white/30 backdrop-blur-md border border-white/20 transition-all duration-300 ${profile.textColor}`}
             >
               <SocialIcon platform={social.platform} />
@@ -88,7 +88,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile }) => {
           ))}
         </div>
 
-        <div className={`mt-auto mb-4 text-[10px] uppercase tracking-widest font-bold opacity-40 ${profile.textColor}`}>
+        <div
+          className={`mt-auto mb-4 text-[10px] uppercase tracking-widest font-bold opacity-40 ${profile.textColor}`}
+        >
           Powered by LinkHub
         </div>
       </div>

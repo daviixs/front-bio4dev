@@ -27,13 +27,13 @@ export default function LoadingSpinner() {
             borderRadius: "50%",
             width: "50px",
             height: "50px",
-            animation: "spin 1s linear infinite",
+            animation: 'spin 1s linear infinite',
           }}
         />
         <p
           style={{
-            color: "#64748b",
-            fontSize: "1rem",
+            color: '#64748b',
+            fontSize: '1rem',
           }}
         >
           Carregando...

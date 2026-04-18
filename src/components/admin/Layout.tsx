@@ -1,5 +1,5 @@
-import { AppSidebar } from "./AppSidebar";
-import { MobileHeader } from "./MobileHeader";
+import { AppSidebar } from './AppSidebar';
+import { MobileHeader } from './MobileHeader';
 
 interface LayoutProps {
   children: React.ReactNode;

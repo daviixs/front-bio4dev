@@ -37,14 +37,14 @@ export const usePortfolioEditor = (portfolioId: string) => {
         };
         setProfileData(converted);
       } catch (error) {
-        toast.error("Erro ao carregar perfil");
+        toast.error('Erro ao carregar perfil');
         console.error(error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadProfileData();
+    void loadProfileData();
   }, [portfolioId]);
 
   const handleSave = async () => {
@@ -56,9 +56,9 @@ export const usePortfolioEditor = (portfolioId: string) => {
         bio: profileData.bio,
         avatarUrl: profileData.photoUrl,
       });
-      toast.success("Perfil salvo com sucesso!");
+      toast.success('Perfil salvo com sucesso!');
     } catch (error) {
-      toast.error("Erro ao salvar perfil");
+      toast.error('Erro ao salvar perfil');
       console.error(error);
     } finally {
       setIsSaving(false);

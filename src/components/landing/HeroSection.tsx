@@ -150,10 +150,12 @@ function LogoMark({ brand }: { brand: string }) {
           <path d="M4 4h8l4 16h-6zM18 4h6l-4 16h-6zM28 4h6l-4 16h-6z" />
         </svg>
       );
-    case "stone":
+    case 'stone':
       return (
         <svg viewBox="0 0 56 20" className={common} aria-label="Stone">
-          <text x="2" y="15" fontSize="14" fontWeight="700" letterSpacing="0.5">stone</text>
+          <text x="2" y="15" fontSize="14" fontWeight="700" letterSpacing="0.5">
+            stone
+          </text>
         </svg>
       );
     default:

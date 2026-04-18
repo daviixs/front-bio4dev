@@ -221,7 +221,7 @@ const GourmetEditor: React.FC<GourmetEditorProps> = ({
               id="textColor"
               type="color"
               value={profileData.textColor}
-              onChange={(e) => updateField("textColor", e.target.value)}
+              onChange={(e) => updateField("text'textColor'arget.value)}
               className="h-12"
             />
           </div>

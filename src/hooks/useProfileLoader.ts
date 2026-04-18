@@ -1,7 +1,7 @@
 import React from "react";
 import { profileApi } from "@/lib/api";
 import type { ProfileComplete } from "@/types";
-import { getErrorMessage, logError } from "@/lib/logger";
+import { getErrorMessage, logError } from '@/lib/logger';
 
 export function useProfileLoader(profileId?: string) {
   const [profile, setProfile] = React.useState<ProfileComplete | null>(null);
@@ -12,7 +12,7 @@ export function useProfileLoader(profileId?: string) {
     if (!profileId) {
       setProfile(null);
       setIsLoading(false);
-      setError("PROFILE_ID_MISSING");
+      setError('PROFILE_ID_MISSING');
       return;
     }
 
@@ -23,15 +23,15 @@ export function useProfileLoader(profileId?: string) {
       const response = await profileApi.getComplete(profileId);
       setProfile(response);
     } catch (err) {
-      logError("useProfileLoader", err, { profileId });
-      setError(getErrorMessage(err, "Erro ao carregar perfil."));
+      logError('useProfileLoader', err, { profileId });
+      setError(getErrorMessage(err, 'Erro ao carregar perfil.'));
     } finally {
       setIsLoading(false);
     }
   }, [profileId]);
 
   React.useEffect(() => {
-    load();
+    void load();
   }, [load]);
 
   return {

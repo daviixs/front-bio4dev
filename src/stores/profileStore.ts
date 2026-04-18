@@ -278,6 +278,6 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       set({ error: error.response?.data?.message || 'Erro ao deletar projeto' });
     }
   },
-  
+
   clearError: () => set({ error: null }),
 }));

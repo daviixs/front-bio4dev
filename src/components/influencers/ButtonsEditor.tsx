@@ -27,7 +27,7 @@ export function ButtonsEditor({
       </Button>
       <Button size="sm" onClick={onSave} disabled={isSaving}>
         <Save className="mr-2 h-4 w-4" />
-        {isSaving ? "Salvando..." : "Salvar"}
+        {isSaving ? 'Salvando...' : 'Salvar'}
       </Button>
     </div>
   );

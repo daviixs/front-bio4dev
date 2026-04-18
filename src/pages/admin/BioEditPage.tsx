@@ -262,7 +262,7 @@ export default function BioEditPage() {
                 onProfileUpdate={() => void handleProfileUpdate(false)}
               />
             )}
-            {profile.templateType === "template_03" && (
+            {profile.templateType === 'template_03' && (
               <EditablePortfolio3
                 profile={profile}
                 onProfileUpdate={() => void handleProfileUpdate(false)}

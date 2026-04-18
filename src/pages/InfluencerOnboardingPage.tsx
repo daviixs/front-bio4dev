@@ -1636,7 +1636,9 @@ export function InfluencerOnboardingPage({
                       }
                     />
 
-                    <div className={`rounded-2xl p-5 ${onboardingChrome.surfaceCard}`}>
+                    <div
+                      className={`rounded-2xl p-5 ${onboardingChrome.surfaceCard}`}
+                    >
                       <label
                         className={`text-sm font-semibold ${onboardingChrome.bodyText}`}
                         htmlFor="display-name"
@@ -1663,7 +1665,9 @@ export function InfluencerOnboardingPage({
                       )}
                     </div>
 
-                    <div className={`rounded-2xl p-5 ${onboardingChrome.surfaceCard}`}>
+                    <div
+                      className={`rounded-2xl p-5 ${onboardingChrome.surfaceCard}`}
+                    >
                       <label
                         className={`text-sm font-semibold ${onboardingChrome.bodyText}`}
                         htmlFor="bio"

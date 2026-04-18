@@ -35,19 +35,34 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ data }) => {
               href={btn.url}
               className="w-full bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md transition-all p-4 rounded-xl flex items-center gap-4"
             >
-              <div className="bg-slate-50 p-2 rounded-lg"><Terminal size={18} className="text-indigo-600" /></div>
+              <div className="bg-slate-50 p-2 rounded-lg">
+                <Terminal size={18} className="text-indigo-600" />
+              </div>
               <div className="text-left">
                 <span className="block font-semibold text-sm">{btn.label}</span>
-                {btn.subtext && <span className="text-[10px] text-slate-400">{btn.subtext}</span>}
+                {btn.subtext && (
+                  <span className="text-[10px] text-slate-400">
+                    {btn.subtext}
+                  </span>
+                )}
               </div>
             </a>
           ))}
         </div>
 
         <div className="flex gap-4 mt-12 mb-10">
-          <Instagram size={22} className="text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer" />
-          <Twitter size={22} className="text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer" />
-          <Youtube size={22} className="text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer" />
+          <Instagram
+            size={22}
+            className="text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+          />
+          <Twitter
+            size={22}
+            className="text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+          />
+          <Youtube
+            size={22}
+            className="text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+          />
         </div>
       </div>
     </div>

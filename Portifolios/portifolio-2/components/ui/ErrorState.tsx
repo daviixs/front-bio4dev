@@ -14,7 +14,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
   title = "Profile not found",
   message = "This profile does not exist or is not published yet.",
   actionLabel = "Go back home",
-  actionHref = "/",
+  actionHref = '/',
 }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] text-white px-6">

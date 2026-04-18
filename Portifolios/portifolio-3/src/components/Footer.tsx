@@ -24,14 +24,23 @@ export default function Footer({ description, email, socials }: FooterProps) {
           <Mail className="w-4 h-4" /> {email}
         </a>
         <div className="flex gap-4 text-[12px] text-[#777]">
-          <a href={socials.instagram} className="hover:text-white transition-colors cursor-pointer flex items-center gap-1">
-            <Instagram className="w-3.5 h-3.5"/> Instagram
+          <a
+            href={socials.instagram}
+            className="hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <Instagram className="w-3.5 h-3.5" /> Instagram
           </a>
-          <a href={socials.twitter} className="hover:text-white transition-colors cursor-pointer flex items-center gap-1">
-            <Twitter className="w-3.5 h-3.5"/> X (Twitter)
+          <a
+            href={socials.twitter}
+            className="hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <Twitter className="w-3.5 h-3.5" /> X (Twitter)
           </a>
-          <a href={socials.youtube} className="hover:text-white transition-colors cursor-pointer flex items-center gap-1">
-            <Youtube className="w-3.5 h-3.5"/> YouTube
+          <a
+            href={socials.youtube}
+            className="hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <Youtube className="w-3.5 h-3.5" /> YouTube
           </a>
         </div>
       </div>

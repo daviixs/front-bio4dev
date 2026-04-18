@@ -101,9 +101,9 @@ export function ListEditor({
                 />
                 <Input
                   placeholder="Texto secundário (opcional)"
-                  value={item.subtext || ""}
+                  value={item.subtext || ''}
                   onChange={(e) =>
-                    handleChange(index, "subtext", e.target.value)
+                    handleChange(index, 'subtext', e.target.value)
                   }
                 />
               </div>

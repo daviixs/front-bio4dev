@@ -76,14 +76,14 @@ export function LinksList({ buttons, onChange }: LinksListProps) {
               value={button.icon || ""}
               placeholder="Icon (opcional)"
               onChange={(event) =>
-                updateItem(index, "icon", event.target.value)
+                updateItem(index, 'icon', event.target.value)
               }
             />
             <Input
-              value={button.style || ""}
+              value={button.style || ''}
               placeholder="Style (opcional)"
               onChange={(event) =>
-                updateItem(index, "style", event.target.value)
+                updateItem(index, 'style', event.target.value)
               }
             />
           </div>

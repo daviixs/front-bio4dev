@@ -66,9 +66,9 @@ export function CTASection() {
                     <Link
                       to="/profile/type"
                     className="group inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-4 py-2 text-sm font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
-                  >
-                    Montar bio
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px]">
+                    >
+                      Montar bio
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px]">
                         →
                       </span>
                     </Link>

@@ -34,16 +34,33 @@ const InnovationProfile: React.FC = () => {
           </button>
 
           <button className="w-full bg-[#00F0FF] text-black p-4 flex items-center justify-between hover:scale-[1.02] transition-transform">
-            <span className="font-black uppercase text-xs tracking-tighter">Compre Agora</span>
+            <span className="font-black uppercase text-xs tracking-tighter">
+              Compre Agora
+            </span>
             <Zap size={16} fill="currentColor" />
           </button>
         </div>
 
         {/* Socials */}
         <div className="flex gap-8 mt-16 text-[#00F0FF]/60">
-          <a href="#" className="hover:text-[#00F0FF] hover:scale-125 transition-all"><Instagram size={20} /></a>
-          <a href="#" className="hover:text-[#00F0FF] hover:scale-125 transition-all"><Box size={20} /></a>
-          <a href="#" className="hover:text-[#00F0FF] hover:scale-125 transition-all"><Radio size={20} /></a>
+          <a
+            href="#"
+            className="hover:text-[#00F0FF] hover:scale-125 transition-all"
+          >
+            <Instagram size={20} />
+          </a>
+          <a
+            href="#"
+            className="hover:text-[#00F0FF] hover:scale-125 transition-all"
+          >
+            <Box size={20} />
+          </a>
+          <a
+            href="#"
+            className="hover:text-[#00F0FF] hover:scale-125 transition-all"
+          >
+            <Radio size={20} />
+          </a>
         </div>
 
         <div className="mt-20 opacity-20 text-[8px] tracking-[0.5em] uppercase text-center">

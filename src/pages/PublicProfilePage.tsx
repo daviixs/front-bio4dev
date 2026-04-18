@@ -61,7 +61,7 @@ export function PublicProfilePage() {
       } finally {
         setIsLoading(false);
       }
-    };
+void     };
 
     loadProfile();
   }, [slug]);

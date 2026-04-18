@@ -24,5 +24,6 @@ export const landingTheme = {
   errorText: "text-red-600",
   errorBox: "bg-red-50 border border-red-200 text-red-700",
   successText: "text-[#c3986b]",
-  focusRing: "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c3986b]/40",
+  focusRing:
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c3986b]/40',
 };

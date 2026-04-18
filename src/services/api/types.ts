@@ -39,9 +39,9 @@ export enum Plataforma {
   bitbucket = "bitbucket",
   stackoverflow = "stackoverflow",
   codepen = "codepen",
-  discord = "discord",
-  whatsapp = "whatsapp",
-  telegram = "telegram",
+  discord = 'discord',
+  whatsapp = 'whatsapp',
+  telegram = 'telegram',
 }
 
 export interface Technology {

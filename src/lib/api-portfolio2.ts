@@ -245,11 +245,11 @@ function formatJoinedDate(dateString: string): string {
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
-      day: "numeric",
+      day: 'numeric',
     };
-    return `Joined on ${date.toLocaleDateString("en-US", options)}`;
+    return `Joined on ${date.toLocaleDateString('en-US', options)}`;
   } catch {
-    return "Joined recently";
+    return 'Joined recently';
   }
 }
 
@@ -257,7 +257,7 @@ function formatJoinedDate(dateString: string): string {
  * Gera token de preview para visualizar perfil não publicado
  */
 export async function generatePreviewToken(
-  profileId: string
+  profileId: string,
 ): Promise<{ token: string; expiresAt: string }> {
   const response = await profileApi.generatePreviewToken(profileId);
   return response;

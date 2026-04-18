@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 export function logError(
   context: string,
@@ -29,7 +29,7 @@ export function logError(
 export function getErrorMessage(error: unknown, fallback: string) {
   // Axios errors often contain useful info in `response.data`
   if (axios.isAxiosError(error)) {
-    const data = error.response?.data as any;
+    const data = error.response?.data;
     if (data?.message) return data.message;
     if (error.message) return error.message;
     return fallback;

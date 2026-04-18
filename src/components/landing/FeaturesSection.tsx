@@ -22,7 +22,9 @@ export function FeaturesSection() {
                 <div className="aspect-[16/10] overflow-hidden rounded-[10px] border border-white/12 bg-[#2e2824]">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(195,152,107,0.18),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(236,229,217,0.12),transparent_34%)]" />
                   <div className="relative flex h-full w-full items-center justify-center text-[#ece5d9]/70 text-sm font-semibold">
-                    <span className="rounded-full border border-white/20 px-3 py-1">Vídeo do produto (16:10)</span>
+                    <span className="rounded-full border border-white/20 px-3 py-1">
+                      Vídeo do produto (16:10)
+                    </span>
                   </div>
                 </div>
               </div>
@@ -36,8 +38,10 @@ export function FeaturesSection() {
                   Tudo para criar bios e portfólios épicos em um só lugar
                 </h3>
                 <p className="max-w-xl text-sm leading-[1.75] text-[#ece5d9]/60">
-                  Monte sua bio com IA, media curta, CTA quente e templates mobile-first. Atualize links em minutos,
-                  teste mensagens de contato e acompanhe cliques em tempo real — tudo dentro do painel Bio4Dev.
+                  Monte sua bio com IA, media curta, CTA quente e templates
+                  mobile-first. Atualize links em minutos, teste mensagens de
+                  contato e acompanhe cliques em tempo real — tudo dentro do
+                  painel Bio4Dev.
                 </p>
                 <button className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-8 py-3 text-sm font-medium text-[#221e1b] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] active:scale-[0.98]">
                   Ver como funciona

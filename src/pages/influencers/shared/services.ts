@@ -139,7 +139,7 @@ async function replaceSocials(
 
 async function replaceButtons(
   profileId: string,
-  buttons: InfluencerTemplateData["buttons"],
+  buttons: InfluencerTemplateData['buttons'],
 ) {
   await linkButtonsApi.deleteAllByProfileId(profileId);
 
@@ -148,7 +148,7 @@ async function replaceButtons(
     .map((button, index) => ({
       label: button.label,
       url: button.url,
-      subtext: button.subtext || "",
+      subtext: button.subtext || '',
       icon: button.icon,
       style: button.style,
       ordem: index,

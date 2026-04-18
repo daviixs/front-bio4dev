@@ -39,7 +39,7 @@ export function usePortfolio({
           if (err instanceof Error) {
             setError(err.message);
           } else {
-            setError("UNKNOWN_ERROR");
+            setError('UNKNOWN_ERROR');
           }
         }
       } finally {
@@ -49,7 +49,7 @@ export function usePortfolio({
       }
     }
 
-    fetchPortfolio();
+    void fetchPortfolio();
 
     return () => {
       isMounted = false;

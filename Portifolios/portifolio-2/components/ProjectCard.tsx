@@ -84,14 +84,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           />
           <FormInput
             value={editData.tags}
-            onChange={(v) => updateField("tags", v)}
+            onChange={(v) => updateField('tags', v)}
             placeholder="Tags (separated by commas)"
             className="text-sm text-gray-300"
           />
           <FormInput
             type="url"
             value={editData.link}
-            onChange={(v) => updateField("link", v)}
+            onChange={(v) => updateField('link', v)}
             placeholder="Project link"
             className="text-sm text-gray-300"
           />

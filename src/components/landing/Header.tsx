@@ -99,7 +99,11 @@ export function Header() {
               aria-label="Abrir menu"
               aria-expanded={open}
             >
-              {open ? <X size={22} weight="bold" /> : <List size={22} weight="bold" />}
+              {open ? (
+                <X size={22} weight="bold" />
+              ) : (
+                <List size={22} weight="bold" />
+              )}
             </button>
           )}
         </div>
@@ -116,7 +120,7 @@ export function Header() {
                 onClick={handleLogin}
                 className="flex items-center justify-center gap-2 rounded-full border border-[#c3986b]/30 bg-[#2c2621] px-4 py-3 text-sm font-semibold text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] hover:bg-[#3a3028]"
               >
-                {isLoading ? "Redirecionando..." : "Entrar"}
+                {isLoading ? 'Redirecionando...' : 'Entrar'}
               </button>
               <Link
                 to="/profile/type"

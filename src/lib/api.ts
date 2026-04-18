@@ -19,13 +19,11 @@ import type {
   CreateProjetoDTO,
   UpdateProjetoDTO,
   CreateTechStackDTO,
-  CreateTechnologyDTO,
   CreateWorkExperienceDTO,
   UpdateWorkExperienceDTO,
   CreateFooterDTO,
   UpdateFooterDTO,
   LoginDTO,
-  Footer,
   TemplateType,
 } from '@/types';
 

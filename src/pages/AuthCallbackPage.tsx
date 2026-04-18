@@ -92,14 +92,14 @@ export function AuthCallbackPage() {
         }
 
         hydrateProfile();
-        navigate('/dashboard', { replace: true });
+   void      navigate('/dashboard', { replace: true });
       })
       .catch((error: unknown) => {
         const message =
           getApiErrorMessage(error) ||
           'Não foi possível autenticar. Tente novamente.';
         toast.error(message);
-        navigate('/profile/type', { replace: true });
+        void navigate('/profile/type', { replace: true });
       })
       .finally(() => setProcessing(false));
   }, [params, navigate, handleOAuthCallback]);

@@ -17,8 +17,14 @@ const SharedLink: React.FC<SharedLinkProps> = ({ label, subtext, icon, className
     <div className="flex items-center gap-3">
       {icon && <div className="group-hover:scale-110 transition-transform">{icon}</div>}
       <div className="text-left">
-        <span className="block font-bold text-sm uppercase tracking-tight">{label}</span>
-        {subtext && <span className="block text-[10px] opacity-60 font-medium">{subtext}</span>}
+        <span className="block font-bold text-sm uppercase tracking-tight">
+          {label}
+        </span>
+        {subtext && (
+          <span className="block text-[10px] opacity-60 font-medium">
+            {subtext}
+          </span>
+        )}
       </div>
     </div>
   </button>

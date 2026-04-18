@@ -394,9 +394,9 @@ export function CreateProfilePage() {
                 bio4.dev/seunome
               </p>
               <p className={`text-sm ${landingTheme.textSecondary}`}>
-                Seu link sera:{" "}
+                Seu link sera:{' '}
                 <span className="font-semibold text-slate-900">
-                  bio4.dev/{slugPreview || "seunome"}
+                  bio4.dev/{slugPreview || 'seunome'}
                 </span>
               </p>
               {slugError && (

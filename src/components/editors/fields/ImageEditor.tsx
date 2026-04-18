@@ -68,7 +68,7 @@ export function ImageEditor({
                   className="h-full w-full object-cover"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
-                      "https://via.placeholder.com/400x300?text=Imagem+Invalida";
+                      'https://via.placeholder.com/400x300?text=Imagem+Invalida';
                   }}
                 />
               </div>

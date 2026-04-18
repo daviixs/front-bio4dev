@@ -51,7 +51,7 @@ export function SocialList({ socials, onChange }: SocialListProps) {
             className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm"
             value={social.platform}
             onChange={(event) =>
-              updateItem(index, "platform", event.target.value)
+              updateItem(index, 'platform', event.target.value)
             }
           >
             {PLATFORM_OPTIONS.map((platform) => (
@@ -63,13 +63,9 @@ export function SocialList({ socials, onChange }: SocialListProps) {
           <Input
             value={social.url}
             placeholder="https://..."
-            onChange={(event) => updateItem(index, "url", event.target.value)}
+            onChange={(event) => updateItem(index, 'url', event.target.value)}
           />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => removeItem(index)}
-          >
+          <Button variant="ghost" size="icon" onClick={() => removeItem(index)}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>

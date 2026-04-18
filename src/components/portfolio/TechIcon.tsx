@@ -11,7 +11,9 @@ interface TechIconProps {
 export function TechIcon({ icon, className, size = 40 }: TechIconProps) {
   // Se o ícone for uma string do Iconify (ex: logos:react)
   if (icon.includes(':')) {
-    return <Icon icon={icon} className={className} style={{ fontSize: size }} />;
+    return (
+      <Icon icon={icon} className={className} style={{ fontSize: size }} />
+    );
   }
 
   // Fallback para ícones do Lucide ou placeholders se for apenas um nome curto

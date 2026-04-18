@@ -48,4 +48,6 @@ const ActivistProfile: React.FC = () => {
   );
 };
 
-export default ActivistProfile;
+export default Activist
+
+Profile;

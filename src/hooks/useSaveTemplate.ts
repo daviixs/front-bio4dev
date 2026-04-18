@@ -15,7 +15,7 @@ export function useSaveTemplate(templateId?: string) {
       currentProfile?: ProfileComplete,
     ) => {
       // Modo rascunho (sem login): apenas persistir no localStorage e sair
-      if (profileId.startsWith("draft-")) {
+      if (profileId.startsWith('draft-')) {
         try {
           localStorage.setItem(
             `bio4dev_onboarding_${profileId}_persisted`,
@@ -28,7 +28,7 @@ export function useSaveTemplate(templateId?: string) {
       }
 
       if (!templateId || !templateRegistry[templateId]) {
-        const message = "Template nao registrado.";
+        const message = 'Template nao registrado.';
         setError(message);
         throw new Error(message);
       }
@@ -40,8 +40,8 @@ export function useSaveTemplate(templateId?: string) {
       try {
         await services.saveAll(profileId, data, currentProfile);
       } catch (err) {
-        logError("useSaveTemplate", err, { templateId, profileId });
-        const message = getErrorMessage(err, "Erro ao salvar template.");
+        logError('useSaveTemplate', err, { templateId, profileId });
+        const message = getErrorMessage(err, 'Erro ao salvar template.');
         setError(message);
         throw err;
       } finally {

@@ -19,8 +19,8 @@ const variantStyles = {
  */
 const Tag: React.FC<TagProps> = ({
   children,
-  variant = "default",
-  className = "",
+  variant = 'default',
+  className = '',
 }) => {
   return (
     <span className={`${variantStyles[variant]} ${className}`}>{children}</span>

@@ -9,9 +9,7 @@ export function Footer() {
       <div className="max-w-6xl mx-auto">
         {/* Seção de contato */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl mb-4">
-            Vamos trabalhar juntos?
-          </h2>
+          <h2 className="text-3xl md:text-4xl mb-4">Vamos trabalhar juntos?</h2>
           <p className="text-gray-400 mb-8">
             Estou sempre aberto a novos projetos e oportunidades
           </p>

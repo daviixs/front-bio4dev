@@ -9,12 +9,12 @@ const useThemeEditor = (themeId: string) => {
         const editorModule = await import(`../components/editors/${themeId}Editor`);
         setThemeEditor(() => editorModule.default);
       } catch (error) {
-        console.error("Error loading theme editor:", error);
+        console.error('Error loading theme editor:', error);
         setThemeEditor(null);
       }
     };
 
-    loadThemeEditor();
+    void loadThemeEditor();
   }, [themeId]);
 
   return themeEditor;

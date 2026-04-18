@@ -63,7 +63,9 @@ export function MetricCard({
               <span className={cn("font-semibold inline-flex items-center gap-1", deltaColor(delta))}>
                 {formatDelta(delta)}
               </span>
-              {helper ? <span className="ml-2 text-foreground/60">{helper}</span> : null}
+              {helper ? (
+                <span className="ml-2 text-foreground/60">{helper}</span>
+              ) : null}
             </p>
           </div>
         )}

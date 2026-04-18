@@ -2527,7 +2527,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                     editingSocial.name ||
                     editingSocial.id
                   ).toLowerCase() ||
-                s.id.toString() === editingSocial.id,
+    === editingSocial.id,
             ) ? (
               <Button variant="destructive" onClick={deleteSocial} size="sm">
                 <Trash2 size={16} className="mr-2" /> Remove

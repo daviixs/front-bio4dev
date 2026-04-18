@@ -272,7 +272,7 @@ export function InfluencerEditorPage() {
         />
       )}
 
-      {editState && editState.type === "image" && (
+      {editState && editState.type === 'image' && (
         <ImageEditor
           value={editState.value}
           label={editState.label}
@@ -285,7 +285,7 @@ export function InfluencerEditorPage() {
         />
       )}
 
-      {editState && editState.type === "list" && (
+      {editState && editState.type === 'list' && (
         <ListEditor
           value={editState.value}
           label={editState.label}
@@ -298,7 +298,7 @@ export function InfluencerEditorPage() {
         />
       )}
 
-      {editState && editState.type === "color" && (
+      {editState && editState.type === 'color' && (
         <ColorPicker
           value={editState.value}
           label={editState.label}

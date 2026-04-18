@@ -47,7 +47,9 @@ const BusinessProfile: React.FC = () => {
         <div className="flex items-center gap-8 mt-12 mb-8">
           <a href="#" className="text-[#7B3F00]/60 hover:text-[#7B3F00]"><Instagram size={20} /></a>
           <a href="#" className="text-[#7B3F00]/60 hover:text-[#7B3F00]"><Facebook size={20} /></a>
-          <a href="#" className="text-[#7B3F00]/60 hover:text-[#7B3F00]"><Phone size={20} /></a>
+          <a href="#" className="text-[#7B3F00]/60 hover:text-[#7B3F00]"><
+            <Phone size={20} />
+          /a>
         </div>
       </div>
     </div>

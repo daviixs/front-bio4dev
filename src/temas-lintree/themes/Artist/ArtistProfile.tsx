@@ -45,7 +45,12 @@ const ArtistProfile: React.FC = () => {
         <div className="flex gap-8 mt-14">
           <a href="#" className="text-zinc-500 hover:text-white transition-colors"><Music size={20} /></a>
           <a href="#" className="text-zinc-500 hover:text-white transition-colors"><Instagram size={20} /></a>
-          <a href="#" className="text-zinc-500 hover:text-white transition-colors"><Video size={20} /></a>
+          <a 
+            href="#"
+            className="text-zinc-500 hover:text-white transition-colors"
+          >
+            <Video size={20} />
+          /a>
         </div>
       </div>
     </div>

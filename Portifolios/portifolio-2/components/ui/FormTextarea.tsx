@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface FormTextareaProps {
   value: string;
@@ -16,7 +16,7 @@ const FormTextarea: React.FC<FormTextareaProps> = ({
   onChange,
   placeholder,
   rows = 3,
-  className = "",
+  className = '',
 }) => {
   return (
     <textarea

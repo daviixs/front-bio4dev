@@ -38,7 +38,8 @@ export function SignupPage() {
           />
 
           <p className="text-xs text-foreground/60 mt-4">
-            Ao continuar, você concorda em compartilhar seu email e nome com o Bio4Dev.
+            Ao continuar, você concorda em compartilhar seu email e nome com o
+            Bio4Dev.
           </p>
         </div>
       </div>

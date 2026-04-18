@@ -2,5 +2,5 @@ import type { InfluencerTemplateData as BaseInfluencerTemplateData } from "../sh
 
 export type InfluencerTemplateData = BaseInfluencerTemplateData;
 
-export const TEMPLATE_ID = "template_13" as const;
-export const THEME_ID = "innovation" as const;
+export const TEMPLATE_ID = 'template_13' as const;
+export const THEME_ID = 'innovation' as const;

@@ -151,13 +151,17 @@ export function Footer({ footer, socials }: FooterProps) {
         <div className={`border-t pt-8 ${template01Theme.divider}`}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
-            <p className={`${template01Theme.footerSecondary} text-center md:text-left`}>
+            <p
+              className={`${template01Theme.footerSecondary} text-center md:text-left`}
+            >
               © {currentYear} {footer?.copyrightName || 'João Silva'}. Todos os
               direitos reservados.
             </p>
 
             {/* Made with */}
-            <p className={`${template01Theme.footerSecondary} flex items-center gap-2`}>
+            <p
+              className={`${template01Theme.footerSecondary} flex items-center gap-2`}
+            >
               {footer?.madeWith && (
                 <>
                   Feito com <span className="text-[#c5b9b7]">❤️</span> e

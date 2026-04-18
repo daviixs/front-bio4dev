@@ -8,11 +8,19 @@ export function TechStack() {
     { name: 'JavaScript', icon: <FileCode size={40} />, color: 'text-yellow-500' },
     { name: 'React', icon: <FileCode size={40} />, color: 'text-cyan-500' },
     { name: 'Node.js', icon: <Terminal size={40} />, color: 'text-green-600' },
-    { name: 'Tailwind CSS', icon: <Palette size={40} />, color: 'text-teal-500' },
+    {
+      name: 'Tailwind CSS',
+      icon: <Palette size={40} />,
+      color: 'text-teal-500',
+    },
     { name: 'Git', icon: <GitBranch size={40} />, color: 'text-orange-700' },
     { name: 'GitHub', icon: <Github size={40} />, color: 'text-gray-800' },
     { name: 'VS Code', icon: <Settings size={40} />, color: 'text-blue-500' },
-    { name: 'Database', icon: <Database size={40} />, color: 'text-purple-600' },
+    {
+      name: 'Database',
+      icon: <Database size={40} />,
+      color: 'text-purple-600',
+    },
   ];
 
   return (
@@ -35,7 +43,9 @@ export function TechStack() {
               key={index}
               className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-110 hover:-translate-y-2 cursor-pointer group"
             >
-              <div className={`${tech.color} mb-3 group-hover:scale-110 transition-transform`}>
+              <div
+                className={`${tech.color} mb-3 group-hover:scale-110 transition-transform`}
+              >
                 {tech.icon}
               </div>
               <span className="text-gray-700">{tech.name}</span>

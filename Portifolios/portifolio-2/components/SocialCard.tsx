@@ -38,10 +38,14 @@ const SocialCard: React.FC<SocialCardProps> = ({ item }) => {
 
       <div className="z-10">
         {item.id === 'github' && (
-             <span className="mb-2 inline-block px-2.5 py-0.5 text-[10px] font-bold bg-white text-black rounded uppercase tracking-wider">Follow</span>
+          <span className="mb-2 inline-block px-2.5 py-0.5 text-[10px] font-bold bg-white text-black rounded uppercase tracking-wider">
+            Follow
+          </span>
         )}
         <h3 className={`font-bold text-lg ${textColor}`}>{item.name}</h3>
-        <p className={`text-xs ${subTextColor} font-medium truncate mt-0.5`}>{item.handle}</p>
+        <p className={`text-xs ${subTextColor} font-medium truncate mt-0.5`}>
+          {item.handle}
+        </p>
       </div>
     </a>
   );

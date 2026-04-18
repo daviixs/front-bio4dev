@@ -4,7 +4,7 @@ import type { ProfileData } from "@/temas-lintree/types";
 import type { InfluencerTemplateData } from "./types";
 import { getInfluencerThemePreset } from "./themePresets";
 
-const DEFAULT_AVATAR_URL = "https://api.dicebear.com/7.x/avataaars/svg";
+const DEFAULT_AVATAR_URL = 'https://api.dicebear.com/7.x/avataaars/svg';
 
 function toProfileData(data: InfluencerTemplateData): ProfileData {
   const preset = getInfluencerThemePreset(data.themeId);
@@ -12,8 +12,8 @@ function toProfileData(data: InfluencerTemplateData): ProfileData {
   return {
     id: data.themeId,
     themeName: data.themeId,
-    name: data.name || "Seu Nome",
-    bio: data.bio || "",
+    name: data.name || 'Seu Nome',
+    bio: data.bio || '',
     photoUrl: data.photoUrl || DEFAULT_AVATAR_URL,
     backgroundStyle: preset.profile.backgroundStyle,
     buttonStyle: preset.profile.buttonStyle,

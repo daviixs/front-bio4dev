@@ -53,7 +53,7 @@ export function PortfolioEditorPage({ mode }: PortfolioEditorPageProps) {
         ) : (
           <div className="text-center space-y-3">
             <p className="text-slate-500">
-              {error || "Template nao encontrado."}
+              {error || 'Template nao encontrado.'}
             </p>
             <Button variant="outline" onClick={() => navigate(-1)}>
               Voltar
@@ -74,7 +74,7 @@ export function PortfolioEditorPage({ mode }: PortfolioEditorPageProps) {
     );
   }
 
-  const Component = mode === "preview" ? entry.Preview : entry.Editor;
+  const Component = mode === 'preview' ? entry.Preview : entry.Editor;
 
   return <Component />;
 }

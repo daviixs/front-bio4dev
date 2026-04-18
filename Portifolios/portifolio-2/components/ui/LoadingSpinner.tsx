@@ -8,7 +8,7 @@ interface LoadingSpinnerProps {
  * Componente de loading reutilizável
  */
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
-  message = "Loading...",
+  message = 'Loading...',
 }) => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#050505]">

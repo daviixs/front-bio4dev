@@ -98,7 +98,7 @@ export function EditorOverlay({
         />
       )}
 
-      {editingField && editingField.type === "list" && (
+      {editingField && editingField.type === 'list' && (
         <ListEditor
           value={editingField.value}
           label={editingField.label}
@@ -108,7 +108,7 @@ export function EditorOverlay({
         />
       )}
 
-      {editingField && editingField.type === "color" && (
+      {editingField && editingField.type === 'color' && (
         <ColorPicker
           value={editingField.value}
           label={editingField.label}

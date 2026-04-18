@@ -17,7 +17,7 @@ export interface SocialLink {
     | "patreon"
     | "twitch"
     | "applemusic"
-    | "pinterest";
+    | 'pinterest';
   url: string;
 }
 

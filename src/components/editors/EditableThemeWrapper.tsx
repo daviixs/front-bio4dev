@@ -174,7 +174,7 @@ export function EditableThemeWrapper({
         />
       )}
 
-      {editState && editState.type === "color" && (
+      {editState && editState.type === 'color' && (
         <ColorPicker
           value={editState.value}
           label={editState.label}

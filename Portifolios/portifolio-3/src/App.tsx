@@ -96,7 +96,7 @@ export default function App() {
           >
             <ScrollArea className="h-full pr-4">
               <div className="flex flex-col justify-between min-h-full">
-                <Hero 
+                <Hero
                   title={portfolioData.hero.title}
                   gradientTitle={portfolioData.hero.gradientTitle}
                   description={portfolioData.hero.description}
@@ -108,7 +108,7 @@ export default function App() {
           </motion.div>
 
           {/* Right Column */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -128,7 +128,7 @@ export default function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Footer 
+          <Footer
             description={portfolioData.contact.description}
             email={portfolioData.contact.email}
             socials={portfolioData.contact.socials}

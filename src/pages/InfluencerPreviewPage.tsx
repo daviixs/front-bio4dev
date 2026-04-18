@@ -10,7 +10,7 @@ export default function InfluencerPreviewPage() {
   const { profile } = useAuthStore();
 
   const [profileData, setProfileData] = React.useState<ProfileData | null>(
-    null
+    null,
   );
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -23,13 +23,13 @@ export default function InfluencerPreviewPage() {
         const profileResponse = await profileApi.getComplete(portfolioId);
         setProfileData(profileResponse);
       } catch (error) {
-        console.error("Error loading profile data:", error);
+        console.error('Error loading profile data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadProfileData();
+    void loadProfileData();
   }, [portfolioId]);
 
   if (isLoading) {

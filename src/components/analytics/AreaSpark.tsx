@@ -22,8 +22,8 @@ export function AreaSpark({ data, showUnique }: AreaSparkProps) {
         <Tooltip
           contentStyle={{
             backgroundColor: "hsl(var(--popover))",
-            border: "1px solid hsl(var(--border))",
-            borderRadius: "var(--radius)",
+            border: '1px solid hsl(var(--border))',
+            borderRadius: 'var(--radius)',
           }}
         />
         <Area

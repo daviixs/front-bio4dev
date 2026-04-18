@@ -153,9 +153,10 @@ export function EditableField({
         <span className={cn(
           "flex-1",
           !value && "text-gray-400 italic",
-          valueClassName
-        )}>
-          {value || placeholder || "Clique para editar"}
+            valueClassName,
+          )}
+        >
+          {value || placeholder || 'Clique para editar'}
         </span>
         <Pencil className="h-4 w-4 text-gray-400 opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0" />
       </div>

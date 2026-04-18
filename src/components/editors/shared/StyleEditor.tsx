@@ -63,4 +63,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ profileData, setProfileData }
   );
 };
 
-export default StyleEditor;
+export default StyleEdito
+
+
+r;

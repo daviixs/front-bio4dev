@@ -4,7 +4,7 @@ export function LoginImage() {
   return (
     <div className="hidden lg:block relative h-screen w-full overflow-hidden">
       {/* Imagem de fundo - substituir com a imagem real do Figma */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: 'url(/assets/login-bg.jpg)',
@@ -15,7 +15,7 @@ export function LoginImage() {
         {/* Overlay sutil opcional */}
         <div className="absolute inset-0 bg-black/10" />
       </div>
-      
+
       {/* Crédito da foto no canto inferior esquerdo */}
       <div className="absolute bottom-6 left-6 text-white text-sm font-medium">
         Photo by Alexandr Popadin

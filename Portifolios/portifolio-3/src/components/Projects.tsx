@@ -11,16 +11,18 @@ export default function Projects({ projects }: ProjectsProps) {
       <div className="text-[#FF6B35] font-bold mb-5 text-lg">PROJECTS</div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {projects.map((project) => (
-          <div 
+          <div
             key={project.id}
             className="bg-[#1a1a1a] rounded-2xl overflow-hidden border border-[#222] flex flex-col group cursor-pointer hover:border-[#444] transition-colors"
           >
-            <div 
+            <div
               className="h-32 w-full flex items-center justify-center font-black text-sm tracking-wider relative overflow-hidden"
               style={{ backgroundColor: project.thumbnailBg }}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-transparent z-10"></div>
-              <span className="z-20 text-center uppercase">{project.thumbnailText}</span>
+              <span className="z-20 text-center uppercase">
+                {project.thumbnailText}
+              </span>
             </div>
             <div className="p-3 flex justify-between items-center text-[10px] font-semibold">
               <div>{project.subtitle}</div>

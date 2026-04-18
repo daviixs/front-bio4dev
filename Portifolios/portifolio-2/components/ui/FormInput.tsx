@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
 interface FormInputProps {
-  type?: "text" | "url" | "email";
+  type?: 'text' | 'url' | 'email';
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -12,11 +12,11 @@ interface FormInputProps {
  * Input de formulário padronizado para edição inline
  */
 const FormInput: React.FC<FormInputProps> = ({
-  type = "text",
+  type = 'text',
   value,
   onChange,
   placeholder,
-  className = "",
+  className = '',
 }) => {
   return (
     <input

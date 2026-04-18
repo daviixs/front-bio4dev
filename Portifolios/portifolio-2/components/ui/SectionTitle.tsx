@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface SectionTitleProps {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ interface SectionTitleProps {
  */
 const SectionTitle: React.FC<SectionTitleProps> = ({
   children,
-  className = "",
+  className = '',
 }) => {
   return (
     <h2

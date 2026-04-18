@@ -168,6 +168,4 @@ export const useDevicesData = (
       if (!profileId) throw new Error("Perfil não encontrado");
       const data = await analyticsApi.getDevices(profileId, range);
       return data;
-    },
-    [profileId, range],
-  );
+  }, [profileId, range]);

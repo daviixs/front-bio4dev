@@ -29,12 +29,12 @@ export function TextInput({
 
   const inputType = showPasswordToggle && type === 'password' 
     ? (showPassword ? 'text' : 'password')
-    : type;
+      : type;
 
   return (
     <div className="w-full">
-      <label 
-        htmlFor={id || name} 
+      <label
+        htmlFor={id || name}
         className="block text-sm font-medium text-gray-700 mb-2"
       >
         {label}

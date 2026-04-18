@@ -22,7 +22,9 @@ export const SocialLinksEditor: React.FC<SocialLinksEditorProps> = ({
     <div className="bg-white rounded-xl border border-slate-200 p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-semibold text-slate-900">Redes Sociais</h2>
+          <h2 className="text-lg font-semibold text-slate-900">
+            Redes Sociais
+          </h2>
         </div>
         <Button size="sm" variant="outline" onClick={onAddSocial}>
           Adicionar
@@ -34,7 +36,7 @@ export const SocialLinksEditor: React.FC<SocialLinksEditorProps> = ({
             <select
               value={social.platform}
               onChange={(e) =>
-                onUpdateSocial(index, "platform", e.target.value)
+                onUpdateSocial(index, 'platform', e.target.value)
               }
               className="px-3 py-2 border border-slate-200 rounded-lg bg-white text-sm"
             >
@@ -49,9 +51,7 @@ export const SocialLinksEditor: React.FC<SocialLinksEditorProps> = ({
             </select>
             <Input
               value={social.url}
-              onChange={(e) =>
-                onUpdateSocial(index, "url", e.target.value)
-              }
+              onChange={(e) => onUpdateSocial(index, 'url', e.target.value)}
               placeholder="https://..."
             />
             <Button

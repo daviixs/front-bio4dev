@@ -33,15 +33,18 @@ export function RememberMe({ checked: controlledChecked, onChange }: RememberMeP
           relative w-11 h-6 rounded-full transition-colors duration-200
           ${checked ? 'bg-blue-600' : 'bg-gray-300'}
           peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 peer-focus:ring-offset-2
-        `}>
+        `}
+        >
           {/* Switch Thumb */}
-          <div className={`
+          <div
+            className={`
             absolute top-[2px] left-[2px] 
             w-5 h-5 bg-white rounded-full
             transition-transform duration-200 ease-in-out
             ${checked ? 'translate-x-5' : 'translate-x-0'}
             shadow-sm
-          `} />
+          `}
+          />
         </div>
         <span className="text-sm text-gray-700 font-medium select-none">
           Remember me

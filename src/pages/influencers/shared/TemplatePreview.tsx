@@ -65,13 +65,17 @@ export function TemplatePreview({ templateId }: { templateId: InfluencerTemplate
   };
 
   return (
-    <div className={`influencer-theme-scope min-h-screen ${preset.chrome.page}`}>
+    <div
+      className={`influencer-theme-scope min-h-screen ${preset.chrome.page}`}
+    >
       <div className="px-4 pt-5 sm:px-6 sm:pt-6">
         <div
           className={`mx-auto flex max-w-5xl flex-col gap-4 rounded-[28px] px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 ${preset.chrome.previewToolbar}`}
         >
           <div>
-            <h1 className={`text-lg font-semibold ${preset.chrome.previewToolbarTitle}`}>
+            <h1
+              className={`text-lg font-semibold ${preset.chrome.previewToolbarTitle}`}
+            >
               Preview do template
             </h1>
             <p className={`text-sm ${preset.chrome.previewToolbarMeta}`}>
@@ -85,7 +89,7 @@ export function TemplatePreview({ templateId }: { templateId: InfluencerTemplate
               onClick={handlePublish}
               className={`inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold transition ${preset.chrome.previewToolbarPrimary} disabled:cursor-not-allowed disabled:opacity-60`}
             >
-              {isPublishing ? "Publicando..." : "Publicar meu site"}
+              {isPublishing ? 'Publicando...' : 'Publicar meu site'}
             </button>
             <button
               type="button"

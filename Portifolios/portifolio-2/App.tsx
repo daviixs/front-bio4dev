@@ -45,7 +45,7 @@ function App() {
       setData({
         ...data,
         experience: data.experience.map((exp) =>
-          exp.id === id ? { ...exp, ...updatedExperience } : exp
+          exp.id === id ? { ...exp, ...updatedExperience } : exp,
         ),
       });
     }
@@ -56,7 +56,7 @@ function App() {
       setData({
         ...data,
         projects: data.projects.map((proj) =>
-          proj.id === id ? { ...proj, ...updatedProject } : proj
+          proj.id === id ? { ...proj, ...updatedProject } : proj,
         ),
       });
     }
@@ -70,7 +70,7 @@ function App() {
     return (
       <ErrorState
         message={
-          error || "This profile does not exist or is not published yet."
+          error || 'This profile does not exist or is not published yet.'
         }
       />
     );

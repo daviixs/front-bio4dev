@@ -110,7 +110,7 @@ export const PROFILES: ProfileData[] = [
     buttons: [
       { label: "Curso Grátis: Horta Urbana", url: "#", subtext: "Vagas abertas para o próximo mês" },
       { label: "Guia de Reciclagem PDF", url: "#" },
-      { label: "Apoie o Projeto Comunitário", url: "#", subtext: "Contribua com o Jardim Coletivo" },
+      { label: "Apoie o Projeto Comunitário", url: "#", subtext: "Contribua com o Jardim Coletiv,,,o" },
       { label: "Próximos Eventos", url: "#" }
     ]
   }

@@ -862,7 +862,7 @@ export function EditablePortfolio1({
       }
     };
 
-    if (!localProfile.id) {
+    if (!localProfilvoid e.id) {
       createProfileIfNeeded();
     }
   }, [localProfile.id]);

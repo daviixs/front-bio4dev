@@ -1,7 +1,10 @@
 import type { ProfileComplete } from "@/types";
-import type { InfluencerTemplateData } from "./types";
-import { TEMPLATE_ID } from "./types";
-import { load as loadShared, saveAll as saveAllShared } from "../shared/services";
+import type { InfluencerTemplateData } from './types';
+import { TEMPLATE_ID } from './types';
+import {
+  load as loadShared,
+  saveAll as saveAllShared,
+} from '../shared/services';
 
 /**
  * Example: load(profileId)

@@ -12,7 +12,7 @@ export function PageHeader({ title, subtitle, actions, className }: PageHeaderPr
   return (
     <div
       className={cn(
-        "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3",
+        'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3',
         className,
       )}
     >
@@ -26,9 +26,7 @@ export function PageHeader({ title, subtitle, actions, className }: PageHeaderPr
           </p>
         )}
       </div>
-      {actions && (
-        <div className="flex items-center gap-2">{actions}</div>
-      )}
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
   );
 }

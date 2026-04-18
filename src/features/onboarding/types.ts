@@ -34,10 +34,7 @@ export type OnboardingState = {
   avatarFileName?: string | null;
 };
 
-export type OnboardingDraftStatus =
-  | 'collecting'
-  | 'pending_auth'
-  | 'completed';
+export type OnboardingDraftStatus = 'collecting' | 'pending_auth' | 'completed';
 
 export type OnboardingDraft = {
   version: 1;

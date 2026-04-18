@@ -65,7 +65,7 @@ export function FAQSection() {
                     {faq.question}
                   </span>
                   <span className="text-[#ece5d9] text-xl leading-none">
-                    {isOpen ? "−" : "+"}
+                    {isOpen ? '−' : '+'}
                   </span>
                 </button>
                 {isOpen && (

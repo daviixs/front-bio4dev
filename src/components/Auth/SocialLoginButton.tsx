@@ -7,7 +7,12 @@ interface SocialLoginButtonProps {
   label?: string;
 }
 
-export function SocialLoginButton({ provider, onClick, disabled, label }: SocialLoginButtonProps) {
+export function SocialLoginButton({
+  provider,
+  onClick,
+  disabled,
+  label,
+}: SocialLoginButtonProps) {
   const getProviderConfig = () => {
     switch (provider) {
       case 'google':

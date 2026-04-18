@@ -142,7 +142,10 @@ export default function App() {
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
 
-          <Route path="/dashboard-old" element={<Navigate to="/dashboard" replace />} />
+          <Route
+            path="/dashboard-old"
+            element={<Navigate to="/dashboard" replace />}
+          />
 
           <Route path="/portifolio-1/:slug" element={<PublicProfilePage />} />
           <Route path="/:slug" element={<PublicProfilePage />} />
@@ -156,9 +159,9 @@ export default function App() {
         toastOptions={{
           style: {
             zIndex: 2147483647,
-            background: "var(--card)",
-            border: "1px solid var(--primary)",
-            color: "var(--foreground)",
+            background: 'var(--card)',
+            border: '1px solid var(--primary)',
+            color: 'var(--foreground)',
           },
         }}
       />

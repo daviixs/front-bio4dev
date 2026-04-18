@@ -228,7 +228,7 @@ const CreatorEditor: React.FC<CreatorEditorProps> = ({
               id="textColor"
               type="color"
               value={profileData.textColor}
-              onChange={(e) => updateField("textColor", e.target.value)}
+              onChange={(e) => updateField("te'textColor'.target.value)}
               className="h-12"
             />
           </div>

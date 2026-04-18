@@ -62,12 +62,42 @@ export const templateRegistry = {
   template_06: { Editor: Editor06, Preview: Preview06, View: View06, services: services06 },
   template_07: { Editor: Editor07, Preview: Preview07, View: View07, services: services07 },
   template_08: { Editor: Editor08, Preview: Preview08, View: View08, services: services08 },
-  template_09: { Editor: Editor09, Preview: Preview09, View: View09, services: services09 },
-  template_10: { Editor: Editor10, Preview: Preview10, View: View10, services: services10 },
-  template_11: { Editor: Editor11, Preview: Preview11, View: View11, services: services11 },
-  template_12: { Editor: Editor12, Preview: Preview12, View: View12, services: services12 },
-  template_13: { Editor: Editor13, Preview: Preview13, View: View13, services: services13 },
-  template_14: { Editor: Editor14, Preview: Preview14, View: View14, services: services14 },
+  template_09: {
+    Editor: Editor09,
+    Preview: Preview09,
+    View: View09,
+    services: services09,
+  },
+  template_10: {
+    Editor: Editor10,
+    Preview: Preview10,
+    View: View10,
+    services: services10,
+  },
+  template_11: {
+    Editor: Editor11,
+    Preview: Preview11,
+    View: View11,
+    services: services11,
+  },
+  template_12: {
+    Editor: Editor12,
+    Preview: Preview12,
+    View: View12,
+    services: services12,
+  },
+  template_13: {
+    Editor: Editor13,
+    Preview: Preview13,
+    View: View13,
+    services: services13,
+  },
+  template_14: {
+    Editor: Editor14,
+    Preview: Preview14,
+    View: View14,
+    services: services14,
+  },
 } satisfies Record<
   InfluencerTemplateId,
   {
@@ -76,7 +106,11 @@ export const templateRegistry = {
     View: React.ComponentType<{ data?: any }>;
     services: {
       load: (profileId: string) => Promise<any>;
-      saveAll: (profileId: string, data: any, currentProfile?: any) => Promise<void>;
+      saveAll: (
+        profileId: string,
+        data: any,
+        currentProfile?: any,
+      ) => Promise<void>;
     };
   }
 >;

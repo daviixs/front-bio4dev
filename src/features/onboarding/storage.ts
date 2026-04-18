@@ -9,7 +9,9 @@ const DRAFT_STORAGE_PREFIX = 'bio4dev_onboarding_draft_v1:';
 const AUTH_INTENT_STORAGE_KEY = 'bio4dev_onboarding_auth_intent_v1';
 
 function canUseStorage() {
-  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+  return (
+    typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
+  );
 }
 
 function parseJson<T>(value: string | null): T | null {
@@ -28,7 +30,9 @@ function getDraftStorageKey(draftId: string) {
   return `${DRAFT_STORAGE_PREFIX}${draftId}`;
 }
 
-function normalizeDraft(raw: Partial<OnboardingDraft> & { draftId: string }): OnboardingDraft | null {
+function normalizeDraft(
+  raw: Partial<OnboardingDraft> & { draftId: string },
+): OnboardingDraft | null {
   if (!raw.templateType || !raw.slug) {
     return null;
   }
@@ -166,10 +170,7 @@ export function setAuthIntent(intent: OnboardingAuthIntent) {
     return;
   }
 
-  window.localStorage.setItem(
-    AUTH_INTENT_STORAGE_KEY,
-    JSON.stringify(intent),
-  );
+  window.localStorage.setItem(AUTH_INTENT_STORAGE_KEY, JSON.stringify(intent));
 }
 
 export function getAuthIntent() {

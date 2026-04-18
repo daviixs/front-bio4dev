@@ -36,9 +36,9 @@ const PRESET_COLORS = [
   "#d946ef", // fuchsia
   "#ec4899", // pink
   "#f43f5e", // rose
-  "#000000", // black
-  "#ffffff", // white
-  "#6b7280", // gray
+  '#000000', // black
+  '#ffffff', // white
+  '#6b7280', // gray
 ];
 
 export function ColorPicker({
@@ -91,8 +91,8 @@ export function ColorPicker({
                   onClick={() => setColor(presetColor)}
                   className={`w-8 h-8 rounded border-2 transition-all ${
                     color === presetColor
-                      ? "border-blue-500 scale-110"
-                      : "border-slate-200 hover:scale-105"
+                      ? 'border-blue-500 scale-110'
+                      : 'border-slate-200 hover:scale-105'
                   }`}
                   style={{ backgroundColor: presetColor }}
                   title={presetColor}

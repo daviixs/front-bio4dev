@@ -34,7 +34,10 @@ export function Footer() {
             <a href="#recursos" className="hover:text-[#ece5d9] transition-colors duration-300">
               Recursos Exclusivos
             </a>
-            <a href="#mentoria" className="hover:text-[#ece5d9] transition-colors duration-300">
+            <a
+              href="#mentoria"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
               Mentoria ao Vivo
             </a>
           </div>
@@ -45,10 +48,16 @@ export function Footer() {
             Legal
           </p>
           <div className="flex flex-wrap gap-x-3 gap-y-2 text-[13px] text-[#ece5d9]/50">
-            <a href="#termos" className="hover:text-[#ece5d9] transition-colors duration-300">
+            <a
+              href="#termos"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
               Termos de Serviço
             </a>
-            <a href="#privacidade" className="hover:text-[#ece5d9] transition-colors duration-300">
+            <a
+              href="#privacidade"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
               Política de Privacidade
             </a>
           </div>

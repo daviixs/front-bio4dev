@@ -34,7 +34,7 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, onEdit }) => {
       <div
         className="grid auto-rows-fr gap-4 sm:gap-5 md:gap-6"
         style={{
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
         }}
         role="list"
         aria-label="Project cards"

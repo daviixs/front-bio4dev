@@ -45,7 +45,9 @@ const AthleteProfile: React.FC = () => {
           ))}
         </div>
         
-        <span className="mt-16 text-[10px] opacity-20 font-bold tracking-[0.3em]">ATHLETE CORE</span>
+        <span className="mt-16 text-[10px] opacity-20 font-bold tracking-[0.3em]">A
+          ATHLETE CORE
+        /span>
       </div>
     </div>
   );

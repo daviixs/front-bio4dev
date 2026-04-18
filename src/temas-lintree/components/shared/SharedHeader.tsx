@@ -23,8 +23,14 @@ const SharedHeader: React.FC<SharedHeaderProps> = ({
         className={`object-cover shadow-lg ${imgClassName || 'w-24 h-24 rounded-full'}`} 
       />
     </div>
-    <h1 className={`text-2xl font-bold text-center ${textClassName || ''}`}>{name}</h1>
-    <p className={`text-sm text-center mt-2 px-4 opacity-80 ${textClassName || ''}`}>{bio}</p>
+    <h1 className={`text-2xl font-bold text-center ${textClassName || ''}`}>
+      {name}
+    </h1>
+    <p
+      className={`text-sm text-center mt-2 px-4 opacity-80 ${textClassName || ''}`}
+    >
+      {bio}
+    </p>
   </div>
 );
 

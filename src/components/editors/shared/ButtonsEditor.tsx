@@ -64,4 +64,5 @@ const ButtonsEditor: React.FC<ButtonsEditorProps> = ({
   );
 };
 
-export default ButtonsEditor;
+export default ButtonsEdi
+tor;

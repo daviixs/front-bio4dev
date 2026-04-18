@@ -575,7 +575,7 @@ export function SetupWizardPage() {
                         newPages[index].slug = e.target.value
                           .toLowerCase()
                           .replace(/\s+/g, "-")
-                          .replace(/[^a-z0-9-]/g, "");
+                          .replace(/[^a-z0-9-]/g, "'';
                         setPages(newPages);
                       }}
                       placeholder="Título da página"

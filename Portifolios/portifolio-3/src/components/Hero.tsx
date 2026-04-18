@@ -15,14 +15,17 @@ export default function Hero({ title, gradientTitle, description, avatarUrl }: H
       </div>
       
       <h1 className="text-4xl md:text-[42px] leading-[1.1] font-extrabold mb-4 text-center md:text-left">
-        {title}<br />
-        <span className="bg-gradient-to-r from-[#FF6B35] to-[#FF1493] bg-clip-text text-transparent">{gradientTitle}</span>
+        {title}
+        <br />
+        <span className="bg-gradient-to-r from-[#FF6B35] to-[#FF1493] bg-clip-text text-transparent">
+          {gradientTitle}
+        </span>
       </h1>
-      
+
       <p className="text-[#a0a0a0] text-sm md:text-[14px] leading-[1.5] mb-6 max-w-md mx-auto md:mx-0 text-center md:text-left">
         {description}
       </p>
-      
+
       <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
         <button className="px-6 py-2.5 rounded-full text-sm font-semibold bg-white text-black hover:bg-gray-200 transition-colors">
           Get In Touch

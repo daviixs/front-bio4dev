@@ -26,11 +26,11 @@ export function TopPagesList({ pages }: TopPagesListProps) {
               page.trendPct === null
                 ? "text-muted-foreground"
                 : page.trendPct >= 0
-                  ? "text-emerald-600"
-                  : "text-rose-500",
+                  ? 'text-emerald-600'
+                  : 'text-rose-500',
             )}
           >
-            {page.trendPct === null ? "—" : `${page.trendPct.toFixed(1)}%`}
+            {page.trendPct === null ? '—' : `${page.trendPct.toFixed(1)}%`}
           </div>
         </div>
       ))}
