@@ -44,8 +44,8 @@ import {
   findPortfolio3Social,
   getPortfolio3HeroHeadline,
   getPortfolio3Initials,
-  getPortfolio3ProjectLink,
   getPortfolio3ExperienceDescription,
+  isPortfolio3ColorToken,
 } from './portfolio3Shared';
 import {
   TECH_OPTIONS,
@@ -74,6 +74,138 @@ type SocialSlotId = (typeof PORTFOLIO3_SOCIAL_SLOTS)[number]['id'];
 
 const actionButtonClassName =
   'inline-flex items-center gap-2 rounded-full border border-[#2a2a2a] bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-colors hover:border-[#444] hover:bg-[#1e1e1e]';
+
+const PROJECT_FALLBACK_IMAGE_URL =
+  'https://picsum.photos/seed/portfolio3-project/800/600';
+
+const LOCAL_HOST_SUFFIXES = [
+  '.local',
+  '.internal',
+  '.lan',
+  '.home',
+  '.localdomain',
+];
+
+const SINGLE_LABEL_HOST_REGEX = /^[a-z0-9-]+$/i;
+
+const isValidIpv4Host = (value: string) =>
+  /^(?:\d{1,3}\.){3}\d{1,3}$/.test(value) &&
+  value.split('.').every((segment) => {
+    const parsedSegment = Number(segment);
+    return parsedSegment >= 0 && parsedSegment <= 255;
+  });
+
+const getHostnameCandidate = (value: string) => {
+  const withoutProtocol = value.trim().replace(
+    /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//,
+    '',
+  );
+  const rawHost = withoutProtocol.split(/[/?#]/)[0] || '';
+
+  return rawHost.replace(/:\d+$/, '').replace(/^\[|\]$/g, '');
+};
+
+const isLocalNetworkInput = (value: string) => {
+  const hostname = getHostnameCandidate(value).toLowerCase();
+
+  if (!hostname) {
+    return false;
+  }
+
+  if (
+    hostname === 'localhost' ||
+    hostname.endsWith('.localhost') ||
+    LOCAL_HOST_SUFFIXES.some((suffix) => hostname.endsWith(suffix)) ||
+    isValidIpv4Host(hostname) ||
+    hostname.includes(':')
+  ) {
+    return true;
+  }
+
+  return (
+    SINGLE_LABEL_HOST_REGEX.test(hostname) &&
+    /:\d+(?:$|[/?#])/.test(value.trim())
+  );
+};
+
+const looksLikeUrlCandidate = (value: string) => {
+  const trimmed = value.trim();
+  const hostname = getHostnameCandidate(trimmed).toLowerCase();
+
+  if (!trimmed || !hostname) {
+    return false;
+  }
+
+  if (isLocalNetworkInput(trimmed)) {
+    return true;
+  }
+
+  return hostname.includes('.');
+};
+
+const isAllowedUrlHostname = (
+  hostname: string,
+  hadProtocol: boolean,
+  parsedPort: string,
+) => {
+  const normalizedHostname = hostname.toLowerCase();
+
+  if (
+    normalizedHostname === 'localhost' ||
+    normalizedHostname.endsWith('.localhost') ||
+    LOCAL_HOST_SUFFIXES.some((suffix) =>
+      normalizedHostname.endsWith(suffix),
+    ) ||
+    isValidIpv4Host(normalizedHostname) ||
+    normalizedHostname.includes(':') ||
+    normalizedHostname.includes('.')
+  ) {
+    return true;
+  }
+
+  return (
+    SINGLE_LABEL_HOST_REGEX.test(normalizedHostname) &&
+    (hadProtocol || Boolean(parsedPort))
+  );
+};
+
+const normalizeHttpUrl = (value: string, fieldLabel: string) => {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return { value: undefined as string | undefined };
+  }
+
+  const hasProtocol = /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed);
+
+  if (!hasProtocol && !looksLikeUrlCandidate(trimmed)) {
+    return { error: `${fieldLabel} inválido` };
+  }
+
+  const normalized = hasProtocol
+    ? trimmed
+    : `${isLocalNetworkInput(trimmed) ? 'http' : 'https'}://${trimmed}`;
+
+  try {
+    const parsed = new URL(normalized);
+
+    if (
+      !['http:', 'https:'].includes(parsed.protocol) ||
+      !isAllowedUrlHostname(parsed.hostname, hasProtocol, parsed.port)
+    ) {
+      throw new Error('unsupported_protocol');
+    }
+
+    return { value: parsed.toString() };
+  } catch {
+    return { error: `${fieldLabel} inválido` };
+  }
+};
+
+const normalizeEmail = (value: string) => value.trim().toLowerCase();
+
+const isValidEmail = (value: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(value));
 
 const normalizeUrl = (value: string) => {
   const trimmed = value.trim();
@@ -291,9 +423,11 @@ export function EditablePortfolio3({
 
   const [projectForm, setProjectForm] = useState({
     nome: '',
-    subtitle: '',
-    link: '',
-    thumbnail: '',
+    descricao: '',
+    demoLink: '',
+    codeLink: '',
+    gif: '',
+    tags: '',
   });
   const [workForm, setWorkForm] = useState({
     company: '',
@@ -348,17 +482,25 @@ export function EditablePortfolio3({
       field === 'greeting' ? value || '' : legenda?.greeting || '',
     nome:
       field === 'nome'
-        ? value || localProfile.username || 'M Portfolio'
-        : legenda?.nome || localProfile.username || 'M Portfolio',
+        ? value || localProfile.user?.nome || localProfile.username || 'M Portfolio'
+        : legenda?.nome ||
+          localProfile.user?.nome ||
+          localProfile.username ||
+          'M Portfolio',
     titulo:
       field === 'titulo'
         ? value || PORTFOLIO3_DEFAULT_HEADLINE
-        : getPortfolio3HeroHeadline(legenda),
-    subtitulo: legenda?.subtitulo || '',
+        : legenda?.titulo || PORTFOLIO3_DEFAULT_HEADLINE,
+    subtitulo:
+      legenda?.subtitulo ||
+      legenda?.titulo ||
+      legenda?.descricao?.slice(0, 255) ||
+      'Developer portfolio',
     descricao:
       field === 'descricao'
-        ? value || 'Describe what you build.'
-        : legenda?.descricao || 'Describe what you build.',
+        ? value || 'Descreva aqui sua atuação, experiência e o que você está construindo.'
+        : legenda?.descricao ||
+          'Descreva aqui sua atuação, experiência e o que você está construindo.',
   });
 
   const handleHeadlineUpdate = async (value: string) => {
@@ -418,8 +560,11 @@ export function EditablePortfolio3({
   const buildFooterDefaults = (patch: Partial<Footer> = {}) => ({
     profileId: localProfile.id,
     title: localProfile.footer?.title || 'Contact',
-    subtitle: localProfile.footer?.subtitle || legenda?.descricao || '',
-    email: localProfile.footer?.email || '',
+    subtitle:
+      localProfile.footer?.subtitle ||
+      legenda?.descricao ||
+      'Descreva como as pessoas podem entrar em contato.',
+    email: localProfile.footer?.email || undefined,
     github: localProfile.footer?.github || undefined,
     linkedin: localProfile.footer?.linkedin || undefined,
     twitter: localProfile.footer?.twitter || undefined,
@@ -427,6 +572,7 @@ export function EditablePortfolio3({
     copyrightName:
       localProfile.footer?.copyrightName ||
       legenda?.nome ||
+      localProfile.user?.nome ||
       localProfile.username ||
       'Bio4Dev',
     madeWith: localProfile.footer?.madeWith || 'Made with Bio4Dev',
@@ -486,13 +632,46 @@ export function EditablePortfolio3({
       return;
     }
 
-    try {
-      await profileApi.update(localProfile.id, { avatarUrl: url });
+    const normalizedAvatar = normalizeHttpUrl(url, 'Avatar');
 
-      setLocalProfile((prev) => ({
-        ...prev,
-        avatarUrl: url,
-      }));
+    if (normalizedAvatar.error || !normalizedAvatar.value) {
+      showPortfolioEditorError(normalizedAvatar.error || 'Avatar inválido');
+      throw new Error(normalizedAvatar.error || 'Avatar inválido');
+    }
+
+    try {
+      await profileApi.update(localProfile.id, {
+        avatarUrl: normalizedAvatar.value,
+      });
+
+      if (legenda?.id) {
+        await legendaApi.update(legenda.id, {
+          legendaFoto: normalizedAvatar.value,
+        });
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          avatarUrl: normalizedAvatar.value,
+          legendas: prev.legendas?.length
+            ? [
+                {
+                  ...prev.legendas[0],
+                  legendaFoto: normalizedAvatar.value,
+                },
+              ]
+            : prev.legendas,
+        }));
+      } else {
+        const response = await legendaApi.create(
+          buildLegendaDefaults('legendaFoto', normalizedAvatar.value),
+        );
+
+        setLocalProfile((prev) => ({
+          ...prev,
+          avatarUrl: normalizedAvatar.value,
+          legendas: response.legenda ? [response.legenda] : prev.legendas,
+        }));
+      }
 
       onProfileUpdate?.();
     } catch (error) {
@@ -560,11 +739,30 @@ export function EditablePortfolio3({
     field: Exclude<FooterEditableField, 'resumeUrl'>,
     value: string,
   ) => {
+    if (field === 'email') {
+      const normalizedEmailValue = normalizeEmail(value);
+
+      if (normalizedEmailValue && !isValidEmail(normalizedEmailValue)) {
+        showPortfolioEditorError('Email inválido');
+        throw new Error('Email inválido');
+      }
+
+      await upsertFooter(field, normalizedEmailValue);
+      return;
+    }
+
     await upsertFooter(field, value);
   };
 
   const handleResumeUpdate = async (url: string) => {
-    await upsertFooter('resumeUrl', url);
+    const normalizedResumeUrl = normalizeHttpUrl(url, 'Link do currículo');
+
+    if (normalizedResumeUrl.error) {
+      showPortfolioEditorError(normalizedResumeUrl.error);
+      throw new Error(normalizedResumeUrl.error);
+    }
+
+    await upsertFooter('resumeUrl', normalizedResumeUrl.value || '');
   };
 
   const openNameDialog = () => {
@@ -688,9 +886,11 @@ export function EditablePortfolio3({
     setEditingProject(project || null);
     setProjectForm({
       nome: project?.nome || '',
-      subtitle: project?.tags?.[0] || '',
-      link: project ? getPortfolio3ProjectLink(project) : '',
-      thumbnail: project?.gif || '',
+      descricao: project?.descricao || '',
+      demoLink: project?.demoLink || '',
+      codeLink: project?.codeLink || '',
+      gif: project?.gif || '',
+      tags: project?.tags?.join(', ') || '',
     });
     setIsProjectModalOpen(true);
   };
@@ -701,20 +901,62 @@ export function EditablePortfolio3({
       return;
     }
 
-    const payload = {
+    const normalizedDemoLink = normalizeHttpUrl(
+      projectForm.demoLink,
+      'Demo link',
+    );
+    if (normalizedDemoLink.error) {
+      showPortfolioEditorError(normalizedDemoLink.error);
+      return;
+    }
+
+    const normalizedCodeLink = normalizeHttpUrl(
+      projectForm.codeLink,
+      'Code link',
+    );
+    if (normalizedCodeLink.error) {
+      showPortfolioEditorError(normalizedCodeLink.error);
+      return;
+    }
+
+    const trimmedGif = projectForm.gif.trim();
+    const shouldUseFallbackGif =
+      !trimmedGif || isPortfolio3ColorToken(trimmedGif);
+    const normalizedGif = shouldUseFallbackGif
+      ? { value: PROJECT_FALLBACK_IMAGE_URL }
+      : normalizeHttpUrl(trimmedGif, 'Imagem do projeto');
+    if (normalizedGif.error) {
+      showPortfolioEditorError(normalizedGif.error);
+      return;
+    }
+
+    const projectTags = projectForm.tags
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const payload: any = {
       nome: projectForm.nome.trim() || 'Novo Projeto',
       descricao:
+        projectForm.descricao.trim() ||
         editingProject?.descricao ||
-        projectForm.nome.trim() ||
         'Projeto em destaque',
-      demoLink: projectForm.link.trim()
-        ? normalizeUrl(projectForm.link)
-        : undefined,
-      codeLink: editingProject?.codeLink || undefined,
-      gif: projectForm.thumbnail.trim() || '#111111',
-      tags: projectForm.subtitle.trim() ? [projectForm.subtitle.trim()] : [],
+      gif: normalizedGif.value || PROJECT_FALLBACK_IMAGE_URL,
+      tags: projectTags,
       ordem: editingProject?.ordem ?? projects.length,
     };
+
+    if (editingProject) {
+      payload.demoLink = normalizedDemoLink.value || '';
+      payload.codeLink = normalizedCodeLink.value || '';
+    } else {
+      if (normalizedDemoLink.value) {
+        payload.demoLink = normalizedDemoLink.value;
+      }
+      if (normalizedCodeLink.value) {
+        payload.codeLink = normalizedCodeLink.value;
+      }
+    }
 
     try {
       if (editingProject) {
@@ -1250,44 +1492,73 @@ export function EditablePortfolio3({
             </div>
 
             <div className="space-y-2">
-              <Label>Subtítulo inferior</Label>
-              <Input
-                value={projectForm.subtitle}
+              <Label>Descrição</Label>
+              <Textarea
+                value={projectForm.descricao}
                 onChange={(event) =>
                   setProjectForm((prev) => ({
                     ...prev,
-                    subtitle: event.target.value,
+                    descricao: event.target.value,
                   }))
                 }
-                placeholder="HTML TUTORIAL"
+                placeholder="Descreva o projeto"
+                rows={4}
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Link do projeto</Label>
+              <Label>Demo link</Label>
               <Input
-                value={projectForm.link}
+                value={projectForm.demoLink}
                 onChange={(event) =>
                   setProjectForm((prev) => ({
                     ...prev,
-                    link: event.target.value,
+                    demoLink: event.target.value,
                   }))
                 }
-                placeholder="https://exemplo.com"
+                placeholder="https://exemplo.com ou localhost:3000"
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Cor ou imagem do thumbnail</Label>
+              <Label>Code link</Label>
               <Input
-                value={projectForm.thumbnail}
+                value={projectForm.codeLink}
                 onChange={(event) =>
                   setProjectForm((prev) => ({
                     ...prev,
-                    thumbnail: event.target.value,
+                    codeLink: event.target.value,
                   }))
                 }
-                placeholder="#111111 ou https://..."
+                placeholder="https://github.com/usuario/repo"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Imagem de capa</Label>
+              <Input
+                value={projectForm.gif}
+                onChange={(event) =>
+                  setProjectForm((prev) => ({
+                    ...prev,
+                    gif: event.target.value,
+                  }))
+                }
+                placeholder="https://exemplo.com/capa.jpg"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Tags</Label>
+              <Input
+                value={projectForm.tags}
+                onChange={(event) =>
+                  setProjectForm((prev) => ({
+                    ...prev,
+                    tags: event.target.value,
+                  }))
+                }
+                placeholder="React, TypeScript, NestJS"
               />
             </div>
           </div>
