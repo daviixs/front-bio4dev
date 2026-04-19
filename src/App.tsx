@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import {
   Home,
   SignupPage,
@@ -22,34 +22,31 @@ import { AppToaster } from "@/components/ui/sonner";
 import { useAuthStore } from "@/stores/authStore";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const navigate = useNavigate();
-  const { isAuthenticated, refreshAccessToken } = useAuthStore();
-  const [checking, setChecking] = useState(true);
+  const authStatus = useAuthStore((state) => state.authStatus);
+
+  if (authStatus === "booting") return null;
+  if (authStatus === "guest") {
+    return <Navigate to="/profile/type" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+function AuthSessionBootstrap() {
+  const location = useLocation();
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
+  const authStatus = useAuthStore((state) => state.authStatus);
+  const bootstrapAuth = useAuthStore((state) => state.bootstrapAuth);
 
   useEffect(() => {
-    let mounted = true;
-    const ensureAuth = async () => {
-      if (isAuthenticated) {
-        if (mounted) setChecking(false);
-        return;
-      }
+    if (!hasHydrated) return;
+    if (location.pathname === "/auth/callback/google") return;
+    if (authStatus !== "booting") return;
 
-      const token = await refreshAccessToken();
-      if (!token) {
-        navigate("/profile/type", { replace: true });
-        return;
-      }
-      if (mounted) setChecking(false);
-    };
+    void bootstrapAuth();
+  }, [authStatus, bootstrapAuth, hasHydrated, location.pathname]);
 
-    ensureAuth();
-    return () => {
-      mounted = false;
-    };
-  }, [isAuthenticated, refreshAccessToken, navigate]);
-
-  if (checking) return null;
-  return <>{children}</>;
+  return null;
 }
 
 function AppShell({ children }: { children: React.ReactNode }) {
@@ -60,6 +57,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
     location.pathname.startsWith("/dashboard/influencer/");
   return (
     <div className={isLanding || isInfluencerWorkspace ? "" : "app-shell"}>
+      <AuthSessionBootstrap />
       {children}
     </div>
   );

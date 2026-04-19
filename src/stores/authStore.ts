@@ -3,11 +3,15 @@ import { persist } from 'zustand/middleware';
 import type { User, ProfileComplete } from '@/types';
 import { profileApi, configureAuthInterceptors, api } from '@/lib/api';
 
+type AuthStatus = 'booting' | 'authenticated' | 'guest';
+
 interface AuthState {
   user: User | null;
   profile: ProfileComplete | null;
   accessToken: string | null;
   isAuthenticated: boolean;
+  authStatus: AuthStatus;
+  hasHydrated: boolean;
   isLoading: boolean;
   error: string | null;
 
@@ -16,12 +20,26 @@ interface AuthState {
     code: string,
     state?: string | null,
   ) => Promise<boolean | void>;
+  bootstrapAuth: () => Promise<AuthStatus>;
   refreshAccessToken: () => Promise<string | null>;
   logout: () => Promise<void>;
   setProfile: (profile: ProfileComplete | null) => void;
   loadProfile: () => Promise<void>;
   clearError: () => void;
 }
+
+let bootstrapAuthPromise: Promise<AuthStatus> | null = null;
+
+const getApiBaseUrl = () => {
+  const currentHost =
+    typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.hostname}`
+      : 'http://localhost';
+
+  return import.meta.env.VITE_API_URL
+    ? import.meta.env.VITE_API_URL
+    : `${currentHost}:3000`;
+};
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -30,6 +48,8 @@ export const useAuthStore = create<AuthState>()(
       profile: null,
       accessToken: null,
       isAuthenticated: false,
+      authStatus: 'booting',
+      hasHydrated: false,
       isLoading: false,
       error: null,
 
@@ -54,13 +74,7 @@ export const useAuthStore = create<AuthState>()(
       handleOAuthCallback: async (code: string, state?: string | null) => {
         set({ isLoading: true, error: null });
         try {
-          const currentHost =
-            typeof window !== 'undefined'
-              ? `${window.location.protocol}//${window.location.hostname}`
-              : 'http://localhost';
-          const apiUrl = import.meta.env.VITE_API_URL
-            ? import.meta.env.VITE_API_URL
-            : `${currentHost}:3000`;
+          const apiUrl = getApiBaseUrl();
           const url = new URL(`${apiUrl}/auth/google/callback`);
           url.searchParams.set('code', code);
           if (state) url.searchParams.set('state', state);
@@ -80,6 +94,7 @@ export const useAuthStore = create<AuthState>()(
             user: data.user,
             accessToken: data.accessToken,
             isAuthenticated: true,
+            authStatus: 'authenticated',
             isLoading: false,
             error: null,
           });
@@ -88,26 +103,67 @@ export const useAuthStore = create<AuthState>()(
         } catch (error: any) {
           set({
             error:
-              error.message ||
+            error.message ||
               'Não foi possível autenticar com Google. Tente novamente.',
             isLoading: false,
             isAuthenticated: false,
+            authStatus: 'guest',
             accessToken: null,
             user: null,
+            profile: null,
           });
           throw error;
         }
       },
 
+      bootstrapAuth: async () => {
+        const { authStatus, accessToken, isAuthenticated } = get();
+
+        if (authStatus === 'authenticated') {
+          return 'authenticated';
+        }
+
+        if (authStatus === 'guest' && !isAuthenticated && !accessToken) {
+          return 'guest';
+        }
+
+        if (bootstrapAuthPromise) {
+          return bootstrapAuthPromise;
+        }
+
+        set({ authStatus: 'booting' });
+
+        bootstrapAuthPromise = (async () => {
+          if (get().accessToken && get().isAuthenticated) {
+            set({ authStatus: 'authenticated' });
+            return 'authenticated' as const;
+          }
+
+          const token = await get().refreshAccessToken();
+
+          if (token) {
+            set({ authStatus: 'authenticated' });
+            return 'authenticated' as const;
+          }
+
+          set({
+            authStatus: 'guest',
+            isAuthenticated: false,
+            accessToken: null,
+            user: null,
+            profile: null,
+          });
+          return 'guest' as const;
+        })().finally(() => {
+          bootstrapAuthPromise = null;
+        });
+
+        return bootstrapAuthPromise;
+      },
+
       refreshAccessToken: async () => {
         try {
-          const currentHost =
-            typeof window !== 'undefined'
-              ? `${window.location.protocol}//${window.location.hostname}`
-              : 'http://localhost';
-          const apiUrl = import.meta.env.VITE_API_URL
-            ? import.meta.env.VITE_API_URL
-            : `${currentHost}:3000`;
+          const apiUrl = getApiBaseUrl();
           const response = await fetch(`${apiUrl}/auth/refresh`, {
             method: 'POST',
             credentials: 'include',
@@ -118,13 +174,19 @@ export const useAuthStore = create<AuthState>()(
           }
 
           const data = await response.json();
-          set({ accessToken: data.accessToken, isAuthenticated: true });
+          set({
+            accessToken: data.accessToken,
+            isAuthenticated: true,
+            authStatus: 'authenticated',
+          });
           return data.accessToken as string;
         } catch (error) {
           set({
+            authStatus: 'guest',
             isAuthenticated: false,
             accessToken: null,
             user: null,
+            profile: null,
           });
           return null;
         }
@@ -132,13 +194,7 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          const currentHost =
-            typeof window !== 'undefined'
-              ? `${window.location.protocol}//${window.location.hostname}`
-              : 'http://localhost';
-          const apiUrl = import.meta.env.VITE_API_URL
-            ? import.meta.env.VITE_API_URL
-            : `${currentHost}:3000`;
+          const apiUrl = getApiBaseUrl();
           await fetch(`${apiUrl}/auth/logout`, {
             method: 'POST',
             credentials: 'include',
@@ -149,6 +205,7 @@ export const useAuthStore = create<AuthState>()(
             profile: null,
             accessToken: null,
             isAuthenticated: false,
+            authStatus: 'guest',
           });
         }
       },
@@ -179,6 +236,12 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'bio4dev-auth',
+      onRehydrateStorage: () => (state, error) => {
+        useAuthStore.setState({
+          hasHydrated: true,
+          authStatus: error ? 'guest' : 'booting',
+        });
+      },
       partialize: (state) => ({
         user: state.user,
         profile: state.profile,
