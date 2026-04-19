@@ -90,6 +90,97 @@ interface TechOption {
   color?: string;
 }
 
+const LOCAL_HOST_SUFFIXES = [
+  '.local',
+  '.internal',
+  '.lan',
+  '.home',
+  '.localdomain',
+];
+
+const SINGLE_LABEL_HOST_REGEX = /^[a-z0-9-]+$/i;
+
+const isValidIpv4Host = (value: string) =>
+  /^(?:\d{1,3}\.){3}\d{1,3}$/.test(value) &&
+  value.split('.').every((segment) => {
+    const parsedSegment = Number(segment);
+    return parsedSegment >= 0 && parsedSegment <= 255;
+  });
+
+const getHostnameCandidate = (value: string) => {
+  const withoutProtocol = value.trim().replace(
+    /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//,
+    '',
+  );
+  const rawHost = withoutProtocol.split(/[/?#]/)[0] || '';
+
+  return rawHost.replace(/:\d+$/, '').replace(/^\[|\]$/g, '');
+};
+
+const isLocalNetworkInput = (value: string) => {
+  const hostname = getHostnameCandidate(value).toLowerCase();
+
+  if (!hostname) {
+    return false;
+  }
+
+  if (
+    hostname === 'localhost' ||
+    hostname.endsWith('.localhost') ||
+    LOCAL_HOST_SUFFIXES.some((suffix) => hostname.endsWith(suffix)) ||
+    isValidIpv4Host(hostname) ||
+    hostname.includes(':')
+  ) {
+    return true;
+  }
+
+  return (
+    SINGLE_LABEL_HOST_REGEX.test(hostname) &&
+    /:\d+(?:$|[/?#])/.test(value.trim())
+  );
+};
+
+const looksLikeUrlCandidate = (value: string) => {
+  const trimmed = value.trim();
+  const hostname = getHostnameCandidate(trimmed).toLowerCase();
+
+  if (!trimmed || !hostname) {
+    return false;
+  }
+
+  if (isLocalNetworkInput(trimmed)) {
+    return true;
+  }
+
+  return hostname.includes('.');
+};
+
+const isAllowedUrlHostname = (
+  hostname: string,
+  hadProtocol: boolean,
+  parsedPort: string,
+) => {
+  const normalizedHostname = hostname.toLowerCase();
+
+  if (
+    normalizedHostname === 'localhost' ||
+    normalizedHostname.endsWith('.localhost') ||
+    LOCAL_HOST_SUFFIXES.some((suffix) =>
+      normalizedHostname.endsWith(suffix),
+    ) ||
+    isValidIpv4Host(normalizedHostname) ||
+    normalizedHostname.includes(':') ||
+    normalizedHostname.includes('.')
+  ) {
+    return true;
+  }
+
+  return (
+    SINGLE_LABEL_HOST_REGEX.test(normalizedHostname) &&
+    (hadProtocol || Boolean(parsedPort))
+  );
+};
+
 const normalizeHttpUrl = (value: string, fieldLabel: string) => {
   const trimmed = value.trim();
 
@@ -97,20 +188,29 @@ const normalizeHttpUrl = (value: string, fieldLabel: string) => {
     return { value: undefined as string | undefined };
   }
 
-  const normalized = /^(https?:\/\/)/i.test(trimmed)
+  const hasProtocol = /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed);
+
+  if (!hasProtocol && !looksLikeUrlCandidate(trimmed)) {
+    return { error: `${fieldLabel} inválido` };
+  }
+
+  const normalized = hasProtocol
     ? trimmed
-    : `https://${trimmed}`;
+    : `${isLocalNetworkInput(trimmed) ? 'http' : 'https'}://${trimmed}`;
 
   try {
     const parsed = new URL(normalized);
 
-    if (!['http:', 'https:'].includes(parsed.protocol)) {
+    if (
+      !['http:', 'https:'].includes(parsed.protocol) ||
+      !isAllowedUrlHostname(parsed.hostname, hasProtocol, parsed.port)
+    ) {
       throw new Error('unsupported_protocol');
     }
 
     return { value: parsed.toString() };
   } catch {
-    return { error: `${fieldLabel} precisa ser uma URL válida` };
+    return { error: `${fieldLabel} inválido` };
   }
 };
 
@@ -2051,19 +2151,13 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       descricao: projForm.description.trim() || 'Project Description',
     };
 
-    const normalizedGithubUrl = normalizeHttpUrl(
-      projForm.githubUrl,
-      'GitHub URL',
-    );
+    const normalizedGithubUrl = normalizeHttpUrl(projForm.githubUrl, 'Code link');
     if (normalizedGithubUrl.error) {
       toast.error(normalizedGithubUrl.error);
       return;
     }
 
-    const normalizedDemoUrl = normalizeHttpUrl(
-      projForm.deployUrl,
-      'Live URL',
-    );
+    const normalizedDemoUrl = normalizeHttpUrl(projForm.deployUrl, 'Demo link');
     if (normalizedDemoUrl.error) {
       toast.error(normalizedDemoUrl.error);
       return;
@@ -2131,10 +2225,10 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         profileId: currentProfile.id,
         nome: savedProject?.nome || payload.nome,
         descricao: savedProject?.descricao || payload.descricao,
-        codeLink: savedProject?.codeLink || payload.codeLink,
-        demoLink: savedProject?.demoLink || payload.demoLink,
-        gif: savedProject?.gif || payload.gif || '',
-        tags: savedProject?.tags || payload.tags || [],
+        codeLink: savedProject?.codeLink ?? payload.codeLink,
+        demoLink: savedProject?.demoLink ?? payload.demoLink,
+        gif: savedProject?.gif ?? payload.gif ?? '',
+        tags: savedProject?.tags ?? payload.tags ?? [],
         ordem: savedProject?.ordem ?? editingProj?.ordem ?? currentProfile.projetos?.length ?? 0,
         createdAt:
           savedProject?.createdAt ||
