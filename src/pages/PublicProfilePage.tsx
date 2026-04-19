@@ -61,9 +61,9 @@ export function PublicProfilePage() {
       } finally {
         setIsLoading(false);
       }
-void     };
+    };
 
-    loadProfile();
+    void loadProfile();
   }, [slug]);
 
   // Loading State

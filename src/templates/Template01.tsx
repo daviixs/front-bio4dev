@@ -2,15 +2,11 @@ import React from 'react';
 import {
   ExternalLink,
   Github,
-  Mail,
-  Coffee,
-  FileDown,
+  Linkedin,
   Briefcase,
   Calendar,
 } from 'lucide-react';
-import type { IconType } from 'react-icons';
 import { TechIcon } from '@/components/portfolio/TechIcon';
-import { getSocialIconComponent } from '@/lib/socialIcons';
 import { template01Theme } from '@/theme/template01Theme';
 import type {
   ProfileComplete,
@@ -50,8 +46,8 @@ function Hero({ profile, legenda }: HeroProps) {
           <div className="relative">
             <img
               src={
-                legenda?.legendaFoto ||
                 profile?.avatarUrl ||
+                legenda?.legendaFoto ||
                 'https://images.unsplash.com/photo-1737575655055-e3967cbefd03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400'
               }
               alt={legenda?.nome || 'Desenvolvedor'}
@@ -414,45 +410,25 @@ interface FooterProps {
   socials?: Social[];
 }
 
-function Footer({ footer, socials }: FooterProps) {
+function Footer({ footer }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
-  const footerSocials = [
+  const socialLinks = [
     footer?.github && {
       href: footer.github,
       label: 'GitHub',
-      icon: getSocialIconComponent('github'),
+      icon: <Github size={24} />,
     },
     footer?.linkedin && {
       href: footer.linkedin,
       label: 'LinkedIn',
-      icon: getSocialIconComponent('linkedin'),
-    },
-    footer?.twitter && {
-      href: footer.twitter,
-      label: 'Twitter',
-      icon: getSocialIconComponent('twitter'),
-    },
-    footer?.email && {
-      href: `mailto:${footer.email}`,
-      label: 'Email',
-      icon: getSocialIconComponent('email'),
+      icon: <Linkedin size={24} />,
     },
   ].filter(Boolean) as Array<{
     href: string;
     label: string;
-    icon: IconType;
+    icon: React.ReactNode;
   }>;
-
-  const legacySocials =
-    socials?.map((social) => ({
-      href: social.url,
-      label: social.plataforma,
-      icon: getSocialIconComponent(social.plataforma),
-      id: social.id,
-    })) || [];
-
-  const socialLinks = footerSocials.length > 0 ? footerSocials : legacySocials;
 
   return (
     <footer
@@ -468,92 +444,44 @@ function Footer({ footer, socials }: FooterProps) {
             {footer?.subtitle ||
               'Estou sempre aberto a novos projetos e oportunidades'}
           </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            {footer?.email && (
-              <a
-                href={`mailto:${footer.email}`}
-                className={`inline-flex items-center gap-2 px-8 py-3 rounded-lg transition-all ${template01Theme.footerButton}`}
-              >
-                <Mail size={20} />
-                {footer.email}
-              </a>
-            )}
-            {footer?.resumeUrl && (
-              <a
-                href={footer.resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`inline-flex items-center gap-2 px-8 py-3 rounded-lg transition-all hover:shadow-xl hover:scale-105 ${template01Theme.footerButton}`}
-              >
-                <FileDown size={20} />
-                Baixe meu Currículo
-              </a>
-            )}
-          </div>
         </div>
 
         <div className="flex justify-center gap-6 mb-8">
-          {socialLinks.map((social) => {
-            const Icon = social.icon;
-
-            return (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
-                aria-label={social.label}
-              >
-                <Icon size={24} />
-              </a>
-            );
-          })}
+          {socialLinks.map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
+              aria-label={social.label}
+            >
+              {social.icon}
+            </a>
+          ))}
           {!socialLinks.length && (
             <>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
-                aria-label="GitHub"
+              <span
+                className={`w-12 h-12 flex items-center justify-center rounded-full opacity-50 ${template01Theme.socialSurface}`}
+                aria-hidden="true"
               >
-                {React.createElement(getSocialIconComponent('github'), {
-                  size: 24,
-                })}
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
-                aria-label="LinkedIn"
+                <Github size={24} />
+              </span>
+              <span
+                className={`w-12 h-12 flex items-center justify-center rounded-full opacity-50 ${template01Theme.socialSurface}`}
+                aria-hidden="true"
               >
-                {React.createElement(getSocialIconComponent('linkedin'), {
-                  size: 24,
-                })}
-              </a>
+                <Linkedin size={24} />
+              </span>
             </>
           )}
         </div>
 
         <div className={`border-t pt-8 ${template01Theme.divider}`}>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className={`${template01Theme.footerSecondary} text-center md:text-left`}>
-              © {currentYear} {footer?.copyrightName || 'Desenvolvedor'}. Todos
-              os direitos reservados.
-            </p>
-            <p className={`${template01Theme.footerSecondary} flex items-center gap-2`}>
-              {footer?.madeWith || (
-                <>
-                  Feito com <span className="text-[#c5b9b7]">❤️</span> e
-                  <Coffee size={18} className="text-[#a69b98]" />
-                  café
-                </>
-              )}
-            </p>
-          </div>
+          <p className={`${template01Theme.footerSecondary} text-center`}>
+            © {currentYear} {footer?.copyrightName || 'João Silva'}. Todos os
+            direitos reservados.
+          </p>
         </div>
       </div>
     </footer>

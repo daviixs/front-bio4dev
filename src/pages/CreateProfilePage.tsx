@@ -143,6 +143,8 @@ const influencerTemplates = [
   },
 ] as const;
 
+const CREATE_PROFILE_TOAST_ID = "create-profile-toast";
+
 export function CreateProfilePage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -180,7 +182,9 @@ export function CreateProfilePage() {
 
   const handleCreate = async (slugValue: string) => {
     if (!selectedTemplate) {
-      toast.error("Selecione um tema para continuar.");
+      toast.error("Selecione um tema para continuar.", {
+        id: CREATE_PROFILE_TOAST_ID,
+      });
       return;
     }
 
@@ -216,7 +220,9 @@ export function CreateProfilePage() {
       if (user?.id) {
         const reachedLimit = await hasReachedProfileLimit(user.id);
         if (reachedLimit) {
-          toast.error(PROFILE_LIMIT_MESSAGE);
+          toast.error(PROFILE_LIMIT_MESSAGE, {
+            id: CREATE_PROFILE_TOAST_ID,
+          });
           navigate("/dashboard/bio");
           return;
         }
@@ -260,7 +266,7 @@ export function CreateProfilePage() {
       console.error("Error preparing draft profile:", error);
       const errorMessage =
         getApiErrorMessage(error) || "Erro ao criar rascunho";
-      toast.error(errorMessage);
+      toast.error(errorMessage, { id: CREATE_PROFILE_TOAST_ID });
     } finally {
       setIsLoading(false);
     }

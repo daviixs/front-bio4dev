@@ -40,6 +40,8 @@ const devTemplates = [
   },
 ] as const;
 
+const DEVELOPER_CREATE_PROFILE_TOAST_ID = "developer-create-profile-toast";
+
 export function DeveloperCreateProfilePage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -68,7 +70,9 @@ export function DeveloperCreateProfilePage() {
 
   useEffect(() => {
     if (!user) {
-      toast.error("Faca login para continuar");
+      toast.error("Faca login para continuar", {
+        id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
+      });
       navigate("/");
     }
   }, [user, navigate]);
@@ -81,7 +85,9 @@ export function DeveloperCreateProfilePage() {
 
   const handleCreate = async (slug: string) => {
     if (!selectedTemplate) {
-      toast.error("Selecione um template para continuar.");
+      toast.error("Selecione um template para continuar.", {
+        id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
+      });
       return;
     }
 
@@ -98,7 +104,9 @@ export function DeveloperCreateProfilePage() {
 
     const userId = user?.id;
     if (!userId || userId === "undefined" || typeof userId !== "string") {
-      toast.error("Sessao invalida. Faca login novamente.");
+      toast.error("Sessao invalida. Faca login novamente.", {
+        id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
+      });
       navigate("/");
       return;
     }
@@ -107,7 +115,9 @@ export function DeveloperCreateProfilePage() {
     try {
       const reachedLimit = await hasReachedProfileLimit(userId);
       if (reachedLimit) {
-        toast.error(PROFILE_LIMIT_MESSAGE);
+        toast.error(PROFILE_LIMIT_MESSAGE, {
+          id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
+        });
         navigate("/dashboard/bio");
         return;
       }
@@ -131,6 +141,7 @@ export function DeveloperCreateProfilePage() {
       if (!profileId || typeof profileId !== "string") {
         toast.error(
           "Erro: ID do perfil nao foi retornado corretamente pelo servidor",
+          { id: DEVELOPER_CREATE_PROFILE_TOAST_ID },
         );
         return;
       }
@@ -138,7 +149,9 @@ export function DeveloperCreateProfilePage() {
       localStorage.setItem("bio4dev_profile_id", profileId);
       localStorage.setItem(`bio4dev_theme_${profileId}`, templateType);
 
-      toast.success("Perfil criado com sucesso!");
+      toast.success("Perfil criado com sucesso!", {
+        id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
+      });
       setTimeout(() => {
         navigate(`/dashboard/bio/${profileId}`);
       }, 100);
@@ -152,14 +165,18 @@ export function DeveloperCreateProfilePage() {
           setSlugError(backendMessage);
           setIsSlugModalOpen(true);
         }
-        toast.error(backendMessage);
+        toast.error(backendMessage, {
+          id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
+        });
         if (normalizedMessage.includes("limite")) {
           navigate("/dashboard/bio");
         }
       } else {
         const errorMessage =
           backendMessage || error.message || "Erro ao criar perfil";
-        toast.error(errorMessage);
+        toast.error(errorMessage, {
+          id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
+        });
       }
     } finally {
       setIsLoading(false);

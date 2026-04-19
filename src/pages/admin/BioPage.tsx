@@ -50,6 +50,11 @@ interface Bio {
   slug?: string;
 }
 
+const BIO_PAGE_LOAD_TOAST_ID = "bio-page-load-toast";
+const BIO_PAGE_PREVIEW_TOAST_ID = "bio-page-preview-toast";
+const BIO_PAGE_PUBLISH_TOAST_ID = "bio-page-publish-toast";
+const BIO_PAGE_DELETE_TOAST_ID = "bio-page-delete-toast";
+
 export default function BioPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -94,7 +99,9 @@ export default function BioPage() {
         setBios(mappedBios);
       } catch (error) {
         console.error("Erro ao buscar bios:", error);
-        toast.error("Erro ao carregar seus portfólios");
+        toast.error("Erro ao carregar seus portfólios", {
+          id: BIO_PAGE_LOAD_TOAST_ID,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -115,7 +122,9 @@ export default function BioPage() {
 
   const handlePreviewClick = async (bio: Bio) => {
     if (!bio.slug) {
-      toast.error("Slug não encontrado para este perfil");
+      toast.error("Slug não encontrado para este perfil", {
+        id: BIO_PAGE_PREVIEW_TOAST_ID,
+      });
       return;
     }
 
@@ -138,6 +147,7 @@ export default function BioPage() {
       window.open(previewUrl, "_blank");
 
       toast.success(`Preview aberto! Token expira em ${hours}h`, {
+        id: BIO_PAGE_PREVIEW_TOAST_ID,
         description: "O link funciona mesmo com o perfil não publicado",
       });
     } catch (error: any) {
@@ -145,15 +155,20 @@ export default function BioPage() {
 
       // Se falhar, mostrar erro específico
       if (error.response?.status === 404) {
-        toast.error("Endpoint de preview não encontrado no backend");
+        toast.error("Endpoint de preview não encontrado no backend", {
+          id: BIO_PAGE_PREVIEW_TOAST_ID,
+        });
       } else if (
         error.response?.status === 401 ||
         error.response?.status === 403
       ) {
-        toast.error("Sem permissão para gerar preview");
+        toast.error("Sem permissão para gerar preview", {
+          id: BIO_PAGE_PREVIEW_TOAST_ID,
+        });
       } else {
         toast.error(
           "Erro ao gerar token de preview. Verifique se o backend está rodando.",
+          { id: BIO_PAGE_PREVIEW_TOAST_ID },
         );
       }
     } finally {
@@ -184,10 +199,13 @@ export default function BioPage() {
 
       toast.success(
         newStatus ? "Página publicada com sucesso!" : "Página desativada",
+        { id: BIO_PAGE_PUBLISH_TOAST_ID },
       );
     } catch (error: any) {
       console.error("Erro ao alterar status:", error);
-      toast.error("Erro ao alterar status da página");
+      toast.error("Erro ao alterar status da página", {
+        id: BIO_PAGE_PUBLISH_TOAST_ID,
+      });
     } finally {
       setPublishLoading(null);
     }
@@ -198,10 +216,14 @@ export default function BioPage() {
       try {
         await profileApi.delete(selectedBio.id);
         setBios(bios.filter((b) => b.id !== selectedBio.id));
-        toast.success(`Bio "${selectedBio.name}" deletada com sucesso!`);
+        toast.success(`Bio "${selectedBio.name}" deletada com sucesso!`, {
+          id: BIO_PAGE_DELETE_TOAST_ID,
+        });
       } catch (error: any) {
         console.error("Erro ao deletar bio:", error);
-        toast.error(error.response?.data?.message || "Erro ao deletar bio");
+        toast.error(error.response?.data?.message || "Erro ao deletar bio", {
+          id: BIO_PAGE_DELETE_TOAST_ID,
+        });
       } finally {
         setDeleteDialogOpen(false);
         setSelectedBio(null);

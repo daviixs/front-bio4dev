@@ -8,6 +8,8 @@ import { profileApi } from "@/lib/api";
 import { toast } from "sonner";
 import { getInfluencerThemePreset } from "./themePresets";
 
+const TEMPLATE_PREVIEW_PUBLISH_TOAST_ID = "template-preview-publish-toast";
+
 export function TemplatePreview({ templateId }: { templateId: InfluencerTemplateId }) {
   const { profileId } = useParams<{ profileId: string }>();
   const navigate = useNavigate();
@@ -54,10 +56,12 @@ export function TemplatePreview({ templateId }: { templateId: InfluencerTemplate
     try {
       // Mock: tenta publicar; se falhar, ainda navega.
       await profileApi.update(profileId, { published: true }).catch(() => {});
-      toast.success("Site publicado!");
+      toast.success("Site publicado!", {
+        id: TEMPLATE_PREVIEW_PUBLISH_TOAST_ID,
+      });
     } catch (err: any) {
       const message = err?.response?.data?.message || "Erro ao publicar";
-      toast.error(message);
+      toast.error(message, { id: TEMPLATE_PREVIEW_PUBLISH_TOAST_ID });
     } finally {
       setIsPublishing(false);
       navigate("/dashboard");

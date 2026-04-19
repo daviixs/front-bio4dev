@@ -391,6 +391,7 @@ export const INFLUENCER_THEME_PRESETS: Record<
         `${INPUT_BASE} border-violet-100 focus:border-violet-500 focus:ring-violet-500/20`,
       focusRing: "focus-visible:ring-2 focus-visible:ring-violet-500/20",
     },
+  },
   };
 
 export function getInfluencerThemePreset(

@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Github,
-  Linkedin,
-  Mail,
-  Twitter,
-  Coffee,
-  Instagram,
-  Youtube,
-  FileDown,
-} from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
 import { template01Theme } from '@/theme/template01Theme';
 import { Footer as FooterType, Social } from '@/types';
 
@@ -17,20 +8,10 @@ interface FooterProps {
   socials?: Social[];
 }
 
-const socialIconMap: Record<string, React.ReactNode> = {
-  github: <Github size={24} />,
-  linkedin: <Linkedin size={24} />,
-  twitter: <Twitter size={24} />,
-  instagram: <Instagram size={24} />,
-  tiktok: <span className="font-bold text-xl">d</span>,
-  youtube: <Youtube size={24} />,
-};
-
-export function Footer({ footer, socials }: FooterProps) {
+export function Footer({ footer }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
-  // Prefer links set in the footer (what the user edits in the editor)
-  const footerSocials = [
+  const socialLinks = [
     footer?.github && {
       href: footer.github,
       label: 'GitHub',
@@ -41,32 +22,11 @@ export function Footer({ footer, socials }: FooterProps) {
       label: 'LinkedIn',
       icon: <Linkedin size={24} />,
     },
-    footer?.twitter && {
-      href: footer.twitter,
-      label: 'Twitter',
-      icon: <Twitter size={24} />,
-    },
-    footer?.email && {
-      href: `mailto:${footer.email}`,
-      label: 'Email',
-      icon: <Mail size={24} />,
-    },
   ].filter(Boolean) as Array<{
     href: string;
     label: string;
     icon: React.ReactNode;
   }>;
-
-  // Fallback to legacy socials list if footer links aren't set
-  const legacySocials =
-    socials?.map((social) => ({
-      href: social.url,
-      label: social.plataforma,
-      icon: socialIconMap[social.plataforma] || <Mail size={24} />,
-      id: social.id,
-    })) || [];
-
-  const socialLinks = footerSocials.length > 0 ? footerSocials : legacySocials;
 
   return (
     <footer
@@ -83,30 +43,6 @@ export function Footer({ footer, socials }: FooterProps) {
             {footer?.subtitle ||
               'Estou sempre aberto a novos projetos e oportunidades'}
           </p>
-
-          {/* Contact email / Resume */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            {footer?.email && (
-              <a
-                href={`mailto:${footer.email}`}
-                className={`inline-flex items-center gap-2 px-8 py-3 rounded-lg transition-all ${template01Theme.footerButton}`}
-              >
-                <Mail size={20} />
-                {footer.email}
-              </a>
-            )}
-            {footer?.resumeUrl && (
-              <a
-                href={footer.resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`inline-flex items-center gap-2 px-8 py-3 rounded-lg transition-all ${template01Theme.footerButton}`}
-              >
-                <FileDown size={20} />
-                Baixe aqui meu Currículo
-              </a>
-            )}
-          </div>
         </div>
 
         {/* Social links */}
@@ -125,52 +61,28 @@ export function Footer({ footer, socials }: FooterProps) {
           ))}
           {!socialLinks.length && (
             <>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
-                aria-label="GitHub"
+              <span
+                className={`w-12 h-12 flex items-center justify-center rounded-full opacity-50 ${template01Theme.socialSurface}`}
+                aria-hidden="true"
               >
                 <Github size={24} />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
-                aria-label="LinkedIn"
+              </span>
+              <span
+                className={`w-12 h-12 flex items-center justify-center rounded-full opacity-50 ${template01Theme.socialSurface}`}
+                aria-hidden="true"
               >
                 <Linkedin size={24} />
-              </a>
+              </span>
             </>
           )}
         </div>
 
         {/* Divider */}
         <div className={`border-t pt-8 ${template01Theme.divider}`}>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Copyright */}
-            <p
-              className={`${template01Theme.footerSecondary} text-center md:text-left`}
-            >
-              © {currentYear} {footer?.copyrightName || 'João Silva'}. Todos os
-              direitos reservados.
-            </p>
-
-            {/* Made with */}
-            <p
-              className={`${template01Theme.footerSecondary} flex items-center gap-2`}
-            >
-              {footer?.madeWith && (
-                <>
-                  Feito com <span className="text-[#c5b9b7]">❤️</span> e
-                  <Coffee size={18} className="text-[#a69b98]" />
-                  café
-                </>
-              )}
-            </p>
-          </div>
+          <p className={`${template01Theme.footerSecondary} text-center`}>
+            © {currentYear} {footer?.copyrightName || 'João Silva'}. Todos os
+            direitos reservados.
+          </p>
         </div>
       </div>
     </footer>

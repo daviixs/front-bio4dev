@@ -20,6 +20,8 @@ interface EditState {
   value: any;
 }
 
+const INFLUENCER_EDITOR_TOAST_ID = "influencer-editor-toast";
+
 export function InfluencerEditorPage() {
   const { portfolioId } = useParams<{ portfolioId: string }>();
   const [searchParams] = useSearchParams();
@@ -38,7 +40,9 @@ export function InfluencerEditorPage() {
 
   const loadProfileData = async () => {
     if (!portfolioId) {
-      toast.error("ID do portfólio não encontrado");
+      toast.error("ID do portfólio não encontrado", {
+        id: INFLUENCER_EDITOR_TOAST_ID,
+      });
       navigate("/profile/create");
       return;
     }
@@ -92,12 +96,16 @@ export function InfluencerEditorPage() {
           });
         }
       } else {
-        toast.error("Tema não especificado");
+        toast.error("Tema não especificado", {
+          id: INFLUENCER_EDITOR_TOAST_ID,
+        });
         navigate("/profile/create");
       }
     } catch (error: any) {
       console.error("Error loading profile:", error);
-      toast.error("Erro ao carregar perfil");
+      toast.error("Erro ao carregar perfil", {
+        id: INFLUENCER_EDITOR_TOAST_ID,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -123,10 +131,14 @@ export function InfluencerEditorPage() {
       // TODO: When backend is ready, uncomment this
       // await profileApi.update(portfolioId, profileData);
 
-      toast.success("Portfólio salvo com sucesso!");
+      toast.success("Portfólio salvo com sucesso!", {
+        id: INFLUENCER_EDITOR_TOAST_ID,
+      });
     } catch (error: any) {
       console.error("Error saving profile:", error);
-      toast.error("Erro ao salvar portfólio");
+      toast.error("Erro ao salvar portfólio", {
+        id: INFLUENCER_EDITOR_TOAST_ID,
+      });
     } finally {
       setIsSaving(false);
     }

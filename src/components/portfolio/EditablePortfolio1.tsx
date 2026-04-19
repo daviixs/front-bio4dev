@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { EditableHero } from './EditableHero';
-import { EditableResumeButton } from './EditableResumeButton';
 import { WorkHistory } from '../../../Portifolios/portifolio-1/components/WorkHistory';
 import { Projects } from '../../../Portifolios/portifolio-1/components/Projects';
 import { Footer } from '../../../Portifolios/portifolio-1/components/Footer';
@@ -20,6 +19,7 @@ import type {
   Projeto,
   Technology,
   WorkExperience,
+  Footer as ProfileFooter,
 } from '@/types';
 import {
   showPortfolioEditorError,
@@ -80,6 +80,36 @@ const normalizeSlug = (value: string) =>
     .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 60);
+
+const normalizeExternalUrl = (value: string, label: string) => {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return { value: undefined, error: undefined };
+  }
+
+  const normalizedValue = /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(trimmedValue)
+    ? trimmedValue
+    : `https://${trimmedValue}`;
+
+  try {
+    const parsedUrl = new URL(normalizedValue);
+
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      return {
+        value: undefined,
+        error: `${label} deve usar um link http ou https`,
+      };
+    }
+
+    return { value: parsedUrl.toString(), error: undefined };
+  } catch {
+    return {
+      value: undefined,
+      error: `${label} deve ser um link valido`,
+    };
+  }
+};
 
 export const TECH_OPTIONS: TechOption[] = [
   // Frontend
@@ -803,13 +833,9 @@ export function EditablePortfolio1({
   const [footerForm, setFooterForm] = useState({
     title: '',
     subtitle: '',
-    email: '',
     github: '',
     linkedin: '',
-    twitter: '',
-    resumeUrl: '',
     copyrightName: '',
-    madeWith: '',
   });
 
   useEffect(() => {
@@ -862,7 +888,7 @@ export function EditablePortfolio1({
       }
     };
 
-    if (!localProfilvoid e.id) {
+    if (!localProfile.id) {
       createProfileIfNeeded();
     }
   }, [localProfile.id]);
@@ -879,23 +905,31 @@ export function EditablePortfolio1({
     try {
       let legendaId = legenda?.id;
 
+      const legendaDefaults = {
+        profileId: localProfile.id,
+        legendaFoto: legenda?.legendaFoto || '',
+        greeting: legenda?.greeting || 'Olá, eu sou',
+        nome: legenda?.nome || 'Nome',
+        titulo: legenda?.titulo || 'Título',
+        subtitulo: legenda?.subtitulo || 'Subtitulo',
+        descricao: legenda?.descricao || 'Descrição',
+      };
+
       // Se não tem legenda, criar uma
       if (!legendaId) {
-        const createResponse = await legendaApi.create({
-          profileId: localProfile.id,
-          legendaFoto: legenda?.legendaFoto || '',
-          greeting: legenda?.greeting || 'Olá, eu sou',
-          nome: legenda?.nome || 'Nome',
-          titulo: legenda?.titulo || 'Título',
-          subtitulo: legenda?.subtitulo || 'Subtitulo',
-          descricao: legenda?.descricao || 'Descrição',
-        });
-        legendaId = createResponse.legenda.id;
+        const createResponse = await legendaApi.create(legendaDefaults);
+        const createdLegenda = createResponse.legenda;
+
+        if (!createdLegenda) {
+          throw new Error('Legenda nao retornada pela API');
+        }
+
+        legendaId = createdLegenda.id;
 
         // Atualizar o estado local com a nova legenda
         setLocalProfile((prev) => ({
           ...prev,
-          legendas: [createResponse.legenda],
+          legendas: [createdLegenda],
         }));
       }
 
@@ -930,45 +964,51 @@ export function EditablePortfolio1({
       return;
     }
 
+    const avatarUrl = url.trim();
+
+    if (!avatarUrl) {
+      showPortfolioEditorError('URL do avatar invalida');
+      return;
+    }
+
     try {
-      await profileApi.update(localProfile.id, { avatarUrl: url });
+      const legendaDefaults = {
+        profileId: localProfile.id,
+        legendaFoto: avatarUrl,
+        greeting: legenda?.greeting || 'Olá, eu sou',
+        nome: legenda?.nome || 'Nome',
+        titulo: legenda?.titulo || 'Título',
+        subtitulo: legenda?.subtitulo || 'Subtitulo',
+        descricao: legenda?.descricao || 'Descrição',
+      };
+
+      let syncedLegenda = legenda;
+
+      if (legenda?.id) {
+        const response = await legendaApi.update(legenda.id, {
+          legendaFoto: avatarUrl,
+        });
+        syncedLegenda = response.legenda;
+      } else {
+        const createResponse = await legendaApi.create(legendaDefaults);
+        if (!createResponse.legenda) {
+          throw new Error('Legenda nao retornada pela API');
+        }
+        syncedLegenda = createResponse.legenda;
+      }
+
+      await profileApi.update(localProfile.id, { avatarUrl });
 
       setLocalProfile((prev) => ({
         ...prev,
-        avatarUrl: url,
+        avatarUrl,
+        legendas: syncedLegenda ? [syncedLegenda] : prev.legendas,
       }));
 
       onProfileUpdate?.();
     } catch (error) {
       console.error('Erro ao atualizar avatar:', error);
       showPortfolioEditorError('Erro ao atualizar avatar');
-      throw error;
-    }
-  };
-
-  const handleResumeUpdate = async (url: string) => {
-    if (!localProfile.footer?.id) {
-      showPortfolioEditorError('Footer não encontrado');
-      return;
-    }
-
-    try {
-      await footerApi.update(localProfile.footer.id, { resumeUrl: url });
-
-      setLocalProfile((prev) => ({
-        ...prev,
-        footer: prev.footer
-          ? {
-              ...prev.footer,
-              resumeUrl: url,
-            }
-          : undefined,
-      }));
-
-      onProfileUpdate?.();
-    } catch (error) {
-      console.error('Erro ao atualizar currículo:', error);
-      showPortfolioEditorError('Erro ao atualizar currículo');
       throw error;
     }
   };
@@ -1217,6 +1257,24 @@ export function EditablePortfolio1({
     }
 
     try {
+      const normalizedDemoLink = normalizeExternalUrl(
+        projectForm.demoLink,
+        'Link de demonstracao',
+      );
+      if (normalizedDemoLink.error) {
+        showPortfolioEditorError(normalizedDemoLink.error);
+        return;
+      }
+
+      const normalizedCodeLink = normalizeExternalUrl(
+        projectForm.codeLink,
+        'Link do codigo',
+      );
+      if (normalizedCodeLink.error) {
+        showPortfolioEditorError(normalizedCodeLink.error);
+        return;
+      }
+
       console.log('handleProjectSave - Preparando payload');
       const basePayload: any = {
         nome: projectForm.nome.trim() || 'Projeto',
@@ -1225,11 +1283,11 @@ export function EditablePortfolio1({
       };
 
       // Adicionar campos opcionais apenas se tiverem valor
-      if (projectForm.demoLink.trim()) {
-        basePayload.demoLink = projectForm.demoLink.trim();
+      if (normalizedDemoLink.value) {
+        basePayload.demoLink = normalizedDemoLink.value;
       }
-      if (projectForm.codeLink.trim()) {
-        basePayload.codeLink = projectForm.codeLink.trim();
+      if (normalizedCodeLink.value) {
+        basePayload.codeLink = normalizedCodeLink.value;
       }
       // Remover validação de URL para gif - usar uma URL válida ou deixar vazio
       if (
@@ -1347,13 +1405,13 @@ export function EditablePortfolio1({
       subtitle:
         localProfile.footer?.subtitle ||
         'Estou sempre aberto a novos projetos e oportunidades',
-      email: localProfile.footer?.email || '',
       github: localProfile.footer?.github || '',
       linkedin: localProfile.footer?.linkedin || '',
-      twitter: localProfile.footer?.twitter || '',
-      resumeUrl: localProfile.footer?.resumeUrl || '',
-      copyrightName: localProfile.footer?.copyrightName || 'Bio4Dev',
-      madeWith: localProfile.footer?.madeWith || 'Feito com cafe e codigo',
+      copyrightName:
+        localProfile.footer?.copyrightName ||
+        legenda?.nome ||
+        localProfile.user?.nome ||
+        'João Silva',
     });
     setIsFooterModalOpen(true);
   };
@@ -1362,42 +1420,61 @@ export function EditablePortfolio1({
     if (!localProfile.id) return;
 
     try {
+      const normalizedGithub = normalizeExternalUrl(footerForm.github, 'GitHub');
+      if (normalizedGithub.error) {
+        showPortfolioEditorError(normalizedGithub.error);
+        return;
+      }
+
+      const normalizedLinkedin = normalizeExternalUrl(
+        footerForm.linkedin,
+        'LinkedIn',
+      );
+      if (normalizedLinkedin.error) {
+        showPortfolioEditorError(normalizedLinkedin.error);
+        return;
+      }
+
       const basePayload = {
         title: footerForm.title.trim() || 'Vamos trabalhar juntos?',
         subtitle:
           footerForm.subtitle.trim() ||
           'Estou sempre aberto a novos projetos e oportunidades',
-        email: footerForm.email.trim() || undefined,
-        github: footerForm.github.trim() || undefined,
-        linkedin: footerForm.linkedin.trim() || undefined,
-        twitter: footerForm.twitter.trim() || undefined,
-        resumeUrl: footerForm.resumeUrl.trim() || undefined,
-        copyrightName: footerForm.copyrightName.trim() || 'Bio4Dev',
-        madeWith: footerForm.madeWith.trim() || 'Feito com cafe e codigo',
+        github: normalizedGithub.value,
+        linkedin: normalizedLinkedin.value,
+        copyrightName:
+          footerForm.copyrightName.trim() ||
+          legenda?.nome ||
+          localProfile.user?.nome ||
+          'João Silva',
       };
 
+      let savedFooter: ProfileFooter | undefined;
       if (localProfile.footer?.id) {
-        await footerApi.update(localProfile.footer.id, basePayload);
+        savedFooter = await footerApi.update(localProfile.footer.id, basePayload);
       } else {
-        await footerApi.create({
+        savedFooter = await footerApi.create({
           profileId: localProfile.id,
           ...basePayload,
+          madeWith: localProfile.footer?.madeWith || '',
         });
       }
 
       setLocalProfile((prev) => ({
         ...prev,
         footer: {
-          ...(prev.footer || { id: prev.footer?.id || '' }),
+          ...(prev.footer || {}),
+          ...(savedFooter || {}),
+          profileId: prev.id,
           title: basePayload.title,
           subtitle: basePayload.subtitle,
-          email: basePayload.email,
           github: basePayload.github,
           linkedin: basePayload.linkedin,
-          twitter: basePayload.twitter,
-          resumeUrl: basePayload.resumeUrl,
           copyrightName: basePayload.copyrightName,
-          madeWith: basePayload.madeWith,
+          email: prev.footer?.email,
+          twitter: prev.footer?.twitter,
+          resumeUrl: prev.footer?.resumeUrl,
+          madeWith: prev.footer?.madeWith || '',
         },
       }));
 
@@ -1452,12 +1529,6 @@ export function EditablePortfolio1({
 
     return (
       <div className={`min-h-screen ${template01Theme.pageBg}`}>
-        {/* Botão de Currículo Editável - Fixo no Topo */}
-        <EditableResumeButton
-          resumeUrl={localProfile.footer?.resumeUrl}
-          onResumeUpdate={handleResumeUpdate}
-        />
-
         {/* Seção Hero */}
         <EditableHero
           profile={localProfile}
@@ -1543,7 +1614,7 @@ export function EditablePortfolio1({
             <Pencil className="h-4 w-4" />
             Editar Footer
           </button>
-          <Footer footer={localProfile.footer} socials={localProfile.social} />
+          <Footer footer={localProfile.footer} />
         </div>
         {/* Work Experience Modal */}
         <Dialog open={isWorkModalOpen} onOpenChange={setIsWorkModalOpen}>
@@ -1702,6 +1773,7 @@ export function EditablePortfolio1({
                       demoLink: event.target.value,
                     }))
                   }
+                  placeholder="https://meu-projeto.com"
                 />
               </div>
               <div className="space-y-1">
@@ -1714,6 +1786,7 @@ export function EditablePortfolio1({
                       codeLink: event.target.value,
                     }))
                   }
+                  placeholder="https://github.com/usuario/repositorio"
                 />
               </div>
               <div className="space-y-1">
@@ -1802,18 +1875,6 @@ export function EditablePortfolio1({
                 />
               </div>
               <div className="space-y-1">
-                <Label>Email</Label>
-                <Input
-                  value={footerForm.email}
-                  onChange={(event) =>
-                    setFooterForm((prev) => ({
-                      ...prev,
-                      email: event.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="space-y-1">
                 <Label>GitHub</Label>
                 <Input
                   value={footerForm.github}
@@ -1823,6 +1884,7 @@ export function EditablePortfolio1({
                       github: event.target.value,
                     }))
                   }
+                  placeholder="https://github.com/seu-usuario"
                 />
               </div>
               <div className="space-y-1">
@@ -1835,30 +1897,7 @@ export function EditablePortfolio1({
                       linkedin: event.target.value,
                     }))
                   }
-                />
-              </div>
-              <div className="space-y-1">
-                <Label>Twitter</Label>
-                <Input
-                  value={footerForm.twitter}
-                  onChange={(event) =>
-                    setFooterForm((prev) => ({
-                      ...prev,
-                      twitter: event.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="space-y-1">
-                <Label>Resume URL</Label>
-                <Input
-                  value={footerForm.resumeUrl}
-                  onChange={(event) =>
-                    setFooterForm((prev) => ({
-                      ...prev,
-                      resumeUrl: event.target.value,
-                    }))
-                  }
+                  placeholder="https://linkedin.com/in/seu-perfil"
                 />
               </div>
               <div className="space-y-1">
@@ -1871,18 +1910,7 @@ export function EditablePortfolio1({
                       copyrightName: event.target.value,
                     }))
                   }
-                />
-              </div>
-              <div className="space-y-1">
-                <Label>Made With</Label>
-                <Input
-                  value={footerForm.madeWith}
-                  onChange={(event) =>
-                    setFooterForm((prev) => ({
-                      ...prev,
-                      madeWith: event.target.value,
-                    }))
-                  }
+                  placeholder="João Silva"
                 />
               </div>
             </div>

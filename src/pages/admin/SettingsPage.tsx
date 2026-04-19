@@ -10,7 +10,12 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/stores/authStore";
 import { usersApi } from "@/lib/api";
 
-const SETTINGS_TOAST_ID = "admin-settings-toast";
+const SETTINGS_LOAD_TOAST_ID = "settings-load-toast";
+const SETTINGS_PROFILE_TOAST_ID = "settings-profile-toast";
+const SETTINGS_NOTIFICATIONS_TOAST_ID = "settings-notifications-toast";
+const SETTINGS_GENERAL_TOAST_ID = "settings-general-toast";
+const SETTINGS_PASSWORD_TOAST_ID = "settings-password-toast";
+const SETTINGS_TWO_FACTOR_TOAST_ID = "settings-two-factor-toast";
 
 export default function AdminSettingsPage() {
   const { user } = useAuthStore();
@@ -64,7 +69,7 @@ export default function AdminSettingsPage() {
         setTwoFactorEnabled(data.twoFactorEnabled ?? false);
       } catch (err) {
         console.error(err);
-        toast.error("Erro ao carregar usuário", { id: SETTINGS_TOAST_ID });
+        toast.error("Erro ao carregar usuário", { id: SETTINGS_LOAD_TOAST_ID });
       } finally {
         setLoading(false);
       }
@@ -79,11 +84,11 @@ export default function AdminSettingsPage() {
     try {
       setSavingProfile(true);
       await usersApi.update(user.id, { nome: name, email, username });
-      toast.success("Perfil atualizado", { id: SETTINGS_TOAST_ID });
+      toast.success("Perfil atualizado", { id: SETTINGS_PROFILE_TOAST_ID });
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.message || "Erro ao salvar perfil", {
-        id: SETTINGS_TOAST_ID,
+        id: SETTINGS_PROFILE_TOAST_ID,
       });
     } finally {
       requestLocks.current.profile = false;
@@ -101,12 +106,14 @@ export default function AdminSettingsPage() {
         marketingEmails,
         securityAlerts,
       });
-      toast.success("Notificações atualizadas", { id: SETTINGS_TOAST_ID });
+      toast.success("Notificações atualizadas", {
+        id: SETTINGS_NOTIFICATIONS_TOAST_ID,
+      });
     } catch (err: any) {
       console.error(err);
       toast.error(
         err.response?.data?.message || "Erro ao salvar notificações",
-        { id: SETTINGS_TOAST_ID },
+        { id: SETTINGS_NOTIFICATIONS_TOAST_ID },
       );
     } finally {
       requestLocks.current.notifications = false;
@@ -123,12 +130,14 @@ export default function AdminSettingsPage() {
         language,
         timezone,
       });
-      toast.success("Preferências atualizadas", { id: SETTINGS_TOAST_ID });
+      toast.success("Preferências atualizadas", {
+        id: SETTINGS_GENERAL_TOAST_ID,
+      });
     } catch (err: any) {
       console.error(err);
       toast.error(
         err.response?.data?.message || "Erro ao salvar preferências",
-        { id: SETTINGS_TOAST_ID },
+        { id: SETTINGS_GENERAL_TOAST_ID },
       );
     } finally {
       requestLocks.current.general = false;
@@ -140,7 +149,7 @@ export default function AdminSettingsPage() {
     if (!user || requestLocks.current.password) return;
     if (!oldPassword || !newPassword) {
       toast.error("Informe a senha atual e a nova senha", {
-        id: SETTINGS_TOAST_ID,
+        id: SETTINGS_PASSWORD_TOAST_ID,
       });
       return;
     }
@@ -151,14 +160,14 @@ export default function AdminSettingsPage() {
         oldPassword,
         newPassword,
       });
-      toast.success("Senha alterada", { id: SETTINGS_TOAST_ID });
+      toast.success("Senha alterada", { id: SETTINGS_PASSWORD_TOAST_ID });
       setOldPassword("");
       setNewPassword("");
     } catch (err: any) {
       console.error(err);
       toast.error(
         err.response?.data?.message || "Erro ao trocar senha",
-        { id: SETTINGS_TOAST_ID },
+        { id: SETTINGS_PASSWORD_TOAST_ID },
       );
     } finally {
       requestLocks.current.password = false;
@@ -174,15 +183,21 @@ export default function AdminSettingsPage() {
       if (twoFactorEnabled) {
         await usersApi.disable2FA(user.id);
         setTwoFactorEnabled(false);
-        toast.success("2FA desativado (stub)", { id: SETTINGS_TOAST_ID });
+        toast.success("2FA desativado (stub)", {
+          id: SETTINGS_TWO_FACTOR_TOAST_ID,
+        });
       } else {
         await usersApi.enable2FA(user.id);
         setTwoFactorEnabled(true);
-        toast.success("2FA ativado (stub)", { id: SETTINGS_TOAST_ID });
+        toast.success("2FA ativado (stub)", {
+          id: SETTINGS_TWO_FACTOR_TOAST_ID,
+        });
       }
     } catch (err: any) {
       console.error(err);
-      toast.error("Erro ao alternar 2FA", { id: SETTINGS_TOAST_ID });
+      toast.error("Erro ao alternar 2FA", {
+        id: SETTINGS_TWO_FACTOR_TOAST_ID,
+      });
     } finally {
       requestLocks.current.twoFactor = false;
       setToggling2fa(false);

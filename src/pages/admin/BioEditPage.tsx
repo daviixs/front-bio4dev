@@ -10,6 +10,8 @@ import { EditablePortfolio2 } from "@/components/portfolio/EditablePortfolio2";
 import { EditablePortfolio3 } from "@/components/portfolio/EditablePortfolio3";
 
 const BIO_EDIT_SAVE_TOAST_ID = "bio-edit-save-toast";
+const BIO_EDIT_LOAD_TOAST_ID = "bio-edit-load-toast";
+const BIO_EDIT_PREVIEW_TOAST_ID = "bio-edit-preview-toast";
 
 export default function BioEditPage() {
   const navigate = useNavigate();
@@ -30,7 +32,9 @@ export default function BioEditPage() {
         setProfile(profileData);
       } catch (error) {
         console.error("Erro ao carregar bio:", error);
-        toast.error("Erro ao carregar dados da bio");
+        toast.error("Erro ao carregar dados da bio", {
+          id: BIO_EDIT_LOAD_TOAST_ID,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -67,12 +71,15 @@ export default function BioEditPage() {
     if (!profile?.slug) {
       toast.error(
         "Defina um slug antes de visualizar o preview.",
+        { id: BIO_EDIT_PREVIEW_TOAST_ID },
       );
       return;
     }
 
     if (!id) {
-      toast.error("ID do perfil não encontrado");
+      toast.error("ID do perfil não encontrado", {
+        id: BIO_EDIT_PREVIEW_TOAST_ID,
+      });
       return;
     }
 
@@ -93,6 +100,7 @@ export default function BioEditPage() {
       window.open(previewUrl, "_blank");
 
       toast.success(`Preview aberto! Token expira em ${hours}h`, {
+        id: BIO_EDIT_PREVIEW_TOAST_ID,
         description: "O link funciona mesmo com o perfil não publicado",
       });
     } catch (error: any) {
@@ -100,15 +108,20 @@ export default function BioEditPage() {
 
       // Se falhar, mostrar erro específico
       if (error.response?.status === 404) {
-        toast.error("Endpoint de preview não encontrado no backend");
+        toast.error("Endpoint de preview não encontrado no backend", {
+          id: BIO_EDIT_PREVIEW_TOAST_ID,
+        });
       } else if (
         error.response?.status === 401 ||
         error.response?.status === 403
       ) {
-        toast.error("Sem permissão para gerar preview");
+        toast.error("Sem permissão para gerar preview", {
+          id: BIO_EDIT_PREVIEW_TOAST_ID,
+        });
       } else {
         toast.error(
           "Erro ao gerar token de preview. Verifique se o backend está rodando.",
+          { id: BIO_EDIT_PREVIEW_TOAST_ID },
         );
       }
     } finally {

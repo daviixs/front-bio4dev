@@ -241,6 +241,11 @@ const API_SUPPORTED_PLATFORMS = new Set<PlatformId>([
   'pinterest',
 ]);
 
+const ONBOARDING_LIMIT_TOAST_ID = 'influencer-onboarding-limit-toast';
+const ONBOARDING_LINKS_TOAST_ID = 'influencer-onboarding-links-toast';
+const ONBOARDING_FINISH_TOAST_ID = 'influencer-onboarding-finish-toast';
+const ONBOARDING_AUTH_TOAST_ID = 'influencer-onboarding-auth-toast';
+
 const isValidUrl = (value: string) => {
   if (!value.trim()) return true;
   try {
@@ -1128,7 +1133,9 @@ export function InfluencerOnboardingPage({
   const handlePlatformToggle = (id: PlatformId) => {
     const alreadySelected = selectedSet.has(id);
     if (!alreadySelected && !canSelectMore) {
-      toast.error('Voce pode selecionar ate cinco plataformas.');
+      toast.error('Voce pode selecionar ate cinco plataformas.', {
+        id: ONBOARDING_LIMIT_TOAST_ID,
+      });
       return;
     }
 
@@ -1149,7 +1156,9 @@ export function InfluencerOnboardingPage({
 
   const handleAddAdditionalLink = () => {
     if (state.additionalLinks.length >= 10) {
-      toast.error('Voce pode adicionar ate 10 links adicionais.');
+      toast.error('Voce pode adicionar ate 10 links adicionais.', {
+        id: ONBOARDING_LIMIT_TOAST_ID,
+      });
       return;
     }
     updateState({
@@ -1215,6 +1224,7 @@ export function InfluencerOnboardingPage({
       const readable = skippedPlatforms.join(', ');
       toast.warning(
         `Algumas plataformas ainda nao sao suportadas pela API: ${readable}. Use links adicionais para inclui-las.`,
+        { id: ONBOARDING_LINKS_TOAST_ID },
       );
     }
 
@@ -1266,6 +1276,7 @@ export function InfluencerOnboardingPage({
     if (result.skippedPlatforms.length > 0) {
       toast.warning(
         `Algumas plataformas ainda nao sao suportadas pela API: ${result.skippedPlatforms.join(', ')}.`,
+        { id: ONBOARDING_FINISH_TOAST_ID },
       );
     }
 
@@ -1282,7 +1293,9 @@ export function InfluencerOnboardingPage({
     const currentDraft = persistCurrentDraft('pending_auth');
 
     if (!currentDraft) {
-      toast.error('Rascunho do onboarding não encontrado.');
+      toast.error('Rascunho do onboarding não encontrado.', {
+        id: ONBOARDING_AUTH_TOAST_ID,
+      });
       navigate('/profile/create');
       return;
     }
@@ -1304,7 +1317,9 @@ export function InfluencerOnboardingPage({
     setIsSavingLinks(true);
     try {
       if (!profileId) {
-        toast.error('Perfil não encontrado.');
+        toast.error('Perfil não encontrado.', {
+          id: ONBOARDING_LINKS_TOAST_ID,
+        });
         return;
       }
 
@@ -1327,7 +1342,9 @@ export function InfluencerOnboardingPage({
       });
       updateState({ step: 3 });
     } catch {
-      toast.error('Nao foi possivel salvar suas redes sociais.');
+      toast.error('Nao foi possivel salvar suas redes sociais.', {
+        id: ONBOARDING_LINKS_TOAST_ID,
+      });
     } finally {
       setIsSavingLinks(false);
     }
@@ -1335,7 +1352,9 @@ export function InfluencerOnboardingPage({
 
   const handleFinish = async () => {
     if (!profileId) {
-      toast.error('Perfil não encontrado.');
+      toast.error('Perfil não encontrado.', {
+        id: ONBOARDING_FINISH_TOAST_ID,
+      });
       return;
     }
 
@@ -1350,7 +1369,9 @@ export function InfluencerOnboardingPage({
         const currentDraft = persistCurrentDraft('collecting');
 
         if (!currentDraft) {
-          toast.error('Rascunho do onboarding não encontrado.');
+          toast.error('Rascunho do onboarding não encontrado.', {
+            id: ONBOARDING_FINISH_TOAST_ID,
+          });
           navigate('/profile/create');
           return;
         }
@@ -1403,12 +1424,16 @@ export function InfluencerOnboardingPage({
       const normalizedMessage = backendMessage.toLowerCase();
 
       if (normalizedMessage.includes('limite')) {
-        toast.error(backendMessage);
+        toast.error(backendMessage, {
+          id: ONBOARDING_FINISH_TOAST_ID,
+        });
         navigate('/dashboard/bio');
         return;
       }
 
-      toast.error(backendMessage || 'Nao foi possivel salvar seu perfil.');
+      toast.error(backendMessage || 'Nao foi possivel salvar seu perfil.', {
+        id: ONBOARDING_FINISH_TOAST_ID,
+      });
     } finally {
       setIsSavingAll(false);
     }

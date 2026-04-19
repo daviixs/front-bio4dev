@@ -12,6 +12,8 @@ import {
 import { useAuthStore } from '@/stores/authStore';
 import { toast } from 'sonner';
 
+const AUTH_CALLBACK_TOAST_ID = 'auth-callback-toast';
+
 export function AuthCallbackPage() {
   const [processing, setProcessing] = useState(true);
   const [params] = useSearchParams();
@@ -23,7 +25,9 @@ export function AuthCallbackPage() {
     const state = params.get('state');
 
     if (!code) {
-      toast.error('Código do Google ausente');
+      toast.error('Código do Google ausente', {
+        id: AUTH_CALLBACK_TOAST_ID,
+      });
       navigate('/profile/type', { replace: true });
       return;
     }
@@ -32,14 +36,16 @@ export function AuthCallbackPage() {
       void useAuthStore.getState().loadProfile();
     };
 
-    handleOAuthCallback(code, state)
+    void handleOAuthCallback(code, state)
       .then(async () => {
         const authIntent = consumeAuthIntent();
 
         if (authIntent?.intent === 'onboarding_finalize') {
           const draft = loadDraft(authIntent.draftId);
           if (!draft) {
-            toast.error('Rascunho do onboarding não encontrado.');
+            toast.error('Rascunho do onboarding não encontrado.', {
+              id: AUTH_CALLBACK_TOAST_ID,
+            });
             navigate('/profile/create', { replace: true });
             return;
           }
@@ -57,6 +63,7 @@ export function AuthCallbackPage() {
             if (result.skippedPlatforms.length > 0) {
               toast.warning(
                 `Algumas plataformas ainda nao sao suportadas pela API: ${result.skippedPlatforms.join(', ')}.`,
+                { id: AUTH_CALLBACK_TOAST_ID },
               );
             }
 
@@ -67,7 +74,7 @@ export function AuthCallbackPage() {
               getApiErrorMessage(error) ||
               'Não foi possível salvar seu perfil após o login.';
 
-            toast.error(message);
+            toast.error(message, { id: AUTH_CALLBACK_TOAST_ID });
 
             if (message.toLowerCase().includes('limite')) {
               navigate('/dashboard/bio', { replace: true });
@@ -92,13 +99,13 @@ export function AuthCallbackPage() {
         }
 
         hydrateProfile();
-   void      navigate('/dashboard', { replace: true });
+        navigate('/dashboard', { replace: true });
       })
       .catch((error: unknown) => {
         const message =
           getApiErrorMessage(error) ||
           'Não foi possível autenticar. Tente novamente.';
-        toast.error(message);
+        toast.error(message, { id: AUTH_CALLBACK_TOAST_ID });
         void navigate('/profile/type', { replace: true });
       })
       .finally(() => setProcessing(false));

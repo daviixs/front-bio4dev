@@ -98,6 +98,8 @@ const defaultPages: PageData[] = [
   { titulo: "Projetos", slug: "projetos", ordem: 2 },
 ];
 
+const SETUP_WIZARD_TOAST_ID = "setup-wizard-toast";
+
 const socialIcons = {
   github: Github,
   instagram: Instagram,
@@ -137,7 +139,9 @@ export function SetupWizardPage() {
 
   const handleFinish = async () => {
     if (!profileId) {
-      toast.error("Perfil não encontrado. Crie um perfil primeiro.");
+      toast.error("Perfil não encontrado. Crie um perfil primeiro.", {
+        id: SETUP_WIZARD_TOAST_ID,
+      });
       navigate("/profile/create");
       return;
     }
@@ -191,10 +195,14 @@ export function SetupWizardPage() {
       // 6. Marcar perfil como publicado
       await profileApi.update(profileId, { published: true });
 
-      toast.success("Seu portfólio está pronto! 🎉");
+      toast.success("Seu portfólio está pronto! 🎉", {
+        id: SETUP_WIZARD_TOAST_ID,
+      });
       navigate("/dashboard");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao configurar perfil");
+      toast.error(error.response?.data?.message || "Erro ao configurar perfil", {
+        id: SETUP_WIZARD_TOAST_ID,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -575,7 +583,7 @@ export function SetupWizardPage() {
                         newPages[index].slug = e.target.value
                           .toLowerCase()
                           .replace(/\s+/g, "-")
-                          .replace(/[^a-z0-9-]/g, "'';
+                          .replace(/[^a-z0-9-]/g, "");
                         setPages(newPages);
                       }}
                       placeholder="Título da página"
