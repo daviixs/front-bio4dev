@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -196,8 +196,17 @@ html {
 
 /* Font Family */
 body {
-  font-family: "Outfit", "Geist", "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, sans-serif;
+  font-family:
+    'Outfit',
+    'Geist',
+    'Satoshi',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    sans-serif;
   overflow-x: hidden;
   width: 100%;
   max-width: 100vw;
@@ -205,8 +214,17 @@ body {
 
 /* Luxe theme shell (não afeta landing se não aplicado) */
 .app-shell {
-  background: radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.04), transparent 32%),
-    radial-gradient(circle at 80% 8%, rgba(255, 255, 255, 0.05), transparent 28%),
+  background:
+    radial-gradient(
+      circle at 18% 18%,
+      rgba(255, 255, 255, 0.04),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 80% 8%,
+      rgba(255, 255, 255, 0.05),
+      transparent 28%
+    ),
     var(--background);
   color: var(--foreground);
   min-height: 100vh;
@@ -215,7 +233,7 @@ body {
 }
 
 .app-shell::after {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -319,8 +337,9 @@ body {
 .app-shell .influencer-theme-scope.shadow-sm,
 .app-shell .influencer-theme-scope .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow) !important;
 }
 
 @keyframes onboard-fade {

@@ -1,22 +1,21 @@
-
 export interface SocialLink {
   platform:
-    | "instagram"
-    | "spotify"
-    | "youtube"
-    | "twitter"
-    | "whatsapp"
-    | "tiktok"
-    | "facebook"
-    | "linkedin"
-    | "x"
-    | "threads"
-    | "website"
-    | "soundcloud"
-    | "snapchat"
-    | "patreon"
-    | "twitch"
-    | "applemusic"
+    | 'instagram'
+    | 'spotify'
+    | 'youtube'
+    | 'twitter'
+    | 'whatsapp'
+    | 'tiktok'
+    | 'facebook'
+    | 'linkedin'
+    | 'x'
+    | 'threads'
+    | 'website'
+    | 'soundcloud'
+    | 'snapchat'
+    | 'patreon'
+    | 'twitch'
+    | 'applemusic'
     | 'pinterest';
   url: string;
 }

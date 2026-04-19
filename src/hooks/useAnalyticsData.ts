@@ -1,12 +1,12 @@
-import { useEffect, useState, useCallback, useRef } from "react";
-import { analyticsApi, profileApi } from "@/lib/api";
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { analyticsApi, profileApi } from '@/lib/api';
 import type {
   OverviewResponse,
   TimeseriesPoint,
   TopPage,
   DeviceBreakdown,
   Profile,
-} from "@/types";
+} from '@/types';
 
 interface DataState<T> {
   data: T | null;
@@ -18,9 +18,9 @@ interface DataState<T> {
 
 const getErrorMessage = (err: any) => {
   if (err?.response?.data?.message) return err.response.data.message;
-  if (err?.message === "Network Error")
-    return "Não foi possível conectar ao servidor";
-  return err?.message || "Erro ao buscar dados";
+  if (err?.message === 'Network Error')
+    return 'Não foi possível conectar ao servidor';
+  return err?.message || 'Erro ao buscar dados';
 };
 
 export const useProfilesByUser = (userId?: string): DataState<Profile[]> => {
@@ -35,7 +35,12 @@ export const useProfilesByUser = (userId?: string): DataState<Profile[]> => {
 
   const fetchData = useCallback(() => {
     if (!userId) {
-      setState((prev) => ({ ...prev, loading: false, data: null, empty: true }));
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        data: null,
+        empty: true,
+      }));
       return;
     }
     abortRef.current?.abort();
@@ -72,7 +77,7 @@ export const useProfilesByUser = (userId?: string): DataState<Profile[]> => {
   return { ...state, refetch: fetchData };
 };
 
-const useAnalyticsFetcher = <T,>(
+const useAnalyticsFetcher = <T>(
   fetcher: () => Promise<T>,
   deps: any[] = [],
 ): DataState<T> => {
@@ -120,52 +125,42 @@ const useAnalyticsFetcher = <T,>(
 
 export const useOverviewData = (
   profileId?: string,
-  range: string = "last30d",
+  range: string = 'last30d',
 ): DataState<OverviewResponse> =>
-  useAnalyticsFetcher<OverviewResponse>(
-    async () => {
-      if (!profileId) throw new Error("Perfil não encontrado");
-      const data = await analyticsApi.getOverview(profileId, range);
-      return data;
-    },
-    [profileId, range],
-  );
+  useAnalyticsFetcher<OverviewResponse>(async () => {
+    if (!profileId) throw new Error('Perfil não encontrado');
+    const data = await analyticsApi.getOverview(profileId, range);
+    return data;
+  }, [profileId, range]);
 
 export const useTimeseriesData = (
   profileId?: string,
-  interval: "day" | "month" = "day",
-  range: string = "last90d",
+  interval: 'day' | 'month' = 'day',
+  range: string = 'last90d',
 ): DataState<TimeseriesPoint[]> =>
-  useAnalyticsFetcher<TimeseriesPoint[]>(
-    async () => {
-      if (!profileId) throw new Error("Perfil não encontrado");
-      const data = await analyticsApi.getTimeseries(profileId, interval, range);
-      return data;
-    },
-    [profileId, interval, range],
-  );
+  useAnalyticsFetcher<TimeseriesPoint[]>(async () => {
+    if (!profileId) throw new Error('Perfil não encontrado');
+    const data = await analyticsApi.getTimeseries(profileId, interval, range);
+    return data;
+  }, [profileId, interval, range]);
 
 export const useTopPagesData = (
   profileId?: string,
   limit = 5,
-  range: string = "last30d",
+  range: string = 'last30d',
 ): DataState<TopPage[]> =>
-  useAnalyticsFetcher<TopPage[]>(
-    async () => {
-      if (!profileId) throw new Error("Perfil não encontrado");
-      const data = await analyticsApi.getTopPages(profileId, limit, range);
-      return data;
-    },
-    [profileId, limit, range],
-  );
+  useAnalyticsFetcher<TopPage[]>(async () => {
+    if (!profileId) throw new Error('Perfil não encontrado');
+    const data = await analyticsApi.getTopPages(profileId, limit, range);
+    return data;
+  }, [profileId, limit, range]);
 
 export const useDevicesData = (
   profileId?: string,
-  range: string = "last30d",
+  range: string = 'last30d',
 ): DataState<DeviceBreakdown[]> =>
-  useAnalyticsFetcher<DeviceBreakdown[]>(
-    async () => {
-      if (!profileId) throw new Error("Perfil não encontrado");
-      const data = await analyticsApi.getDevices(profileId, range);
-      return data;
+  useAnalyticsFetcher<DeviceBreakdown[]>(async () => {
+    if (!profileId) throw new Error('Perfil não encontrado');
+    const data = await analyticsApi.getDevices(profileId, range);
+    return data;
   }, [profileId, range]);

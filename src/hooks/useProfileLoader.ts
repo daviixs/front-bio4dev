@@ -1,6 +1,6 @@
-import React from "react";
-import { profileApi } from "@/lib/api";
-import type { ProfileComplete } from "@/types";
+import React from 'react';
+import { profileApi } from '@/lib/api';
+import type { ProfileComplete } from '@/types';
 import { getErrorMessage, logError } from '@/lib/logger';
 
 export function useProfileLoader(profileId?: string) {

@@ -1,8 +1,8 @@
-import React from "react";
-import type { ProfileComplete } from "@/types";
-import { getErrorMessage, logError } from "@/lib/logger";
-import type { InfluencerTemplateData } from "@/pages/influencers/shared/types";
-import { templateRegistry } from "@/pages/influencers/registry";
+import React from 'react';
+import type { ProfileComplete } from '@/types';
+import { getErrorMessage, logError } from '@/lib/logger';
+import type { InfluencerTemplateData } from '@/pages/influencers/shared/types';
+import { templateRegistry } from '@/pages/influencers/registry';
 
 export function useSaveTemplate(templateId?: string) {
   const [isSaving, setIsSaving] = React.useState(false);

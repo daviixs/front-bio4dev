@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { Section, SectionTitle, EmptyState, Tag } from './ui';
 
 interface TechStackProps {

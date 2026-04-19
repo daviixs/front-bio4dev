@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/components/ui/utils";
+import { ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/components/ui/utils';
 
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -22,7 +22,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center gap-3 rounded-2xl border border-dashed border-[rgba(236,229,217,0.25)] bg-[#1b1613]/70 px-6 py-10 text-foreground/70 backdrop-blur-sm",
+        'flex flex-col items-center justify-center text-center gap-3 rounded-2xl border border-dashed border-[rgba(236,229,217,0.25)] bg-[#1b1613]/70 px-6 py-10 text-foreground/70 backdrop-blur-sm',
         '[animation-duration:260ms] animate-[fadeIn_0.26s_ease-out,slideUp_0.26s_ease-out]',
         className,
       )}

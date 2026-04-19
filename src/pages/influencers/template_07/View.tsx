@@ -1,5 +1,5 @@
-import React from "react";
-import { TemplateView } from "../shared/TemplateView";
+import React from 'react';
+import { TemplateView } from '../shared/TemplateView';
 import type { InfluencerTemplateData } from './types';
 import { TEMPLATE_ID } from './types';
 

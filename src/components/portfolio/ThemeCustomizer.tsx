@@ -1,6 +1,11 @@
-
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -47,7 +52,9 @@ export function ThemeCustomizer({
                 <div className="w-10 h-10 rounded-full bg-white border shadow-sm flex items-center justify-center">
                   <Sun className="w-6 h-6 text-orange-500" />
                 </div>
-                <span className="font-medium text-sm text-slate-900">Light</span>
+                <span className="font-medium text-sm text-slate-900">
+                  Light
+                </span>
               </div>
 
               <div
@@ -61,7 +68,9 @@ export function ThemeCustomizer({
                 <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center">
                   <Moon className="w-6 h-6 text-blue-400" />
                 </div>
-                <span className="font-medium text-sm text-slate-900 dark:text-slate-50">Dark</span>
+                <span className="font-medium text-sm text-slate-900 dark:text-slate-50">
+                  Dark
+                </span>
               </div>
             </div>
           </div>
@@ -82,9 +91,9 @@ export function ThemeCustomizer({
                 <Input
                   value={mainColor}
                   onChange={(e) => {
-                     const val = e.target.value;
-                     if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) {
-                        onColorChange(val);
+                    const val = e.target.value;
+                    if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) {
+                      onColorChange(val);
                     }
                   }}
                   placeholder="#000000"

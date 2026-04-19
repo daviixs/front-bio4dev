@@ -336,10 +336,8 @@ const trackOnboardingEvent = (
 };
 
 const PUBLIC_ONBOARDING_CHROME: OnboardingChrome = {
-  root:
-    'influencer-theme-scope flex min-h-screen flex-col bg-[#221e1b] text-[#ece5d9]',
-  page:
-    'bg-[radial-gradient(circle_at_top,rgba(195,152,107,0.18),transparent_35%),radial-gradient(circle_at_84%_6%,rgba(255,255,255,0.05),transparent_24%)]',
+  root: 'influencer-theme-scope flex min-h-screen flex-col bg-[#221e1b] text-[#ece5d9]',
+  page: 'bg-[radial-gradient(circle_at_top,rgba(195,152,107,0.18),transparent_35%),radial-gradient(circle_at_84%_6%,rgba(255,255,255,0.05),transparent_24%)]',
   contentCard:
     'rounded-3xl border border-[#4a4038] bg-[#261f1a]/92 p-6 shadow-[0_36px_90px_-48px_rgba(0,0,0,0.72)] backdrop-blur sm:p-10',
   buttonPrimary:
@@ -398,7 +396,8 @@ const createEditorOnboardingChrome = (
 ): OnboardingChrome => ({
   root: 'influencer-theme-scope flex min-h-screen flex-col bg-white',
   page: chrome.page,
-  contentCard: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10',
+  contentCard:
+    'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10',
   buttonPrimary: chrome.buttonPrimary,
   buttonSecondary: chrome.buttonSecondary,
   input: chrome.input,
@@ -458,7 +457,9 @@ const TopBar = ({
   showSkip: boolean;
   chrome: OnboardingChrome;
 }) => (
-  <div className={`mb-8 flex items-center justify-between text-sm ${chrome.topBarText}`}>
+  <div
+    className={`mb-8 flex items-center justify-between text-sm ${chrome.topBarText}`}
+  >
     <button
       type="button"
       onClick={onBack}
@@ -499,7 +500,9 @@ const ProgressBar = ({
         <span>Etapa {step} de 3</span>
         <span>{selectedCount}/5 selecionadas</span>
       </div>
-      <div className={`h-2 w-full overflow-hidden rounded-full ${chrome.progressTrack}`}>
+      <div
+        className={`h-2 w-full overflow-hidden rounded-full ${chrome.progressTrack}`}
+      >
         <div
           className={`h-full rounded-full ${chrome.accentBg} transition-all`}
           style={{ width: `${progress}%` }}
@@ -564,7 +567,9 @@ const PlatformCard = ({
         <p className={`text-base font-semibold ${chrome.bodyText}`}>
           {platform.label}
         </p>
-        <p className={`text-xs uppercase tracking-[0.2em] ${chrome.captionText}`}>
+        <p
+          className={`text-xs uppercase tracking-[0.2em] ${chrome.captionText}`}
+        >
           {platform.type === 'handle' ? 'usuario' : platform.type}
         </p>
       </div>
@@ -608,7 +613,9 @@ const SelectedPlatformInput = ({
             <p className={`text-sm font-semibold ${chrome.bodyText}`}>
               {platform.label}
             </p>
-            <p className={`text-xs ${chrome.captionText}`}>{platform.placeholder}</p>
+            <p className={`text-xs ${chrome.captionText}`}>
+              {platform.placeholder}
+            </p>
           </div>
         </div>
         <div className="flex-1">
@@ -653,7 +660,9 @@ const AdditionalLinkRow = ({
   onRemove: () => void;
   chrome: OnboardingChrome;
 }) => (
-  <div className={`flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center ${chrome.surfaceCard}`}>
+  <div
+    className={`flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center ${chrome.surfaceCard}`}
+  >
     <span
       className={`flex h-10 w-10 items-center justify-center rounded-xl ${chrome.iconBadge}`}
     >
@@ -720,7 +729,9 @@ const AvatarCard = ({
   chrome: OnboardingChrome;
 }) => (
   <div className={`rounded-2xl p-5 ${chrome.surfaceCard}`}>
-    <p className={`text-sm font-semibold ${chrome.bodyText}`}>Imagem do perfil</p>
+    <p className={`text-sm font-semibold ${chrome.bodyText}`}>
+      Imagem do perfil
+    </p>
     <div className="mt-4 flex flex-wrap items-center gap-4">
       <div
         className={`h-24 w-24 overflow-hidden rounded-full border ${chrome.accentBorder} ${chrome.iconBadge}`}
@@ -732,7 +743,9 @@ const AvatarCard = ({
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className={`flex h-full w-full items-center justify-center ${chrome.captionText}`}>
+          <div
+            className={`flex h-full w-full items-center justify-center ${chrome.captionText}`}
+          >
             <FiImage className="h-8 w-8" />
           </div>
         )}
@@ -761,7 +774,9 @@ const AvatarCard = ({
             Remover imagem
           </button>
         )}
-        <p className={`text-xs ${chrome.helperText}`}>Use um link publico de imagem.</p>
+        <p className={`text-xs ${chrome.helperText}`}>
+          Use um link publico de imagem.
+        </p>
         {avatarError && <p className="text-xs text-rose-400">{avatarError}</p>}
       </div>
     </div>
@@ -784,7 +799,9 @@ const PreviewCard = ({
   chrome: OnboardingChrome;
 }) => (
   <div className={`rounded-2xl p-6 ${chrome.previewShell}`}>
-    <h2 className={`text-sm font-semibold uppercase tracking-[0.3em] ${chrome.sectionLabel}`}>
+    <h2
+      className={`text-sm font-semibold uppercase tracking-[0.3em] ${chrome.sectionLabel}`}
+    >
       Pre-visualizacao
     </h2>
     <div className={`mt-6 rounded-2xl p-6 ${chrome.previewCard}`}>
@@ -896,7 +913,9 @@ const GoogleAuthGate = ({
 
         <div className="space-y-5">
           <div className="space-y-3">
-            <p className={`text-xs uppercase tracking-[0.3em] ${chrome.modalEyebrow}`}>
+            <p
+              className={`text-xs uppercase tracking-[0.3em] ${chrome.modalEyebrow}`}
+            >
               Finalizar cadastro
             </p>
             <h2
@@ -949,7 +968,9 @@ export function InfluencerOnboardingPage({
     templateId?: string;
   }>();
   const location = useLocation();
-  const isDashboardEditor = location.pathname.startsWith('/dashboard/influencer/');
+  const isDashboardEditor = location.pathname.startsWith(
+    '/dashboard/influencer/',
+  );
   const navigate = useNavigate();
   const {
     isAuthenticated,
@@ -967,9 +988,10 @@ export function InfluencerOnboardingPage({
   const [isGoogleGateOpen, setIsGoogleGateOpen] = React.useState(false);
   const [isSavingLinks, setIsSavingLinks] = React.useState(false);
   const [isSavingAll, setIsSavingAll] = React.useState(false);
-  const [resolvedTemplateId, setResolvedTemplateId] = React.useState<
-    TemplateType | null
-  >((templateIdProp || templateIdParam || null) as TemplateType | null);
+  const [resolvedTemplateId, setResolvedTemplateId] =
+    React.useState<TemplateType | null>(
+      (templateIdProp || templateIdParam || null) as TemplateType | null,
+    );
   const [isResolvingTemplate, setIsResolvingTemplate] = React.useState(
     !resolvedTemplateId && Boolean(profileId),
   );
@@ -1002,7 +1024,10 @@ export function InfluencerOnboardingPage({
 
     const nextDraft: OnboardingDraft = {
       ...draftRef.current,
-      status: draftRef.current.status === 'pending_auth' ? 'pending_auth' : 'collecting',
+      status:
+        draftRef.current.status === 'pending_auth'
+          ? 'pending_auth'
+          : 'collecting',
       templateType: resolvedTemplateId,
       displayName: state.displayName.trim() || draftRef.current.displayName,
       data: createDefaultOnboardingState(state),
@@ -1043,11 +1068,7 @@ export function InfluencerOnboardingPage({
     : 'min-h-screen flex items-center justify-center bg-[#221e1b] text-[#cbbcae]';
 
   if (!profileId) {
-    return (
-      <div className={unresolvedStateClass}>
-        Perfil nao encontrado.
-      </div>
-    );
+    return <div className={unresolvedStateClass}>Perfil nao encontrado.</div>;
   }
   if (!resolvedTemplateId) {
     return (
@@ -1266,7 +1287,9 @@ export function InfluencerOnboardingPage({
   };
 
   const finalizeDraftOnServer = async (draft: OnboardingDraft) => {
-    const result = await onboardingApi.finalize(toFinalizeOnboardingPayload(draft));
+    const result = await onboardingApi.finalize(
+      toFinalizeOnboardingPayload(draft),
+    );
 
     persistLegacyProfilePointers(result.profileId, result.templateType);
     clearDraft(draft.draftId);
@@ -1418,7 +1441,9 @@ export function InfluencerOnboardingPage({
         selectedPlatforms: state.selectedPlatforms,
       });
 
-      navigate(`/dashboard/influencer/${resolvedTemplateId}/${profileId}/preview`);
+      navigate(
+        `/dashboard/influencer/${resolvedTemplateId}/${profileId}/preview`,
+      );
     } catch (error: unknown) {
       const backendMessage = getApiErrorMessage(error);
       const normalizedMessage = backendMessage.toLowerCase();
@@ -1442,7 +1467,9 @@ export function InfluencerOnboardingPage({
   return (
     <div className={onboardingChrome.root}>
       {!isDashboardEditor && <Header />}
-      <div className={`flex-1 px-4 py-10 sm:px-6 lg:px-8 ${onboardingChrome.page}`}>
+      <div
+        className={`flex-1 px-4 py-10 sm:px-6 lg:px-8 ${onboardingChrome.page}`}
+      >
         <div className="mx-auto flex w-full max-w-5xl flex-col">
           <TopBar
             chrome={onboardingChrome}
@@ -1460,7 +1487,10 @@ export function InfluencerOnboardingPage({
                   : undefined
                 : updateState({ step: 2 })
             }
-            showSkip={state.step === 1 || (state.step === 3 && !profileId.startsWith('draft-'))}
+            showSkip={
+              state.step === 1 ||
+              (state.step === 3 && !profileId.startsWith('draft-'))
+            }
           />
 
           <ProgressBar

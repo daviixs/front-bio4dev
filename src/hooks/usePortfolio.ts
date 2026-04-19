@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { PortfolioService } from "../services/api/portfolio.service";
-import { PortfolioData } from "../services/api/types";
+import { useState, useEffect } from 'react';
+import { PortfolioService } from '../services/api/portfolio.service';
+import { PortfolioData } from '../services/api/types';
 
 interface UsePortfolioOptions {
   slug: string;

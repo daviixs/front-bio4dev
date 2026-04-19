@@ -1,4 +1,11 @@
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from 'recharts';
 
 interface AreaSparkProps {
   data: { name: string; visits: number; unique?: number }[];
@@ -13,15 +20,34 @@ export function AreaSpark({ data, showUnique }: AreaSparkProps) {
       <AreaChart data={data} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.32} />
-            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+            <stop
+              offset="5%"
+              stopColor="hsl(var(--primary))"
+              stopOpacity={0.32}
+            />
+            <stop
+              offset="95%"
+              stopColor="hsl(var(--primary))"
+              stopOpacity={0}
+            />
           </linearGradient>
         </defs>
-        <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-        <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+        <XAxis
+          dataKey="name"
+          stroke="#94a3b8"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          stroke="#94a3b8"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+        />
         <Tooltip
           contentStyle={{
-            backgroundColor: "hsl(var(--popover))",
+            backgroundColor: 'hsl(var(--popover))',
             border: '1px solid hsl(var(--border))',
             borderRadius: 'var(--radius)',
           }}

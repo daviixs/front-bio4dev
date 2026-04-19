@@ -11,7 +11,7 @@
 }
 
 /* Dark theme */
-[data-theme="dark"] {
+[data-theme='dark'] {
   --background-color: #241f1b;
   --text-color: #f5ede4;
   --secondary-color: #3a3028;

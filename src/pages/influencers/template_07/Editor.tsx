@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { TemplateEditor } from '../shared/TemplateEditor';
 import { TEMPLATE_ID } from './types';
 

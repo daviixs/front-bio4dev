@@ -1,4 +1,4 @@
-import type { InfluencerTemplateData as BaseInfluencerTemplateData } from "../shared/types";
+import type { InfluencerTemplateData as BaseInfluencerTemplateData } from '../shared/types';
 
 export type InfluencerTemplateData = BaseInfluencerTemplateData;
 

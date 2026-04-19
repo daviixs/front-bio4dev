@@ -1,6 +1,12 @@
-
 import React from 'react';
-import { Youtube, Twitter, Instagram, Send, Code, Terminal } from 'lucide-react';
+import {
+  Youtube,
+  Twitter,
+  Instagram,
+  Send,
+  Code,
+  Terminal,
+} from 'lucide-react';
 import { ProfileData } from '../../types';
 
 interface CreatorProfileProps {
@@ -13,8 +19,8 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ data }) => {
       <div className="w-full max-w-md flex flex-col items-center">
         <div className="mt-12 mb-6">
           <div className="p-1 rounded-2xl bg-indigo-100">
-            <img 
-              src={data.photoUrl} 
+            <img
+              src={data.photoUrl}
               className="w-24 h-24 rounded-xl object-cover shadow-sm"
               alt={data.name}
             />
@@ -22,7 +28,10 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ data }) => {
         </div>
 
         <h1 className="text-xl font-bold flex items-center gap-2">
-          {data.name} <span className="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full uppercase">Pro</span>
+          {data.name}{' '}
+          <span className="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full uppercase">
+            Pro
+          </span>
         </h1>
         <p className="text-sm text-slate-500 text-center mt-2 font-medium">
           {data.bio}
@@ -30,8 +39,8 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ data }) => {
 
         <div className="w-full grid grid-cols-1 gap-3 mt-10">
           {data.buttons.map((btn, i) => (
-            <a 
-              key={i} 
+            <a
+              key={i}
               href={btn.url}
               className="w-full bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md transition-all p-4 rounded-xl flex items-center gap-4"
             >

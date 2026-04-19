@@ -103,7 +103,7 @@ export const useAuthStore = create<AuthState>()(
         } catch (error: any) {
           set({
             error:
-            error.message ||
+              error.message ||
               'Não foi possível autenticar com Google. Tente novamente.',
             isLoading: false,
             isAuthenticated: false,

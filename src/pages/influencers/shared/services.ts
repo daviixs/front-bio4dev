@@ -1,22 +1,17 @@
-import type { ProfileComplete, TemplateType } from "@/types";
-import {
-  legendaApi,
-  linkButtonsApi,
-  profileApi,
-  socialApi,
-} from "@/lib/api";
-import type { InfluencerTemplateData } from "./types";
-import { mapProfileCompleteToInfluencerData } from "./mappers";
-import { logError } from "@/lib/logger";
+import type { ProfileComplete, TemplateType } from '@/types';
+import { legendaApi, linkButtonsApi, profileApi, socialApi } from '@/lib/api';
+import type { InfluencerTemplateData } from './types';
+import { mapProfileCompleteToInfluencerData } from './mappers';
+import { logError } from '@/lib/logger';
 
-const DEFAULT_AVATAR_URL = "https://api.dicebear.com/7.x/avataaars/svg";
+const DEFAULT_AVATAR_URL = 'https://api.dicebear.com/7.x/avataaars/svg';
 const API_SUPPORTED_PLATFORMS = new Set([
-  "instagram",
-  "whatsapp",
-  "tiktok",
-  "youtube",
-  "facebook",
-  "pinterest",
+  'instagram',
+  'whatsapp',
+  'tiktok',
+  'youtube',
+  'facebook',
+  'pinterest',
 ]);
 
 /**
@@ -64,7 +59,7 @@ export async function saveAll(
     await replaceSocials(profileId, data.socials, profile.social || []);
     await replaceButtons(profileId, data.buttons);
   } catch (error) {
-    logError("influencer.saveAll", error, { profileId });
+    logError('influencer.saveAll', error, { profileId });
     throw error;
   }
 }
@@ -75,12 +70,12 @@ async function upsertLegenda(
   profile: ProfileComplete,
 ) {
   const legenda = profile.legendas?.[0];
-  const safeName = data.name?.trim() || "Seu Nome";
-  const safeBio = data.bio?.trim() || "Influenciador digital";
+  const safeName = data.name?.trim() || 'Seu Nome';
+  const safeBio = data.bio?.trim() || 'Influenciador digital';
   const payload = {
     profileId,
     nome: safeName,
-    titulo: "Criador de Conteudo",
+    titulo: 'Criador de Conteudo',
     subtitulo: safeBio.substring(0, 255),
     descricao: safeBio,
     legendaFoto: data.photoUrl || DEFAULT_AVATAR_URL,
@@ -102,7 +97,7 @@ async function upsertLegenda(
 
 async function replaceSocials(
   profileId: string,
-  socials: InfluencerTemplateData["socials"],
+  socials: InfluencerTemplateData['socials'],
   currentSocials: { id: string }[],
 ) {
   for (const social of currentSocials) {
@@ -130,7 +125,7 @@ async function replaceSocials(
   }
 
   if (skippedPlatforms.size) {
-    logError("influencer.replaceSocials", "Unsupported platforms skipped", {
+    logError('influencer.replaceSocials', 'Unsupported platforms skipped', {
       profileId,
       platforms: Array.from(skippedPlatforms),
     });

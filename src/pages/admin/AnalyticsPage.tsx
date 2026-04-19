@@ -1,29 +1,29 @@
-import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { Users, Eye, MousePointer2, Clock } from "lucide-react";
-import { useAuthStore } from "@/stores/authStore";
-import { MetricCard } from "@/components/analytics/MetricCard";
-import { ChartShell } from "@/components/analytics/ChartShell";
-import { AreaSpark } from "@/components/analytics/AreaSpark";
-import { BarDiscrete } from "@/components/analytics/BarDiscrete";
-import { TopPagesList } from "@/components/analytics/TopPagesList";
-import { PageHeader } from "@/components/structure/PageHeader";
-import { EmptyState } from "@/components/feedback/EmptyState";
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Users, Eye, MousePointer2, Clock } from 'lucide-react';
+import { useAuthStore } from '@/stores/authStore';
+import { MetricCard } from '@/components/analytics/MetricCard';
+import { ChartShell } from '@/components/analytics/ChartShell';
+import { AreaSpark } from '@/components/analytics/AreaSpark';
+import { BarDiscrete } from '@/components/analytics/BarDiscrete';
+import { TopPagesList } from '@/components/analytics/TopPagesList';
+import { PageHeader } from '@/components/structure/PageHeader';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import {
   useDevicesData,
   useOverviewData,
   useProfilesByUser,
   useTimeseriesData,
   useTopPagesData,
-} from "@/hooks/useAnalyticsData";
+} from '@/hooks/useAnalyticsData';
 
 const formatDuration = (ms: number) => {
-  if (!ms || ms <= 0) return "0s";
+  if (!ms || ms <= 0) return '0s';
   const totalSeconds = Math.floor(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   if (minutes === 0) return `${seconds}s`;
-  return `${minutes}m ${seconds.toString().padStart(2, "0")}s`;
+  return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
 };
 
 export default function AnalyticsPage() {
@@ -33,9 +33,13 @@ export default function AnalyticsPage() {
   const profilesState = useProfilesByUser(user?.id);
   const primaryProfile = profilesState.data?.[0];
   const overviewState = useOverviewData(primaryProfile?.id);
-  const timeseriesState = useTimeseriesData(primaryProfile?.id, "day", "last90d");
-  const devicesState = useDevicesData(primaryProfile?.id, "last30d");
-  const topPagesState = useTopPagesData(primaryProfile?.id, 5, "last30d");
+  const timeseriesState = useTimeseriesData(
+    primaryProfile?.id,
+    'day',
+    'last90d',
+  );
+  const devicesState = useDevicesData(primaryProfile?.id, 'last30d');
+  const topPagesState = useTopPagesData(primaryProfile?.id, 5, 'last30d');
 
   const loading =
     profilesState.loading ||
@@ -62,7 +66,11 @@ export default function AnalyticsPage() {
   );
 
   const deviceData = useMemo(
-    () => (devicesState.data || []).map((d) => ({ name: d.device, value: d.value })),
+    () =>
+      (devicesState.data || []).map((d) => ({
+        name: d.device,
+        value: d.value,
+      })),
     [devicesState.data],
   );
 
@@ -72,7 +80,7 @@ export default function AnalyticsPage() {
         title="Crie um perfil para ver analytics"
         description="Você ainda não tem portfólios publicados."
         actionLabel="Criar perfil"
-        onAction={() => navigate("/profile/create")}
+        onAction={() => navigate('/profile/create')}
       />
     );
   }
@@ -103,7 +111,7 @@ export default function AnalyticsPage() {
         subtitle="Detailed insights into your portfolio performance."
         actions={
           <button
-            onClick={() => navigate("/profile/create")}
+            onClick={() => navigate('/profile/create')}
             className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition"
           >
             Criar perfil
@@ -122,7 +130,7 @@ export default function AnalyticsPage() {
         />
         <MetricCard
           title="Unique Visitors"
-          value={overviewState.data?.uniqueVisitors ?? "—"}
+          value={overviewState.data?.uniqueVisitors ?? '—'}
           helper="Contagem estimada"
           loading={loading}
           icon={<Users className="h-4 w-4" />}

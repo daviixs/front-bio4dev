@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/components/ui/utils";
+import { ReactNode } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/components/ui/utils';
 
 interface ChartShellProps {
   title: string;
@@ -30,11 +30,11 @@ export function ChartShell({
   return (
     <Card
       className={cn(
-        "relative overflow-hidden border-[rgba(236,229,217,0.14)] shadow-[0_20px_46px_-30px_rgba(0,0,0,0.75)]",
-        "[animation-duration:260ms] animate-[fadeIn_0.26s_ease-out,slideUp_0.26s_ease-out]",
+        'relative overflow-hidden border-[rgba(236,229,217,0.14)] shadow-[0_20px_46px_-30px_rgba(0,0,0,0.75)]',
+        '[animation-duration:260ms] animate-[fadeIn_0.26s_ease-out,slideUp_0.26s_ease-out]',
         className,
       )}
-      style={{ animationFillMode: "both" }}
+      style={{ animationFillMode: 'both' }}
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/3 via-transparent to-transparent opacity-60" />
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">

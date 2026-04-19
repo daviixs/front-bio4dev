@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { cn } from "@/components/ui/utils";
+import { ReactNode } from 'react';
+import { cn } from '@/components/ui/utils';
 
 interface PageHeaderProps {
   title: string;
@@ -8,7 +8,12 @@ interface PageHeaderProps {
   className?: string;
 }
 
-export function PageHeader({ title, subtitle, actions, className }: PageHeaderProps) {
+export function PageHeader({
+  title,
+  subtitle,
+  actions,
+  className,
+}: PageHeaderProps) {
   return (
     <div
       className={cn(

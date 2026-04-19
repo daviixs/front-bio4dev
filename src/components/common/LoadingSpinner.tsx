@@ -1,32 +1,32 @@
-import React from "react";
+import React from 'react';
 
 export default function LoadingSpinner() {
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#f8fafc",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f8fafc',
       }}
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "1rem",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem',
         }}
       >
         <div
           className="spinner"
           style={{
-            border: "4px solid #e2e8f0",
-            borderTop: "4px solid #3b82f6",
-            borderRadius: "50%",
-            width: "50px",
-            height: "50px",
+            border: '4px solid #e2e8f0',
+            borderTop: '4px solid #3b82f6',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
             animation: 'spin 1s linear infinite',
           }}
         />

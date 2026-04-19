@@ -1,4 +1,11 @@
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from 'recharts';
 
 interface BarDiscreteProps {
   data: { name: string; value: number }[];
@@ -9,7 +16,11 @@ export function BarDiscrete({ data }: BarDiscreteProps) {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} barSize={36} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+      <BarChart
+        data={data}
+        barSize={36}
+        margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
+      >
         <XAxis
           dataKey="name"
           stroke="#94a3b8"

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface ErrorStateProps {
   title?: string;
@@ -11,9 +11,9 @@ interface ErrorStateProps {
  * Componente de estado de erro reutilizável
  */
 const ErrorState: React.FC<ErrorStateProps> = ({
-  title = "Profile not found",
-  message = "This profile does not exist or is not published yet.",
-  actionLabel = "Go back home",
+  title = 'Profile not found',
+  message = 'This profile does not exist or is not published yet.',
+  actionLabel = 'Go back home',
   actionHref = '/',
 }) => {
   return (

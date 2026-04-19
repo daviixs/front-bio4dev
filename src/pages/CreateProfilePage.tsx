@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Loader2, Palette, Zap, Rocket, Users } from "lucide-react";
-import { profileApi } from "@/lib/api";
-import { getApiErrorMessage } from "@/lib/api-errors";
-import { createDraft } from "@/features/onboarding/storage";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, Palette, Zap, Rocket, Users } from 'lucide-react';
+import { profileApi } from '@/lib/api';
+import { getApiErrorMessage } from '@/lib/api-errors';
+import { createDraft } from '@/features/onboarding/storage';
 import {
   hasReachedProfileLimit,
   PROFILE_LIMIT_MESSAGE,
-} from "@/lib/profile-limits";
-import { useAuthStore } from "@/stores/authStore";
-import type { TemplateType } from "@/types";
-import { toast } from "sonner";
-import { Footer } from "@/components/landing/Footer";
-import { landingTheme } from "@/theme/landingTheme";
-import activistImg from "@/temas-lintree/preview-screenshots/activist.png";
-import altMusicImg from "@/temas-lintree/preview-screenshots/alt-music.png";
-import architectImg from "@/temas-lintree/preview-screenshots/architect.png";
-import artistImg from "@/temas-lintree/preview-screenshots/artist.png";
-import athleteImg from "@/temas-lintree/preview-screenshots/Athlete.png";
-import businessImg from "@/temas-lintree/preview-screenshots/business.png";
-import creatorImg from "@/temas-lintree/preview-screenshots/creator.png";
-import ecoFashionImg from "@/temas-lintree/preview-screenshots/eco-fashion.png";
-import gourmetImg from "@/temas-lintree/preview-screenshots/gourmet.png";
-import innovationImg from "@/temas-lintree/preview-screenshots/innovation.png";
-import streamerImg from "@/temas-lintree/preview-screenshots/streamer.png";
+} from '@/lib/profile-limits';
+import { useAuthStore } from '@/stores/authStore';
+import type { TemplateType } from '@/types';
+import { toast } from 'sonner';
+import { Footer } from '@/components/landing/Footer';
+import { landingTheme } from '@/theme/landingTheme';
+import activistImg from '@/temas-lintree/preview-screenshots/activist.png';
+import altMusicImg from '@/temas-lintree/preview-screenshots/alt-music.png';
+import architectImg from '@/temas-lintree/preview-screenshots/architect.png';
+import artistImg from '@/temas-lintree/preview-screenshots/artist.png';
+import athleteImg from '@/temas-lintree/preview-screenshots/Athlete.png';
+import businessImg from '@/temas-lintree/preview-screenshots/business.png';
+import creatorImg from '@/temas-lintree/preview-screenshots/creator.png';
+import ecoFashionImg from '@/temas-lintree/preview-screenshots/eco-fashion.png';
+import gourmetImg from '@/temas-lintree/preview-screenshots/gourmet.png';
+import innovationImg from '@/temas-lintree/preview-screenshots/innovation.png';
+import streamerImg from '@/temas-lintree/preview-screenshots/streamer.png';
 
 // Image mapping for influencer previews (from preview-screenshots)
 const templateImages: Record<string, string> = {
@@ -43,107 +43,107 @@ const templateImages: Record<string, string> = {
 // Influencer templates
 const influencerTemplates = [
   {
-    id: "activist",
-    name: "Ativista",
-    description: "Para causas e educação",
+    id: 'activist',
+    name: 'Ativista',
+    description: 'Para causas e educação',
     icon: <Users className="w-6 h-6" />,
-    color: "bg-green-600",
-    preview: "bg-green-50",
-    type: "influencer" as const,
+    color: 'bg-green-600',
+    preview: 'bg-green-50',
+    type: 'influencer' as const,
   },
   {
-    id: "altmusic",
-    name: "Alt Music",
-    description: "Para músicos alternativos",
+    id: 'altmusic',
+    name: 'Alt Music',
+    description: 'Para músicos alternativos',
     icon: <Zap className="w-6 h-6" />,
-    color: "bg-purple-600",
-    preview: "bg-purple-50",
-    type: "influencer" as const,
+    color: 'bg-purple-600',
+    preview: 'bg-purple-50',
+    type: 'influencer' as const,
   },
   {
-    id: "architect",
-    name: "Arquiteto",
-    description: "Portfolio de arquitetura",
+    id: 'architect',
+    name: 'Arquiteto',
+    description: 'Portfolio de arquitetura',
     icon: <Palette className="w-6 h-6" />,
-    color: "bg-slate-700",
-    preview: "bg-slate-50",
-    type: "influencer" as const,
+    color: 'bg-slate-700',
+    preview: 'bg-slate-50',
+    type: 'influencer' as const,
   },
   {
-    id: "artist",
-    name: "Artista",
-    description: "Para artistas musicais",
+    id: 'artist',
+    name: 'Artista',
+    description: 'Para artistas musicais',
     icon: <Zap className="w-6 h-6" />,
-    color: "bg-pink-600",
-    preview: "bg-pink-50",
-    type: "influencer" as const,
+    color: 'bg-pink-600',
+    preview: 'bg-pink-50',
+    type: 'influencer' as const,
   },
   {
-    id: "athlete",
-    name: "Atleta",
-    description: "Para esportistas",
+    id: 'athlete',
+    name: 'Atleta',
+    description: 'Para esportistas',
     icon: <Rocket className="w-6 h-6" />,
-    color: "bg-blue-700",
-    preview: "bg-blue-50",
-    type: "influencer" as const,
+    color: 'bg-blue-700',
+    preview: 'bg-blue-50',
+    type: 'influencer' as const,
   },
   {
-    id: "business",
-    name: "Negócio",
-    description: "Para pequenos negócios",
+    id: 'business',
+    name: 'Negócio',
+    description: 'Para pequenos negócios',
     icon: <Palette className="w-6 h-6" />,
-    color: "bg-amber-700",
-    preview: "bg-amber-50",
-    type: "influencer" as const,
+    color: 'bg-amber-700',
+    preview: 'bg-amber-50',
+    type: 'influencer' as const,
   },
   {
-    id: "creator",
-    name: "Criador",
-    description: "Para criadores de conteúdo",
+    id: 'creator',
+    name: 'Criador',
+    description: 'Para criadores de conteúdo',
     icon: <Rocket className="w-6 h-6" />,
-    color: "bg-indigo-600",
-    preview: "bg-indigo-50",
-    type: "influencer" as const,
+    color: 'bg-indigo-600',
+    preview: 'bg-indigo-50',
+    type: 'influencer' as const,
   },
   {
-    id: "ecofashion",
-    name: "Eco Fashion",
-    description: "Moda sustentável",
+    id: 'ecofashion',
+    name: 'Eco Fashion',
+    description: 'Moda sustentável',
     icon: <Palette className="w-6 h-6" />,
-    color: "bg-teal-600",
-    preview: "bg-teal-50",
-    type: "influencer" as const,
+    color: 'bg-teal-600',
+    preview: 'bg-teal-50',
+    type: 'influencer' as const,
   },
   {
-    id: "gourmet",
-    name: "Gourmet",
-    description: "Para chefs e gastronomia",
+    id: 'gourmet',
+    name: 'Gourmet',
+    description: 'Para chefs e gastronomia',
     icon: <Zap className="w-6 h-6" />,
-    color: "bg-orange-600",
-    preview: "bg-orange-50",
-    type: "influencer" as const,
+    color: 'bg-orange-600',
+    preview: 'bg-orange-50',
+    type: 'influencer' as const,
   },
   {
-    id: "innovation",
-    name: "Innovation",
-    description: "Tech e inovação",
+    id: 'innovation',
+    name: 'Innovation',
+    description: 'Tech e inovação',
     icon: <Rocket className="w-6 h-6" />,
-    color: "bg-cyan-600",
-    preview: "bg-cyan-50",
-    type: "influencer" as const,
+    color: 'bg-cyan-600',
+    preview: 'bg-cyan-50',
+    type: 'influencer' as const,
   },
   {
-    id: "streamer",
-    name: "Streamer",
-    description: "Para gamers e streamers",
+    id: 'streamer',
+    name: 'Streamer',
+    description: 'Para gamers e streamers',
     icon: <Zap className="w-6 h-6" />,
-    color: "bg-violet-600",
-    preview: "bg-violet-50",
-    type: "influencer" as const,
+    color: 'bg-violet-600',
+    preview: 'bg-violet-50',
+    type: 'influencer' as const,
   },
 ] as const;
 
-const CREATE_PROFILE_TOAST_ID = "create-profile-toast";
+const CREATE_PROFILE_TOAST_ID = 'create-profile-toast';
 
 export function CreateProfilePage() {
   const navigate = useNavigate();
@@ -151,21 +151,21 @@ export function CreateProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
-  const [nameInput, setNameInput] = useState("");
+  const [nameInput, setNameInput] = useState('');
   const [slugError, setSlugError] = useState<string | null>(null);
   const [slugValue, setSlugValue] = useState<string | null>(null);
   const [hasPromptedForSlug, setHasPromptedForSlug] = useState(false);
 
   const toSlug = (value: string) =>
     value
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .trim()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "")
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '')
       .slice(0, 60);
 
   const slugPreview = toSlug(nameInput);
@@ -182,7 +182,7 @@ export function CreateProfilePage() {
 
   const handleCreate = async (slugValue: string) => {
     if (!selectedTemplate) {
-      toast.error("Selecione um tema para continuar.", {
+      toast.error('Selecione um tema para continuar.', {
         id: CREATE_PROFILE_TOAST_ID,
       });
       return;
@@ -193,27 +193,28 @@ export function CreateProfilePage() {
 
     if (!slugIsValid) {
       setSlugError(
-        "Slug inválido. Use 3-60 caracteres, minúsculas, números e hifens.",
+        'Slug inválido. Use 3-60 caracteres, minúsculas, números e hifens.',
       );
       setIsSlugModalOpen(true);
       return;
     }
 
     const templateMap: Record<string, string> = {
-      activist: "template_04",
-      altmusic: "template_05",
-      architect: "template_06",
-      artist: "template_07",
-      athlete: "template_08",
-      business: "template_09",
-      creator: "template_10",
-      ecofashion: "template_11",
-      gourmet: "template_12",
-      innovation: "template_13",
-      streamer: "template_14",
+      activist: 'template_04',
+      altmusic: 'template_05',
+      architect: 'template_06',
+      artist: 'template_07',
+      athlete: 'template_08',
+      business: 'template_09',
+      creator: 'template_10',
+      ecofashion: 'template_11',
+      gourmet: 'template_12',
+      innovation: 'template_13',
+      streamer: 'template_14',
     };
 
-    const templateType = (templateMap[selectedTemplate] || "template_04") as TemplateType;
+    const templateType = (templateMap[selectedTemplate] ||
+      'template_04') as TemplateType;
 
     setIsLoading(true);
     try {
@@ -223,7 +224,7 @@ export function CreateProfilePage() {
           toast.error(PROFILE_LIMIT_MESSAGE, {
             id: CREATE_PROFILE_TOAST_ID,
           });
-          navigate("/dashboard/bio");
+          navigate('/dashboard/bio');
           return;
         }
       }
@@ -232,14 +233,14 @@ export function CreateProfilePage() {
       if (user?.id) {
         const availability = await profileApi.checkSlug(slugValue);
         if (!availability.available) {
-          setSlugError(availability.message || "Slug já está em uso");
+          setSlugError(availability.message || 'Slug já está em uso');
           setIsSlugModalOpen(true);
           return;
         }
       }
 
       const draftProfileId =
-        typeof crypto !== "undefined" && crypto.randomUUID
+        typeof crypto !== 'undefined' && crypto.randomUUID
           ? `draft-${crypto.randomUUID()}`
           : `draft-${Date.now().toString(36)}`;
 
@@ -250,7 +251,7 @@ export function CreateProfilePage() {
         displayName,
       });
 
-      localStorage.setItem("bio4dev_profile_id", draftProfileId);
+      localStorage.setItem('bio4dev_profile_id', draftProfileId);
       localStorage.setItem(`bio4dev_theme_${draftProfileId}`, templateType);
       localStorage.setItem(
         `bio4dev_draft_profile_${draftProfileId}`,
@@ -263,9 +264,9 @@ export function CreateProfilePage() {
 
       navigate(`/onboarding/${draftProfileId}`);
     } catch (error: any) {
-      console.error("Error preparing draft profile:", error);
+      console.error('Error preparing draft profile:', error);
       const errorMessage =
-        getApiErrorMessage(error) || "Erro ao criar rascunho";
+        getApiErrorMessage(error) || 'Erro ao criar rascunho';
       toast.error(errorMessage, { id: CREATE_PROFILE_TOAST_ID });
     } finally {
       setIsLoading(false);
@@ -285,12 +286,12 @@ export function CreateProfilePage() {
   const handleConfirmSlug = () => {
     const trimmed = nameInput.trim();
     if (!trimmed) {
-      setSlugError("Informe seu nome.");
+      setSlugError('Informe seu nome.');
       return;
     }
     if (!slugPreview || !SLUG_REGEX.test(slugPreview)) {
       setSlugError(
-        "Use 3-60 caracteres, apenas letras minúsculas, números e hifens.",
+        'Use 3-60 caracteres, apenas letras minúsculas, números e hifens.',
       );
       return;
     }
@@ -324,8 +325,8 @@ export function CreateProfilePage() {
                     onClick={() => setSelectedTemplate(template.id)}
                     className={`group relative overflow-hidden rounded-3xl border bg-white shadow-sm transition-all hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-200 ${
                       selectedTemplate === template.id
-                        ? "border-blue-500 ring-2 ring-blue-200"
-                        : "border-slate-200"
+                        ? 'border-blue-500 ring-2 ring-blue-200'
+                        : 'border-slate-200'
                     } ${template.preview}`}
                   >
                     {previewImage && (
@@ -338,8 +339,7 @@ export function CreateProfilePage() {
                       </div>
                     )}
 
-                    <div className="p-6 flex flex-col gap-4">
-                    </div>
+                    <div className="p-6 flex flex-col gap-4"></div>
                   </button>
                 );
               })}

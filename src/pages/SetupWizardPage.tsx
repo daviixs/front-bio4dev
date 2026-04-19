@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Code2,
   User,
@@ -16,18 +16,18 @@ import {
   Youtube,
   Plus,
   Trash2,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   legendaApi,
   configApi,
@@ -35,8 +35,8 @@ import {
   projetosApi,
   pagesApi,
   profileApi,
-} from "@/lib/api";
-import { toast } from "sonner";
+} from '@/lib/api';
+import { toast } from 'sonner';
 
 interface LegendaData {
   legendaFoto: string;
@@ -47,7 +47,7 @@ interface LegendaData {
 }
 
 interface SocialData {
-  plataforma: "instagram" | "tiktok" | "youtube" | "github";
+  plataforma: 'instagram' | 'tiktok' | 'youtube' | 'github';
   url: string;
   ordem: number;
 }
@@ -65,40 +65,40 @@ interface PageData {
 }
 
 const steps = [
-  { id: 1, title: "Informações", icon: User },
-  { id: 2, title: "Redes Sociais", icon: Share2 },
-  { id: 3, title: "Projetos", icon: Briefcase },
-  { id: 4, title: "Páginas", icon: FileText },
+  { id: 1, title: 'Informações', icon: User },
+  { id: 2, title: 'Redes Sociais', icon: Share2 },
+  { id: 3, title: 'Projetos', icon: Briefcase },
+  { id: 4, title: 'Páginas', icon: FileText },
 ];
 
 const defaultLegenda: LegendaData = {
   legendaFoto:
-    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop",
-  nome: "Seu Nome",
-  titulo: "Desenvolvedor Full Stack",
-  subtitulo: "Apaixonado por tecnologia e inovação",
+    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop',
+  nome: 'Seu Nome',
+  titulo: 'Desenvolvedor Full Stack',
+  subtitulo: 'Apaixonado por tecnologia e inovação',
   descricao:
-    "Crie sua bio personalizada e mostre seus projetos ao mundo! Edite essas informações para contar sua história.",
+    'Crie sua bio personalizada e mostre seus projetos ao mundo! Edite essas informações para contar sua história.',
 };
 
 const defaultSocials: SocialData[] = [
-  { plataforma: "github", url: "", ordem: 1 },
+  { plataforma: 'github', url: '', ordem: 1 },
 ];
 
 const defaultProjetos: ProjetoData[] = [
   {
-    nome: "Projeto Exemplo",
-    descricao: "Descrição do seu projeto incrível",
-    gif: "https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif",
+    nome: 'Projeto Exemplo',
+    descricao: 'Descrição do seu projeto incrível',
+    gif: 'https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif',
   },
 ];
 
 const defaultPages: PageData[] = [
-  { titulo: "Sobre Mim", slug: "sobre", ordem: 1 },
-  { titulo: "Projetos", slug: "projetos", ordem: 2 },
+  { titulo: 'Sobre Mim', slug: 'sobre', ordem: 1 },
+  { titulo: 'Projetos', slug: 'projetos', ordem: 2 },
 ];
 
-const SETUP_WIZARD_TOAST_ID = "setup-wizard-toast";
+const SETUP_WIZARD_TOAST_ID = 'setup-wizard-toast';
 
 const socialIcons = {
   github: Github,
@@ -123,7 +123,7 @@ export function SetupWizardPage() {
   const [pages, setPages] = useState<PageData[]>(defaultPages);
   const [config] = useState({ stacks: 8, projetos: 5 });
 
-  const profileId = localStorage.getItem("bio4dev_profile_id");
+  const profileId = localStorage.getItem('bio4dev_profile_id');
 
   const handleNext = () => {
     if (currentStep < 4) {
@@ -139,10 +139,10 @@ export function SetupWizardPage() {
 
   const handleFinish = async () => {
     if (!profileId) {
-      toast.error("Perfil não encontrado. Crie um perfil primeiro.", {
+      toast.error('Perfil não encontrado. Crie um perfil primeiro.', {
         id: SETUP_WIZARD_TOAST_ID,
       });
-      navigate("/profile/create");
+      navigate('/profile/create');
       return;
     }
 
@@ -195,14 +195,17 @@ export function SetupWizardPage() {
       // 6. Marcar perfil como publicado
       await profileApi.update(profileId, { published: true });
 
-      toast.success("Seu portfólio está pronto! 🎉", {
+      toast.success('Seu portfólio está pronto! 🎉', {
         id: SETUP_WIZARD_TOAST_ID,
       });
-      navigate("/dashboard");
+      navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao configurar perfil", {
-        id: SETUP_WIZARD_TOAST_ID,
-      });
+      toast.error(
+        error.response?.data?.message || 'Erro ao configurar perfil',
+        {
+          id: SETUP_WIZARD_TOAST_ID,
+        },
+      );
     } finally {
       setIsLoading(false);
     }
@@ -212,7 +215,7 @@ export function SetupWizardPage() {
   const addSocial = () => {
     setSocials([
       ...socials,
-      { plataforma: "github", url: "", ordem: socials.length + 1 },
+      { plataforma: 'github', url: '', ordem: socials.length + 1 },
     ]);
   };
 
@@ -221,7 +224,7 @@ export function SetupWizardPage() {
   };
 
   const addProjeto = () => {
-    setProjetos([...projetos, { nome: "", descricao: "", gif: "" }]);
+    setProjetos([...projetos, { nome: '', descricao: '', gif: '' }]);
   };
 
   const removeProjeto = (index: number) => {
@@ -229,7 +232,7 @@ export function SetupWizardPage() {
   };
 
   const addPage = () => {
-    setPages([...pages, { titulo: "", slug: "", ordem: pages.length + 1 }]);
+    setPages([...pages, { titulo: '', slug: '', ordem: pages.length + 1 }]);
   };
 
   const removePage = (index: number) => {
@@ -266,10 +269,10 @@ export function SetupWizardPage() {
                 <div
                   className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
                     isActive
-                      ? "bg-emerald-500/20 text-emerald-400"
+                      ? 'bg-emerald-500/20 text-emerald-400'
                       : isCompleted
-                      ? "bg-emerald-500/10 text-emerald-500"
-                      : "bg-white/5 text-white/30"
+                        ? 'bg-emerald-500/10 text-emerald-500'
+                        : 'bg-white/5 text-white/30'
                   }`}
                 >
                   {isCompleted ? (
@@ -284,7 +287,7 @@ export function SetupWizardPage() {
                 {index < steps.length - 1 && (
                   <div
                     className={`w-8 h-0.5 ${
-                      currentStep > step.id ? "bg-emerald-500" : "bg-white/10"
+                      currentStep > step.id ? 'bg-emerald-500' : 'bg-white/10'
                     }`}
                   />
                 )}
@@ -379,13 +382,13 @@ export function SetupWizardPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold">
-                      {legenda.nome || "Seu Nome"}
+                      {legenda.nome || 'Seu Nome'}
                     </h3>
                     <p className="text-emerald-400 text-sm">
-                      {legenda.titulo || "Título"}
+                      {legenda.titulo || 'Título'}
                     </p>
                     <p className="text-white/50 text-sm">
-                      {legenda.subtitulo || "Subtítulo"}
+                      {legenda.subtitulo || 'Subtítulo'}
                     </p>
                   </div>
                 </div>
@@ -582,8 +585,8 @@ export function SetupWizardPage() {
                         // Auto-generate slug
                         newPages[index].slug = e.target.value
                           .toLowerCase()
-                          .replace(/\s+/g, "-")
-                          .replace(/[^a-z0-9-]/g, "");
+                          .replace(/\s+/g, '-')
+                          .replace(/[^a-z0-9-]/g, '');
                         setPages(newPages);
                       }}
                       placeholder="Título da página"

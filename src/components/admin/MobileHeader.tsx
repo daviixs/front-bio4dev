@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/components/ui/utils";
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/components/ui/utils';
 import {
   LayoutDashboard,
   User,
@@ -11,8 +11,8 @@ import {
   HelpCircle,
   MessageSquare,
   LogOut,
-} from "lucide-react";
-import { useAuthStore } from "@/stores/authStore";
+} from 'lucide-react';
+import { useAuthStore } from '@/stores/authStore';
 
 export function MobileHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,15 +21,15 @@ export function MobileHeader() {
   const { logout } = useAuthStore();
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: User, label: "Bio", href: "/dashboard/bio" },
-    { icon: BarChart2, label: "Analytics", href: "/dashboard/analytics" },
-    { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
+    { icon: User, label: 'Bio', href: '/dashboard/bio' },
+    { icon: BarChart2, label: 'Analytics', href: '/dashboard/analytics' },
+    { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
   ];
 
   const bottomItems = [
-    { icon: HelpCircle, label: "Help", href: "/dashboard/help" },
-    { icon: MessageSquare, label: "Feedback", href: "/dashboard/feedback" },
+    { icon: HelpCircle, label: 'Help', href: '/dashboard/help' },
+    { icon: MessageSquare, label: 'Feedback', href: '/dashboard/feedback' },
   ];
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -66,8 +66,8 @@ export function MobileHeader() {
           />
           <aside
             className={cn(
-              "lg:hidden fixed top-0 left-0 z-50 h-full w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col transition-transform duration-300 ease-in-out",
-              isOpen ? "translate-x-0" : "-translate-x-full"
+              'lg:hidden fixed top-0 left-0 z-50 h-full w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col transition-transform duration-300 ease-in-out',
+              isOpen ? 'translate-x-0' : '-translate-x-full',
             )}
           >
             {/* Mobile Menu Header */}
@@ -93,7 +93,7 @@ export function MobileHeader() {
               {menuItems.map((item) => {
                 const isActive =
                   location.pathname === item.href ||
-                  (item.href !== "/dashboard" &&
+                  (item.href !== '/dashboard' &&
                     location.pathname.startsWith(item.href));
                 return (
                   <Link
@@ -101,10 +101,10 @@ export function MobileHeader() {
                     to={item.href}
                     onClick={closeMenu}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
+                      'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
                       isActive
-                        ? "bg-[#c3986b] text-[#0f0a07] shadow-[0_14px_30px_-18px_rgba(0,0,0,0.6)]"
-                        : "text-foreground/70 hover:bg-[rgba(255,255,255,0.06)] hover:text-foreground"
+                        ? 'bg-[#c3986b] text-[#0f0a07] shadow-[0_14px_30px_-18px_rgba(0,0,0,0.6)]'
+                        : 'text-foreground/70 hover:bg-[rgba(255,255,255,0.06)] hover:text-foreground',
                     )}
                   >
                     <item.icon className="size-4" strokeWidth={1.75} />
@@ -117,25 +117,25 @@ export function MobileHeader() {
             {/* Mobile Menu Footer */}
             <div className="p-3 mt-auto space-y-1 border-t border-sidebar-border/10">
               {bottomItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                onClick={closeMenu}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-foreground/70 hover:bg-[rgba(255,255,255,0.06)] hover:text-foreground transition-colors"
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-foreground/70 hover:bg-[rgba(255,255,255,0.06)] hover:text-foreground transition-colors"
+                >
+                  <item.icon className="size-4" strokeWidth={1.75} />
+                  {item.label}
+                </Link>
+              ))}
+              <button
+                onClick={() => {
+                  closeMenu();
+                  logout();
+                  navigate('/');
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-foreground/70 hover:bg-red-500/10 hover:text-red-400 transition-colors mt-2"
               >
-                <item.icon className="size-4" strokeWidth={1.75} />
-                {item.label}
-              </Link>
-            ))}
-            <button
-              onClick={() => {
-                closeMenu();
-                logout();
-                navigate("/");
-              }}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-foreground/70 hover:bg-red-500/10 hover:text-red-400 transition-colors mt-2"
-            >
-              <LogOut className="size-4" strokeWidth={1.75} />
+                <LogOut className="size-4" strokeWidth={1.75} />
                 Sign Out
               </button>
             </div>

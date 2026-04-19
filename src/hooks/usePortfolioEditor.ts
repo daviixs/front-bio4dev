@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { profileApi } from "@/lib/api";
-import { toast } from "sonner";
-import type { ProfileData, ProfileComplete } from "@/types";
+import { useState, useEffect } from 'react';
+import { profileApi } from '@/lib/api';
+import { toast } from 'sonner';
+import type { ProfileData, ProfileComplete } from '@/types';
 
 export const usePortfolioEditor = (portfolioId: string) => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
@@ -18,20 +18,20 @@ export const usePortfolioEditor = (portfolioId: string) => {
           id: profile.id,
           themeName: legenda?.titulo || profile.username,
           name: legenda?.nome || profile.username,
-          bio: legenda?.descricao || profile.bio || "",
-          photoUrl: legenda?.legendaFoto || profile.avatarUrl || "",
-          backgroundStyle: "bg-slate-50",
+          bio: legenda?.descricao || profile.bio || '',
+          photoUrl: legenda?.legendaFoto || profile.avatarUrl || '',
+          backgroundStyle: 'bg-slate-50',
           buttonStyle:
-            "bg-white hover:shadow-lg border border-slate-200 text-slate-800 rounded-2xl transition-all duration-300",
-          textColor: "text-slate-900",
-          accentColor: "bg-blue-500",
+            'bg-white hover:shadow-lg border border-slate-200 text-slate-800 rounded-2xl transition-all duration-300',
+          textColor: 'text-slate-900',
+          accentColor: 'bg-blue-500',
           socials: (profile.social || []).map((s) => ({
             platform: s.plataforma.toLowerCase(),
             url: s.url,
           })),
           buttons: (profile.projetos || []).map((p) => ({
             label: p.nome,
-            url: p.demoLink || "#",
+            url: p.demoLink || '#',
             subtext: p.descricao,
           })),
         };

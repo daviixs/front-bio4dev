@@ -1,12 +1,6 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
 import type { IconType } from 'react-icons';
-import {
-  ArrowUpRight,
-  Mail,
-  Menu,
-  Pencil,
-  X,
-} from 'lucide-react';
+import { ArrowUpRight, Mail, Menu, Pencil, X } from 'lucide-react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/components/ui/utils';

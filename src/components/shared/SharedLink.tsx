@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface SharedLinkProps {
@@ -9,13 +8,21 @@ interface SharedLinkProps {
   onClick?: () => void;
 }
 
-const SharedLink: React.FC<SharedLinkProps> = ({ label, subtext, icon, className, onClick }) => (
-  <button 
+const SharedLink: React.FC<SharedLinkProps> = ({
+  label,
+  subtext,
+  icon,
+  className,
+  onClick,
+}) => (
+  <button
     onClick={onClick}
     className={`w-full flex items-center justify-between p-4 transition-all duration-300 group ${className}`}
   >
     <div className="flex items-center gap-3">
-      {icon && <div className="group-hover:scale-110 transition-transform">{icon}</div>}
+      {icon && (
+        <div className="group-hover:scale-110 transition-transform">{icon}</div>
+      )}
       <div className="text-left">
         <span className="block font-bold text-sm uppercase tracking-tight">
           {label}

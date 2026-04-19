@@ -108,10 +108,9 @@ const isValidIpv4Host = (value: string) =>
   });
 
 const getHostnameCandidate = (value: string) => {
-  const withoutProtocol = value.trim().replace(
-    /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//,
-    '',
-  );
+  const withoutProtocol = value
+    .trim()
+    .replace(/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//, '');
   const rawHost = withoutProtocol.split(/[/?#]/)[0] || '';
 
   return rawHost.replace(/:\d+$/, '').replace(/^\[|\]$/g, '');
@@ -165,9 +164,7 @@ const isAllowedUrlHostname = (
   if (
     normalizedHostname === 'localhost' ||
     normalizedHostname.endsWith('.localhost') ||
-    LOCAL_HOST_SUFFIXES.some((suffix) =>
-      normalizedHostname.endsWith(suffix),
-    ) ||
+    LOCAL_HOST_SUFFIXES.some((suffix) => normalizedHostname.endsWith(suffix)) ||
     isValidIpv4Host(normalizedHostname) ||
     normalizedHostname.includes(':') ||
     normalizedHostname.includes('.')
@@ -474,7 +471,8 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
-  const projectLink = project.link && project.link !== '#' ? project.link : undefined;
+  const projectLink =
+    project.link && project.link !== '#' ? project.link : undefined;
   const projectImage = project.image?.trim();
 
   return (
@@ -1218,26 +1216,26 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
         </h2>
 
         {onAdd && onRemove && (
-        <>
-          <Button
-            size="sm"
-            onClick={() => setIsDialogOpen(true)}
-            className="bg-yellow-500 text-black hover:bg-yellow-600 h-9 flex items-center gap-2"
-          >
-            <Plus size={16} />
-            Adicionar tecnologia
-            <span className="rounded-full bg-black/15 px-2 py-0.5 text-xs font-semibold text-black">
-              {data.length}
-            </span>
-          </Button>
-          <AddTechDialog
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-            onAdd={onAdd}
-            onRemove={onRemove}
-            selectedTechs={data}
-          />
-        </>
+          <>
+            <Button
+              size="sm"
+              onClick={() => setIsDialogOpen(true)}
+              className="bg-yellow-500 text-black hover:bg-yellow-600 h-9 flex items-center gap-2"
+            >
+              <Plus size={16} />
+              Adicionar tecnologia
+              <span className="rounded-full bg-black/15 px-2 py-0.5 text-xs font-semibold text-black">
+                {data.length}
+              </span>
+            </Button>
+            <AddTechDialog
+              open={isDialogOpen}
+              onOpenChange={setIsDialogOpen}
+              onAdd={onAdd}
+              onRemove={onRemove}
+              selectedTechs={data}
+            />
+          </>
         )}
       </div>
     </div>
@@ -2151,7 +2149,10 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       descricao: projForm.description.trim() || 'Project Description',
     };
 
-    const normalizedGithubUrl = normalizeHttpUrl(projForm.githubUrl, 'Code link');
+    const normalizedGithubUrl = normalizeHttpUrl(
+      projForm.githubUrl,
+      'Code link',
+    );
     if (normalizedGithubUrl.error) {
       toast.error(normalizedGithubUrl.error);
       return;
@@ -2229,7 +2230,11 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
         demoLink: savedProject?.demoLink ?? payload.demoLink,
         gif: savedProject?.gif ?? payload.gif ?? '',
         tags: savedProject?.tags ?? payload.tags ?? [],
-        ordem: savedProject?.ordem ?? editingProj?.ordem ?? currentProfile.projetos?.length ?? 0,
+        ordem:
+          savedProject?.ordem ??
+          editingProj?.ordem ??
+          currentProfile.projetos?.length ??
+          0,
         createdAt:
           savedProject?.createdAt ||
           editingProj?.createdAt ||
@@ -2620,8 +2625,7 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
                     editingSocial.platformCode ||
                     editingSocial.name ||
                     editingSocial.id
-                  ).toLowerCase() ||
-                s.id.toString() === editingSocial.id,
+                  ).toLowerCase() || s.id.toString() === editingSocial.id,
             ) ? (
               <Button variant="destructive" onClick={deleteSocial} size="sm">
                 <Trash2 size={16} className="mr-2" /> Remove

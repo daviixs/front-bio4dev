@@ -1,5 +1,5 @@
-import React from "react";
-import { TemplatePreview } from "../shared/TemplatePreview";
+import React from 'react';
+import { TemplatePreview } from '../shared/TemplatePreview';
 import { TEMPLATE_ID } from './types';
 
 export default function Preview() {

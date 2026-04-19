@@ -1,53 +1,53 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Code, Users, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Footer } from "@/components/landing/Footer";
-import { landingTheme } from "@/theme/landingTheme";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Code, Users, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Footer } from '@/components/landing/Footer';
+import { landingTheme } from '@/theme/landingTheme';
 
 export default function UserTypeSelectionPage() {
   const navigate = useNavigate();
-  const [selectedType, setSelectedType] = useState<"dev" | "influencer" | null>(
-    null
+  const [selectedType, setSelectedType] = useState<'dev' | 'influencer' | null>(
+    null,
   );
 
   const handleContinue = () => {
     if (!selectedType) return;
 
     // Salvar tipo de usuário no localStorage
-    localStorage.setItem("bio4dev_user_type", selectedType);
+    localStorage.setItem('bio4dev_user_type', selectedType);
 
     // Redirecionar para criação de perfil
     const route =
-      selectedType === "dev" ? "/profile/create/developer" : "/profile/create";
+      selectedType === 'dev' ? '/profile/create/developer' : '/profile/create';
     navigate(route);
   };
 
   const userTypes = [
     {
-      id: "dev" as const,
-      title: "Desenvolvedor",
-      description: "Portfólios técnicos com projetos, experiência e tech stack",
+      id: 'dev' as const,
+      title: 'Desenvolvedor',
+      description: 'Portfólios técnicos com projetos, experiência e tech stack',
       icon: <Code className="w-12 h-12" />,
       color: landingTheme.accentBg,
       features: [
-        "GitHub Integration",
-        "Projetos Open Source",
-        "Stack Tecnológica",
-        "Experiência Profissional",
+        'GitHub Integration',
+        'Projetos Open Source',
+        'Stack Tecnológica',
+        'Experiência Profissional',
       ],
     },
     {
-      id: "influencer" as const,
-      title: "Influenciador",
-      description: "Bio links estilizados com links e redes sociais",
+      id: 'influencer' as const,
+      title: 'Influenciador',
+      description: 'Bio links estilizados com links e redes sociais',
       icon: <Users className="w-12 h-12" />,
       color: landingTheme.accentBg,
       features: [
-        "Links Personalizados",
-        "Redes Sociais",
-        "Design Atraente",
-        "Analytics",
+        'Links Personalizados',
+        'Redes Sociais',
+        'Design Atraente',
+        'Analytics',
       ],
     },
   ];

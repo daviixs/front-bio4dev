@@ -47,10 +47,7 @@ import {
   getPortfolio3ExperienceDescription,
   isPortfolio3ColorToken,
 } from './portfolio3Shared';
-import {
-  TECH_OPTIONS,
-  type TechOption,
-} from './EditablePortfolio1';
+import { TECH_OPTIONS, type TechOption } from './EditablePortfolio1';
 import {
   showPortfolioEditorError,
   showPortfolioEditorSuccess,
@@ -96,10 +93,9 @@ const isValidIpv4Host = (value: string) =>
   });
 
 const getHostnameCandidate = (value: string) => {
-  const withoutProtocol = value.trim().replace(
-    /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//,
-    '',
-  );
+  const withoutProtocol = value
+    .trim()
+    .replace(/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//, '');
   const rawHost = withoutProtocol.split(/[/?#]/)[0] || '';
 
   return rawHost.replace(/:\d+$/, '').replace(/^\[|\]$/g, '');
@@ -153,9 +149,7 @@ const isAllowedUrlHostname = (
   if (
     normalizedHostname === 'localhost' ||
     normalizedHostname.endsWith('.localhost') ||
-    LOCAL_HOST_SUFFIXES.some((suffix) =>
-      normalizedHostname.endsWith(suffix),
-    ) ||
+    LOCAL_HOST_SUFFIXES.some((suffix) => normalizedHostname.endsWith(suffix)) ||
     isValidIpv4Host(normalizedHostname) ||
     normalizedHostname.includes(':') ||
     normalizedHostname.includes('.')
@@ -284,9 +278,7 @@ function EditablePortfolio3ResumeButton({
             >
               Cancelar
             </Button>
-            <Button onClick={handleSave}>
-              Salvar
-            </Button>
+            <Button onClick={handleSave}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -417,9 +409,8 @@ export function EditablePortfolio3({
 
   const [editingProject, setEditingProject] = useState<Projeto | null>(null);
   const [editingWork, setEditingWork] = useState<WorkExperience | null>(null);
-  const [editingSocialSlot, setEditingSocialSlot] = useState<SocialSlotId | null>(
-    null,
-  );
+  const [editingSocialSlot, setEditingSocialSlot] =
+    useState<SocialSlotId | null>(null);
 
   const [projectForm, setProjectForm] = useState({
     nome: '',
@@ -478,11 +469,13 @@ export function EditablePortfolio3({
       field === 'legendaFoto'
         ? value || ''
         : legenda?.legendaFoto || localProfile.avatarUrl || '',
-    greeting:
-      field === 'greeting' ? value || '' : legenda?.greeting || '',
+    greeting: field === 'greeting' ? value || '' : legenda?.greeting || '',
     nome:
       field === 'nome'
-        ? value || localProfile.user?.nome || localProfile.username || 'M Portfolio'
+        ? value ||
+          localProfile.user?.nome ||
+          localProfile.username ||
+          'M Portfolio'
         : legenda?.nome ||
           localProfile.user?.nome ||
           localProfile.username ||
@@ -498,7 +491,8 @@ export function EditablePortfolio3({
       'Developer portfolio',
     descricao:
       field === 'descricao'
-        ? value || 'Descreva aqui sua atuação, experiência e o que você está construindo.'
+        ? value ||
+          'Descreva aqui sua atuação, experiência e o que você está construindo.'
         : legenda?.descricao ||
           'Descreva aqui sua atuação, experiência e o que você está construindo.',
   });
@@ -593,7 +587,9 @@ export function EditablePortfolio3({
       let legendaId = legenda?.id;
 
       if (!legendaId) {
-        const response = await legendaApi.create(buildLegendaDefaults(field, value));
+        const response = await legendaApi.create(
+          buildLegendaDefaults(field, value),
+        );
         legendaId = response.legenda.id;
 
         setLocalProfile((prev) => ({
@@ -681,10 +677,7 @@ export function EditablePortfolio3({
     }
   };
 
-  const upsertFooter = async (
-    field: FooterEditableField,
-    value: string,
-  ) => {
+  const upsertFooter = async (field: FooterEditableField, value: string) => {
     try {
       if (localProfile.footer?.id) {
         await footerApi.update(localProfile.footer.id, {
@@ -960,7 +953,10 @@ export function EditablePortfolio3({
 
     try {
       if (editingProject) {
-        const response: any = await projetosApi.update(editingProject.id, payload);
+        const response: any = await projetosApi.update(
+          editingProject.id,
+          payload,
+        );
         const updatedProject = response.projeto || {
           ...editingProject,
           ...payload,
@@ -1167,7 +1163,10 @@ export function EditablePortfolio3({
     }
 
     try {
-      const existing = findPortfolio3Social(localProfile.social, editingSocialSlot);
+      const existing = findPortfolio3Social(
+        localProfile.social,
+        editingSocialSlot,
+      );
       const nextSocials = [...(localProfile.social || [])];
 
       if (existing) {

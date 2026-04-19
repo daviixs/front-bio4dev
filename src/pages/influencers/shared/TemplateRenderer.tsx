@@ -1,8 +1,8 @@
-import React from "react";
-import { DynamicThemeRenderer } from "@/components/editors/DynamicThemeRenderer";
-import type { ProfileData } from "@/temas-lintree/types";
-import type { InfluencerTemplateData } from "./types";
-import { getInfluencerThemePreset } from "./themePresets";
+import React from 'react';
+import { DynamicThemeRenderer } from '@/components/editors/DynamicThemeRenderer';
+import type { ProfileData } from '@/temas-lintree/types';
+import type { InfluencerTemplateData } from './types';
+import { getInfluencerThemePreset } from './themePresets';
 
 const DEFAULT_AVATAR_URL = 'https://api.dicebear.com/7.x/avataaars/svg';
 

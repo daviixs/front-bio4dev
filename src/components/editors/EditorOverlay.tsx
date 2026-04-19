@@ -1,13 +1,13 @@
-import React, { useState, cloneElement, ReactElement } from "react";
-import { Pencil } from "lucide-react";
-import { TextEditor } from "./fields/TextEditor";
-import { ImageEditor } from "./fields/ImageEditor";
-import { ListEditor } from "./fields/ListEditor";
-import { ColorPicker } from "./fields/ColorPicker";
+import React, { useState, cloneElement, ReactElement } from 'react';
+import { Pencil } from 'lucide-react';
+import { TextEditor } from './fields/TextEditor';
+import { ImageEditor } from './fields/ImageEditor';
+import { ListEditor } from './fields/ListEditor';
+import { ColorPicker } from './fields/ColorPicker';
 
 interface EditableField {
   key: string;
-  type: "text" | "textarea" | "image" | "list" | "color";
+  type: 'text' | 'textarea' | 'image' | 'list' | 'color';
   label: string;
   value: any;
 }
@@ -29,7 +29,7 @@ export function EditorOverlay({
   const [localData, setLocalData] = useState(data);
 
   const handleFieldSave = (key: string, value: any) => {
-    const keys = key.split(".");
+    const keys = key.split('.');
     const newData = { ...localData };
     let current: any = newData;
 
@@ -66,7 +66,7 @@ export function EditorOverlay({
       `}</style>
 
       {/* Render appropriate editor based on field type */}
-      {editingField && editingField.type === "text" && (
+      {editingField && editingField.type === 'text' && (
         <TextEditor
           value={editingField.value}
           label={editingField.label}
@@ -77,7 +77,7 @@ export function EditorOverlay({
         />
       )}
 
-      {editingField && editingField.type === "textarea" && (
+      {editingField && editingField.type === 'textarea' && (
         <TextEditor
           value={editingField.value}
           label={editingField.label}
@@ -88,7 +88,7 @@ export function EditorOverlay({
         />
       )}
 
-      {editingField && editingField.type === "image" && (
+      {editingField && editingField.type === 'image' && (
         <ImageEditor
           value={editingField.value}
           label={editingField.label}

@@ -1,14 +1,14 @@
-import { useState, useRef, useEffect } from "react";
-import { Pencil, Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/components/ui/utils";
+import { useState, useRef, useEffect } from 'react';
+import { Pencil, Check, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/components/ui/utils';
 
 interface EditableFieldProps {
   value: string;
   onSave: (value: string) => Promise<void>;
-  type?: "text" | "textarea";
+  type?: 'text' | 'textarea';
   placeholder?: string;
   className?: string;
   valueClassName?: string;
@@ -20,7 +20,7 @@ interface EditableFieldProps {
 export function EditableField({
   value,
   onSave,
-  type = "text",
+  type = 'text',
   placeholder,
   className,
   valueClassName,
@@ -40,7 +40,7 @@ export function EditableField({
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
-      if (type === "text") {
+      if (type === 'text') {
         (inputRef.current as HTMLInputElement).select();
       }
     }
@@ -67,38 +67,38 @@ export function EditableField({
       await onSave(editValue.trim());
       setIsEditing(false);
     } catch (error) {
-      console.error("Erro ao salvar:", error);
+      console.error('Erro ao salvar:', error);
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !multiline && !e.shiftKey) {
+    if (e.key === 'Enter' && !multiline && !e.shiftKey) {
       e.preventDefault();
       handleSave();
-    } else if (e.key === "Escape") {
+    } else if (e.key === 'Escape') {
       handleCancel();
     }
   };
 
   if (isEditing) {
     return (
-      <div className={cn("relative group", className)}>
+      <div className={cn('relative group', className)}>
         {label && (
           <label className="block text-sm font-medium text-gray-700 mb-1">
             {label}
           </label>
         )}
         <div className="flex items-start gap-2">
-          {type === "textarea" || multiline ? (
+          {type === 'textarea' || multiline ? (
             <Textarea
               ref={inputRef as React.RefObject<HTMLTextAreaElement>}
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className={cn("flex-1 min-h-[100px]", inputClassName)}
+              className={cn('flex-1 min-h-[100px]', inputClassName)}
               rows={multiline ? 4 : 2}
             />
           ) : (
@@ -108,7 +108,7 @@ export function EditableField({
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className={cn("flex-1", inputClassName)}
+              className={cn('flex-1', inputClassName)}
             />
           )}
           <div className="flex gap-1">
@@ -139,8 +139,8 @@ export function EditableField({
   return (
     <div
       className={cn(
-        "relative group cursor-pointer hover:bg-gray-50/50 rounded-md p-2 -m-2 transition-colors inline-block",
-        className
+        'relative group cursor-pointer hover:bg-gray-50/50 rounded-md p-2 -m-2 transition-colors inline-block',
+        className,
       )}
       onClick={handleStartEdit}
     >
@@ -150,9 +150,10 @@ export function EditableField({
         </label>
       )}
       <div className="flex items-center gap-2">
-        <span className={cn(
-          "flex-1",
-          !value && "text-gray-400 italic",
+        <span
+          className={cn(
+            'flex-1',
+            !value && 'text-gray-400 italic',
             valueClassName,
           )}
         >

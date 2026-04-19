@@ -1,12 +1,12 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { profileApi } from "@/lib/api";
-import { templateRegistry } from "@/pages/influencers/registry";
-import { isInfluencerTemplate } from "@/pages/influencers/shared/templateMap";
-import { Button } from "@/components/ui/button";
-import { logError } from "@/lib/logger";
+import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { profileApi } from '@/lib/api';
+import { templateRegistry } from '@/pages/influencers/registry';
+import { isInfluencerTemplate } from '@/pages/influencers/shared/templateMap';
+import { Button } from '@/components/ui/button';
+import { logError } from '@/lib/logger';
 
-type Mode = "edit" | "preview";
+type Mode = 'edit' | 'preview';
 
 interface PortfolioEditorPageProps {
   mode: Mode;
@@ -29,7 +29,7 @@ export function PortfolioEditorPage({ mode }: PortfolioEditorPageProps) {
         .getComplete(portfolioId)
         .then((profile) => {
           if (!isInfluencerTemplate(profile.templateType)) {
-            setError("Template nao suportado para influenciadores.");
+            setError('Template nao suportado para influenciadores.');
             return;
           }
           navigate(
@@ -38,8 +38,8 @@ export function PortfolioEditorPage({ mode }: PortfolioEditorPageProps) {
           );
         })
         .catch((err) => {
-          logError("PortfolioEditorPage", err, { portfolioId });
-          setError("Nao foi possivel carregar o perfil.");
+          logError('PortfolioEditorPage', err, { portfolioId });
+          setError('Nao foi possivel carregar o perfil.');
         })
         .finally(() => setIsRedirecting(false));
     }

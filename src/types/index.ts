@@ -15,22 +15,22 @@ export interface User {
   updatedAt?: string;
 }
 
-export type Colors = "LIGHT" | "DARK";
+export type Colors = 'LIGHT' | 'DARK';
 export type TemplateType =
-  | "template_01"
-  | "template_02"
-  | "template_03"
-  | "template_04"
-  | "template_05"
-  | "template_06"
-  | "template_07"
-  | "template_08"
-  | "template_09"
-  | "template_10"
-  | "template_11"
-  | "template_12"
-  | "template_13"
-  | "template_14";
+  | 'template_01'
+  | 'template_02'
+  | 'template_03'
+  | 'template_04'
+  | 'template_05'
+  | 'template_06'
+  | 'template_07'
+  | 'template_08'
+  | 'template_09'
+  | 'template_10'
+  | 'template_11'
+  | 'template_12'
+  | 'template_13'
+  | 'template_14';
 
 export interface Profile {
   id: string;
@@ -76,37 +76,37 @@ export interface Page {
 }
 
 export type PlataformaSocial =
-  | "instagram"
-  | "tiktok"
-  | "youtube"
-  | "github"
-  | "linkedin"
-  | "twitter"
-  | "facebook"
-  | "x"
-  | "threads"
-  | "website"
-  | "spotify"
-  | "soundcloud"
-  | "snapchat"
-  | "patreon"
-  | "twitch"
-  | "applemusic"
-  | "figma"
-  | "devto"
-  | "dev"
-  | "email"
-  | "behance"
-  | "dribbble"
-  | "medium"
-  | "pinterest"
-  | "gitlab"
-  | "bitbucket"
-  | "stackoverflow"
-  | "codepen"
-  | "discord"
-  | "whatsapp"
-  | "telegram";
+  | 'instagram'
+  | 'tiktok'
+  | 'youtube'
+  | 'github'
+  | 'linkedin'
+  | 'twitter'
+  | 'facebook'
+  | 'x'
+  | 'threads'
+  | 'website'
+  | 'spotify'
+  | 'soundcloud'
+  | 'snapchat'
+  | 'patreon'
+  | 'twitch'
+  | 'applemusic'
+  | 'figma'
+  | 'devto'
+  | 'dev'
+  | 'email'
+  | 'behance'
+  | 'dribbble'
+  | 'medium'
+  | 'pinterest'
+  | 'gitlab'
+  | 'bitbucket'
+  | 'stackoverflow'
+  | 'codepen'
+  | 'discord'
+  | 'whatsapp'
+  | 'telegram';
 
 export interface Social {
   id: string;
@@ -272,7 +272,7 @@ export interface CreateSocialDTO {
 }
 
 export interface UpdateSocialDTO extends Partial<
-  Omit<CreateSocialDTO, "profileId">
+  Omit<CreateSocialDTO, 'profileId'>
 > {}
 
 export interface CreateProjetoDTO {
@@ -286,7 +286,7 @@ export interface CreateProjetoDTO {
 }
 
 export interface UpdateProjetoDTO extends Partial<
-  Omit<CreateProjetoDTO, "profileId">
+  Omit<CreateProjetoDTO, 'profileId'>
 > {}
 
 export interface CreateTechStackDTO {
@@ -315,7 +315,7 @@ export interface CreateWorkExperienceDTO {
 }
 
 export interface UpdateWorkExperienceDTO extends Partial<
-  Omit<CreateWorkExperienceDTO, "profileId">
+  Omit<CreateWorkExperienceDTO, 'profileId'>
 > {}
 
 export interface CreateFooterDTO {
@@ -333,7 +333,7 @@ export interface CreateFooterDTO {
 }
 
 export interface UpdateFooterDTO extends Partial<
-  Omit<CreateFooterDTO, "profileId">
+  Omit<CreateFooterDTO, 'profileId'>
 > {}
 
 // Respostas da API
@@ -376,6 +376,6 @@ export interface TopPage {
 }
 
 export interface DeviceBreakdown {
-  device: "Desktop" | "Mobile" | "Tablet";
+  device: 'Desktop' | 'Mobile' | 'Tablet';
   value: number;
 }

@@ -1,4 +1,4 @@
-import { profileApi } from "./api";
+import { profileApi } from './api';
 import {
   Mail,
   Github,
@@ -7,13 +7,13 @@ import {
   Facebook,
   Code2,
   Figma,
-} from "lucide-react";
-import type { ProfileComplete } from "@/types";
+} from 'lucide-react';
+import type { ProfileComplete } from '@/types';
 import type {
   SocialLink,
   Experience,
   Project,
-} from "../../Portifolios/portifolio-2/types";
+} from '../../Portifolios/portifolio-2/types';
 
 /**
  * API para integração do Portfólio 2 com o backend
@@ -43,7 +43,7 @@ export interface Portfolio2Data {
  */
 export async function getPortfolio2Data(
   slug: string,
-  previewToken?: string
+  previewToken?: string,
 ): Promise<Portfolio2Data> {
   try {
     // Busca perfil completo usando a rota existente
@@ -58,10 +58,10 @@ export async function getPortfolio2Data(
       techStack: mapTechStack(profile.techStack),
     };
   } catch (error: any) {
-    console.error("Erro ao buscar dados do portfólio:", error);
+    console.error('Erro ao buscar dados do portfólio:', error);
     throw new Error(
       error.response?.data?.message ||
-        "Erro ao carregar dados do portfólio. Verifique se o perfil existe e está publicado."
+        'Erro ao carregar dados do portfólio. Verifique se o perfil existe e está publicado.',
     );
   }
 }
@@ -73,12 +73,12 @@ function mapProfile(profile: ProfileComplete) {
   const legenda = profile.legendas?.[0];
 
   return {
-    name: legenda?.nome || profile.username || "Nome não definido",
+    name: legenda?.nome || profile.username || 'Nome não definido',
     handle: `@${profile.username}`,
-    role: legenda?.titulo || "Desenvolvedor",
-    tagline: profile.bio || "Building digital products",
+    role: legenda?.titulo || 'Desenvolvedor',
+    tagline: profile.bio || 'Building digital products',
     // ✅ Usando campo subtitulo da Legenda como location
-    location: legenda?.subtitulo || "Location not set",
+    location: legenda?.subtitulo || 'Location not set',
     avatarUrl: profile.avatarUrl || generateDefaultAvatar(profile.username),
     joinedDate: formatJoinedDate(profile.createdAt),
   };
@@ -103,28 +103,28 @@ function mapSocialLinks(socials: any[]): SocialLink[] {
 
   // Mapa de cores por plataforma (Tailwind classes)
   const colorMap: Record<string, string> = {
-    github: "bg-[#18181b] hover:bg-[#27272a] border border-gray-800",
-    linkedin: "bg-[#0077b5] hover:bg-[#006399]",
-    twitter: "bg-[#1DA1F2] hover:bg-[#1a8cd8]",
-    facebook: "bg-[#3b82f6] hover:bg-[#2563eb]",
-    figma: "bg-[#1e1e1e] hover:bg-[#2d2d2d]",
+    github: 'bg-[#18181b] hover:bg-[#27272a] border border-gray-800',
+    linkedin: 'bg-[#0077b5] hover:bg-[#006399]',
+    twitter: 'bg-[#1DA1F2] hover:bg-[#1a8cd8]',
+    facebook: 'bg-[#3b82f6] hover:bg-[#2563eb]',
+    figma: 'bg-[#1e1e1e] hover:bg-[#2d2d2d]',
     instagram:
-      "bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600",
-    tiktok: "bg-black hover:bg-gray-900",
-    youtube: "bg-[#FF0000] hover:bg-[#CC0000]",
+      'bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600',
+    tiktok: 'bg-black hover:bg-gray-900',
+    youtube: 'bg-[#FF0000] hover:bg-[#CC0000]',
   };
 
   // Nome legível por plataforma
   const nameMap: Record<string, string> = {
-    github: "GitHub",
-    linkedin: "LinkedIn",
-    twitter: "Twitter",
-    facebook: "Facebook",
-    figma: "Figma",
-    instagram: "Instagram",
-    tiktok: "TikTok",
-    youtube: "YouTube",
-    email: "Email",
+    github: 'GitHub',
+    linkedin: 'LinkedIn',
+    twitter: 'Twitter',
+    facebook: 'Facebook',
+    figma: 'Figma',
+    instagram: 'Instagram',
+    tiktok: 'TikTok',
+    youtube: 'YouTube',
+    email: 'Email',
   };
 
   return socials
@@ -136,10 +136,10 @@ function mapSocialLinks(socials: any[]): SocialLink[] {
       icon: iconMap[social.plataforma] || Mail,
       url: social.url,
       colorClass:
-        colorMap[social.plataforma] || "bg-gray-800 hover:bg-gray-700",
+        colorMap[social.plataforma] || 'bg-gray-800 hover:bg-gray-700',
       textColorClass: undefined,
       // GitHub ocupa 2 colunas no layout
-      colSpan: social.plataforma === "github" ? 2 : 1,
+      colSpan: social.plataforma === 'github' ? 2 : 1,
     }));
 }
 
@@ -152,16 +152,16 @@ function mapExperience(workHistory: any[]): Experience[] {
     .map((exp) => {
       // Verifica se é experiência atual
       const isCurrent =
-        exp.period?.toLowerCase().includes("present") ||
-        exp.period?.toLowerCase().includes("atual") ||
-        exp.period?.toLowerCase().includes("current");
+        exp.period?.toLowerCase().includes('present') ||
+        exp.period?.toLowerCase().includes('atual') ||
+        exp.period?.toLowerCase().includes('current');
 
       return {
         id: exp.id,
-        role: exp.company || "Cargo", // No backend está invertido
-        company: exp.summary || "Empresa", // No backend está invertido
-        date: exp.period || "Data não definida",
-        description: exp.impact || exp.summary || "Descrição não disponível",
+        role: exp.company || 'Cargo', // No backend está invertido
+        company: exp.summary || 'Empresa', // No backend está invertido
+        date: exp.period || 'Data não definida',
+        description: exp.impact || exp.summary || 'Descrição não disponível',
         current: isCurrent,
       };
     });
@@ -178,7 +178,7 @@ function mapProjects(projetos: any[]): Project[] {
       title: proj.nome,
       description: proj.descricao,
       tags: proj.tags || [],
-      link: proj.demoLink || proj.codeLink || "#",
+      link: proj.demoLink || proj.codeLink || '#',
       image: proj.gif,
     }));
 }
@@ -211,12 +211,12 @@ function mapTechStack(techStack: any): string[] {
  */
 function extractHandle(url: string, plataforma: string): string {
   try {
-    if (plataforma === "email" || url.includes("@")) {
-      return url.replace("mailto:", "");
+    if (plataforma === 'email' || url.includes('@')) {
+      return url.replace('mailto:', '');
     }
 
     const urlObj = new URL(url);
-    const parts = urlObj.pathname.split("/").filter(Boolean);
+    const parts = urlObj.pathname.split('/').filter(Boolean);
 
     if (parts.length > 0) {
       const handle = parts[parts.length - 1];
@@ -243,8 +243,8 @@ function formatJoinedDate(dateString: string): string {
   try {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "short",
+      year: 'numeric',
+      month: 'short',
       day: 'numeric',
     };
     return `Joined on ${date.toLocaleDateString('en-US', options)}`;
