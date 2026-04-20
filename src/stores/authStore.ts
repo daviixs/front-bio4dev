@@ -220,7 +220,8 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           const profiles = await profileApi.getAll();
-          const userProfile = profiles.find((p: any) => p.userId === user.id);
+          const userProfile =
+            profiles.find((p: any) => p.isActive) || profiles[0] || null;
 
           if (userProfile) {
             set({ profile: userProfile });

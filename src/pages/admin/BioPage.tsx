@@ -75,14 +75,11 @@ export default function BioPage() {
 
       try {
         setIsLoading(true);
-        // Buscar todos os perfis do usuário
+        // Backend já retorna somente perfis do usuário autenticado.
         const response = await profileApi.getAll();
-        const userBios = response.filter(
-          (profile: any) => profile.userId === user.id,
-        );
 
         // Mapear para o formato esperado
-        const mappedBios = userBios.map((profile: any) => ({
+        const mappedBios = response.map((profile: any) => ({
           id: profile.id,
           name: profile.username || 'Sem nome',
           username: profile.username,
