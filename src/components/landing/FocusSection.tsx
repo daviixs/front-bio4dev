@@ -1,8 +1,8 @@
-import React from "react";
-import { Reveal } from "./Reveal";
-import screenshot from "@/landingpage-images/mockup-image2.png";
-import { motion } from "framer-motion";
-import { sectionFade } from "./animations";
+import React from 'react';
+import { Reveal } from './Reveal';
+import screenshot from '@/landingpage-images/mockup-image2.png';
+import { motion } from 'framer-motion';
+import { sectionFade } from './animations';
 
 export function FocusSection() {
   return (

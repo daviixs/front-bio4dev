@@ -1,46 +1,46 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
-import { profileApi } from "@/lib/api";
-import { getApiErrorMessage } from "@/lib/api-errors";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { profileApi } from '@/lib/api';
+import { getApiErrorMessage } from '@/lib/api-errors';
 import {
   hasReachedProfileLimit,
   PROFILE_LIMIT_MESSAGE,
-} from "@/lib/profile-limits";
-import { useAuthStore } from "@/stores/authStore";
-import { toast } from "sonner";
-import { Header } from "@/components/landing/Header";
-import { Footer } from "@/components/landing/Footer";
-import { landingTheme } from "@/theme/landingTheme";
+} from '@/lib/profile-limits';
+import { useAuthStore } from '@/stores/authStore';
+import { toast } from 'sonner';
+import { Header } from '@/components/landing/Header';
+import { Footer } from '@/components/landing/Footer';
+import { landingTheme } from '@/theme/landingTheme';
 
 const templateImages: Record<string, string> = {
-  template_01: "/images/templates/Portifolio%201.png",
-  template_02: "/images/templates/Portifolio%202.png",
-  template_03: "/images/templates/Portifolio%203.png",
+  template_01: '/images/templates/Portifolio%201.png',
+  template_02: '/images/templates/Portifolio%202.png',
+  template_03: '/images/templates/Portifolio%203.png',
 };
 
 const devTemplates = [
   {
-    id: "template_01",
-    name: "Portfolio Minimalista Dev",
-    description: "Foco total em projetos, GitHub e stack principal.",
-    highlights: ["GitHub Integration", "Tech Stack", "Experiencia"],
+    id: 'template_01',
+    name: 'Portfolio Minimalista Dev',
+    description: 'Foco total em projetos, GitHub e stack principal.',
+    highlights: ['GitHub Integration', 'Tech Stack', 'Experiencia'],
   },
   {
-    id: "template_02",
-    name: "Portfolio Criativo Tech",
-    description: "Visual impactante para destacar produtos e demos.",
-    highlights: ["Demos Interativas", "Cases", "Highlights"],
+    id: 'template_02',
+    name: 'Portfolio Criativo Tech',
+    description: 'Visual impactante para destacar produtos e demos.',
+    highlights: ['Demos Interativas', 'Cases', 'Highlights'],
   },
   {
-    id: "template_03",
-    name: "Portfolio Corporativo Dev",
-    description: "Layout executivo para consultores e times tech.",
-    highlights: ["Experiencia", "Resultados", "Credibilidade"],
+    id: 'template_03',
+    name: 'Portfolio Corporativo Dev',
+    description: 'Layout executivo para consultores e times tech.',
+    highlights: ['Experiencia', 'Resultados', 'Credibilidade'],
   },
 ] as const;
 
-const DEVELOPER_CREATE_PROFILE_TOAST_ID = "developer-create-profile-toast";
+const DEVELOPER_CREATE_PROFILE_TOAST_ID = 'developer-create-profile-toast';
 
 export function DeveloperCreateProfilePage() {
   const navigate = useNavigate();
@@ -48,21 +48,21 @@ export function DeveloperCreateProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
-  const [nameInput, setNameInput] = useState("");
+  const [nameInput, setNameInput] = useState('');
   const [slugError, setSlugError] = useState<string | null>(null);
   const [slugValue, setSlugValue] = useState<string | null>(null);
   const [hasPromptedForSlug, setHasPromptedForSlug] = useState(false);
 
   const toSlug = (value: string) =>
     value
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .trim()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "")
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '')
       .slice(0, 60);
 
   const slugPreview = toSlug(nameInput);
@@ -70,10 +70,10 @@ export function DeveloperCreateProfilePage() {
 
   useEffect(() => {
     if (!user) {
-      toast.error("Faca login para continuar", {
+      toast.error('Faca login para continuar', {
         id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
       });
-      navigate("/");
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -85,7 +85,7 @@ export function DeveloperCreateProfilePage() {
 
   const handleCreate = async (slug: string) => {
     if (!selectedTemplate) {
-      toast.error("Selecione um template para continuar.", {
+      toast.error('Selecione um template para continuar.', {
         id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
       });
       return;
@@ -96,18 +96,18 @@ export function DeveloperCreateProfilePage() {
 
     if (!slugIsValid) {
       setSlugError(
-        "Slug inválido. Use 3-60 caracteres, minúsculas, números e hifens.",
+        'Slug inválido. Use 3-60 caracteres, minúsculas, números e hifens.',
       );
       setIsSlugModalOpen(true);
       return;
     }
 
     const userId = user?.id;
-    if (!userId || userId === "undefined" || typeof userId !== "string") {
-      toast.error("Sessao invalida. Faca login novamente.", {
+    if (!userId || userId === 'undefined' || typeof userId !== 'string') {
+      toast.error('Sessao invalida. Faca login novamente.', {
         id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
       });
-      navigate("/");
+      navigate('/');
       return;
     }
 
@@ -118,7 +118,7 @@ export function DeveloperCreateProfilePage() {
         toast.error(PROFILE_LIMIT_MESSAGE, {
           id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
         });
-        navigate("/dashboard/bio");
+        navigate('/dashboard/bio');
         return;
       }
 
@@ -131,49 +131,49 @@ export function DeveloperCreateProfilePage() {
         userId,
         username: displayName,
         slug,
-        bio: `Perfil ${templateData?.name ?? "Dev"}`,
+        bio: `Perfil ${templateData?.name ?? 'Dev'}`,
         avatarUrl: undefined,
         templateType,
         published: true,
       });
 
       const profileId = response.profile?.id || response.id;
-      if (!profileId || typeof profileId !== "string") {
+      if (!profileId || typeof profileId !== 'string') {
         toast.error(
-          "Erro: ID do perfil nao foi retornado corretamente pelo servidor",
+          'Erro: ID do perfil nao foi retornado corretamente pelo servidor',
           { id: DEVELOPER_CREATE_PROFILE_TOAST_ID },
         );
         return;
       }
 
-      localStorage.setItem("bio4dev_profile_id", profileId);
+      localStorage.setItem('bio4dev_profile_id', profileId);
       localStorage.setItem(`bio4dev_theme_${profileId}`, templateType);
 
-      toast.success("Perfil criado com sucesso!", {
+      toast.success('Perfil criado com sucesso!', {
         id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
       });
       setTimeout(() => {
         navigate(`/dashboard/bio/${profileId}`);
       }, 100);
     } catch (error: any) {
-      console.error("Error creating profile:", error);
+      console.error('Error creating profile:', error);
       const backendMessage = getApiErrorMessage(error);
       const normalizedMessage = backendMessage.toLowerCase();
 
       if (error.response?.status === 400 && backendMessage) {
-        if (normalizedMessage.includes("slug")) {
+        if (normalizedMessage.includes('slug')) {
           setSlugError(backendMessage);
           setIsSlugModalOpen(true);
         }
         toast.error(backendMessage, {
           id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
         });
-        if (normalizedMessage.includes("limite")) {
-          navigate("/dashboard/bio");
+        if (normalizedMessage.includes('limite')) {
+          navigate('/dashboard/bio');
         }
       } else {
         const errorMessage =
-          backendMessage || error.message || "Erro ao criar perfil";
+          backendMessage || error.message || 'Erro ao criar perfil';
         toast.error(errorMessage, {
           id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
         });
@@ -196,12 +196,12 @@ export function DeveloperCreateProfilePage() {
   const handleConfirmSlug = () => {
     const trimmed = nameInput.trim();
     if (!trimmed) {
-      setSlugError("Informe seu nome.");
+      setSlugError('Informe seu nome.');
       return;
     }
     if (!slugPreview || !SLUG_REGEX.test(slugPreview)) {
       setSlugError(
-        "Use 3-60 caracteres, apenas letras minúsculas, números e hifens.",
+        'Use 3-60 caracteres, apenas letras minúsculas, números e hifens.',
       );
       return;
     }
@@ -236,8 +236,8 @@ export function DeveloperCreateProfilePage() {
                   onClick={() => setSelectedTemplate(template.id)}
                   className={`group relative overflow-hidden rounded-3xl border bg-white shadow-sm transition-all hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-200 ${
                     selectedTemplate === template.id
-                      ? "border-blue-500 ring-2 ring-blue-200"
-                      : "border-slate-200"
+                      ? 'border-blue-500 ring-2 ring-blue-200'
+                      : 'border-slate-200'
                   }`}
                 >
                   {previewImage && (
@@ -332,7 +332,7 @@ export function DeveloperCreateProfilePage() {
                 bio4.dev/seunome
               </p>
               <p className={`text-sm ${landingTheme.textSecondary}`}>
-                Seu link sera:{" "}
+                Seu link sera:{' '}
                 <span className="font-semibold text-slate-900">
                   bio4.dev/{slugPreview || 'seunome'}
                 </span>

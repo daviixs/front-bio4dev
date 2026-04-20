@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Plus, X, GripVertical } from "lucide-react";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Plus, X, GripVertical } from 'lucide-react';
 
 interface ListItem {
   label: string;
@@ -39,7 +39,7 @@ export function ListEditor({
   }, [value, open]);
 
   const handleAdd = () => {
-    setItems([...items, { label: "", url: "", subtext: "" }]);
+    setItems([...items, { label: '', url: '', subtext: '' }]);
   };
 
   const handleRemove = (index: number) => {
@@ -49,7 +49,7 @@ export function ListEditor({
   const handleChange = (
     index: number,
     field: keyof ListItem,
-    value: string
+    value: string,
   ) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
@@ -92,12 +92,12 @@ export function ListEditor({
                 <Input
                   placeholder="Título do link"
                   value={item.label}
-                  onChange={(e) => handleChange(index, "label", e.target.value)}
+                  onChange={(e) => handleChange(index, 'label', e.target.value)}
                 />
                 <Input
                   placeholder="https://exemplo.com"
                   value={item.url}
-                  onChange={(e) => handleChange(index, "url", e.target.value)}
+                  onChange={(e) => handleChange(index, 'url', e.target.value)}
                 />
                 <Input
                   placeholder="Texto secundário (opcional)"

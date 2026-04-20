@@ -1,5 +1,5 @@
-import React from "react";
-import { ProfileData } from "@/temas-lintree/types";
+import React from 'react';
+import { ProfileData } from '@/temas-lintree/types';
 import {
   Music,
   Calendar,
@@ -26,12 +26,12 @@ import {
   Pencil,
   Edit3,
   Trash2,
-} from "lucide-react";
+} from 'lucide-react';
 import {
   buildRenderableSocialLinks,
   normalizeSocialPlatform,
-} from "@/lib/socialIcons";
-import { SocialPills } from "@/components/shared/SocialPills";
+} from '@/lib/socialIcons';
+import { SocialPills } from '@/components/shared/SocialPills';
 
 interface DynamicThemeRendererProps {
   profileData: ProfileData;
@@ -44,7 +44,7 @@ interface DynamicThemeRendererProps {
 const EditButton: React.FC<{
   onClick: () => void;
   tooltip?: string;
-}> = ({ onClick, tooltip = "Editar" }) => (
+}> = ({ onClick, tooltip = 'Editar' }) => (
   <button
     onClick={(e) => {
       e.preventDefault();
@@ -60,17 +60,17 @@ const EditButton: React.FC<{
 );
 
 const SHARED_SOCIAL_EDIT_BUTTON_CLASS =
-  "absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all";
+  'absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all';
 
 interface ThemedSocialPillsProps {
-  socials: ProfileData["socials"];
+  socials: ProfileData['socials'];
   editMode: boolean;
   onEditSocial?: (
-    social: ProfileData["socials"][number],
-    index: number
+    social: ProfileData['socials'][number],
+    index: number,
   ) => void;
   className?: string;
-  surface?: "light" | "dark";
+  surface?: 'light' | 'dark';
   itemClassName?: string;
   iconContainerClassName?: string;
   labelClassName?: string;
@@ -82,7 +82,7 @@ const ThemedSocialPills: React.FC<ThemedSocialPillsProps> = ({
   editMode,
   onEditSocial,
   className,
-  surface = "dark",
+  surface = 'dark',
   itemClassName,
   iconContainerClassName,
   labelClassName,
@@ -105,7 +105,7 @@ const ThemedSocialPills: React.FC<ThemedSocialPillsProps> = ({
         const sourceIndex = socials.findIndex(
           (social) =>
             normalizeSocialPlatform(social.platform) === item.platform &&
-            social.url === item.url
+            social.url === item.url,
         );
 
         if (sourceIndex === -1 || !onEditSocial) return;
@@ -129,7 +129,7 @@ export function DynamicThemeRenderer({
     field: string,
     type: string,
     label: string,
-    value: any
+    value: any,
   ) => {
     if (onEdit) {
       onEdit(field, type, label, value);
@@ -137,7 +137,7 @@ export function DynamicThemeRenderer({
   };
 
   // Render Activist Theme
-  if (themeId === "activist") {
+  if (themeId === 'activist') {
     return (
       <div className="min-h-screen w-full bg-white text-slate-800 flex flex-col items-center p-8">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -151,7 +151,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -165,7 +165,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -178,7 +178,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -189,7 +189,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-8 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition-colors shadow-md"
               >
@@ -227,9 +227,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -247,7 +247,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-slate-200 bg-white text-slate-500 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
             iconContainerClassName="bg-emerald-50"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>
@@ -256,7 +256,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Artist Theme
-  if (themeId === "artist") {
+  if (themeId === 'artist') {
     return (
       <div className="min-h-screen w-full bg-zinc-900 text-zinc-100 flex flex-col items-center p-8 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
@@ -272,7 +272,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -286,7 +286,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -301,7 +301,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -312,7 +312,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-10 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-colors text-sm"
               >
@@ -349,9 +349,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -368,7 +368,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-zinc-800 bg-zinc-900/70 text-zinc-300 hover:border-purple-500/40 hover:bg-zinc-800 hover:text-white"
             iconContainerClassName="bg-white/5 text-purple-300"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>
@@ -377,7 +377,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Athlete Theme
-  if (themeId === "athlete") {
+  if (themeId === 'athlete') {
     return (
       <div className="min-h-screen w-full bg-slate-950 text-white flex flex-col items-center p-8">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -391,7 +391,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -405,7 +405,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -418,7 +418,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -429,7 +429,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-8 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors text-sm"
               >
@@ -464,9 +464,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -483,7 +483,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-slate-800 bg-slate-900 text-slate-200 hover:border-blue-500/40 hover:bg-slate-900 hover:text-blue-300"
             iconContainerClassName="bg-blue-500/10 text-blue-300"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
 
@@ -496,7 +496,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render AltMusic Theme
-  if (themeId === "altmusic") {
+  if (themeId === 'altmusic') {
     return (
       <div className="min-h-screen w-full bg-zinc-950 text-zinc-100 flex flex-col items-center p-8">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -512,7 +512,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -526,7 +526,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -539,7 +539,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -550,7 +550,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-8 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg shadow-md hover:bg-zinc-200 transition-colors text-sm font-bold"
               >
@@ -570,16 +570,16 @@ export function DynamicThemeRenderer({
                   rel="noopener noreferrer"
                   className={`w-full p-5 flex items-center justify-between transition-all ${
                     i === 0
-                      ? "bg-white text-black hover:bg-zinc-200"
-                      : "bg-zinc-900 border border-zinc-800 text-white hover:bg-zinc-800"
+                      ? 'bg-white text-black hover:bg-zinc-200'
+                      : 'bg-zinc-900 border border-zinc-800 text-white hover:bg-zinc-800'
                   }`}
                   data-edit-key={`buttons[${i}]`}
                 >
                   <span
                     className={`${
                       i === 0
-                        ? "font-black uppercase text-sm italic"
-                        : "font-bold uppercase text-xs tracking-widest"
+                        ? 'font-black uppercase text-sm italic'
+                        : 'font-bold uppercase text-xs tracking-widest'
                     }`}
                   >
                     {button.label}
@@ -595,9 +595,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -618,7 +618,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Architect Theme
-  if (themeId === "architect") {
+  if (themeId === 'architect') {
     return (
       <div className="min-h-screen w-full bg-white text-black flex flex-col items-center p-10 font-sans tracking-tight">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -632,7 +632,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -646,7 +646,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -657,7 +657,7 @@ export function DynamicThemeRenderer({
             <p className="text-sm opacity-75 text-center mt-2">{bio}</p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -668,7 +668,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-14 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-none shadow-md hover:bg-zinc-800 transition-colors text-sm"
               >
@@ -697,9 +697,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -716,7 +716,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-zinc-700 bg-transparent text-zinc-300 opacity-70 grayscale hover:border-white/20 hover:bg-white/[0.03] hover:opacity-100 hover:grayscale-0"
             iconContainerClassName="bg-white/5"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>
@@ -725,7 +725,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Business Theme
-  if (themeId === "business") {
+  if (themeId === 'business') {
     return (
       <div className="min-h-screen w-full bg-[#FCF8F4] text-[#4A2C2A] flex flex-col items-center p-8">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -739,7 +739,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -753,7 +753,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -779,7 +779,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -790,7 +790,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-8 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-[#7B3F00] text-white rounded-2xl shadow-md hover:bg-[#5A2E00] transition-colors text-sm"
               >
@@ -810,8 +810,8 @@ export function DynamicThemeRenderer({
                   rel="noopener noreferrer"
                   className={`w-full p-4 rounded-2xl flex items-center ${
                     i === 0
-                      ? "bg-[#7B3F00] text-white shadow-lg shadow-orange-900/20 justify-between"
-                      : "bg-white border border-[#E8D9CE] hover:bg-[#F3E6DB] gap-3"
+                      ? 'bg-[#7B3F00] text-white shadow-lg shadow-orange-900/20 justify-between'
+                      : 'bg-white border border-[#E8D9CE] hover:bg-[#F3E6DB] gap-3'
                   } transition-colors`}
                   data-edit-key={`buttons[${i}]`}
                 >
@@ -839,9 +839,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -859,7 +859,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-[#D8C0A7]/40 bg-[#F8EFE4] text-[#7B3F00] hover:border-[#D8C0A7] hover:bg-[#FFF7ED]"
             iconContainerClassName="bg-[#7B3F00]/10"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>
@@ -868,7 +868,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Creator Theme
-  if (themeId === "creator") {
+  if (themeId === 'creator') {
     return (
       <div className="min-h-screen w-full bg-slate-50 text-slate-900 flex flex-col items-center p-8">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -884,7 +884,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -894,14 +894,14 @@ export function DynamicThemeRenderer({
           {/* Name - Editable */}
           <div className="relative group">
             <h1 className="text-xl font-bold flex items-center gap-2">
-              {name}{" "}
+              {name}{' '}
               <span className="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full uppercase">
                 Pro
               </span>
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -914,7 +914,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -925,7 +925,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-8 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700 transition-colors text-sm"
               >
@@ -965,9 +965,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -986,7 +986,7 @@ export function DynamicThemeRenderer({
             iconContainerClassName="bg-indigo-50"
             iconSize={20}
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>
@@ -995,7 +995,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render EcoFashion Theme
-  if (themeId === "ecofashion") {
+  if (themeId === 'ecofashion') {
     return (
       <div className="min-h-screen w-full bg-[#F4F1EA] text-[#4A3F35] flex flex-col items-center p-8 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/recycled-paper.png')]"></div>
@@ -1013,7 +1013,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -1027,7 +1027,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -1047,7 +1047,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -1058,7 +1058,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-10 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-[#8B7E66] text-white rounded-3xl shadow-md hover:bg-[#6B5E46] transition-colors text-sm"
               >
@@ -1104,9 +1104,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -1123,7 +1123,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-[#333] bg-[#1a1a1a] text-[#d4d4d4] opacity-70 hover:border-[#555] hover:bg-[#202020] hover:opacity-100"
             iconContainerClassName="bg-white/5"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>
@@ -1132,7 +1132,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Gourmet Theme
-  if (themeId === "gourmet") {
+  if (themeId === 'gourmet') {
     return (
       <div className="min-h-screen w-full bg-[#1A1A1A] text-[#E5D3B3] flex flex-col items-center p-8">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -1146,7 +1146,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -1158,7 +1158,7 @@ export function DynamicThemeRenderer({
             <h1 className="text-2xl font-serif font-bold">{name}</h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -1171,7 +1171,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -1182,7 +1182,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-10 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-[#C5A059] text-black rounded-xl shadow-md hover:bg-[#D5B069] transition-colors text-sm font-bold"
               >
@@ -1202,8 +1202,8 @@ export function DynamicThemeRenderer({
                   rel="noopener noreferrer"
                   className={`w-full p-4 rounded-xl flex items-center gap-3 transition-colors ${
                     i === 0
-                      ? "bg-[#C5A059] text-black font-bold"
-                      : "bg-white/5 border border-white/10 hover:bg-white/10"
+                      ? 'bg-[#C5A059] text-black font-bold'
+                      : 'bg-white/5 border border-white/10 hover:bg-white/10'
                   }`}
                   data-edit-key={`buttons[${i}]`}
                 >
@@ -1232,9 +1232,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -1251,7 +1251,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-white/10 bg-white/[0.03] text-white/70 opacity-80 hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
             iconContainerClassName="bg-white/8"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>
@@ -1260,7 +1260,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Innovation Theme
-  if (themeId === "innovation") {
+  if (themeId === 'innovation') {
     return (
       <div className="min-h-screen w-full bg-[#050505] text-[#00F0FF] flex flex-col items-center p-8 font-mono">
         <div className="w-full max-w-md flex flex-col items-center">
@@ -1275,7 +1275,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -1289,7 +1289,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -1302,7 +1302,7 @@ export function DynamicThemeRenderer({
             </p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -1313,7 +1313,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-10 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-[#00F0FF] text-black rounded-none shadow-md hover:bg-[#00D0DF] transition-colors text-sm font-bold uppercase"
               >
@@ -1333,8 +1333,8 @@ export function DynamicThemeRenderer({
                   rel="noopener noreferrer"
                   className={`w-full p-4 flex items-center justify-between transition-all ${
                     i === buttons.length - 1
-                      ? "bg-[#00F0FF] text-black hover:scale-[1.02]"
-                      : "bg-transparent border border-[#00F0FF]/40 hover:border-[#00F0FF] hover:bg-[#00F0FF]/10"
+                      ? 'bg-[#00F0FF] text-black hover:scale-[1.02]'
+                      : 'bg-transparent border border-[#00F0FF]/40 hover:border-[#00F0FF] hover:bg-[#00F0FF]/10'
                   }`}
                   data-edit-key={`buttons[${i}]`}
                 >
@@ -1354,9 +1354,9 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
-                        button
+                        button,
                       )
                     }
                     tooltip="Editar botão"
@@ -1373,7 +1373,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-[#00F0FF]/15 bg-[#001319]/40 text-[#9BE7EF] hover:border-[#00F0FF]/35 hover:bg-[#001319]/70 hover:text-[#00F0FF]"
             iconContainerClassName="bg-[#00F0FF]/10 text-[#00F0FF]"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
 
@@ -1386,7 +1386,7 @@ export function DynamicThemeRenderer({
   }
 
   // Render Streamer Theme
-  if (themeId === "streamer") {
+  if (themeId === 'streamer') {
     return (
       <div className="min-h-screen w-full bg-[#0B021C] text-white flex flex-col items-center p-8 overflow-hidden relative">
         <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600/10 blur-[100px]"></div>
@@ -1403,7 +1403,7 @@ export function DynamicThemeRenderer({
             {editMode && (
               <EditButton
                 onClick={() =>
-                  handleEdit("photoUrl", "image", "Foto de Perfil", photoUrl)
+                  handleEdit('photoUrl', 'image', 'Foto de Perfil', photoUrl)
                 }
                 tooltip="Editar foto"
               />
@@ -1417,7 +1417,7 @@ export function DynamicThemeRenderer({
             </h1>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("name", "text", "Nome", name)}
+                onClick={() => handleEdit('name', 'text', 'Nome', name)}
                 tooltip="Editar nome"
               />
             )}
@@ -1428,7 +1428,7 @@ export function DynamicThemeRenderer({
             <p className="text-sm text-slate-400 text-center mt-2">{bio}</p>
             {editMode && (
               <EditButton
-                onClick={() => handleEdit("bio", "textarea", "Bio", bio)}
+                onClick={() => handleEdit('bio', 'textarea', 'Bio', bio)}
                 tooltip="Editar bio"
               />
             )}
@@ -1439,7 +1439,7 @@ export function DynamicThemeRenderer({
             <div className="w-full flex justify-center gap-2 mt-8 mb-2">
               <button
                 onClick={() =>
-                  handleEdit("buttons", "list", "Botões/Links", buttons)
+                  handleEdit('buttons', 'list', 'Botões/Links', buttons)
                 }
                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-xl shadow-md hover:bg-purple-700 transition-colors text-sm"
               >
@@ -1477,7 +1477,7 @@ export function DynamicThemeRenderer({
                     onClick={() =>
                       handleEdit(
                         `buttons[${i}]`,
-                        "link",
+                        'link',
                         `Botão ${i + 1}`,
                         button,
                       )
@@ -1496,7 +1496,7 @@ export function DynamicThemeRenderer({
             itemClassName="border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10"
             iconContainerClassName="bg-white/10"
             onEditSocial={(social, index) =>
-              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+              handleEdit(`socials[${index}]`, 'social', 'Rede Social', social)
             }
           />
         </div>

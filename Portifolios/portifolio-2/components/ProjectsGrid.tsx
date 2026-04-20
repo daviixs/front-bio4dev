@@ -1,7 +1,7 @@
-import React from "react";
-import { Project } from "../types";
-import ProjectCard from "./ProjectCard";
-import { SectionTitle } from "./ui";
+import React from 'react';
+import { Project } from '../types';
+import ProjectCard from './ProjectCard';
+import { SectionTitle } from './ui';
 
 interface ProjectsGridProps {
   projects: Project[];
@@ -23,9 +23,7 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, onEdit }) => {
   return (
     <section className="w-full">
       <div className="px-3 sm:px-4 lg:px-1">
-        <SectionTitle className="mb-2 sm:mb-3">
-          Featured Projects
-        </SectionTitle>
+        <SectionTitle className="mb-2 sm:mb-3">Featured Projects</SectionTitle>
         <p className="text-sm text-gray-400 mb-4 sm:mb-6">
           Projects that best represent your work — optimized for every screen
           size.

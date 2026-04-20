@@ -1,7 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Reveal } from "./Reveal";
-import { ShieldCheck, ArrowRight, WhatsappLogo, EnvelopeSimple } from "@phosphor-icons/react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Reveal } from './Reveal';
+import {
+  ShieldCheck,
+  ArrowRight,
+  WhatsappLogo,
+  EnvelopeSimple,
+} from '@phosphor-icons/react';
 
 export function CTASection() {
   return (
@@ -16,7 +21,8 @@ export function CTASection() {
               Publique hoje, teste o CTA amanhã.
             </h2>
             <p className="mt-3 text-base text-[#d0c2b4]">
-              Onboarding guiado, templates já otimizados e mensagem pronta para contato. Sua bio fica viva e mensurável.
+              Onboarding guiado, templates já otimizados e mensagem pronta para
+              contato. Sua bio fica viva e mensurável.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
@@ -29,7 +35,11 @@ export function CTASection() {
                 </span>
               </Link>
               <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-[#f5ede4]">
-                <ShieldCheck size={18} weight="fill" className="text-[#c3986b]" />
+                <ShieldCheck
+                  size={18}
+                  weight="fill"
+                  className="text-[#c3986b]"
+                />
                 CTA principal: WhatsApp ou Email
               </div>
             </div>
@@ -45,27 +55,42 @@ export function CTASection() {
                     CTA quente
                     <WhatsappLogo size={16} weight="fill" />
                   </div>
-                  <p className="mt-2 text-lg font-semibold text-slate-900">Mensagem pronta para WhatsApp</p>
-                  <p className="text-sm text-slate-600">Controle o texto e responda mais rápido.</p>
+                  <p className="mt-2 text-lg font-semibold text-slate-900">
+                    Mensagem pronta para WhatsApp
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    Controle o texto e responda mais rápido.
+                  </p>
                 </div>
                 <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-[0_24px_50px_-34px_rgba(15,23,42,0.4)]">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-slate-500">
                     Alternativa
                     <EnvelopeSimple size={16} weight="bold" />
                   </div>
-                  <p className="mt-2 text-lg font-semibold text-slate-900">Mailto com assunto definido</p>
-                  <p className="text-sm text-slate-600">Para quem prefere email estruturado.</p>
+                  <p className="mt-2 text-lg font-semibold text-slate-900">
+                    Mailto com assunto definido
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    Para quem prefere email estruturado.
+                  </p>
                 </div>
                 <div className="sm:col-span-2 rounded-2xl border border-slate-100 bg-white p-5">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Pronto para agir</p>
-                      <p className="text-lg font-semibold text-slate-900">CTA fixo visível no scroll mobile</p>
-                      <p className="text-sm text-slate-600">Sem h-screen: usamos min-h-[100dvh] para estabilidade no iOS.</p>
+                      <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                        Pronto para agir
+                      </p>
+                      <p className="text-lg font-semibold text-slate-900">
+                        CTA fixo visível no scroll mobile
+                      </p>
+                      <p className="text-sm text-slate-600">
+                        Sem h-screen: usamos min-h-[100dvh] para estabilidade no
+                        iOS.
+                      </p>
                     </div>
                     <Link
                       to="/profile/type"
-                    className="group inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-4 py-2 text-sm font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
+                      className="group inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-4 py-2 text-sm font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
                     >
                       Montar bio
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px]">

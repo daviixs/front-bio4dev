@@ -1,8 +1,8 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { useProfileLoader } from "@/hooks/useProfileLoader";
-import { mapProfileCompleteToInfluencerData } from "./mappers";
-import { TemplateRenderer } from "./TemplateRenderer";
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { useProfileLoader } from '@/hooks/useProfileLoader';
+import { mapProfileCompleteToInfluencerData } from './mappers';
+import { TemplateRenderer } from './TemplateRenderer';
 import type { InfluencerTemplateData } from './types';
 import { resolveThemeId, type InfluencerTemplateId } from './templateMap';
 import { getInfluencerThemePreset } from './themePresets';

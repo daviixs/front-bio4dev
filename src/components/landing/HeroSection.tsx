@@ -1,10 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, RocketLaunch, UsersThree } from "@phosphor-icons/react";
-import { motion } from "framer-motion";
-import { sectionFade } from "./animations";
-import mockupImage from "@/landingpage-images/mockup-portrait.png";
-import { Reveal } from "./Reveal";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, RocketLaunch, UsersThree } from '@phosphor-icons/react';
+import { motion } from 'framer-motion';
+import { sectionFade } from './animations';
+import mockupImage from '@/landingpage-images/mockup-portrait.png';
+import { Reveal } from './Reveal';
 
 export function HeroSection() {
   return (
@@ -20,13 +20,16 @@ export function HeroSection() {
         <div className="w-full max-w-3xl">
           <Reveal delay={100}>
             <h1 className="mt-6 text-4xl font-semibold leading-tight text-[#ece5d9] sm:text-5xl lg:text-[54px] lg:leading-[1.05]">
-              Tudo o que você precisa para construir produtos épicos com IA em um só lugar.
+              Tudo o que você precisa para construir produtos épicos com IA em
+              um só lugar.
             </h1>
           </Reveal>
 
           <Reveal delay={180}>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#d0c2b4]">
-              O melhor ai app builder do mercado, aulas com didática inigualável e a comunidade mais séria de AI builders do Brasil - tudo em uma só assinatura.
+              O melhor ai app builder do mercado, aulas com didática inigualável
+              e a comunidade mais séria de AI builders do Brasil - tudo em uma
+              só assinatura.
             </p>
           </Reveal>
 
@@ -53,10 +56,18 @@ export function HeroSection() {
                 <div className="relative flex flex-col gap-4">
                   <div className="flex items-center justify-between rounded-2xl border border-[#c3986b]/25 bg-white/70 px-4 py-3 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.35)]">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Stack AI Builder</p>
-                      <p className="text-lg font-semibold text-slate-800">Templates, mídia e CTA quente</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+                        Stack AI Builder
+                      </p>
+                      <p className="text-lg font-semibold text-slate-800">
+                        Templates, mídia e CTA quente
+                      </p>
                     </div>
-                    <UsersThree size={28} weight="fill" className="text-[#c3986b]" />
+                    <UsersThree
+                      size={28}
+                      weight="fill"
+                      className="text-[#c3986b]"
+                    />
                   </div>
 
                   <div className="relative flex items-center justify-center">
@@ -78,18 +89,21 @@ export function HeroSection() {
       <Reveal delay={260}>
         <div className="mx-auto mt-6 flex w-full max-w-6xl flex-col gap-4 px-6 pb-6 text-center">
           <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#c3986b]">
-            Confiado por mais de 5.000 builders de empresas que constroem softwares de ponta
+            Confiado por mais de 5.000 builders de empresas que constroem
+            softwares de ponta
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-            {["itau", "mercadolivre", "brex", "g4", "vtex", "stone"].map((name, idx) => (
-              <div
-                key={name}
-                className="flex items-center justify-center rounded-2xl border border-[#c3986b]/25 bg-[#2c2621] px-4 py-3 text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:border-[#c3986b]/50"
-                style={{ transitionDelay: `${idx * 50}ms` }}
-              >
-                <LogoMark brand={name} />
-              </div>
-            ))}
+            {['itau', 'mercadolivre', 'brex', 'g4', 'vtex', 'stone'].map(
+              (name, idx) => (
+                <div
+                  key={name}
+                  className="flex items-center justify-center rounded-2xl border border-[#c3986b]/25 bg-[#2c2621] px-4 py-3 text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:border-[#c3986b]/50"
+                  style={{ transitionDelay: `${idx * 50}ms` }}
+                >
+                  <LogoMark brand={name} />
+                </div>
+              ),
+            )}
           </div>
         </div>
       </Reveal>
@@ -111,9 +125,9 @@ export function HeroSection() {
 }
 
 function LogoMark({ brand }: { brand: string }) {
-  const common = "h-5 w-auto fill-current";
+  const common = 'h-5 w-auto fill-current';
   switch (brand) {
-    case "itau":
+    case 'itau':
       return (
         <svg viewBox="0 0 64 64" className={common} aria-label="Itaú">
           <rect x="6" y="6" width="52" height="52" rx="12" ry="12" />
@@ -122,14 +136,20 @@ function LogoMark({ brand }: { brand: string }) {
           </text>
         </svg>
       );
-    case "mercadolivre":
+    case 'mercadolivre':
       return (
         <svg viewBox="0 0 64 32" className={common} aria-label="Mercado Livre">
           <path d="M4 16c0-6.6 5.4-12 12-12h16c6.6 0 12 5.4 12 12s-5.4 12-12 12H16C9.4 28 4 22.6 4 16Z" />
-          <path d="M16 14c2-2 6-2 8 0m8 0c2-2 6-2 8 0" stroke="#2c2621" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <path
+            d="M16 14c2-2 6-2 8 0m8 0c2-2 6-2 8 0"
+            stroke="#2c2621"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+          />
         </svg>
       );
-    case "brex":
+    case 'brex':
       return (
         <svg viewBox="0 0 64 24" className={common} aria-label="Brex">
           <path d="M6 20V4h8c3 0 5 2 5 4.5S17 13 14 13h-5" />
@@ -138,13 +158,15 @@ function LogoMark({ brand }: { brand: string }) {
           <path d="M42 12h6" />
         </svg>
       );
-    case "g4":
+    case 'g4':
       return (
         <svg viewBox="0 0 48 24" className={common} aria-label="G4 Educação">
-          <text x="2" y="17" fontSize="16" fontWeight="700" letterSpacing="1">G4</text>
+          <text x="2" y="17" fontSize="16" fontWeight="700" letterSpacing="1">
+            G4
+          </text>
         </svg>
       );
-    case "vtex":
+    case 'vtex':
       return (
         <svg viewBox="0 0 48 24" className={common} aria-label="VTEX">
           <path d="M4 4h8l4 16h-6zM18 4h6l-4 16h-6zM28 4h6l-4 16h-6z" />

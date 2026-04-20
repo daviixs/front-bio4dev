@@ -674,7 +674,11 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
                     : ''
                 }`}
               >
-                <TechIcon icon={tech.icon} size={22} className="text-[#695f5c]" />
+                <TechIcon
+                  icon={tech.icon}
+                  size={22}
+                  className="text-[#695f5c]"
+                />
                 <span className="text-sm text-[#4a413e] text-left">
                   {tech.name}
                 </span>
@@ -697,7 +701,10 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
             >
               Cancelar
             </Button>
-            <Button onClick={handleConfirm} className={template01Theme.primaryButton}>
+            <Button
+              onClick={handleConfirm}
+              className={template01Theme.primaryButton}
+            >
               Adicionar
             </Button>
           </div>
@@ -1420,7 +1427,10 @@ export function EditablePortfolio1({
     if (!localProfile.id) return;
 
     try {
-      const normalizedGithub = normalizeExternalUrl(footerForm.github, 'GitHub');
+      const normalizedGithub = normalizeExternalUrl(
+        footerForm.github,
+        'GitHub',
+      );
       if (normalizedGithub.error) {
         showPortfolioEditorError(normalizedGithub.error);
         return;
@@ -1451,7 +1461,10 @@ export function EditablePortfolio1({
 
       let savedFooter: ProfileFooter | undefined;
       if (localProfile.footer?.id) {
-        savedFooter = await footerApi.update(localProfile.footer.id, basePayload);
+        savedFooter = await footerApi.update(
+          localProfile.footer.id,
+          basePayload,
+        );
       } else {
         savedFooter = await footerApi.create({
           profileId: localProfile.id,

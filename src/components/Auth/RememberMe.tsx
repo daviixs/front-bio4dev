@@ -5,9 +5,13 @@ interface RememberMeProps {
   onChange?: (checked: boolean) => void;
 }
 
-export function RememberMe({ checked: controlledChecked, onChange }: RememberMeProps) {
+export function RememberMe({
+  checked: controlledChecked,
+  onChange,
+}: RememberMeProps) {
   const [internalChecked, setInternalChecked] = useState(false);
-  const checked = controlledChecked !== undefined ? controlledChecked : internalChecked;
+  const checked =
+    controlledChecked !== undefined ? controlledChecked : internalChecked;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newChecked = e.target.checked;
@@ -29,7 +33,8 @@ export function RememberMe({ checked: controlledChecked, onChange }: RememberMeP
           aria-label="Remember me"
         />
         {/* Switch Track */}
-        <div className={`
+        <div
+          className={`
           relative w-11 h-6 rounded-full transition-colors duration-200
           ${checked ? 'bg-blue-600' : 'bg-gray-300'}
           peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 peer-focus:ring-offset-2

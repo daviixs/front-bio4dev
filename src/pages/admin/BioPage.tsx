@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +19,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   Plus,
   Edit2,
@@ -30,13 +30,13 @@ import {
   Eye,
   CheckCircle,
   XCircle,
-} from "lucide-react";
-import { cn } from "@/components/ui/utils";
-import { toast } from "sonner";
-import { useAuthStore } from "@/stores/authStore";
-import { profileApi } from "@/lib/api";
-import { PageHeader } from "@/components/structure/PageHeader";
-import { MetricCard } from "@/components/analytics/MetricCard";
+} from 'lucide-react';
+import { cn } from '@/components/ui/utils';
+import { toast } from 'sonner';
+import { useAuthStore } from '@/stores/authStore';
+import { profileApi } from '@/lib/api';
+import { PageHeader } from '@/components/structure/PageHeader';
+import { MetricCard } from '@/components/analytics/MetricCard';
 
 interface Bio {
   id: string;
@@ -50,10 +50,10 @@ interface Bio {
   slug?: string;
 }
 
-const BIO_PAGE_LOAD_TOAST_ID = "bio-page-load-toast";
-const BIO_PAGE_PREVIEW_TOAST_ID = "bio-page-preview-toast";
-const BIO_PAGE_PUBLISH_TOAST_ID = "bio-page-publish-toast";
-const BIO_PAGE_DELETE_TOAST_ID = "bio-page-delete-toast";
+const BIO_PAGE_LOAD_TOAST_ID = 'bio-page-load-toast';
+const BIO_PAGE_PREVIEW_TOAST_ID = 'bio-page-preview-toast';
+const BIO_PAGE_PUBLISH_TOAST_ID = 'bio-page-publish-toast';
+const BIO_PAGE_DELETE_TOAST_ID = 'bio-page-delete-toast';
 
 export default function BioPage() {
   const navigate = useNavigate();
@@ -84,11 +84,11 @@ export default function BioPage() {
         // Mapear para o formato esperado
         const mappedBios = userBios.map((profile: any) => ({
           id: profile.id,
-          name: profile.username || "Sem nome",
+          name: profile.username || 'Sem nome',
           username: profile.username,
           slug: profile.slug,
-          template: profile.templateType || "template_01",
-          status: profile.published ? "Published" : "Draft",
+          template: profile.templateType || 'template_01',
+          status: profile.published ? 'Published' : 'Draft',
           published: !!profile.published,
           lastUpdated: new Date(
             profile.updatedAt || profile.createdAt,
@@ -98,8 +98,8 @@ export default function BioPage() {
 
         setBios(mappedBios);
       } catch (error) {
-        console.error("Erro ao buscar bios:", error);
-        toast.error("Erro ao carregar seus portfólios", {
+        console.error('Erro ao buscar bios:', error);
+        toast.error('Erro ao carregar seus portfólios', {
           id: BIO_PAGE_LOAD_TOAST_ID,
         });
       } finally {
@@ -122,7 +122,7 @@ export default function BioPage() {
 
   const handlePreviewClick = async (bio: Bio) => {
     if (!bio.slug) {
-      toast.error("Slug não encontrado para este perfil", {
+      toast.error('Slug não encontrado para este perfil', {
         id: BIO_PAGE_PREVIEW_TOAST_ID,
       });
       return;
@@ -144,30 +144,30 @@ export default function BioPage() {
 
       // Abre preview em nova aba com token (usa slug que é o identificador da rota)
       const previewUrl = `/${bio.slug}?preview=${token}`;
-      window.open(previewUrl, "_blank");
+      window.open(previewUrl, '_blank');
 
       toast.success(`Preview aberto! Token expira em ${hours}h`, {
         id: BIO_PAGE_PREVIEW_TOAST_ID,
-        description: "O link funciona mesmo com o perfil não publicado",
+        description: 'O link funciona mesmo com o perfil não publicado',
       });
     } catch (error: any) {
-      console.error("Erro ao gerar preview:", error);
+      console.error('Erro ao gerar preview:', error);
 
       // Se falhar, mostrar erro específico
       if (error.response?.status === 404) {
-        toast.error("Endpoint de preview não encontrado no backend", {
+        toast.error('Endpoint de preview não encontrado no backend', {
           id: BIO_PAGE_PREVIEW_TOAST_ID,
         });
       } else if (
         error.response?.status === 401 ||
         error.response?.status === 403
       ) {
-        toast.error("Sem permissão para gerar preview", {
+        toast.error('Sem permissão para gerar preview', {
           id: BIO_PAGE_PREVIEW_TOAST_ID,
         });
       } else {
         toast.error(
-          "Erro ao gerar token de preview. Verifique se o backend está rodando.",
+          'Erro ao gerar token de preview. Verifique se o backend está rodando.',
           { id: BIO_PAGE_PREVIEW_TOAST_ID },
         );
       }
@@ -191,19 +191,19 @@ export default function BioPage() {
             ? {
                 ...b,
                 published: newStatus,
-                status: newStatus ? "Published" : "Draft",
+                status: newStatus ? 'Published' : 'Draft',
               }
             : b,
         ),
       );
 
       toast.success(
-        newStatus ? "Página publicada com sucesso!" : "Página desativada",
+        newStatus ? 'Página publicada com sucesso!' : 'Página desativada',
         { id: BIO_PAGE_PUBLISH_TOAST_ID },
       );
     } catch (error: any) {
-      console.error("Erro ao alterar status:", error);
-      toast.error("Erro ao alterar status da página", {
+      console.error('Erro ao alterar status:', error);
+      toast.error('Erro ao alterar status da página', {
         id: BIO_PAGE_PUBLISH_TOAST_ID,
       });
     } finally {
@@ -220,8 +220,8 @@ export default function BioPage() {
           id: BIO_PAGE_DELETE_TOAST_ID,
         });
       } catch (error: any) {
-        console.error("Erro ao deletar bio:", error);
-        toast.error(error.response?.data?.message || "Erro ao deletar bio", {
+        console.error('Erro ao deletar bio:', error);
+        toast.error(error.response?.data?.message || 'Erro ao deletar bio', {
           id: BIO_PAGE_DELETE_TOAST_ID,
         });
       } finally {
@@ -247,7 +247,7 @@ export default function BioPage() {
         actions={
           <Button
             className="gap-2 w-full sm:w-auto"
-            onClick={() => navigate("/profile/type")}
+            onClick={() => navigate('/profile/type')}
           >
             <Plus className="h-4 w-4" />
             Create New Bio
@@ -256,9 +256,17 @@ export default function BioPage() {
       />
 
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        <MetricCard title="Total Bios" value={totalBios} helper="Portfólios criados" />
+        <MetricCard
+          title="Total Bios"
+          value={totalBios}
+          helper="Portfólios criados"
+        />
         <MetricCard title="Publicados" value={publishedCount} helper="Ativos" />
-        <MetricCard title="Rascunhos" value={draftCount} helper="Prontos para publicar" />
+        <MetricCard
+          title="Rascunhos"
+          value={draftCount}
+          helper="Prontos para publicar"
+        />
       </div>
 
       <div className="rounded-xl border bg-card shadow-sm overflow-hidden sm:overflow-visible">
@@ -302,10 +310,10 @@ export default function BioPage() {
                     <Badge
                       variant="outline"
                       className={cn(
-                        "font-normal",
-                        bio.status === "Published"
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          : "bg-slate-50 text-slate-600 border-slate-200",
+                        'font-normal',
+                        bio.status === 'Published'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-slate-50 text-slate-600 border-slate-200',
                       )}
                     >
                       {bio.status}
@@ -316,7 +324,7 @@ export default function BioPage() {
                     onClick={() => {
                       const base = window.location.origin;
                       const path = bio.slug ? `/${bio.slug}` : `/${bio.url}`;
-                      window.open(`${base}${path}`, "_blank");
+                      window.open(`${base}${path}`, '_blank');
                     }}
                     className="w-full text-left text-sm text-blue-700 hover:text-blue-800 flex items-center gap-2"
                     aria-label={`Abrir ${bio.url} em nova aba`}
@@ -346,10 +354,10 @@ export default function BioPage() {
                       onClick={() => handleTogglePublish(bio)}
                       disabled={publishLoading === bio.id}
                       className={cn(
-                        "h-11 w-full justify-center",
+                        'h-11 w-full justify-center',
                         bio.published
-                          ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                          : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50",
+                          ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50'
+                          : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50',
                       )}
                     >
                       {publishLoading === bio.id ? (
@@ -359,7 +367,7 @@ export default function BioPage() {
                       ) : (
                         <CheckCircle className="h-4 w-4" />
                       )}
-                      {bio.published ? "Unpublish" : "Publish"}
+                      {bio.published ? 'Unpublish' : 'Publish'}
                     </Button>
                     <Button
                       variant="outline"
@@ -418,7 +426,7 @@ export default function BioPage() {
                                 const path = bio.slug
                                   ? `/${bio.slug}`
                                   : `/${bio.url}`;
-                                window.open(`${base}${path}`, "_blank");
+                                window.open(`${base}${path}`, '_blank');
                               }}
                             />
                           </span>
@@ -438,10 +446,10 @@ export default function BioPage() {
                         <Badge
                           variant="outline"
                           className={cn(
-                            "font-normal",
-                            bio.status === "Published"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : "bg-slate-50 text-slate-600 border-slate-200",
+                            'font-normal',
+                            bio.status === 'Published'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-slate-50 text-slate-600 border-slate-200',
                           )}
                         >
                           {bio.status}
@@ -472,10 +480,10 @@ export default function BioPage() {
                             onClick={() => handleTogglePublish(bio)}
                             disabled={publishLoading === bio.id}
                             className={cn(
-                              "h-8 gap-2",
+                              'h-8 gap-2',
                               bio.published
-                                ? "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                                : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50",
+                                ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50'
+                                : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50',
                             )}
                           >
                             {publishLoading === bio.id ? (

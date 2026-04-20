@@ -1,10 +1,10 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { ProfileData, ProfileButton, SocialLink } from "@/temas-lintree/types";
-import { Palette, Plus, Trash2 } from "lucide-react";
+import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { ProfileData, ProfileButton, SocialLink } from '@/temas-lintree/types';
+import { Palette, Plus, Trash2 } from 'lucide-react';
 
 interface ArtistEditorProps {
   profileData: ProfileData;
@@ -20,45 +20,45 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
   };
 
   const addButton = () => {
-    const newButton: ProfileButton = { label: "Nova Obra", url: "" };
-    updateField("buttons", [...profileData.buttons, newButton]);
+    const newButton: ProfileButton = { label: 'Nova Obra', url: '' };
+    updateField('buttons', [...profileData.buttons, newButton]);
   };
 
   const removeButton = (index: number) => {
     updateField(
-      "buttons",
-      profileData.buttons.filter((_, i) => i !== index)
+      'buttons',
+      profileData.buttons.filter((_, i) => i !== index),
     );
   };
 
   const updateButton = (
     index: number,
     field: keyof ProfileButton,
-    value: string
+    value: string,
   ) => {
     const updated = profileData.buttons.map((btn, i) =>
-      i === index ? { ...btn, [field]: value } : btn
+      i === index ? { ...btn, [field]: value } : btn,
     );
-    updateField("buttons", updated);
+    updateField('buttons', updated);
   };
 
   const addSocial = () => {
-    const newSocial: SocialLink = { platform: "instagram", url: "" };
-    updateField("socials", [...profileData.socials, newSocial]);
+    const newSocial: SocialLink = { platform: 'instagram', url: '' };
+    updateField('socials', [...profileData.socials, newSocial]);
   };
 
   const removeSocial = (index: number) => {
     updateField(
-      "socials",
-      profileData.socials.filter((_, i) => i !== index)
+      'socials',
+      profileData.socials.filter((_, i) => i !== index),
     );
   };
 
   const updateSocial = (index: number, field: keyof SocialLink, value: any) => {
     const updated = profileData.socials.map((social, i) =>
-      i === index ? { ...social, [field]: value } : social
+      i === index ? { ...social, [field]: value } : social,
     );
-    updateField("socials", updated);
+    updateField('socials', updated);
   };
 
   return (
@@ -82,7 +82,7 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
           <Input
             id="name"
             value={profileData.name}
-            onChange={(e) => updateField("name", e.target.value)}
+            onChange={(e) => updateField('name', e.target.value)}
             placeholder="Seu nome artístico"
             className="border-rose-200 focus:border-rose-500"
           />
@@ -94,7 +94,7 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
           <Textarea
             id="bio"
             value={profileData.bio}
-            onChange={(e) => updateField("bio", e.target.value)}
+            onChange={(e) => updateField('bio', e.target.value)}
             placeholder="Artista visual | Pintura abstrata e arte contemporânea 🎨"
             rows={3}
             className="border-rose-200 focus:border-rose-500"
@@ -107,7 +107,7 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
           <Input
             id="photoUrl"
             value={profileData.photoUrl}
-            onChange={(e) => updateField("photoUrl", e.target.value)}
+            onChange={(e) => updateField('photoUrl', e.target.value)}
             placeholder="https://..."
             className="border-rose-200 focus:border-rose-500"
           />
@@ -135,13 +135,13 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
             <div className="flex-1 space-y-2">
               <Input
                 value={button.label}
-                onChange={(e) => updateButton(index, "label", e.target.value)}
+                onChange={(e) => updateButton(index, 'label', e.target.value)}
                 placeholder="Coleção 2024 | Galeria | Exposição"
                 className="border-rose-200"
               />
               <Input
                 value={button.url}
-                onChange={(e) => updateButton(index, "url", e.target.value)}
+                onChange={(e) => updateButton(index, 'url', e.target.value)}
                 placeholder="https://..."
                 className="border-rose-200"
               />
@@ -175,7 +175,7 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
           <div key={index} className="flex gap-2 p-4 bg-slate-50 rounded-lg">
             <select
               value={social.platform}
-              onChange={(e) => updateSocial(index, "platform", e.target.value)}
+              onChange={(e) => updateSocial(index, 'platform', e.target.value)}
               className="px-3 py-2 border border-slate-200 rounded-md"
             >
               <option value="instagram">Instagram</option>
@@ -187,7 +187,7 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
             </select>
             <Input
               value={social.url}
-              onChange={(e) => updateSocial(index, "url", e.target.value)}
+              onChange={(e) => updateSocial(index, 'url', e.target.value)}
               placeholder="https://..."
               className="flex-1"
             />
@@ -214,7 +214,7 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
               id="accentColor"
               type="color"
               value={profileData.accentColor}
-              onChange={(e) => updateField("accentColor", e.target.value)}
+              onChange={(e) => updateField('accentColor', e.target.value)}
               className="h-12"
             />
           </div>
@@ -224,7 +224,7 @@ const ArtistEditor: React.FC<ArtistEditorProps> = ({
               id="textColor"
               type="color"
               value={profileData.textColor}
-              onChange={(e) => updateField("text'textColor'arget.value)}
+              onChange={(e) => updateField('textColor', e.target.value)}
               className="h-12"
             />
           </div>

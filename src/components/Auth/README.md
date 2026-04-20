@@ -26,12 +26,12 @@ backgroundImage: 'url(/assets/login-bg.jpg)',
 ## 🎨 Cores e Estilos
 
 - **Background**: `#FFFFFF` (branco)
-- **Inputs**: 
+- **Inputs**:
   - Background: `#F5F5F5` (gray-100)
   - Focus: Ring azul (`ring-blue-600`)
-- **Botão Primário**: 
+- **Botão Primário**:
   - `bg-blue-600` / `hover:bg-blue-700`
-- **Botão Google**: 
+- **Botão Google**:
   - `bg-gray-900` / `hover:bg-gray-800`
 
 ## 📱 Responsividade
@@ -45,7 +45,7 @@ backgroundImage: 'url(/assets/login-bg.jpg)',
 import Login from '@/pages/Login';
 
 // No seu router
-<Route path="/login" element={<Login />} />
+<Route path="/login" element={<Login />} />;
 ```
 
 ## ✨ Features Implementadas

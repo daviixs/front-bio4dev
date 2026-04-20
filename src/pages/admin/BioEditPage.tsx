@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, Eye, Loader2, ExternalLink } from "lucide-react";
-import { toast } from "sonner";
-import { profileApi } from "@/lib/api";
-import type { ProfileComplete } from "@/types";
-import { EditablePortfolio1 } from "@/components/portfolio/EditablePortfolio1";
-import { EditablePortfolio2 } from "@/components/portfolio/EditablePortfolio2";
-import { EditablePortfolio3 } from "@/components/portfolio/EditablePortfolio3";
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Save, Eye, Loader2, ExternalLink } from 'lucide-react';
+import { toast } from 'sonner';
+import { profileApi } from '@/lib/api';
+import type { ProfileComplete } from '@/types';
+import { EditablePortfolio1 } from '@/components/portfolio/EditablePortfolio1';
+import { EditablePortfolio2 } from '@/components/portfolio/EditablePortfolio2';
+import { EditablePortfolio3 } from '@/components/portfolio/EditablePortfolio3';
 
-const BIO_EDIT_SAVE_TOAST_ID = "bio-edit-save-toast";
-const BIO_EDIT_LOAD_TOAST_ID = "bio-edit-load-toast";
-const BIO_EDIT_PREVIEW_TOAST_ID = "bio-edit-preview-toast";
+const BIO_EDIT_SAVE_TOAST_ID = 'bio-edit-save-toast';
+const BIO_EDIT_LOAD_TOAST_ID = 'bio-edit-load-toast';
+const BIO_EDIT_PREVIEW_TOAST_ID = 'bio-edit-preview-toast';
 
 export default function BioEditPage() {
   const navigate = useNavigate();
@@ -31,8 +31,8 @@ export default function BioEditPage() {
         const profileData = await profileApi.getComplete(id);
         setProfile(profileData);
       } catch (error) {
-        console.error("Erro ao carregar bio:", error);
-        toast.error("Erro ao carregar dados da bio", {
+        console.error('Erro ao carregar bio:', error);
+        toast.error('Erro ao carregar dados da bio', {
           id: BIO_EDIT_LOAD_TOAST_ID,
         });
       } finally {
@@ -51,14 +51,14 @@ export default function BioEditPage() {
       const updatedProfile = await profileApi.getComplete(id);
       setProfile(updatedProfile);
       if (showToast) {
-        toast.success("Alterações salvas com sucesso!", {
+        toast.success('Alterações salvas com sucesso!', {
           id: BIO_EDIT_SAVE_TOAST_ID,
         });
       }
     } catch (error) {
-      console.error("Erro ao recarregar perfil:", error);
+      console.error('Erro ao recarregar perfil:', error);
       if (showToast) {
-        toast.error("Erro ao salvar alterações", {
+        toast.error('Erro ao salvar alterações', {
           id: BIO_EDIT_SAVE_TOAST_ID,
         });
       }
@@ -69,15 +69,14 @@ export default function BioEditPage() {
 
   const handlePreview = async () => {
     if (!profile?.slug) {
-      toast.error(
-        "Defina um slug antes de visualizar o preview.",
-        { id: BIO_EDIT_PREVIEW_TOAST_ID },
-      );
+      toast.error('Defina um slug antes de visualizar o preview.', {
+        id: BIO_EDIT_PREVIEW_TOAST_ID,
+      });
       return;
     }
 
     if (!id) {
-      toast.error("ID do perfil não encontrado", {
+      toast.error('ID do perfil não encontrado', {
         id: BIO_EDIT_PREVIEW_TOAST_ID,
       });
       return;
@@ -97,30 +96,30 @@ export default function BioEditPage() {
 
       // Abre preview em nova aba com token (usa slug que é o identificador da rota)
       const previewUrl = `/${profile.slug}?preview=${token}`;
-      window.open(previewUrl, "_blank");
+      window.open(previewUrl, '_blank');
 
       toast.success(`Preview aberto! Token expira em ${hours}h`, {
         id: BIO_EDIT_PREVIEW_TOAST_ID,
-        description: "O link funciona mesmo com o perfil não publicado",
+        description: 'O link funciona mesmo com o perfil não publicado',
       });
     } catch (error: any) {
-      console.error("Erro ao gerar preview:", error);
+      console.error('Erro ao gerar preview:', error);
 
       // Se falhar, mostrar erro específico
       if (error.response?.status === 404) {
-        toast.error("Endpoint de preview não encontrado no backend", {
+        toast.error('Endpoint de preview não encontrado no backend', {
           id: BIO_EDIT_PREVIEW_TOAST_ID,
         });
       } else if (
         error.response?.status === 401 ||
         error.response?.status === 403
       ) {
-        toast.error("Sem permissão para gerar preview", {
+        toast.error('Sem permissão para gerar preview', {
           id: BIO_EDIT_PREVIEW_TOAST_ID,
         });
       } else {
         toast.error(
-          "Erro ao gerar token de preview. Verifique se o backend está rodando.",
+          'Erro ao gerar token de preview. Verifique se o backend está rodando.',
           { id: BIO_EDIT_PREVIEW_TOAST_ID },
         );
       }
@@ -142,7 +141,7 @@ export default function BioEditPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <p className="text-slate-600 mb-4">Perfil não encontrado</p>
-          <Button onClick={() => navigate("/dashboard/bio")} variant="outline">
+          <Button onClick={() => navigate('/dashboard/bio')} variant="outline">
             Voltar
           </Button>
         </div>
@@ -152,9 +151,9 @@ export default function BioEditPage() {
 
   // Suporta template_01, template_02 e template_03
   if (
-    profile.templateType !== "template_01" &&
-    profile.templateType !== "template_02" &&
-    profile.templateType !== "template_03"
+    profile.templateType !== 'template_01' &&
+    profile.templateType !== 'template_02' &&
+    profile.templateType !== 'template_03'
   ) {
     return (
       <div className="space-y-6">
@@ -162,7 +161,7 @@ export default function BioEditPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/dashboard/bio")}
+            onClick={() => navigate('/dashboard/bio')}
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -188,7 +187,7 @@ export default function BioEditPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate("/dashboard/bio")}
+              onClick={() => navigate('/dashboard/bio')}
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -223,7 +222,7 @@ export default function BioEditPage() {
             </Button>
             {profile.published && (
               <Button
-                onClick={() => window.open(`/${profile.slug}`, "_blank")}
+                onClick={() => window.open(`/${profile.slug}`, '_blank')}
                 className="gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold"
               >
                 <ExternalLink className="h-4 w-4" />
@@ -254,22 +253,22 @@ export default function BioEditPage() {
       {/* Portfolio Editável */}
       <div
         className={
-          profile.templateType === "template_02"
-            ? "bg-[#050505]"
-            : profile.templateType === "template_03"
-              ? "bg-[#0d0d0d]"
-              : "bg-[#c5b9b7]"
+          profile.templateType === 'template_02'
+            ? 'bg-[#050505]'
+            : profile.templateType === 'template_03'
+              ? 'bg-[#0d0d0d]'
+              : 'bg-[#c5b9b7]'
         }
       >
         {profile && (
           <>
-            {profile.templateType === "template_01" && (
+            {profile.templateType === 'template_01' && (
               <EditablePortfolio1
                 profile={profile}
                 onProfileUpdate={() => void handleProfileUpdate(false)}
               />
             )}
-            {profile.templateType === "template_02" && (
+            {profile.templateType === 'template_02' && (
               <EditablePortfolio2
                 profile={profile}
                 onProfileUpdate={() => void handleProfileUpdate(false)}

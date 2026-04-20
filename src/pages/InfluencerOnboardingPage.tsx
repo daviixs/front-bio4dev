@@ -798,13 +798,17 @@ const PreviewCard = ({
   platformLinks: Partial<Record<PlatformId, string>>;
   chrome: OnboardingChrome;
 }) => (
-  <div className={`rounded-2xl p-4 sm:p-6 lg:self-start ${chrome.previewShell}`}>
+  <div
+    className={`rounded-2xl p-4 sm:p-6 lg:self-start ${chrome.previewShell}`}
+  >
     <h2
       className={`text-[11px] font-semibold uppercase tracking-[0.24em] sm:text-sm sm:tracking-[0.3em] ${chrome.sectionLabel}`}
     >
       Pre-visualizacao
     </h2>
-    <div className={`mt-4 rounded-2xl p-4 sm:mt-6 sm:p-6 ${chrome.previewCard}`}>
+    <div
+      className={`mt-4 rounded-2xl p-4 sm:mt-6 sm:p-6 ${chrome.previewCard}`}
+    >
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
         <div
           className={`h-16 w-16 shrink-0 overflow-hidden rounded-full border ${chrome.accentBorder} ${chrome.iconBadge}`}
@@ -824,10 +828,14 @@ const PreviewCard = ({
           )}
         </div>
         <div className="min-w-0 space-y-2">
-          <p className={`break-words text-base font-semibold leading-tight sm:text-lg ${chrome.bodyText}`}>
+          <p
+            className={`break-words text-base font-semibold leading-tight sm:text-lg ${chrome.bodyText}`}
+          >
             {displayName.trim() || 'Seu nome'}
           </p>
-          <p className={`break-words text-sm leading-relaxed [overflow-wrap:anywhere] ${chrome.captionText}`}>
+          <p
+            className={`break-words text-sm leading-relaxed [overflow-wrap:anywhere] ${chrome.captionText}`}
+          >
             {bio.trim() || 'Sua bio aparecera aqui.'}
           </p>
         </div>

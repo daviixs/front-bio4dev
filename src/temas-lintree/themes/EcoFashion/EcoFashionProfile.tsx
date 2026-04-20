@@ -1,6 +1,14 @@
-
 import React from 'react';
-import { Instagram, Twitter, Music, ShoppingBag, Heart, MessageCircle, Sparkles, Recycle } from 'lucide-react';
+import {
+  Instagram,
+  Twitter,
+  Music,
+  ShoppingBag,
+  Heart,
+  MessageCircle,
+  Sparkles,
+  Recycle,
+} from 'lucide-react';
 
 const EcoFashionProfile: React.FC = () => {
   return (
@@ -12,20 +20,24 @@ const EcoFashionProfile: React.FC = () => {
         {/* Minimal Circle Header */}
         <div className="mt-12 mb-6">
           <div className="p-2 rounded-full border border-[#DED9CF]">
-            <img 
-              src="https://picsum.photos/seed/eco-wear/300/300" 
+            <img
+              src="https://picsum.photos/seed/eco-wear/300/300"
               className="w-24 h-24 rounded-full object-cover grayscale-[20%]"
               alt="Clara Re-Fashion"
             />
           </div>
         </div>
 
-        <h1 className="text-2xl font-serif font-bold italic tracking-tight text-[#3A332C]">Clara Re-Fashion</h1>
+        <h1 className="text-2xl font-serif font-bold italic tracking-tight text-[#3A332C]">
+          Clara Re-Fashion
+        </h1>
         <div className="flex items-center gap-2 mt-2 opacity-60">
           <Recycle size={14} />
-          <p className="text-xs font-medium uppercase tracking-widest">Moda Circular</p>
+          <p className="text-xs font-medium uppercase tracking-widest">
+            Moda Circular
+          </p>
         </div>
-        
+
         <p className="text-sm opacity-80 text-center mt-4 font-medium max-w-[220px] leading-relaxed italic">
           "Dando uma segunda chance à roupa através da curadoria consciente."
         </p>
@@ -38,7 +50,9 @@ const EcoFashionProfile: React.FC = () => {
             </div>
             <div className="text-left">
               <span className="block font-bold text-sm">Loja Vintage</span>
-              <span className="text-[10px] opacity-50 uppercase font-bold tracking-tighter">Novidades toda segunda</span>
+              <span className="text-[10px] opacity-50 uppercase font-bold tracking-tighter">
+                Novidades toda segunda
+              </span>
             </div>
           </button>
 
@@ -48,7 +62,9 @@ const EcoFashionProfile: React.FC = () => {
             </div>
             <div className="text-left">
               <span className="block font-bold text-sm">Inspirações</span>
-              <span className="text-[10px] opacity-50 uppercase font-bold tracking-tighter">Lookbook Outono</span>
+              <span className="text-[10px] opacity-50 uppercase font-bold tracking-tighter">
+                Lookbook Outono
+              </span>
             </div>
           </button>
 
@@ -58,7 +74,9 @@ const EcoFashionProfile: React.FC = () => {
             </div>
             <div className="text-left">
               <span className="block font-bold text-sm">Top Brechós</span>
-              <span className="text-[10px] opacity-50 uppercase font-bold tracking-tighter">Meu guia curado</span>
+              <span className="text-[10px] opacity-50 uppercase font-bold tracking-tighter">
+                Meu guia curado
+              </span>
             </div>
           </button>
 

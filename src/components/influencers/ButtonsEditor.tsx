@@ -1,6 +1,6 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Eye, Save, ArrowLeft } from "lucide-react";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Eye, Save, ArrowLeft } from 'lucide-react';
 
 interface ButtonsEditorProps {
   isSaving?: boolean;

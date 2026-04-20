@@ -1,37 +1,39 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { sectionFade } from "./animations";
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { sectionFade } from './animations';
 
 const faqs = [
   {
-    question: "O Bio4Dev é gratuito?",
+    question: 'O Bio4Dev é gratuito?',
     answer:
-      "Sim! Você pode criar sua conta e montar sua bio/portfólio completamente grátis. Oferecemos todos os templates e funcionalidades essenciais sem custo. Planos premium virão com extras avançados.",
+      'Sim! Você pode criar sua conta e montar sua bio/portfólio completamente grátis. Oferecemos todos os templates e funcionalidades essenciais sem custo. Planos premium virão com extras avançados.',
   },
   {
-    question: "Preciso saber programar para usar?",
+    question: 'Preciso saber programar para usar?',
     answer:
-      "Não. Basta preencher suas informações, adicionar mídia curta e links. O builder faz o resto e publica em segundos.",
+      'Não. Basta preencher suas informações, adicionar mídia curta e links. O builder faz o resto e publica em segundos.',
   },
   {
-    question: "Posso usar meu próprio domínio?",
+    question: 'Posso usar meu próprio domínio?',
     answer:
-      "Hoje sua página fica em bio4dev.com/seuusername. Conexão de domínio customizado chegará nos planos pagos.",
+      'Hoje sua página fica em bio4dev.com/seuusername. Conexão de domínio customizado chegará nos planos pagos.',
   },
   {
-    question: "Quantos projetos posso adicionar?",
+    question: 'Quantos projetos posso adicionar?',
     answer:
-      "Sem limite. Recomendamos destacar 4-6 para manter foco e conversão nos CTAs.",
+      'Sem limite. Recomendamos destacar 4-6 para manter foco e conversão nos CTAs.',
   },
   {
-    question: "Meu portfólio funciona em dispositivos móveis?",
+    question: 'Meu portfólio funciona em dispositivos móveis?',
     answer:
-      "Sim. Os templates são mobile-first, com CTA fixo e mídia otimizada para toque.",
+      'Sim. Os templates são mobile-first, com CTA fixo e mídia otimizada para toque.',
   },
 ];
 
 export function FAQSection() {
-  const [openItem, setOpenItem] = useState<string | null>(faqs[0]?.question ?? null);
+  const [openItem, setOpenItem] = useState<string | null>(
+    faqs[0]?.question ?? null,
+  );
 
   return (
     <motion.section

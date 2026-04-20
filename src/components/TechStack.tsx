@@ -1,11 +1,24 @@
 import React from 'react';
-import { Code2, FileCode, Palette, Database, GitBranch, Github, Terminal, Settings } from 'lucide-react';
+import {
+  Code2,
+  FileCode,
+  Palette,
+  Database,
+  GitBranch,
+  Github,
+  Terminal,
+  Settings,
+} from 'lucide-react';
 
 export function TechStack() {
   const technologies = [
     { name: 'HTML5', icon: <Code2 size={40} />, color: 'text-orange-600' },
     { name: 'CSS3', icon: <Palette size={40} />, color: 'text-blue-600' },
-    { name: 'JavaScript', icon: <FileCode size={40} />, color: 'text-yellow-500' },
+    {
+      name: 'JavaScript',
+      icon: <FileCode size={40} />,
+      color: 'text-yellow-500',
+    },
     { name: 'React', icon: <FileCode size={40} />, color: 'text-cyan-500' },
     { name: 'Node.js', icon: <Terminal size={40} />, color: 'text-green-600' },
     {

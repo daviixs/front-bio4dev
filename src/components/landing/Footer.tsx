@@ -1,11 +1,14 @@
-import React from "react";
-import { Gear } from "@phosphor-icons/react";
+import React from 'react';
+import { Gear } from '@phosphor-icons/react';
 
 export function Footer() {
   return (
     <footer className="relative w-full bg-[#221e1b] text-[#ece5d9]">
       {/* Hero image with overlays */}
-      <div className="relative w-full overflow-hidden" style={{ height: "80vh" }}>
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ height: '80vh' }}
+      >
         <img
           src="/images/Imagefooter.jpg"
           alt="Paisagem com dispositivo destacando o produto"
@@ -25,13 +28,22 @@ export function Footer() {
             Produto
           </p>
           <div className="flex flex-wrap gap-x-3 gap-y-2 text-[13px] text-[#ece5d9]/50">
-            <a href="#comunidade" className="hover:text-[#ece5d9] transition-colors duration-300">
+            <a
+              href="#comunidade"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
               Comunidade
             </a>
-            <a href="#aulas" className="hover:text-[#ece5d9] transition-colors duration-300">
+            <a
+              href="#aulas"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
               Aulas Gravadas
             </a>
-            <a href="#recursos" className="hover:text-[#ece5d9] transition-colors duration-300">
+            <a
+              href="#recursos"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
               Recursos Exclusivos
             </a>
             <a

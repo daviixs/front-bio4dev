@@ -1,9 +1,9 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { profileApi } from "@/lib/api";
-import { useAuthStore } from "@/stores/authStore";
-import ProfileScreen from "@/temas-lintree/components/ProfileScreen";
-import type { ProfileData } from "@/temas-lintree/types";
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { profileApi } from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
+import ProfileScreen from '@/temas-lintree/components/ProfileScreen';
+import type { ProfileData } from '@/temas-lintree/types';
 
 export default function InfluencerPreviewPage() {
   const { portfolioId } = useParams<{ portfolioId: string }>();

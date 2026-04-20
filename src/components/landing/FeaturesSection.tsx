@@ -1,7 +1,7 @@
-import React from "react";
-import { Reveal } from "./Reveal";
-import { motion } from "framer-motion";
-import { sectionFade } from "./animations";
+import React from 'react';
+import { Reveal } from './Reveal';
+import { motion } from 'framer-motion';
+import { sectionFade } from './animations';
 
 export function FeaturesSection() {
   return (

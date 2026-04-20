@@ -1,11 +1,16 @@
 import React from 'react';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  ResponsiveContainer,
+} from 'recharts';
 import { SKILL_DATA } from '../constants';
 
 const SkillsChart: React.FC = () => {
   return (
     <div className="col-span-2 bg-[#121318] rounded-2xl p-6 border border-white/5 relative overflow-hidden group">
-      
       <div className="flex justify-between items-center mb-2">
         <div>
           <h3 className="text-white font-bold text-lg">Skills</h3>

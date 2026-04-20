@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import * as PopoverPrimitive from "@radix-ui/react-popover@1.1.6";
+import * as React from 'react';
+import * as PopoverPrimitive from '@radix-ui/react-popover@1.1.6';
 
-import { cn } from "./utils";
+import { cn } from './utils';
 
 function Popover({
   ...props
@@ -19,7 +19,7 @@ function PopoverTrigger({
 
 function PopoverContent({
   className,
-  align = "center",
+  align = 'center',
   sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content>) {

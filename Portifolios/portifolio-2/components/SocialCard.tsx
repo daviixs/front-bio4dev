@@ -11,7 +11,7 @@ const SocialCard: React.FC<SocialCardProps> = ({ item }) => {
   const subTextColor = item.textColorClass ? 'text-gray-600' : 'text-gray-400';
 
   return (
-    <a 
+    <a
       href={item.url}
       target="_blank"
       rel="noopener noreferrer"
@@ -28,11 +28,21 @@ const SocialCard: React.FC<SocialCardProps> = ({ item }) => {
       `}
     >
       <div className="flex justify-between items-start z-10">
-        <div className={`p-2.5 rounded-xl ${item.id === 'dev' ? 'bg-black text-white' : 'bg-white/10'}`}>
-          <item.icon size={22} className={item.id === 'dev' ? 'text-white' : 'text-white'} />
+        <div
+          className={`p-2.5 rounded-xl ${item.id === 'dev' ? 'bg-black text-white' : 'bg-white/10'}`}
+        >
+          <item.icon
+            size={22}
+            className={item.id === 'dev' ? 'text-white' : 'text-white'}
+          />
         </div>
-        <div className={`p-1.5 rounded-full ${item.id === 'dev' ? 'bg-gray-200' : 'bg-white/10'} opacity-0 group-hover:opacity-100 transition-opacity`}>
-           <ArrowUpRight size={18} className={item.id === 'dev' ? 'text-black' : 'text-white'} />
+        <div
+          className={`p-1.5 rounded-full ${item.id === 'dev' ? 'bg-gray-200' : 'bg-white/10'} opacity-0 group-hover:opacity-100 transition-opacity`}
+        >
+          <ArrowUpRight
+            size={18}
+            className={item.id === 'dev' ? 'text-black' : 'text-white'}
+          />
         </div>
       </div>
 

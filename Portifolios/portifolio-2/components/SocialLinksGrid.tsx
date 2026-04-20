@@ -1,6 +1,6 @@
-import React from "react";
-import { SocialLink } from "../types";
-import SocialCard from "./SocialCard";
+import React from 'react';
+import { SocialLink } from '../types';
+import SocialCard from './SocialCard';
 
 interface SocialLinksGridProps {
   links: SocialLink[];

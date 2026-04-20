@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import * as AccordionPrimitive from "@radix-ui/react-accordion@1.2.3";
-import { ChevronDownIcon } from "lucide-react@0.487.0";
+import * as React from 'react';
+import * as AccordionPrimitive from '@radix-ui/react-accordion@1.2.3';
+import { ChevronDownIcon } from 'lucide-react@0.487.0';
 
-import { cn } from "./utils";
+import { cn } from './utils';
 
 function Accordion({
   ...props
@@ -19,7 +19,7 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn("border-b last:border-b-0", className)}
+      className={cn('border-b last:border-b-0', className)}
       {...props}
     />
   );

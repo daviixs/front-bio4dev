@@ -4,17 +4,20 @@ import { cn } from '@/components/ui/utils';
 
 const testimonials = [
   {
-    quote: '" Criei meu portfólio Bio4Dev em menos de 10 minutos e já recebi 3 convites para entrevistas. O template Neon é simplesmente incrível e me destacou dos outros candidatos. "',
+    quote:
+      '" Criei meu portfólio Bio4Dev em menos de 10 minutos e já recebi 3 convites para entrevistas. O template Neon é simplesmente incrível e me destacou dos outros candidatos. "',
     author: 'Lucas Mendes',
     company: 'Desenvolvedor Full Stack',
   },
   {
-    quote: '" Finalmente tenho um lugar para mostrar todos os meus projetos de forma profissional. O dashboard é super intuitivo e a URL personalizada faz toda a diferença no LinkedIn. "',
+    quote:
+      '" Finalmente tenho um lugar para mostrar todos os meus projetos de forma profissional. O dashboard é super intuitivo e a URL personalizada faz toda a diferença no LinkedIn. "',
     author: 'Ana Carolina',
     company: 'Frontend Developer',
   },
   {
-    quote: '" Como dev júnior, precisava de algo para me destacar. O Bio4Dev me deu exatamente isso: um portfólio bonito, responsivo e fácil de atualizar sempre que termino um novo projeto. "',
+    quote:
+      '" Como dev júnior, precisava de algo para me destacar. O Bio4Dev me deu exatamente isso: um portfólio bonito, responsivo e fácil de atualizar sempre que termino um novo projeto. "',
     author: 'Pedro Santos',
     company: 'Backend Developer',
   },
@@ -24,11 +27,15 @@ export function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+    setCurrentIndex((prev) =>
+      prev === 0 ? testimonials.length - 1 : prev - 1,
+    );
   };
 
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) =>
+      prev === testimonials.length - 1 ? 0 : prev + 1,
+    );
   };
 
   const currentTestimonial = testimonials[currentIndex];
@@ -106,4 +113,3 @@ export function TestimonialsSection() {
     </section>
   );
 }
-

@@ -1,7 +1,7 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Trash2, Plus } from "lucide-react";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Trash2, Plus } from 'lucide-react';
 
 export interface LinkButtonItem {
   id?: string;
@@ -30,7 +30,7 @@ export function LinksList({ buttons, onChange }: LinksListProps) {
   };
 
   const addItem = () => {
-    onChange([...buttons, { label: "", url: "" }]);
+    onChange([...buttons, { label: '', url: '' }]);
   };
 
   const removeItem = (index: number) => {
@@ -46,15 +46,13 @@ export function LinksList({ buttons, onChange }: LinksListProps) {
               value={button.label}
               placeholder="Label"
               onChange={(event) =>
-                updateItem(index, "label", event.target.value)
+                updateItem(index, 'label', event.target.value)
               }
             />
             <Input
               value={button.url}
               placeholder="https://..."
-              onChange={(event) =>
-                updateItem(index, "url", event.target.value)
-              }
+              onChange={(event) => updateItem(index, 'url', event.target.value)}
             />
             <Button
               variant="ghost"
@@ -66,14 +64,14 @@ export function LinksList({ buttons, onChange }: LinksListProps) {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Input
-              value={button.subtext || ""}
+              value={button.subtext || ''}
               placeholder="Subtexto (opcional)"
               onChange={(event) =>
-                updateItem(index, "subtext", event.target.value)
+                updateItem(index, 'subtext', event.target.value)
               }
             />
             <Input
-              value={button.icon || ""}
+              value={button.icon || ''}
               placeholder="Icon (opcional)"
               onChange={(event) =>
                 updateItem(index, 'icon', event.target.value)

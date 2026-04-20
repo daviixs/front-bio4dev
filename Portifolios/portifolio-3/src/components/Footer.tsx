@@ -12,7 +12,10 @@ interface FooterProps {
 
 export default function Footer({ description, email, socials }: FooterProps) {
   return (
-    <footer id="contact" className="min-h-[120px] shrink-0 flex flex-col md:flex-row gap-8 md:gap-8 items-center border-t border-[#222] py-10 md:py-0">
+    <footer
+      id="contact"
+      className="min-h-[120px] shrink-0 flex flex-col md:flex-row gap-8 md:gap-8 items-center border-t border-[#222] py-10 md:py-0"
+    >
       <div className="max-w-md text-center md:text-left">
         <h3 className="text-lg mb-2 font-bold">Contact</h3>
         <p className="text-[11px] text-[#a0a0a0] leading-relaxed">
@@ -20,7 +23,10 @@ export default function Footer({ description, email, socials }: FooterProps) {
         </p>
       </div>
       <div className="flex-1 flex flex-col items-center md:items-end gap-3">
-        <a href={`mailto:${email}`} className="text-sm text-white no-underline hover:text-[#FF6B35] transition-colors flex items-center gap-2">
+        <a
+          href={`mailto:${email}`}
+          className="text-sm text-white no-underline hover:text-[#FF6B35] transition-colors flex items-center gap-2"
+        >
           <Mail className="w-4 h-4" /> {email}
         </a>
         <div className="flex gap-4 text-[12px] text-[#777]">

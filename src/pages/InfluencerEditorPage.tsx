@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { profileApi } from "@/lib/api";
-import { useAuthStore } from "@/stores/authStore";
-import { ProfileData } from "@/temas-lintree/types";
-import { PROFILES } from "@/temas-lintree/constants";
-import { TextEditor } from "@/components/editors/fields/TextEditor";
-import { ImageEditor } from "@/components/editors/fields/ImageEditor";
-import { ListEditor } from "@/components/editors/fields/ListEditor";
-import { ColorPicker } from "@/components/editors/fields/ColorPicker";
-import { Pencil, Save, ArrowLeft, Eye } from "lucide-react";
-import { DynamicThemeRenderer } from "@/components/editors/DynamicThemeRenderer";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { profileApi } from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
+import { ProfileData } from '@/temas-lintree/types';
+import { PROFILES } from '@/temas-lintree/constants';
+import { TextEditor } from '@/components/editors/fields/TextEditor';
+import { ImageEditor } from '@/components/editors/fields/ImageEditor';
+import { ListEditor } from '@/components/editors/fields/ListEditor';
+import { ColorPicker } from '@/components/editors/fields/ColorPicker';
+import { Pencil, Save, ArrowLeft, Eye } from 'lucide-react';
+import { DynamicThemeRenderer } from '@/components/editors/DynamicThemeRenderer';
 
 interface EditState {
   field: string;
-  type: "text" | "textarea" | "image" | "list" | "color";
+  type: 'text' | 'textarea' | 'image' | 'list' | 'color';
   label: string;
   value: any;
 }
 
-const INFLUENCER_EDITOR_TOAST_ID = "influencer-editor-toast";
+const INFLUENCER_EDITOR_TOAST_ID = 'influencer-editor-toast';
 
 export function InfluencerEditorPage() {
   const { portfolioId } = useParams<{ portfolioId: string }>();
@@ -30,7 +30,7 @@ export function InfluencerEditorPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [themeId, setThemeId] = useState<string>("");
+  const [themeId, setThemeId] = useState<string>('');
   const [editState, setEditState] = useState<EditState | null>(null);
   const [showEditButtons, setShowEditButtons] = useState(true);
 
@@ -40,10 +40,10 @@ export function InfluencerEditorPage() {
 
   const loadProfileData = async () => {
     if (!portfolioId) {
-      toast.error("ID do portfólio não encontrado", {
+      toast.error('ID do portfólio não encontrado', {
         id: INFLUENCER_EDITOR_TOAST_ID,
       });
-      navigate("/profile/create");
+      navigate('/profile/create');
       return;
     }
 
@@ -51,11 +51,11 @@ export function InfluencerEditorPage() {
     try {
       // Check localStorage for saved profiles first
       const savedProfiles = JSON.parse(
-        localStorage.getItem("bio4dev_saved_profiles") || "{}"
+        localStorage.getItem('bio4dev_saved_profiles') || '{}',
       );
 
       if (savedProfiles[portfolioId]) {
-        console.log("Loading saved profile from localStorage:", portfolioId);
+        console.log('Loading saved profile from localStorage:', portfolioId);
         setProfileData(savedProfiles[portfolioId]);
         setThemeId(savedProfiles[portfolioId].id);
         setIsLoading(false);
@@ -63,14 +63,14 @@ export function InfluencerEditorPage() {
       }
 
       // Check for theme from URL or localStorage
-      const themeFromUrl = searchParams.get("theme");
+      const themeFromUrl = searchParams.get('theme');
       const themeFromStorage = localStorage.getItem(
-        `bio4dev_theme_${portfolioId}`
+        `bio4dev_theme_${portfolioId}`,
       );
       const selectedTheme = themeFromUrl || themeFromStorage;
 
       if (selectedTheme) {
-        console.log("Loading theme:", selectedTheme);
+        console.log('Loading theme:', selectedTheme);
         setThemeId(selectedTheme);
 
         // Find seed data from constants
@@ -83,27 +83,27 @@ export function InfluencerEditorPage() {
           setProfileData({
             id: selectedTheme,
             themeName: selectedTheme,
-            name: "Seu Nome",
-            bio: "Sua bio aqui",
+            name: 'Seu Nome',
+            bio: 'Sua bio aqui',
             photoUrl:
-              "https://picsum.photos/seed/" + selectedTheme + "/300/300",
-            backgroundStyle: "bg-white",
-            buttonStyle: "bg-slate-100 hover:bg-slate-200 rounded-lg",
-            textColor: "text-slate-900",
-            accentColor: "#3b82f6",
+              'https://picsum.photos/seed/' + selectedTheme + '/300/300',
+            backgroundStyle: 'bg-white',
+            buttonStyle: 'bg-slate-100 hover:bg-slate-200 rounded-lg',
+            textColor: 'text-slate-900',
+            accentColor: '#3b82f6',
             socials: [],
             buttons: [],
           });
         }
       } else {
-        toast.error("Tema não especificado", {
+        toast.error('Tema não especificado', {
           id: INFLUENCER_EDITOR_TOAST_ID,
         });
-        navigate("/profile/create");
+        navigate('/profile/create');
       }
     } catch (error: any) {
-      console.error("Error loading profile:", error);
-      toast.error("Erro ao carregar perfil", {
+      console.error('Error loading profile:', error);
+      toast.error('Erro ao carregar perfil', {
         id: INFLUENCER_EDITOR_TOAST_ID,
       });
     } finally {
@@ -118,25 +118,25 @@ export function InfluencerEditorPage() {
     try {
       // Save to localStorage
       const savedProfiles = JSON.parse(
-        localStorage.getItem("bio4dev_saved_profiles") || "{}"
+        localStorage.getItem('bio4dev_saved_profiles') || '{}',
       );
       savedProfiles[portfolioId] = profileData;
       localStorage.setItem(
-        "bio4dev_saved_profiles",
-        JSON.stringify(savedProfiles)
+        'bio4dev_saved_profiles',
+        JSON.stringify(savedProfiles),
       );
 
-      console.log("Profile saved to localStorage:", portfolioId);
+      console.log('Profile saved to localStorage:', portfolioId);
 
       // TODO: When backend is ready, uncomment this
       // await profileApi.update(portfolioId, profileData);
 
-      toast.success("Portfólio salvo com sucesso!", {
+      toast.success('Portfólio salvo com sucesso!', {
         id: INFLUENCER_EDITOR_TOAST_ID,
       });
     } catch (error: any) {
-      console.error("Error saving profile:", error);
-      toast.error("Erro ao salvar portfólio", {
+      console.error('Error saving profile:', error);
+      toast.error('Erro ao salvar portfólio', {
         id: INFLUENCER_EDITOR_TOAST_ID,
       });
     } finally {
@@ -147,7 +147,7 @@ export function InfluencerEditorPage() {
   const handleUpdate = (field: string, value: any) => {
     if (!profileData) return;
 
-    const keys = field.split(".");
+    const keys = field.split('.');
     const newData = { ...profileData };
     let current: any = newData;
 
@@ -161,9 +161,9 @@ export function InfluencerEditorPage() {
 
   const openEditor = (
     field: string,
-    type: EditState["type"],
+    type: EditState['type'],
     label: string,
-    value: any
+    value: any,
   ) => {
     setEditState({ field, type, label, value });
   };
@@ -172,15 +172,15 @@ export function InfluencerEditorPage() {
     field: string,
     type: string,
     label: string,
-    value: any
+    value: any,
   ) => {
     // Map type to EditState type
-    const editType: EditState["type"] =
-      type === "link"
-        ? "list"
-        : type === "social"
-        ? "text"
-        : (type as EditState["type"]);
+    const editType: EditState['type'] =
+      type === 'link'
+        ? 'list'
+        : type === 'social'
+          ? 'text'
+          : (type as EditState['type']);
 
     setEditState({ field, type: editType, label, value });
   };
@@ -201,7 +201,7 @@ export function InfluencerEditorPage() {
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <p className="text-slate-600">Perfil não encontrado</p>
-          <Button onClick={() => navigate("/profile/create")} className="mt-4">
+          <Button onClick={() => navigate('/profile/create')} className="mt-4">
             Voltar para seleção
           </Button>
         </div>
@@ -217,7 +217,7 @@ export function InfluencerEditorPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate('/dashboard')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
@@ -230,11 +230,11 @@ export function InfluencerEditorPage() {
               onClick={() => setShowEditButtons(!showEditButtons)}
             >
               <Eye className="h-4 w-4 mr-2" />
-              {showEditButtons ? "Ocultar Edições" : "Mostrar Edições"}
+              {showEditButtons ? 'Ocultar Edições' : 'Mostrar Edições'}
             </Button>
             <Button size="sm" onClick={handleSave} disabled={isSaving}>
               <Save className="h-4 w-4 mr-2" />
-              {isSaving ? "Salvando..." : "Salvar"}
+              {isSaving ? 'Salvando...' : 'Salvar'}
             </Button>
           </div>
         </div>
@@ -256,7 +256,7 @@ export function InfluencerEditorPage() {
       </div>
 
       {/* Editors */}
-      {editState && editState.type === "text" && (
+      {editState && editState.type === 'text' && (
         <TextEditor
           value={editState.value}
           label={editState.label}
@@ -270,7 +270,7 @@ export function InfluencerEditorPage() {
         />
       )}
 
-      {editState && editState.type === "textarea" && (
+      {editState && editState.type === 'textarea' && (
         <TextEditor
           value={editState.value}
           label={editState.label}

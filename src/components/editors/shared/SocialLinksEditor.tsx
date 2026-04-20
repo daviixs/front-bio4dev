@@ -1,14 +1,18 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Trash2 } from "lucide-react";
-import { SocialLink } from "@/temas-lintree/types";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Trash2 } from 'lucide-react';
+import { SocialLink } from '@/temas-lintree/types';
 
 interface SocialLinksEditorProps {
   socials: SocialLink[];
   onAddSocial: () => void;
-  onUpdateSocial: (index: number, field: keyof SocialLink, value: string) => void;
+  onUpdateSocial: (
+    index: number,
+    field: keyof SocialLink,
+    value: string,
+  ) => void;
   onRemoveSocial: (index: number) => void;
 }
 

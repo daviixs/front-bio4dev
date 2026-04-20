@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { OTPInput, OTPInputContext } from "input-otp@1.4.2";
-import { MinusIcon } from "lucide-react@0.487.0";
+import * as React from 'react';
+import { OTPInput, OTPInputContext } from 'input-otp@1.4.2';
+import { MinusIcon } from 'lucide-react@0.487.0';
 
-import { cn } from "./utils";
+import { cn } from './utils';
 
 function InputOTP({
   className,
@@ -17,20 +17,20 @@ function InputOTP({
     <OTPInput
       data-slot="input-otp"
       containerClassName={cn(
-        "flex items-center gap-2 has-disabled:opacity-50",
+        'flex items-center gap-2 has-disabled:opacity-50',
         containerClassName,
       )}
-      className={cn("disabled:cursor-not-allowed", className)}
+      className={cn('disabled:cursor-not-allowed', className)}
       {...props}
     />
   );
 }
 
-function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
+function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="input-otp-group"
-      className={cn("flex items-center gap-1", className)}
+      className={cn('flex items-center gap-1', className)}
       {...props}
     />
   );
@@ -40,7 +40,7 @@ function InputOTPSlot({
   index,
   className,
   ...props
-}: React.ComponentProps<"div"> & {
+}: React.ComponentProps<'div'> & {
   index: number;
 }) {
   const inputOTPContext = React.useContext(OTPInputContext);

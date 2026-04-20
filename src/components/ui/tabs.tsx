@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import * as TabsPrimitive from "@radix-ui/react-tabs@1.1.3";
+import * as React from 'react';
+import * as TabsPrimitive from '@radix-ui/react-tabs@1.1.3';
 
-import { cn } from "./utils";
+import { cn } from './utils';
 
 function Tabs({
   className,
@@ -12,7 +12,7 @@ function Tabs({
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
-      className={cn("flex flex-col gap-2", className)}
+      className={cn('flex flex-col gap-2', className)}
       {...props}
     />
   );

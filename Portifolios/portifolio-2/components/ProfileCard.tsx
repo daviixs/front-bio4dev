@@ -1,7 +1,7 @@
-import React from "react";
-import { MapPin, User } from "lucide-react";
-import Avatar from "./Avatar";
-import InfoRow from "./InfoRow";
+import React from 'react';
+import { MapPin, User } from 'lucide-react';
+import Avatar from './Avatar';
+import InfoRow from './InfoRow';
 import { Section, Tag } from './ui';
 
 interface ProfileData {

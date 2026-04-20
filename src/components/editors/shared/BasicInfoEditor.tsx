@@ -1,8 +1,8 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { ProfileData } from "@/temas-lintree/types";
+import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { ProfileData } from '@/temas-lintree/types';
 
 interface BasicInfoEditorProps {
   profileData: ProfileData;
@@ -20,7 +20,9 @@ const BasicInfoEditor: React.FC<BasicInfoEditorProps> = ({
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-6">
       <div className="flex items-center gap-2 mb-4">
-        <h2 className="text-lg font-semibold text-slate-900">Informações Básicas</h2>
+        <h2 className="text-lg font-semibold text-slate-900">
+          Informações Básicas
+        </h2>
       </div>
       <div className="space-y-4">
         <div>
@@ -28,7 +30,7 @@ const BasicInfoEditor: React.FC<BasicInfoEditorProps> = ({
           <Input
             id="name"
             value={profileData.name}
-            onChange={(e) => handleChange("name")(e.target.value)}
+            onChange={(e) => handleChange('name')(e.target.value)}
             placeholder="Seu nome"
           />
         </div>
@@ -37,7 +39,7 @@ const BasicInfoEditor: React.FC<BasicInfoEditorProps> = ({
           <Input
             id="themeName"
             value={profileData.themeName}
-            onChange={(e) => handleChange("themeName")(e.target.value)}
+            onChange={(e) => handleChange('themeName')(e.target.value)}
             placeholder="Ex: Atleta, Criador, etc."
           />
         </div>
@@ -46,7 +48,7 @@ const BasicInfoEditor: React.FC<BasicInfoEditorProps> = ({
           <Textarea
             id="bio"
             value={profileData.bio}
-            onChange={(e) => handleChange("bio")(e.target.value)}
+            onChange={(e) => handleChange('bio')(e.target.value)}
             placeholder="Descreva você ou seu negócio"
             rows={3}
           />
@@ -56,7 +58,7 @@ const BasicInfoEditor: React.FC<BasicInfoEditorProps> = ({
           <Input
             id="photoUrl"
             value={profileData.photoUrl}
-            onChange={(e) => handleChange("photoUrl")(e.target.value)}
+            onChange={(e) => handleChange('photoUrl')(e.target.value)}
             placeholder="https://..."
           />
         </div>

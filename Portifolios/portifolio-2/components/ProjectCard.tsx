@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { ExternalLink, FolderGit2, Edit2, X, Save } from "lucide-react";
-import { Project } from "../types";
-import { Tag, FormInput, FormTextarea, IconButton } from "./ui";
+import React, { useState } from 'react';
+import { ExternalLink, FolderGit2, Edit2, X, Save } from 'lucide-react';
+import { Project } from '../types';
+import { Tag, FormInput, FormTextarea, IconButton } from './ui';
 
 interface ProjectCardProps {
   project: Project;
@@ -14,14 +14,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   onEdit,
   ariaLabel,
 }) => {
-  const projectLink = project.link && project.link !== "#" ? project.link : undefined;
+  const projectLink =
+    project.link && project.link !== '#' ? project.link : undefined;
   const projectImage = project.image?.trim();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     title: project.title,
     description: project.description,
-    tags: project.tags.join(", "),
-    link: project.link || "",
+    tags: project.tags.join(', '),
+    link: project.link || '',
   });
 
   const handleSave = () => {
@@ -30,7 +31,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       title: editData.title,
       description: editData.description,
       tags: editData.tags
-        .split(",")
+        .split(',')
         .map((tag) => tag.trim())
         .filter((tag) => tag),
       link: editData.link,
@@ -43,8 +44,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     setEditData({
       title: project.title,
       description: project.description,
-      tags: project.tags.join(", "),
-      link: project.link || "",
+      tags: project.tags.join(', '),
+      link: project.link || '',
     });
     setIsEditing(false);
   };
@@ -73,13 +74,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <div className="space-y-4">
           <FormInput
             value={editData.title}
-            onChange={(v) => updateField("title", v)}
+            onChange={(v) => updateField('title', v)}
             placeholder="Project title"
             className="text-lg font-bold"
           />
           <FormTextarea
             value={editData.description}
-            onChange={(v) => updateField("description", v)}
+            onChange={(v) => updateField('description', v)}
             placeholder="Project description"
           />
           <FormInput

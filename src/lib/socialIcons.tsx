@@ -184,7 +184,9 @@ function toRenderableSocialLink(
   social: SocialLinkInput,
   fallbackOrder: number,
 ): RenderableSocialLink | null {
-  const platform = normalizeSocialPlatform(social.platform || social.plataforma);
+  const platform = normalizeSocialPlatform(
+    social.platform || social.plataforma,
+  );
   const url = social.url?.trim();
 
   if (!platform || !url) return null;

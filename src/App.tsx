@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import React, { useEffect } from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from 'react-router-dom';
 import {
   Home,
   SignupPage,
@@ -16,16 +22,16 @@ import {
   PublicProfilePage,
   PortfolioEditorPage,
   AuthCallbackPage,
-} from "./pages";
-import { AdminLayoutWrapper } from "./components/admin/AdminLayoutWrapper";
-import { AppToaster } from "@/components/ui/sonner";
-import { useAuthStore } from "@/stores/authStore";
+} from './pages';
+import { AdminLayoutWrapper } from './components/admin/AdminLayoutWrapper';
+import { AppToaster } from '@/components/ui/sonner';
+import { useAuthStore } from '@/stores/authStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const authStatus = useAuthStore((state) => state.authStatus);
 
-  if (authStatus === "booting") return null;
-  if (authStatus === "guest") {
+  if (authStatus === 'booting') return null;
+  if (authStatus === 'guest') {
     return <Navigate to="/profile/type" replace />;
   }
 
@@ -40,8 +46,8 @@ function AuthSessionBootstrap() {
 
   useEffect(() => {
     if (!hasHydrated) return;
-    if (location.pathname === "/auth/callback/google") return;
-    if (authStatus !== "booting") return;
+    if (location.pathname === '/auth/callback/google') return;
+    if (authStatus !== 'booting') return;
 
     void bootstrapAuth();
   }, [authStatus, bootstrapAuth, hasHydrated, location.pathname]);
@@ -51,12 +57,12 @@ function AuthSessionBootstrap() {
 
 function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const isLanding = location.pathname === "/" || location.pathname === "/home";
+  const isLanding = location.pathname === '/' || location.pathname === '/home';
   const isInfluencerWorkspace =
-    location.pathname.startsWith("/onboarding/") ||
-    location.pathname.startsWith("/dashboard/influencer/");
+    location.pathname.startsWith('/onboarding/') ||
+    location.pathname.startsWith('/dashboard/influencer/');
   return (
-    <div className={isLanding || isInfluencerWorkspace ? "" : "app-shell"}>
+    <div className={isLanding || isInfluencerWorkspace ? '' : 'app-shell'}>
       <AuthSessionBootstrap />
       {children}
     </div>
@@ -71,7 +77,10 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
 
-          <Route path="/signup" element={<Navigate to="/profile/type" replace />} />
+          <Route
+            path="/signup"
+            element={<Navigate to="/profile/type" replace />}
+          />
           <Route path="/auth/callback/google" element={<AuthCallbackPage />} />
 
           <Route path="/profile/type" element={<UserTypeSelectionPage />} />
@@ -80,7 +89,10 @@ export default function App() {
             path="/profile/create/developer"
             element={<DeveloperCreateProfilePage />}
           />
-          <Route path="/onboarding/:profileId" element={<InfluencerOnboardingPage />} />
+          <Route
+            path="/onboarding/:profileId"
+            element={<InfluencerOnboardingPage />}
+          />
 
           <Route
             path="/dashboard/portfolio/:portfolioId"

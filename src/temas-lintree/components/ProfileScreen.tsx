@@ -10,7 +10,9 @@ interface ProfileScreenProps {
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile }) => {
   // Check if background is a Tailwind class or an image URL
   const isCustomBg = profile.backgroundStyle.includes('url');
-  const socialLinks = buildRenderableSocialLinks(profile.socials as SocialLink[]);
+  const socialLinks = buildRenderableSocialLinks(
+    profile.socials as SocialLink[],
+  );
 
   return (
     <div

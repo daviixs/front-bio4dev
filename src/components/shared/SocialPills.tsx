@@ -21,8 +21,7 @@ interface SocialPillsProps {
 const SURFACE_STYLES: Record<SocialPillsSurface, string> = {
   light:
     'border-slate-200 bg-white/75 text-slate-700 hover:border-slate-300 hover:bg-white',
-  dark:
-    'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10',
+  dark: 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10',
 };
 
 const ICON_SURFACE_STYLES: Record<SocialPillsSurface, string> = {
@@ -71,7 +70,9 @@ export function SocialPills({
               >
                 <Icon size={iconSize} />
               </span>
-              <span className={cn('truncate', labelClassName)}>{item.label}</span>
+              <span className={cn('truncate', labelClassName)}>
+                {item.label}
+              </span>
             </a>
 
             {editMode && onEditItem && (

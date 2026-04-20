@@ -1,29 +1,28 @@
-import React from "react";
-import { Reveal } from "./Reveal";
-import { motion } from "framer-motion";
-import { sectionFade } from "./animations";
+import React from 'react';
+import { Reveal } from './Reveal';
+import { motion } from 'framer-motion';
+import { sectionFade } from './animations';
 
 const testimonials = [
   {
     quote:
       'Hoje a ÚNICA pessoa que está falando sobre vibecoding de forma tão lúcida! Deborah, você é como um raio de luz do meio dessa escuridão de informações vazias de topo de funil, continue… seu conteúdo é IMPECÁVEL',
-    name: "Benicio SaaS",
-    handle: "@BenicioSaaS",
-    initials: "BS",
+    name: 'Benicio SaaS',
+    handle: '@BenicioSaaS',
+    initials: 'BS',
   },
   {
     quote:
-      "Nunca pensei que um conteúdo tão técnico e avançado pudesse ser comunicado de maneira tão eficiente e prática. Entrega muito e sem enrolação.",
-    name: "Harlem Trevisan",
-    handle: "@HarlemTrevisan",
-    initials: "HT",
+      'Nunca pensei que um conteúdo tão técnico e avançado pudesse ser comunicado de maneira tão eficiente e prática. Entrega muito e sem enrolação.',
+    name: 'Harlem Trevisan',
+    handle: '@HarlemTrevisan',
+    initials: 'HT',
   },
   {
-    quote:
-      "Deborah, sua didática precisa ser estudada e replicada. Parabéns!",
-    name: "Igor Baldarena",
-    handle: "@igorbaldarena",
-    initials: "IB",
+    quote: 'Deborah, sua didática precisa ser estudada e replicada. Parabéns!',
+    name: 'Igor Baldarena',
+    handle: '@igorbaldarena',
+    initials: 'IB',
   },
 ];
 

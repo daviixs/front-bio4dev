@@ -5,15 +5,24 @@ interface HeroProps {
   avatarUrl: string;
 }
 
-export default function Hero({ title, gradientTitle, description, avatarUrl }: HeroProps) {
+export default function Hero({
+  title,
+  gradientTitle,
+  description,
+  avatarUrl,
+}: HeroProps) {
   return (
     <div className="mt-8 md:mt-5">
       <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-[#FF1493] to-[#8A2BE2] mb-6 flex items-center justify-center overflow-hidden p-1 mx-auto md:mx-0">
         <div className="w-full h-full rounded-full bg-[#1a1a1a] flex items-center justify-center overflow-hidden">
-          <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
-      
+
       <h1 className="text-4xl md:text-[42px] leading-[1.1] font-extrabold mb-4 text-center md:text-left">
         {title}
         <br />

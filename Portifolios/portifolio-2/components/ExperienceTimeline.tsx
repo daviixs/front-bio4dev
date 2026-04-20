@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Experience } from "../types";
-import { Edit2, Save, X } from "lucide-react";
-import { Section, SectionTitle, EmptyState } from "./ui";
+import React, { useState } from 'react';
+import { Experience } from '../types';
+import { Edit2, Save, X } from 'lucide-react';
+import { Section, SectionTitle, EmptyState } from './ui';
 
 interface ExperienceTimelineProps {
   experiences: Experience[];
@@ -35,7 +35,7 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
 
   const handleInputChange = (
     field: keyof Experience,
-    value: string | boolean
+    value: string | boolean,
   ) => {
     setEditData((prev) => ({ ...prev, [field]: value }));
   };
@@ -56,7 +56,7 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
                 {/* Dot on timeline */}
                 <span
                   className={`absolute -left-[1.95rem] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-[#121318] ${
-                    item.current ? "bg-yellow-500 animate-pulse" : "bg-gray-600"
+                    item.current ? 'bg-yellow-500 animate-pulse' : 'bg-gray-600'
                   }`}
                 />
 
@@ -64,8 +64,10 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
                   {isEditing ? (
                     <input
                       type="text"
-                      value={editData.role || ""}
-                      onChange={(e) => handleInputChange("role", e.target.value)}
+                      value={editData.role || ''}
+                      onChange={(e) =>
+                        handleInputChange('role', e.target.value)
+                      }
                       className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-lg font-semibold focus:outline-none focus:border-yellow-500"
                       placeholder="Role"
                     />
@@ -79,9 +81,9 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
                     {isEditing ? (
                       <input
                         type="text"
-                        value={editData.date || ""}
+                        value={editData.date || ''}
                         onChange={(e) =>
-                          handleInputChange("date", e.target.value)
+                          handleInputChange('date', e.target.value)
                         }
                         className="bg-white/10 border border-white/20 rounded px-2 py-1 text-xs font-mono text-gray-500 focus:outline-none focus:border-yellow-500"
                         placeholder="Date"
@@ -127,9 +129,9 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
                   {isEditing ? (
                     <input
                       type="text"
-                      value={editData.company || ""}
+                      value={editData.company || ''}
                       onChange={(e) =>
-                        handleInputChange("company", e.target.value)
+                        handleInputChange('company', e.target.value)
                       }
                       className="bg-white/10 border border-white/20 rounded px-2 py-1 text-yellow-500/90 text-sm font-medium focus:outline-none focus:border-yellow-500"
                       placeholder="Company"
@@ -148,7 +150,7 @@ const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
                         type="checkbox"
                         checked={editData.current || false}
                         onChange={(e) =>
-                          handleInputChange("current", e.target.checked)
+                          handleInputChange('current', e.target.checked)
                         }
                         className="rounded border-white/20 bg-white/10"
                       />

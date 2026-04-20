@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Upload, Link as LinkIcon } from "lucide-react";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Upload, Link as LinkIcon } from 'lucide-react';
 
 interface ImageEditorProps {
   value: string;

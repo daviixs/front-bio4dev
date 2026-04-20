@@ -1,13 +1,16 @@
-import React from "react";
-import { ProfileData } from "@/temas-lintree/types";
-import ThemeWrapper from "@/components/editors/shared/ThemeWrapper";
+import React from 'react';
+import { ProfileData } from '@/temas-lintree/types';
+import ThemeWrapper from '@/components/editors/shared/ThemeWrapper';
 
 interface PreviewPanelProps {
   profileData: ProfileData;
   themeId: string;
 }
 
-const PreviewPanel: React.FC<PreviewPanelProps> = ({ profileData, themeId }) => {
+const PreviewPanel: React.FC<PreviewPanelProps> = ({
+  profileData,
+  themeId,
+}) => {
   const ThemeComponent = THEME_COMPONENTS[themeId];
 
   return (
@@ -28,5 +31,4 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ profileData, themeId }) => 
   );
 };
 
-export default PreviewPanel
-;
+export default PreviewPanel;

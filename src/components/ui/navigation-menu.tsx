@@ -1,9 +1,9 @@
-import * as React from "react";
-import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu@1.2.5";
-import { cva } from "class-variance-authority@0.7.1";
-import { ChevronDownIcon } from "lucide-react@0.487.0";
+import * as React from 'react';
+import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu@1.2.5';
+import { cva } from 'class-variance-authority@0.7.1';
+import { ChevronDownIcon } from 'lucide-react@0.487.0';
 
-import { cn } from "./utils";
+import { cn } from './utils';
 
 function NavigationMenu({
   className,
@@ -18,7 +18,7 @@ function NavigationMenu({
       data-slot="navigation-menu"
       data-viewport={viewport}
       className={cn(
-        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+        'group/navigation-menu relative flex max-w-max flex-1 items-center justify-center',
         className,
       )}
       {...props}
@@ -37,7 +37,7 @@ function NavigationMenuList({
     <NavigationMenuPrimitive.List
       data-slot="navigation-menu-list"
       className={cn(
-        "group flex flex-1 list-none items-center justify-center gap-1",
+        'group flex flex-1 list-none items-center justify-center gap-1',
         className,
       )}
       {...props}
@@ -52,7 +52,7 @@ function NavigationMenuItem({
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
-      className={cn("relative", className)}
+      className={cn('relative', className)}
       {...props}
     />
   );

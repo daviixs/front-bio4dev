@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Pencil } from "lucide-react";
-import { ProfileData } from "@/temas-lintree/types";
-import { TextEditor } from "./fields/TextEditor";
-import { ImageEditor } from "./fields/ImageEditor";
-import { ListEditor } from "./fields/ListEditor";
-import { ColorPicker } from "./fields/ColorPicker";
+import React, { useState } from 'react';
+import { Pencil } from 'lucide-react';
+import { ProfileData } from '@/temas-lintree/types';
+import { TextEditor } from './fields/TextEditor';
+import { ImageEditor } from './fields/ImageEditor';
+import { ListEditor } from './fields/ListEditor';
+import { ColorPicker } from './fields/ColorPicker';
 
 interface EditableWrapperProps {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ interface EditableWrapperProps {
 
 interface EditState {
   field: string;
-  type: "text" | "textarea" | "image" | "list" | "color";
+  type: 'text' | 'textarea' | 'image' | 'list' | 'color';
   label: string;
   value: any;
 }
@@ -29,7 +29,7 @@ export function EditableThemeWrapper({
   const [editState, setEditState] = useState<EditState | null>(null);
 
   const handleUpdate = (field: string, value: any) => {
-    const keys = field.split(".");
+    const keys = field.split('.');
     const newData = { ...data };
     let current: any = newData;
 
@@ -49,7 +49,7 @@ export function EditableThemeWrapper({
     value,
   }: {
     field: string;
-    type: EditState["type"];
+    type: EditState['type'];
     label: string;
     value: any;
   }) => (
@@ -91,9 +91,9 @@ export function EditableThemeWrapper({
           <button
             onClick={() =>
               setEditState({
-                field: "buttons",
-                type: "list",
-                label: "Botões/Links",
+                field: 'buttons',
+                type: 'list',
+                label: 'Botões/Links',
                 value: data.buttons,
               })
             }
@@ -105,9 +105,9 @@ export function EditableThemeWrapper({
           <button
             onClick={() =>
               setEditState({
-                field: "accentColor",
-                type: "color",
-                label: "Cor de Destaque",
+                field: 'accentColor',
+                type: 'color',
+                label: 'Cor de Destaque',
                 value: data.accentColor,
               })
             }
@@ -120,7 +120,7 @@ export function EditableThemeWrapper({
       </div>
 
       {/* Editors */}
-      {editState && editState.type === "text" && (
+      {editState && editState.type === 'text' && (
         <TextEditor
           value={editState.value}
           label={editState.label}
@@ -134,7 +134,7 @@ export function EditableThemeWrapper({
         />
       )}
 
-      {editState && editState.type === "textarea" && (
+      {editState && editState.type === 'textarea' && (
         <TextEditor
           value={editState.value}
           label={editState.label}
@@ -148,7 +148,7 @@ export function EditableThemeWrapper({
         />
       )}
 
-      {editState && editState.type === "image" && (
+      {editState && editState.type === 'image' && (
         <ImageEditor
           value={editState.value}
           label={editState.label}
@@ -161,7 +161,7 @@ export function EditableThemeWrapper({
         />
       )}
 
-      {editState && editState.type === "list" && (
+      {editState && editState.type === 'list' && (
         <ListEditor
           value={editState.value}
           label={editState.label}

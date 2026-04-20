@@ -1,6 +1,6 @@
-import React from "react";
-import { InfluencerOnboardingPage } from "@/pages/InfluencerOnboardingPage";
-import type { InfluencerTemplateId } from "./templateMap";
+import React from 'react';
+import { InfluencerOnboardingPage } from '@/pages/InfluencerOnboardingPage';
+import type { InfluencerTemplateId } from './templateMap';
 
 export function TemplateEditor({
   templateId,

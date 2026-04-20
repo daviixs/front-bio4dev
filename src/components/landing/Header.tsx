@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useAuthStore } from "@/stores/authStore";
-import { toast } from "sonner";
-import { List, X, ArrowUpRight } from "@phosphor-icons/react";
-import { cn } from "@/components/ui/utils";
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
+import { toast } from 'sonner';
+import { List, X, ArrowUpRight } from '@phosphor-icons/react';
+import { cn } from '@/components/ui/utils';
 
 const menuItems = [
-  { label: "Recursos", href: "#recursos" },
-  { label: "Templates", href: "#templates" },
-  { label: "Preços", href: "#precos" },
-  { label: "FAQ", href: "#faq" },
+  { label: 'Recursos', href: '#recursos' },
+  { label: 'Templates', href: '#templates' },
+  { label: 'Preços', href: '#precos' },
+  { label: 'FAQ', href: '#faq' },
 ];
 
 export function Header() {
@@ -17,8 +17,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const { loginWithGoogle, isLoading } = useAuthStore();
 
-  const hideLandingActions = location.pathname.startsWith("/dashboard");
-  const isOnboarding = location.pathname.startsWith("/onboarding");
+  const hideLandingActions = location.pathname.startsWith('/dashboard');
+  const isOnboarding = location.pathname.startsWith('/onboarding');
   const shouldHideLanding = hideLandingActions || isOnboarding;
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export function Header() {
     try {
       await loginWithGoogle();
     } catch (err: any) {
-      toast.error(err?.message || "Erro ao iniciar login com Google");
+      toast.error(err?.message || 'Erro ao iniciar login com Google');
     }
   };
 
@@ -40,8 +40,8 @@ export function Header() {
           key={item.label}
           href={item.href}
           className={cn(
-            "flex items-center gap-2 px-2 py-1 text-sm font-medium text-[#ece5d9] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
-            "hover:text-[#c3986b]"
+            'flex items-center gap-2 px-2 py-1 text-sm font-medium text-[#ece5d9] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+            'hover:text-[#c3986b]',
           )}
           style={{ transitionDelay: `${idx * 50}ms` }}
           onClick={() => setOpen(false)}
@@ -78,7 +78,7 @@ export function Header() {
                 onClick={handleLogin}
                 className="group flex items-center gap-2 rounded-full border border-[#c3986b]/40 bg-[#2c2621] px-4 py-2 text-sm font-medium text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#3a3028]"
               >
-                {isLoading ? "Redirecionando..." : "Entrar"}
+                {isLoading ? 'Redirecionando...' : 'Entrar'}
               </button>
               <Link
                 to="/profile/type"

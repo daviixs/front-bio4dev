@@ -54,16 +54,17 @@ export function Projects() {
   ];
 
   return (
-    <section id="projetos" className="py-20 px-6 bg-gradient-to-br from-gray-50 to-gray-100">
+    <section
+      id="projetos"
+      className="py-20 px-6 bg-gradient-to-br from-gray-50 to-gray-100"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Título da seção */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Projetos
           </h2>
-          <p className="text-gray-600">
-            Alguns dos meus trabalhos recentes
-          </p>
+          <p className="text-gray-600">Alguns dos meus trabalhos recentes</p>
         </div>
 
         {/* Grade de projetos */}
@@ -85,12 +86,8 @@ export function Projects() {
 
               {/* Conteúdo do card */}
               <div className="p-6">
-                <h3 className="mb-3 text-gray-800">
-                  {project.title}
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  {project.description}
-                </p>
+                <h3 className="mb-3 text-gray-800">{project.title}</h3>
+                <p className="text-gray-600 mb-6">{project.description}</p>
 
                 {/* Botões */}
                 <div className="flex gap-4">

@@ -1,15 +1,18 @@
-import React from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ProfileData } from "@/temas-lintree/types";
+import React from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { ProfileData } from '@/temas-lintree/types';
 
 interface StyleEditorProps {
   profileData: ProfileData;
   setProfileData: React.Dispatch<React.SetStateAction<ProfileData>>;
 }
 
-const StyleEditor: React.FC<StyleEditorProps> = ({ profileData, setProfileData }) => {
+const StyleEditor: React.FC<StyleEditorProps> = ({
+  profileData,
+  setProfileData,
+}) => {
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-6">
       <div className="flex items-center gap-2 mb-4">
@@ -63,7 +66,6 @@ const StyleEditor: React.FC<StyleEditorProps> = ({ profileData, setProfileData }
   );
 };
 
-export default StyleEdito
-
+export default StyleEdito;
 
 r;

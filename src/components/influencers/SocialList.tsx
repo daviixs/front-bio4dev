@@ -1,7 +1,7 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Trash2, Plus } from "lucide-react";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Trash2, Plus } from 'lucide-react';
 
 export interface SocialItem {
   id?: string;
@@ -10,13 +10,13 @@ export interface SocialItem {
 }
 
 const PLATFORM_OPTIONS = [
-  "instagram",
-  "tiktok",
-  "youtube",
-  "twitter",
-  "linkedin",
-  "facebook",
-  "whatsapp",
+  'instagram',
+  'tiktok',
+  'youtube',
+  'twitter',
+  'linkedin',
+  'facebook',
+  'whatsapp',
 ];
 
 interface SocialListProps {
@@ -33,7 +33,7 @@ export function SocialList({ socials, onChange }: SocialListProps) {
   };
 
   const addItem = () => {
-    onChange([...socials, { platform: "instagram", url: "" }]);
+    onChange([...socials, { platform: 'instagram', url: '' }]);
   };
 
   const removeItem = (index: number) => {

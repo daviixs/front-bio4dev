@@ -27,8 +27,11 @@ export function TextInput({
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  const inputType = showPasswordToggle && type === 'password' 
-    ? (showPassword ? 'text' : 'password')
+  const inputType =
+    showPasswordToggle && type === 'password'
+      ? showPassword
+        ? 'text'
+        : 'password'
       : type;
 
   return (

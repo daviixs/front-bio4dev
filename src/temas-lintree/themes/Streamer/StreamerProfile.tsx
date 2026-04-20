@@ -1,4 +1,3 @@
-
 import React from 'react';
 import SharedHeader from '../../components/shared/SharedHeader';
 import SharedLink from '../../components/shared/SharedLink';
@@ -16,7 +15,7 @@ const StreamerProfile: React.FC<StreamerProfileProps> = ({ data }) => {
       <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600/10 blur-[100px]"></div>
       <div className="absolute bottom-0 right-0 w-64 h-64 bg-cyan-600/10 blur-[100px]"></div>
 
-      <SharedHeader 
+      <SharedHeader
         name={data.name}
         bio={data.bio}
         photoUrl={data.photoUrl}
@@ -24,7 +23,7 @@ const StreamerProfile: React.FC<StreamerProfileProps> = ({ data }) => {
         textClassName="font-black italic uppercase tracking-tighter"
         containerClassName="z-10 mt-8"
       />
-      
+
       <div className="w-full flex flex-col gap-3 mt-10 max-w-md relative z-10 mb-20">
         {data.buttons.map((btn, idx) => (
           <SharedLink
