@@ -16,10 +16,6 @@ interface AuthState {
   error: string | null;
 
   loginWithGoogle: () => Promise<void>;
-  handleOAuthCallback: (
-    code: string,
-    state?: string | null,
-  ) => Promise<boolean | void>;
   bootstrapAuth: () => Promise<AuthStatus>;
   refreshAccessToken: () => Promise<string | null>;
   logout: () => Promise<void>;
@@ -41,6 +37,12 @@ const getApiBaseUrl = () => {
     : `${currentHost}:3000`;
 };
 
+const buildApiUrl = (path: string) =>
+  new URL(
+    path.replace(/^\//, ''),
+    `${getApiBaseUrl().replace(/\/$/, '')}/`,
+  ).toString();
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -56,74 +58,30 @@ export const useAuthStore = create<AuthState>()(
       loginWithGoogle: async () => {
         set({ isLoading: true, error: null });
         try {
-          const response = await api.get<{ url: string; state: string }>(
-            '/auth/google',
-          );
-          const { url } = response.data;
-          window.location.href = url;
+          window.location.assign(buildApiUrl('/auth/google'));
         } catch (error: any) {
           set({
             isLoading: false,
             error:
-              error.response?.data?.message ||
-              'Não foi possível iniciar login com Google',
-          });
-        }
-      },
-
-      handleOAuthCallback: async (code: string, state?: string | null) => {
-        set({ isLoading: true, error: null });
-        try {
-          const apiUrl = getApiBaseUrl();
-          const url = new URL(`${apiUrl}/auth/google/callback`);
-          url.searchParams.set('code', code);
-          if (state) url.searchParams.set('state', state);
-
-          const response = await fetch(url.toString(), {
-            method: 'GET',
-            credentials: 'include',
-          });
-
-          if (!response.ok) {
-            throw new Error('Falha ao concluir login com Google');
-          }
-
-          const data = await response.json();
-
-          set({
-            user: data.user,
-            accessToken: data.accessToken,
-            isAuthenticated: true,
-            authStatus: 'authenticated',
-            isLoading: false,
-            error: null,
-          });
-
-          return data.isNew as boolean;
-        } catch (error: any) {
-          set({
-            error:
-              error.message ||
-              'Não foi possível autenticar com Google. Tente novamente.',
-            isLoading: false,
-            isAuthenticated: false,
-            authStatus: 'guest',
-            accessToken: null,
-            user: null,
-            profile: null,
+              error?.message || 'Não foi possível iniciar login com Google',
           });
           throw error;
         }
       },
 
       bootstrapAuth: async () => {
-        const { authStatus, accessToken, isAuthenticated } = get();
+        const { authStatus, accessToken, isAuthenticated, user } = get();
 
-        if (authStatus === 'authenticated') {
+        if (authStatus === 'authenticated' && user) {
           return 'authenticated';
         }
 
-        if (authStatus === 'guest' && !isAuthenticated && !accessToken) {
+        if (
+          authStatus === 'guest' &&
+          !isAuthenticated &&
+          !accessToken &&
+          !user
+        ) {
           return 'guest';
         }
 
@@ -134,7 +92,30 @@ export const useAuthStore = create<AuthState>()(
         set({ authStatus: 'booting' });
 
         bootstrapAuthPromise = (async () => {
+          const syncCurrentUser = async () => {
+            try {
+              const response = await api.get<User>('/users/me');
+              set({ user: response.data, error: null });
+              return response.data;
+            } catch {
+              return null;
+            }
+          };
+
           if (get().accessToken && get().isAuthenticated) {
+            if (!get().user) {
+              const currentUser = await syncCurrentUser();
+              if (!currentUser) {
+                set({
+                  authStatus: 'guest',
+                  isAuthenticated: false,
+                  accessToken: null,
+                  user: null,
+                  profile: null,
+                });
+                return 'guest' as const;
+              }
+            }
             set({ authStatus: 'authenticated' });
             return 'authenticated' as const;
           }
@@ -142,6 +123,17 @@ export const useAuthStore = create<AuthState>()(
           const token = await get().refreshAccessToken();
 
           if (token) {
+            const currentUser = get().user ?? (await syncCurrentUser());
+            if (!currentUser) {
+              set({
+                authStatus: 'guest',
+                isAuthenticated: false,
+                accessToken: null,
+                user: null,
+                profile: null,
+              });
+              return 'guest' as const;
+            }
             set({ authStatus: 'authenticated' });
             return 'authenticated' as const;
           }
@@ -163,8 +155,7 @@ export const useAuthStore = create<AuthState>()(
 
       refreshAccessToken: async () => {
         try {
-          const apiUrl = getApiBaseUrl();
-          const response = await fetch(`${apiUrl}/auth/refresh`, {
+          const response = await fetch(buildApiUrl('/auth/refresh'), {
             method: 'POST',
             credentials: 'include',
           });
@@ -176,6 +167,7 @@ export const useAuthStore = create<AuthState>()(
           const data = await response.json();
           set({
             accessToken: data.accessToken,
+            user: data.user ?? get().user,
             isAuthenticated: true,
             authStatus: 'authenticated',
           });
@@ -194,8 +186,7 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          const apiUrl = getApiBaseUrl();
-          await fetch(`${apiUrl}/auth/logout`, {
+          await fetch(buildApiUrl('/auth/logout'), {
             method: 'POST',
             credentials: 'include',
           });
