@@ -4,6 +4,7 @@ import { ArrowRight, RocketLaunch, UsersThree } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { sectionFade } from './animations';
 import mockupImage from '@/landingpage-images/mockup-portrait.png';
+import customImage from '@/landingpage-images/image.png';
 import { Reveal } from './Reveal';
 
 export function HeroSection() {
@@ -49,39 +50,13 @@ export function HeroSection() {
         </div>
 
         <Reveal delay={180}>
-          <div className="relative w-full max-w-4xl">
-            <div className="double-shell">
-              <div className="core relative overflow-hidden rounded-[22px] bg-white p-5">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(195,152,107,0.18),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(236,229,217,0.16),transparent_34%)]" />
-                <div className="relative flex flex-col gap-4">
-                  <div className="flex items-center justify-between rounded-2xl border border-[#c3986b]/25 bg-white/70 px-4 py-3 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.35)]">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                        Stack AI Builder
-                      </p>
-                      <p className="text-lg font-semibold text-slate-800">
-                        Templates, mídia e CTA quente
-                      </p>
-                    </div>
-                    <UsersThree
-                      size={28}
-                      weight="fill"
-                      className="text-[#c3986b]"
-                    />
-                  </div>
-
-                  <div className="relative flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#c3986b]/12 via-transparent to-white" />
-                    <img
-                      src={mockupImage}
-                      alt="Preview do template Bio4Dev em um iPhone"
-                      className="relative z-10 h-[520px] w-auto drop-shadow-[0_30px_70px_-40px_rgba(15,23,42,0.5)]"
-                      loading="lazy"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="relative w-full max-w-4xl flex justify-center">
+            <img
+              src={customImage}
+              alt="Preview do produto"
+              className="relative z-10 w-full h-auto rounded-[10px] drop-shadow-[0_30px_70px_-40px_rgba(15,23,42,0.5)]"
+              loading="lazy"
+            />
           </div>
         </Reveal>
       </div>
