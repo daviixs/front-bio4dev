@@ -1,12 +1,13 @@
 import React from 'react';
 import {
   ExternalLink,
-  Github,
-  Linkedin,
   Briefcase,
   Calendar,
 } from 'lucide-react';
 import { TechIcon } from '@/components/portfolio/TechIcon';
+import { SocialPills } from '@/components/shared/SocialPills';
+import { cn } from '@/components/ui/utils';
+import { buildRenderableSocialLinks } from '@/lib/socialIcons';
 import { template01Theme } from '@/theme/template01Theme';
 import type {
   ProfileComplete,
@@ -410,25 +411,9 @@ interface FooterProps {
   socials?: Social[];
 }
 
-function Footer({ footer }: FooterProps) {
+function Footer({ footer, socials }: FooterProps) {
   const currentYear = new Date().getFullYear();
-
-  const socialLinks = [
-    footer?.github && {
-      href: footer.github,
-      label: 'GitHub',
-      icon: <Github size={24} />,
-    },
-    footer?.linkedin && {
-      href: footer.linkedin,
-      label: 'LinkedIn',
-      icon: <Linkedin size={24} />,
-    },
-  ].filter(Boolean) as Array<{
-    href: string;
-    label: string;
-    icon: React.ReactNode;
-  }>;
+  const socialLinks = buildRenderableSocialLinks(socials, footer);
 
   return (
     <footer
@@ -446,36 +431,20 @@ function Footer({ footer }: FooterProps) {
           </p>
         </div>
 
-        <div className="flex justify-center gap-6 mb-8">
-          {socialLinks.map((social) => (
-            <a
-              key={social.label}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors hover:scale-110 ${template01Theme.socialSurface}`}
-              aria-label={social.label}
-            >
-              {social.icon}
-            </a>
-          ))}
-          {!socialLinks.length && (
-            <>
-              <span
-                className={`w-12 h-12 flex items-center justify-center rounded-full opacity-50 ${template01Theme.socialSurface}`}
-                aria-hidden="true"
-              >
-                <Github size={24} />
-              </span>
-              <span
-                className={`w-12 h-12 flex items-center justify-center rounded-full opacity-50 ${template01Theme.socialSurface}`}
-                aria-hidden="true"
-              >
-                <Linkedin size={24} />
-              </span>
-            </>
-          )}
-        </div>
+        {socialLinks.length > 0 && (
+          <div className="mb-8 flex justify-center">
+            <SocialPills
+              items={socialLinks}
+              surface="dark"
+              className="justify-center"
+              itemClassName={cn(
+                'border-[#887d7a]/35 text-[#c5b9b7]',
+                template01Theme.socialSurface,
+              )}
+              iconContainerClassName="bg-black/10"
+            />
+          </div>
+        )}
 
         <div className={`border-t pt-8 ${template01Theme.divider}`}>
           <p className={`${template01Theme.footerSecondary} text-center`}>

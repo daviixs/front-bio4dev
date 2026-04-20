@@ -1,16 +1,15 @@
 import type { ProfileComplete } from '@/types';
 import {
   getPortfolio3HeroHeadline,
-  PORTFOLIO3_SOCIAL_SLOTS,
   Portfolio3FooterSection,
   Portfolio3HeroSection,
   Portfolio3Layout,
   Portfolio3ProjectsSection,
   Portfolio3TechStackSection,
   Portfolio3ExperienceSection,
-  findPortfolio3Social,
   getPortfolio3Initials,
 } from '@/components/portfolio/portfolio3Shared';
+import { buildRenderableSocialLinks } from '@/lib/socialIcons';
 
 interface TemplateProps {
   profile: ProfileComplete;
@@ -24,19 +23,7 @@ export function Template03({ profile }: TemplateProps) {
   const footerDescription =
     profile.footer?.subtitle || legenda?.descricao || 'Descreva seu trabalho.';
   const footerEmail = profile.footer?.email;
-
-  const socialLinks = PORTFOLIO3_SOCIAL_SLOTS.map((slot) => {
-    const social = findPortfolio3Social(profile.social, slot.id);
-
-    if (!social?.url) return null;
-
-    return {
-      id: slot.id,
-      label: slot.label,
-      url: social.url,
-      icon: slot.icon,
-    };
-  }).filter(Boolean);
+  const socialLinks = buildRenderableSocialLinks(profile.social, profile.footer);
 
   return (
     <Portfolio3Layout

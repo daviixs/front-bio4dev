@@ -4,7 +4,9 @@ import { ArrowUpRight, Mail, Menu, Pencil, X } from 'lucide-react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/components/ui/utils';
+import { SocialPills } from '@/components/shared/SocialPills';
 import { getSocialIconComponent } from '@/lib/socialIcons';
+import type { RenderableSocialLink } from '@/lib/socialIcons';
 import { TechIcon } from './TechIcon';
 import type {
   Legenda,
@@ -24,13 +26,7 @@ export interface Portfolio3SocialSlot {
   icon: IconType;
 }
 
-export interface Portfolio3FooterSocialLink {
-  id: string;
-  label: string;
-  url?: string;
-  icon: IconType;
-  onClick?: () => void;
-}
+export type Portfolio3FooterSocialLink = RenderableSocialLink;
 
 export const PORTFOLIO3_SOCIAL_SLOTS: Portfolio3SocialSlot[] = [
   {
@@ -583,40 +579,15 @@ export function Portfolio3FooterSection({
           </div>
         ) : null}
 
-        {socialLinks.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-4 text-[12px] text-[#777] md:justify-end">
-            {socialLinks.map((social) => {
-              const Icon = social.icon;
-
-              if (social.onClick) {
-                return (
-                  <button
-                    key={social.id}
-                    type="button"
-                    onClick={social.onClick}
-                    className="flex cursor-pointer items-center gap-1 transition-colors hover:text-white"
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    {social.label}
-                  </button>
-                );
-              }
-
-              return (
-                <a
-                  key={social.id}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-white"
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {social.label}
-                </a>
-              );
-            })}
-          </div>
-        )}
+        <SocialPills
+          items={socialLinks}
+          surface="dark"
+          className="justify-center md:justify-end"
+          itemClassName="border-white/10 bg-white/[0.03] text-[#d4d4d4] hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+          iconContainerClassName="bg-white/10"
+          labelClassName="text-[12px]"
+          iconSize={16}
+        />
       </div>
     </footer>
   );

@@ -27,7 +27,11 @@ import {
   Edit3,
   Trash2,
 } from "lucide-react";
-import { SocialIcon } from "@/lib/socialIcons";
+import {
+  buildRenderableSocialLinks,
+  normalizeSocialPlatform,
+} from "@/lib/socialIcons";
+import { SocialPills } from "@/components/shared/SocialPills";
 
 interface DynamicThemeRendererProps {
   profileData: ProfileData;
@@ -55,6 +59,63 @@ const EditButton: React.FC<{
   </button>
 );
 
+const SHARED_SOCIAL_EDIT_BUTTON_CLASS =
+  "absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all";
+
+interface ThemedSocialPillsProps {
+  socials: ProfileData["socials"];
+  editMode: boolean;
+  onEditSocial?: (
+    social: ProfileData["socials"][number],
+    index: number
+  ) => void;
+  className?: string;
+  surface?: "light" | "dark";
+  itemClassName?: string;
+  iconContainerClassName?: string;
+  labelClassName?: string;
+  iconSize?: number;
+}
+
+const ThemedSocialPills: React.FC<ThemedSocialPillsProps> = ({
+  socials,
+  editMode,
+  onEditSocial,
+  className,
+  surface = "dark",
+  itemClassName,
+  iconContainerClassName,
+  labelClassName,
+  iconSize = 18,
+}) => {
+  const items = buildRenderableSocialLinks(socials);
+
+  return (
+    <SocialPills
+      items={items}
+      surface={surface}
+      className={className}
+      itemClassName={itemClassName}
+      iconContainerClassName={iconContainerClassName}
+      labelClassName={labelClassName}
+      iconSize={iconSize}
+      editMode={editMode}
+      editButtonClassName={SHARED_SOCIAL_EDIT_BUTTON_CLASS}
+      onEditItem={(item) => {
+        const sourceIndex = socials.findIndex(
+          (social) =>
+            normalizeSocialPlatform(social.platform) === item.platform &&
+            social.url === item.url
+        );
+
+        if (sourceIndex === -1 || !onEditSocial) return;
+
+        onEditSocial(socials[sourceIndex], sourceIndex);
+      }}
+    />
+  );
+};
+
 // This component dynamically renders each theme with updated data
 export function DynamicThemeRenderer({
   profileData,
@@ -73,11 +134,6 @@ export function DynamicThemeRenderer({
     if (onEdit) {
       onEdit(field, type, label, value);
     }
-  };
-
-  // Get icon component for social platform
-  const getSocialIcon = (platform: string, size: number = 20) => {
-    return <SocialIcon platform={platform} size={size} />;
   };
 
   // Render Activist Theme
@@ -183,38 +239,17 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Social Links */}
-          <div className="mt-16 w-full pt-8 border-t border-slate-100 flex justify-center gap-10">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-emerald-600 transition-colors"
-                >
-                  {getSocialIcon(social.platform, 22)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            surface="light"
+            className="mt-16 w-full justify-center border-t border-slate-100 pt-8"
+            itemClassName="border-slate-200 bg-white text-slate-500 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+            iconContainerClassName="bg-emerald-50"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -326,38 +361,16 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex gap-8 mt-14">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-zinc-500 hover:text-white transition-colors"
-                >
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            className="mt-14 justify-center"
+            itemClassName="border-zinc-800 bg-zinc-900/70 text-zinc-300 hover:border-purple-500/40 hover:bg-zinc-800 hover:text-white"
+            iconContainerClassName="bg-white/5 text-purple-300"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -463,38 +476,16 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex gap-4 mt-12">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-slate-900 rounded-lg hover:text-blue-400 transition-colors"
-                >
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            className="mt-12 justify-center"
+            itemClassName="border-slate-800 bg-slate-900 text-slate-200 hover:border-blue-500/40 hover:bg-slate-900 hover:text-blue-300"
+            iconContainerClassName="bg-blue-500/10 text-blue-300"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
 
           <span className="mt-16 text-[10px] opacity-20 font-bold tracking-[0.3em]">
             ATHLETE CORE
@@ -718,33 +709,16 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex gap-12 mt-20 grayscale opacity-40">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a href={social.url} target="_blank" rel="noopener noreferrer">
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            className="mt-20 justify-center"
+            itemClassName="border-zinc-700 bg-transparent text-zinc-300 opacity-70 grayscale hover:border-white/20 hover:bg-white/[0.03] hover:opacity-100 hover:grayscale-0"
+            iconContainerClassName="bg-white/5"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -877,38 +851,17 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex items-center gap-8 mt-12 mb-8">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#7B3F00]/60 hover:text-[#7B3F00]"
-                >
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            surface="light"
+            className="mt-12 mb-8 justify-center"
+            itemClassName="border-[#D8C0A7]/40 bg-[#F8EFE4] text-[#7B3F00] hover:border-[#D8C0A7] hover:bg-[#FFF7ED]"
+            iconContainerClassName="bg-[#7B3F00]/10"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -1024,38 +977,18 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex gap-4 mt-12 mb-10">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-indigo-600 transition-colors"
-                >
-                  {getSocialIcon(social.platform, 22)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            surface="light"
+            className="mt-12 mb-10 justify-center"
+            itemClassName="border-slate-200 bg-white text-slate-500 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
+            iconContainerClassName="bg-indigo-50"
+            iconSize={20}
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -1183,33 +1116,16 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex gap-6 mt-14 opacity-60">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a href={social.url} target="_blank" rel="noopener noreferrer">
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            className="mt-14 justify-center"
+            itemClassName="border-[#333] bg-[#1a1a1a] text-[#d4d4d4] opacity-70 hover:border-[#555] hover:bg-[#202020] hover:opacity-100"
+            iconContainerClassName="bg-white/5"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -1328,33 +1244,16 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex gap-8 mt-16 opacity-60">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a href={social.url} target="_blank" rel="noopener noreferrer">
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            className="mt-16 justify-center"
+            itemClassName="border-white/10 bg-white/[0.03] text-white/70 opacity-80 hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+            iconContainerClassName="bg-white/8"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -1467,38 +1366,16 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="flex gap-8 mt-16 text-[#00F0FF]/60">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-[#00F0FF] hover:scale-125 transition-all"
-                >
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        "social",
-                        "Rede Social",
-                        social
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            className="mt-16 justify-center"
+            itemClassName="border-[#00F0FF]/15 bg-[#001319]/40 text-[#9BE7EF] hover:border-[#00F0FF]/35 hover:bg-[#001319]/70 hover:text-[#00F0FF]"
+            iconContainerClassName="bg-[#00F0FF]/10 text-[#00F0FF]"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
 
           <div className="mt-20 opacity-20 text-[8px] tracking-[0.5em] uppercase text-center">
             Neural Interface Protocol // Active
@@ -1612,33 +1489,16 @@ export function DynamicThemeRenderer({
             ))}
           </div>
 
-          {/* Socials - Each Editable */}
-          <div className="fixed bottom-24 flex gap-8 opacity-40">
-            {socials.map((social, i) => (
-              <div key={i} className="relative group">
-                <a href={social.url} target="_blank" rel="noopener noreferrer">
-                  {getSocialIcon(social.platform, 20)}
-                </a>
-                {editMode && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEdit(
-                        `socials[${i}]`,
-                        'social',
-                        'Rede Social',
-                        social,
-                      );
-                    }}
-                    className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-md border border-slate-200 hover:bg-blue-50 opacity-0 group-hover:opacity-100 transition-all"
-                    title="Editar rede social"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-slate-700" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ThemedSocialPills
+            socials={socials}
+            editMode={editMode}
+            className="fixed bottom-24 left-1/2 z-10 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 justify-center"
+            itemClassName="border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10"
+            iconContainerClassName="bg-white/10"
+            onEditSocial={(social, index) =>
+              handleEdit(`socials[${index}]`, "social", "Rede Social", social)
+            }
+          />
         </div>
       </div>
     );
@@ -1680,19 +1540,15 @@ export function DynamicThemeRenderer({
           ))}
         </div>
 
-        <div className="flex gap-6 mt-12">
-          {socials.map((social, i) => (
-            <a
-              key={i}
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-400 hover:text-blue-600 transition-colors"
-            >
-              {getSocialIcon(social.platform, 22)}
-            </a>
-          ))}
-        </div>
+        <ThemedSocialPills
+          socials={socials}
+          editMode={false}
+          surface="light"
+          className="mt-12 justify-center"
+          itemClassName="border-slate-200 bg-white text-slate-500 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+          iconContainerClassName="bg-slate-100"
+          iconSize={20}
+        />
       </div>
     </div>
   );

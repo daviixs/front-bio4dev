@@ -798,16 +798,16 @@ const PreviewCard = ({
   platformLinks: Partial<Record<PlatformId, string>>;
   chrome: OnboardingChrome;
 }) => (
-  <div className={`rounded-2xl p-6 ${chrome.previewShell}`}>
+  <div className={`rounded-2xl p-4 sm:p-6 lg:self-start ${chrome.previewShell}`}>
     <h2
-      className={`text-sm font-semibold uppercase tracking-[0.3em] ${chrome.sectionLabel}`}
+      className={`text-[11px] font-semibold uppercase tracking-[0.24em] sm:text-sm sm:tracking-[0.3em] ${chrome.sectionLabel}`}
     >
       Pre-visualizacao
     </h2>
-    <div className={`mt-6 rounded-2xl p-6 ${chrome.previewCard}`}>
-      <div className="flex items-center gap-4">
+    <div className={`mt-4 rounded-2xl p-4 sm:mt-6 sm:p-6 ${chrome.previewCard}`}>
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
         <div
-          className={`h-16 w-16 overflow-hidden rounded-full border ${chrome.accentBorder} ${chrome.iconBadge}`}
+          className={`h-16 w-16 shrink-0 overflow-hidden rounded-full border ${chrome.accentBorder} ${chrome.iconBadge}`}
         >
           {avatarDataUrl ? (
             <img
@@ -823,16 +823,16 @@ const PreviewCard = ({
             </div>
           )}
         </div>
-        <div>
-          <p className={`text-lg font-semibold ${chrome.bodyText}`}>
+        <div className="min-w-0 space-y-2">
+          <p className={`break-words text-base font-semibold leading-tight sm:text-lg ${chrome.bodyText}`}>
             {displayName.trim() || 'Seu nome'}
           </p>
-          <p className={`text-sm ${chrome.captionText}`}>
+          <p className={`break-words text-sm leading-relaxed [overflow-wrap:anywhere] ${chrome.captionText}`}>
             {bio.trim() || 'Sua bio aparecera aqui.'}
           </p>
         </div>
       </div>
-      <div className="mt-6 space-y-3">
+      <div className="mt-5 space-y-3 sm:mt-6">
         {selectedPlatforms.slice(0, 3).map((platformId) => {
           const platform = PLATFORM_OPTIONS.find(
             (item) => item.id === platformId,
@@ -842,13 +842,15 @@ const PreviewCard = ({
           return (
             <div
               key={`preview-${platformId}`}
-              className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm ${chrome.previewRow}`}
+              className={`flex flex-col gap-3 rounded-xl px-4 py-3.5 text-sm sm:flex-row sm:items-center sm:justify-between ${chrome.previewRow}`}
             >
-              <div className="flex items-center gap-3">
-                <Icon className="h-4 w-4" />
-                <span>{platform.label}</span>
+              <div className="flex min-w-0 items-center gap-3">
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate font-medium">{platform.label}</span>
               </div>
-              <span className={`text-xs ${chrome.previewValue}`}>
+              <span
+                className={`min-w-0 pl-7 text-xs leading-relaxed [overflow-wrap:anywhere] sm:max-w-[55%] sm:pl-0 sm:text-right ${chrome.previewValue}`}
+              >
                 {platformLinks[platformId] || 'Adicionar link'}
               </span>
             </div>
@@ -1676,7 +1678,7 @@ export function InfluencerOnboardingPage({
                   chrome={onboardingChrome}
                 />
 
-                <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+                <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
                   <div className="space-y-5">
                     <AvatarCard
                       avatarDataUrl={state.avatarDataUrl}

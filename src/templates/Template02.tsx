@@ -12,7 +12,8 @@ import {
 import type { LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons";
 import { TechIcon } from "@/components/portfolio/TechIcon";
-import { getSocialIconComponent } from "@/lib/socialIcons";
+import { SocialPills } from "@/components/shared/SocialPills";
+import { buildRenderableSocialLinks, getSocialIconComponent } from "@/lib/socialIcons";
 import type {
   ProfileComplete,
   Social,
@@ -632,11 +633,7 @@ interface TemplateProps {
 export function Template02({ profile }: TemplateProps) {
   const legenda = profile.legendas?.[0];
 
-  // Map Socials (Filter only those with valid data, no fallback to DEMO)
-  const mappedSocials = (profile.social || [])
-    .filter((social) => social.plataforma) // Only require platform name
-    .map(convertToSocialLink);
-  const socials = mappedSocials;
+  const socials = buildRenderableSocialLinks(profile.social, profile.footer);
 
   // Map Experience (Fallback to DEMO if empty)
   const mappedExperience: Experience[] = (profile.workHistory || []).map(
@@ -766,10 +763,15 @@ export function Template02({ profile }: TemplateProps) {
 
           {/* Social Links Section */}
           {socials.length > 0 && (
-            <section className="grid grid-cols-2 gap-4">
-              {socials.map((link) => (
-                <SocialCard key={link.id} item={link} />
-              ))}
+            <section className="rounded-[2rem] border border-white/5 bg-[#121318] p-4 sm:p-5">
+              <SocialPills
+                items={socials}
+                surface="dark"
+                className="justify-center sm:justify-start"
+                itemClassName="border-white/5 bg-[#18181b] text-gray-200 hover:border-yellow-500/30 hover:bg-[#202025]"
+                iconContainerClassName="bg-white/5 text-yellow-500"
+                labelClassName="font-semibold"
+              />
             </section>
           )}
 

@@ -1,47 +1,16 @@
 import React from 'react';
 import { ProfileData, SocialLink } from '../types';
-import {
-  Instagram,
-  Twitter,
-  Youtube,
-  Music,
-  Video,
-  Linkedin,
-  MessageCircle,
-  Facebook,
-  ExternalLink,
-} from 'lucide-react';
+import { SocialPills } from '@/components/shared/SocialPills';
+import { buildRenderableSocialLinks } from '@/lib/socialIcons';
 
 interface ProfileScreenProps {
   profile: ProfileData;
 }
 
-const SocialIcon = ({ platform }: { platform: SocialLink['platform'] }) => {
-  switch (platform) {
-    case 'instagram':
-      return <Instagram size={20} />;
-    case 'twitter':
-      return <Twitter size={20} />;
-    case 'youtube':
-      return <Youtube size={20} />;
-    case 'spotify':
-      return <Music size={20} />;
-    case 'tiktok':
-      return <Video size={20} />;
-    case 'linkedin':
-      return <Linkedin size={20} />;
-    case 'whatsapp':
-      return <MessageCircle size={20} />;
-    case 'facebook':
-      return <Facebook size={20} />;
-    default:
-      return <ExternalLink size={20} />;
-  }
-};
-
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile }) => {
   // Check if background is a Tailwind class or an image URL
   const isCustomBg = profile.backgroundStyle.includes('url');
+  const socialLinks = buildRenderableSocialLinks(profile.socials as SocialLink[]);
 
   return (
     <div
@@ -104,18 +73,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile }) => {
           ))}
         </div>
 
-        {/* Social Icons */}
-        <div className="flex gap-6 mt-10 mb-8">
-          {profile.socials.map((social, index) => (
-            <a
-              key={index}
-              href={social.url}
-              className={`p-3 rounded-full bg-white/10 hover:bg-white/30 backdrop-blur-md border border-white/20 transition-all duration-300 ${profile.textColor}`}
-            >
-              <SocialIcon platform={social.platform} />
-            </a>
-          ))}
-        </div>
+        <SocialPills
+          items={socialLinks}
+          surface="dark"
+          className="mt-10 mb-8 justify-center"
+          itemClassName={`border-white/20 bg-white/10 hover:border-white/30 hover:bg-white/20 ${profile.textColor}`}
+          iconContainerClassName="bg-white/10"
+        />
 
         <div
           className={`mt-auto mb-4 text-[10px] uppercase tracking-widest font-bold opacity-40 ${profile.textColor}`}
