@@ -13,9 +13,9 @@ export function FeaturesSection() {
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
     >
-      <div className="mx-auto flex max-w-6xl flex-col items-center px-6">
+      <div className="mx-auto flex w-full max-w-[96vw] flex-col text-left md:max-w-[1600px]">
         <Reveal>
-          <div className="w-full rounded-[16px] border border-white/12 bg-[#221e1b] p-10 md:p-14 shadow-[0_28px_70px_-40px_rgba(0,0,0,0.6)]">
+          <div className="w-full rounded-[24px] border border-white/12 bg-[#221e1b] px-6 py-14 shadow-[0_35px_100px_-50px_rgba(0,0,0,0.8)] md:px-14 md:py-24">
             <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-12">
               {/* Video / iframe placeholder */}
               <div className="relative w-full flex-1 lg:flex-[1.1]">
@@ -34,7 +34,7 @@ export function FeaturesSection() {
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c3986b]">
                   Bio4Dev Suite
                 </p>
-                <h3 className="text-[32px] font-semibold leading-tight text-[#ece5d9] md:text-[34px]">
+                <h3 className="text-[32px] font-normal leading-[1.2] text-[#ece5d9] md:text-[34px]" style={{ fontFamily: '"Lora", serif' }}>
                   Tudo para criar bios e portfólios épicos em um só lugar
                 </h3>
                 <p className="max-w-xl text-sm leading-[1.75] text-[#ece5d9]/60">

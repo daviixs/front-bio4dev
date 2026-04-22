@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { onboardingApi } from '@/lib/api';
+import { developerOnboardingApi, onboardingApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
+import {
+  clearDeveloperDraft,
+  clearDeveloperDraftAuthIntent,
+  loadDeveloperDraft,
+  readDeveloperDraftAuthIntent,
+} from '@/features/developer-create/storage';
+import { toDeveloperFinalizePayload } from '@/features/developer-create/shared';
 import {
   clearDraft,
   consumeAuthIntent,
@@ -101,6 +108,61 @@ export function AuthCallbackPage() {
         }
       }
 
+      const developerIntentState = readDeveloperDraftAuthIntent();
+      if (developerIntentState.hasInvalidData) {
+        toast.error('Dados do rascunho dev expiraram. Tente novamente.', {
+          id: AUTH_CALLBACK_TOAST_ID,
+        });
+        navigate('/profile/create/developer', { replace: true });
+        return;
+      }
+
+      const developerDraftIntent = developerIntentState.intent;
+      if (developerDraftIntent) {
+        localStorage.removeItem('bio4dev_post_auth_redirect');
+
+        try {
+          const draft = loadDeveloperDraft(developerDraftIntent.draftId);
+          if (!draft) {
+            toast.error('Rascunho dev não encontrado neste navegador.', {
+              id: AUTH_CALLBACK_TOAST_ID,
+            });
+            navigate('/profile/create/developer', { replace: true });
+            return;
+          }
+
+          const result = await developerOnboardingApi.finalize(
+            toDeveloperFinalizePayload(draft),
+          );
+
+          persistLegacyProfilePointers(result.profileId, result.templateType);
+          clearDeveloperDraftAuthIntent();
+          clearDeveloperDraft(draft.draftId);
+          hydrateProfile();
+          toast.success('Portfólio salvo com sucesso!', {
+            id: AUTH_CALLBACK_TOAST_ID,
+          });
+          navigate(result.redirectTo, { replace: true });
+          return;
+        } catch (error: unknown) {
+          const message =
+            getApiErrorMessage(error) ||
+            'Não foi possível salvar seu portfólio após o login.';
+
+          toast.error(message, { id: AUTH_CALLBACK_TOAST_ID });
+
+          if (message.toLowerCase().includes('limite')) {
+            navigate('/dashboard/bio', { replace: true });
+            return;
+          }
+
+          navigate(developerDraftIntent.returnTo, {
+            replace: true,
+          });
+          return;
+        }
+      }
+
       const storedRedirect = localStorage.getItem('bio4dev_post_auth_redirect');
       if (storedRedirect) {
         localStorage.removeItem('bio4dev_post_auth_redirect');
@@ -120,6 +182,7 @@ export function AuthCallbackPage() {
             ? error.message
             : 'Não foi possível autenticar. Tente novamente.';
         toast.error(message, { id: AUTH_CALLBACK_TOAST_ID });
+        clearDeveloperDraftAuthIntent();
         void navigate('/profile/type', { replace: true });
       })
       .finally(() => setProcessing(false));

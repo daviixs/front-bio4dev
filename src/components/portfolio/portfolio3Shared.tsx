@@ -552,12 +552,17 @@ interface Portfolio3FooterSectionProps {
   description: ReactNode;
   email: ReactNode;
   socialLinks: Portfolio3FooterSocialLink[];
+  onSocialClick?: (
+    item: Portfolio3FooterSocialLink,
+    index: number,
+  ) => void;
 }
 
 export function Portfolio3FooterSection({
   description,
   email,
   socialLinks,
+  onSocialClick,
 }: Portfolio3FooterSectionProps) {
   return (
     <footer
@@ -581,6 +586,7 @@ export function Portfolio3FooterSection({
 
         <SocialPills
           items={socialLinks}
+          onItemClick={onSocialClick}
           surface="dark"
           className="justify-center md:justify-end"
           itemClassName="border-white/10 bg-white/[0.03] text-[#d4d4d4] hover:border-white/20 hover:bg-white/[0.08] hover:text-white"

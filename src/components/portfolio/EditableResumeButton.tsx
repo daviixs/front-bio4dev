@@ -83,15 +83,15 @@ export function EditableResumeButton({
           className={cn(
             'absolute -top-2 -right-2',
             'w-8 h-8 rounded-full',
-            'bg-[#c5b9b7] border-2 border-[#695f5c]',
+            'bg-[#fffdf9] border-2 border-[#c9b6a1]',
             'flex items-center justify-center',
             'shadow-lg',
             'opacity-0 group-hover:opacity-100',
             'transition-opacity duration-200',
-            'hover:bg-[#a69b98]',
+            'hover:bg-[#f1e8dd]',
           )}
         >
-          <Pencil size={14} className="text-[#4a413e]" />
+          <Pencil size={14} className="text-[#18212b]" />
         </button>
       </div>
 

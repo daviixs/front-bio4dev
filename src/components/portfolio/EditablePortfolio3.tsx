@@ -55,7 +55,8 @@ import {
 
 interface EditablePortfolio3Props {
   profile: ProfileComplete;
-  onProfileUpdate?: () => void;
+  mode?: 'draft' | 'persisted';
+  onProfileUpdate?: (nextProfile?: ProfileComplete) => void;
 }
 
 type LegendaEditableField =
@@ -396,9 +397,11 @@ function AddTechDialog({
 
 export function EditablePortfolio3({
   profile,
+  mode = 'persisted',
   onProfileUpdate,
 }: EditablePortfolio3Props) {
   const [localProfile, setLocalProfile] = useState(profile);
+  const isDraftMode = mode === 'draft';
 
   const [isTechDialogOpen, setIsTechDialogOpen] = useState(false);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
@@ -434,6 +437,11 @@ export function EditablePortfolio3({
     setLocalProfile(profile);
   }, [profile]);
 
+  const commitProfile = (nextProfile: ProfileComplete) => {
+    setLocalProfile(nextProfile);
+    onProfileUpdate?.(nextProfile);
+  };
+
   const legenda = localProfile.legendas?.[0];
   const heroHeadline = getPortfolio3HeroHeadline(legenda);
   const techs = localProfile.techStack?.technologies || [];
@@ -446,15 +454,17 @@ export function EditablePortfolio3({
 
   const socialLinks = useMemo(
     () =>
-      PORTFOLIO3_SOCIAL_SLOTS.map((slot) => {
+      PORTFOLIO3_SOCIAL_SLOTS.map((slot, index) => {
         const existing = findPortfolio3Social(localProfile.social, slot.id);
 
         return {
           id: slot.id,
+          platform: existing?.plataforma || slot.preferredPlatform,
           label: existing?.url ? slot.label : `Adicionar ${slot.label}`,
-          url: existing?.url,
-          icon: slot.icon,
-          onClick: () => openSocialModal(slot.id),
+          url: existing?.url || '',
+          Icon: slot.icon,
+          order:
+            typeof existing?.ordem === 'number' ? existing.ordem : index,
         };
       }),
     [localProfile.social],
@@ -504,6 +514,22 @@ export function EditablePortfolio3({
     }
 
     try {
+      if (isDraftMode) {
+        const nextLegenda: Legenda = {
+          ...buildLegendaDefaults('titulo', value),
+          id: legenda?.id || `draft-legenda-${localProfile.id}`,
+          createdAt: legenda?.createdAt || new Date().toISOString(),
+          greeting: '',
+          titulo: value,
+        };
+
+        commitProfile({
+          ...localProfile,
+          legendas: [nextLegenda],
+        });
+        return;
+      }
+
       let legendaId = legenda?.id;
 
       if (!legendaId) {
@@ -584,6 +610,23 @@ export function EditablePortfolio3({
     }
 
     try {
+      if (isDraftMode) {
+        const nextLegenda: Legenda = {
+          ...buildLegendaDefaults(field, value),
+          id: legenda?.id || `draft-legenda-${localProfile.id}`,
+          createdAt: legenda?.createdAt || new Date().toISOString(),
+          [field]: value,
+        };
+
+        commitProfile({
+          ...localProfile,
+          username: field === 'nome' ? value : localProfile.username,
+          bio: field === 'descricao' ? value : localProfile.bio,
+          legendas: [nextLegenda],
+        });
+        return;
+      }
+
       let legendaId = legenda?.id;
 
       if (!legendaId) {
@@ -636,6 +679,21 @@ export function EditablePortfolio3({
     }
 
     try {
+      if (isDraftMode) {
+        const nextLegenda: Legenda = {
+          ...buildLegendaDefaults('legendaFoto', normalizedAvatar.value),
+          id: legenda?.id || `draft-legenda-${localProfile.id}`,
+          createdAt: legenda?.createdAt || new Date().toISOString(),
+        };
+
+        commitProfile({
+          ...localProfile,
+          avatarUrl: normalizedAvatar.value,
+          legendas: [nextLegenda],
+        });
+        return;
+      }
+
       await profileApi.update(localProfile.id, {
         avatarUrl: normalizedAvatar.value,
       });
@@ -679,6 +737,31 @@ export function EditablePortfolio3({
 
   const upsertFooter = async (field: FooterEditableField, value: string) => {
     try {
+      if (isDraftMode) {
+        const createPayload = buildFooterDefaults({
+          [field]: value || undefined,
+        });
+
+        commitProfile({
+          ...localProfile,
+          footer: {
+            id: localProfile.footer?.id || `draft-footer-${localProfile.id}`,
+            profileId: localProfile.id,
+            title: createPayload.title,
+            subtitle: createPayload.subtitle,
+            email: createPayload.email || '',
+            github: createPayload.github || '',
+            linkedin: createPayload.linkedin || '',
+            twitter: createPayload.twitter || '',
+            instagram: createPayload.instagram || '',
+            copyrightName: createPayload.copyrightName,
+            madeWith: createPayload.madeWith || 'Made with Bio4Dev',
+            resumeUrl: createPayload.resumeUrl || '',
+          },
+        });
+        return;
+      }
+
       if (localProfile.footer?.id) {
         await footerApi.update(localProfile.footer.id, {
           [field]: value || undefined,
@@ -803,10 +886,27 @@ export function EditablePortfolio3({
         icon: item.icon,
         color: item.color || 'text-[#FF6B35]',
         ordem: index,
-      })),
+        })),
     };
 
     try {
+      if (isDraftMode) {
+        commitProfile({
+          ...localProfile,
+          techStack: {
+            id:
+              localProfile.techStack?.id ||
+              `draft-tech-stack-${localProfile.id}`,
+            profileId: localProfile.id,
+            title: payload.title,
+            subtitle: payload.subtitle,
+            technologies: newTechnologies,
+          },
+        });
+        showPortfolioEditorSuccess('Tecnologia adicionada');
+        return;
+      }
+
       if (localProfile.techStack?.id) {
         await techStackApi.update(localProfile.id, payload);
       } else {
@@ -851,10 +951,30 @@ export function EditablePortfolio3({
         icon: item.icon,
         color: item.color || 'text-[#FF6B35]',
         ordem: index,
-      })),
+        })),
     };
 
     try {
+      if (isDraftMode) {
+        commitProfile({
+          ...localProfile,
+          techStack: localProfile.techStack
+            ? {
+                ...localProfile.techStack,
+                technologies: newTechnologies,
+              }
+            : {
+                id: `draft-tech-stack-${localProfile.id}`,
+                profileId: localProfile.id,
+                title: payload.title,
+                subtitle: payload.subtitle,
+                technologies: newTechnologies,
+              },
+        });
+        showPortfolioEditorSuccess('Tecnologia removida');
+        return;
+      }
+
       await techStackApi.update(localProfile.id, payload);
 
       setLocalProfile((prev) => ({
@@ -952,6 +1072,30 @@ export function EditablePortfolio3({
     }
 
     try {
+      if (isDraftMode) {
+        const createdProject = {
+          id: editingProject?.id || `draft-project-${Date.now()}`,
+          profileId: localProfile.id,
+          createdAt:
+            editingProject?.createdAt || new Date().toISOString(),
+          ...payload,
+        };
+
+        commitProfile({
+          ...localProfile,
+          projetos: editingProject
+            ? (localProfile.projetos || []).map((project) =>
+                project.id === editingProject.id ? createdProject : project,
+              )
+            : [...(localProfile.projetos || []), createdProject],
+        });
+
+        setIsProjectModalOpen(false);
+        setEditingProject(null);
+        showPortfolioEditorSuccess('Projeto salvo');
+        return;
+      }
+
       if (editingProject) {
         const response: any = await projetosApi.update(
           editingProject.id,
@@ -1000,6 +1144,20 @@ export function EditablePortfolio3({
     if (!editingProject) return;
 
     try {
+      if (isDraftMode) {
+        commitProfile({
+          ...localProfile,
+          projetos: (localProfile.projetos || []).filter(
+            (project) => project.id !== editingProject.id,
+          ),
+        });
+
+        setIsProjectModalOpen(false);
+        setEditingProject(null);
+        showPortfolioEditorSuccess('Projeto removido');
+        return;
+      }
+
       await projetosApi.delete(editingProject.id);
 
       setLocalProfile((prev) => ({
@@ -1057,6 +1215,48 @@ export function EditablePortfolio3({
     };
 
     try {
+      if (isDraftMode) {
+        const workId = editingWork?.id || `draft-work-${Date.now()}`;
+        const createdWork = {
+          id: workId,
+          profileId: localProfile.id,
+          company: payload.company,
+          period: payload.period,
+          summary: payload.summary,
+          impact: payload.impact,
+          ordem: payload.ordem,
+          technologies: payload.technologies.map((item, index) => ({
+            id:
+              editingWork?.technologies?.[index]?.id ||
+              `${workId}-tech-${index + 1}`,
+            workExperienceId: workId,
+            technology: item.technology,
+          })),
+          responsibilities: payload.responsibilities.map((item, index) => ({
+            id:
+              editingWork?.responsibilities?.[index]?.id ||
+              `${workId}-resp-${index + 1}`,
+            workExperienceId: workId,
+            responsibility: item.responsibility,
+            ordem: item.ordem ?? index,
+          })),
+        };
+
+        commitProfile({
+          ...localProfile,
+          workHistory: editingWork
+            ? (localProfile.workHistory || []).map((work) =>
+                work.id === editingWork.id ? createdWork : work,
+              )
+            : [...(localProfile.workHistory || []), createdWork],
+        });
+
+        setIsWorkModalOpen(false);
+        setEditingWork(null);
+        showPortfolioEditorSuccess('Experiência salva');
+        return;
+      }
+
       if (editingWork) {
         const response: any = await workExperienceApi.update(
           editingWork.id,
@@ -1117,6 +1317,20 @@ export function EditablePortfolio3({
     if (!editingWork) return;
 
     try {
+      if (isDraftMode) {
+        commitProfile({
+          ...localProfile,
+          workHistory: (localProfile.workHistory || []).filter(
+            (work) => work.id !== editingWork.id,
+          ),
+        });
+
+        setIsWorkModalOpen(false);
+        setEditingWork(null);
+        showPortfolioEditorSuccess('Experiência removida');
+        return;
+      }
+
       await workExperienceApi.delete(editingWork.id);
 
       setLocalProfile((prev) => ({
@@ -1169,6 +1383,36 @@ export function EditablePortfolio3({
       );
       const nextSocials = [...(localProfile.social || [])];
 
+      if (isDraftMode) {
+        if (existing) {
+          const index = nextSocials.findIndex((item) => item.id === existing.id);
+          if (index >= 0) {
+            nextSocials[index] = {
+              ...existing,
+              url: normalized,
+            };
+          }
+        } else {
+          nextSocials.push({
+            id: `draft-social-${Date.now()}`,
+            profileId: localProfile.id,
+            plataforma: slot.preferredPlatform,
+            url: normalized,
+            ordem: nextSocials.length,
+          });
+        }
+
+        commitProfile({
+          ...localProfile,
+          social: nextSocials,
+        });
+
+        setIsSocialModalOpen(false);
+        setEditingSocialSlot(null);
+        showPortfolioEditorSuccess('Link social salvo');
+        return;
+      }
+
       if (existing) {
         await socialApi.update(existing.id, {
           plataforma: existing.plataforma,
@@ -1216,6 +1460,20 @@ export function EditablePortfolio3({
         localProfile.social,
         editingSocialSlot,
       );
+
+      if (isDraftMode) {
+        commitProfile({
+          ...localProfile,
+          social: (localProfile.social || []).filter(
+            (item) => item.id !== existing?.id,
+          ),
+        });
+
+        setIsSocialModalOpen(false);
+        setEditingSocialSlot(null);
+        showPortfolioEditorSuccess('Link social removido');
+        return;
+      }
 
       if (existing) {
         await socialApi.delete(existing.id);
@@ -1371,6 +1629,7 @@ export function EditablePortfolio3({
               />
             }
             socialLinks={socialLinks}
+            onSocialClick={(item) => openSocialModal(item.id as SocialSlotId)}
           />
         }
       />

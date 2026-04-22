@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   MapPin,
   User,
@@ -1544,15 +1544,31 @@ const SOCIAL_OPTIONS = [
 
 interface EditablePortfolio2Props {
   profile: ProfileComplete;
+  mode?: 'draft' | 'persisted';
+  onProfileUpdate?: (nextProfile?: ProfileComplete) => void;
 }
 
-export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
+export function EditablePortfolio2({
+  profile,
+  mode = 'persisted',
+  onProfileUpdate,
+}: EditablePortfolio2Props) {
   const [currentProfile, setCurrentProfile] = useState(profile);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingSocial, setEditingSocial] = useState<SocialLink | null>(null);
   const [editUrl, setEditUrl] = useState('');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState('');
+  const isDraftMode = mode === 'draft';
+
+  useEffect(() => {
+    setCurrentProfile(profile);
+  }, [profile]);
+
+  const commitProfile = (nextProfile: ProfileComplete) => {
+    setCurrentProfile(nextProfile);
+    onProfileUpdate?.(nextProfile);
+  };
 
   const legenda = currentProfile.legendas?.[0];
 
@@ -1614,6 +1630,26 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const handleResumeUpdate = async (resumeUrl: string) => {
     if (!currentProfile.id) return;
     try {
+      if (isDraftMode) {
+        const draftFooter = currentProfile.footer
+          ? { ...currentProfile.footer, resumeUrl }
+          : ({
+              id: `draft-footer-${currentProfile.id}`,
+              profileId: currentProfile.id,
+              resumeUrl,
+              copyrightName: currentProfile.username || 'Copyright',
+              madeWith: 'Made with love',
+              title: "Let's Connect",
+              subtitle: 'Feel free to reach out',
+            } as Footer);
+        commitProfile({
+          ...currentProfile,
+          footer: draftFooter,
+        });
+        toast.success('Updated!');
+        return;
+      }
+
       if (currentProfile.footer && currentProfile.footer.id) {
         await footerApi.update(currentProfile.footer.id, {
           resumeUrl,
@@ -1660,6 +1696,17 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     setCurrentProfile({ ...currentProfile, legendas: [updatedLegenda] });
 
     try {
+      if (isDraftMode) {
+        commitProfile({
+          ...currentProfile,
+          username: field === 'nome' ? value : currentProfile.username,
+          bio: field === 'descricao' ? value : currentProfile.bio,
+          legendas: [updatedLegenda],
+        });
+        toast.success('Updated');
+        return;
+      }
+
       if (legenda && legenda.id) {
         await legendaApi.update(legenda.id, { [field]: value });
       } else {
@@ -1713,6 +1760,15 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     setCurrentProfile({ ...currentProfile, footer: updatedFooter });
 
     try {
+      if (isDraftMode) {
+        commitProfile({
+          ...currentProfile,
+          footer: updatedFooter,
+        });
+        toast.success('Updated');
+        return;
+      }
+
       if (currentProfile.footer && currentProfile.footer.id) {
         await footerApi.update(currentProfile.footer.id, { [field]: value });
       } else {
@@ -1773,6 +1829,30 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
             isValidUuid(editingSocial.id)),
       );
 
+      if (isDraftMode) {
+        if (existingSocial) {
+          const index = newSocials.indexOf(existingSocial);
+          newSocials[index] = {
+            ...existingSocial,
+            plataforma: platformCode as any,
+            url: normalizedUrl,
+          };
+        } else {
+          newSocials.push({
+            id: `draft-social-${Date.now()}`,
+            plataforma: platformCode as any,
+            url: normalizedUrl,
+            profileId: currentProfile.id,
+            ordem: newSocials.length,
+          });
+        }
+
+        commitProfile({ ...currentProfile, social: newSocials });
+        setIsEditModalOpen(false);
+        toast.success('Social media link saved!');
+        return;
+      }
+
       if (existingSocial && isValidUuid(existingSocial.id)) {
         // Update existing social
         await socialApi.update(existingSocial.id, {
@@ -1832,15 +1912,22 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
           s.id.toString() === editingSocial.id,
       );
 
-      if (socialToDelete && isValidUuid(socialToDelete.id)) {
-        await socialApi.delete(socialToDelete.id);
-      }
-
       const newSocials = (currentProfile.social || []).filter(
         (s) =>
           s.plataforma.toLowerCase() !== platformCode &&
           s.id.toString() !== editingSocial.id,
       );
+      if (isDraftMode) {
+        commitProfile({ ...currentProfile, social: newSocials });
+        setIsEditModalOpen(false);
+        toast.success('Social media link removed!');
+        return;
+      }
+
+      if (socialToDelete && isValidUuid(socialToDelete.id)) {
+        await socialApi.delete(socialToDelete.id);
+      }
+
       setCurrentProfile({ ...currentProfile, social: newSocials });
       setIsEditModalOpen(false);
       toast.success('Social media link removed!');
@@ -1876,8 +1963,21 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       title: currentProfile.techStack?.title || 'Tech Stack',
       subtitle: currentProfile.techStack?.subtitle || 'Technologies I use',
       ...currentProfile.techStack,
+      id:
+        currentProfile.techStack?.id || `draft-tech-stack-${currentProfile.id}`,
+      profileId: currentProfile.id,
       technologies: newTechnologies,
     };
+
+    if (isDraftMode) {
+      commitProfile({
+        ...currentProfile,
+        techStack: updatedTechStack as any,
+      });
+      toast.success('Tech added');
+      return;
+    }
+
     setCurrentProfile({
       ...currentProfile,
       techStack: updatedTechStack as any,
@@ -1925,8 +2025,21 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
       title: currentProfile.techStack?.title || 'Tech Stack',
       subtitle: currentProfile.techStack?.subtitle || 'Technologies I use',
       ...currentProfile.techStack,
+      id:
+        currentProfile.techStack?.id || `draft-tech-stack-${currentProfile.id}`,
+      profileId: currentProfile.id,
       technologies: newTechnologies,
     };
+
+    if (isDraftMode) {
+      commitProfile({
+        ...currentProfile,
+        techStack: updatedTechStack as any,
+      });
+      toast.success('Tech removed');
+      return;
+    }
+
     setCurrentProfile({
       ...currentProfile,
       techStack: updatedTechStack as any,
@@ -2014,6 +2127,36 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     };
 
     try {
+      if (isDraftMode) {
+        const draftWorkId = editingExp?.id || `draft-work-${Date.now()}`;
+        const draftWork = {
+          id: draftWorkId,
+          profileId: currentProfile.id,
+          company: newWork.company,
+          period: newWork.period,
+          summary: newWork.summary,
+          ordem:
+            editingExp
+              ? currentProfile.workHistory?.find((item) => item.id === editingExp.id)
+                  ?.ordem || 0
+              : currentProfile.workHistory?.length || 0,
+          technologies: [],
+          responsibilities: [],
+        };
+
+        const currentList = currentProfile.workHistory || [];
+        const nextList = editingExp
+          ? currentList.map((item) =>
+              item.id === editingExp.id ? { ...item, ...draftWork } : item,
+            )
+          : [...currentList, draftWork];
+
+        commitProfile({ ...currentProfile, workHistory: nextList as any });
+        setIsExpModalOpen(false);
+        toast.success(editingExp ? 'Experience updated' : 'Experience added');
+        return;
+      }
+
       if (editingExp) {
         await workExperienceApi.update(editingExp.id, newWork);
         toast.success('Experience updated');
@@ -2073,6 +2216,16 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const handleDeleteExp = async () => {
     if (!editingExp) return;
     try {
+      if (isDraftMode) {
+        const newList = (currentProfile.workHistory || []).filter(
+          (i) => i.id !== editingExp.id,
+        );
+        commitProfile({ ...currentProfile, workHistory: newList });
+        setIsExpModalOpen(false);
+        toast.success('Deleted');
+        return;
+      }
+
       await workExperienceApi.delete(editingExp.id);
       const newList = (currentProfile.workHistory || []).filter(
         (i) => i.id !== editingExp.id,
@@ -2203,6 +2356,35 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
     }
 
     try {
+      if (isDraftMode) {
+        const persistedProject: Projeto = {
+          ...(editingProj || {
+            id: `draft-project-${Date.now()}`,
+            createdAt: new Date().toISOString(),
+            ordem: currentProfile.projetos?.length || 0,
+          }),
+          profileId: currentProfile.id,
+          nome: payload.nome,
+          descricao: payload.descricao,
+          codeLink: payload.codeLink,
+          demoLink: payload.demoLink,
+          gif: payload.gif ?? '',
+          tags: payload.tags ?? [],
+        };
+
+        const currentProjs = currentProfile.projetos || [];
+        const nextProjects = editingProj
+          ? currentProjs.map((p) =>
+              p.id === editingProj.id ? { ...p, ...persistedProject } : p,
+            )
+          : [...currentProjs, persistedProject];
+
+        commitProfile({ ...currentProfile, projetos: nextProjects });
+        setIsProjModalOpen(false);
+        toast.success(editingProj ? 'Project updated' : 'Project added');
+        return;
+      }
+
       let savedProject: Projeto | undefined;
 
       if (editingProj) {
@@ -2271,6 +2453,16 @@ export function EditablePortfolio2({ profile }: EditablePortfolio2Props) {
   const handleDeleteProj = async () => {
     if (!editingProj) return;
     try {
+      if (isDraftMode) {
+        const newProjsList = (currentProfile.projetos || []).filter(
+          (p) => p.id !== editingProj.id,
+        );
+        commitProfile({ ...currentProfile, projetos: newProjsList });
+        setIsProjModalOpen(false);
+        toast.success('Project deleted');
+        return;
+      }
+
       await projetosApi.delete(editingProj.id);
       const newProjsList = (currentProfile.projetos || []).filter(
         (p) => p.id !== editingProj.id,

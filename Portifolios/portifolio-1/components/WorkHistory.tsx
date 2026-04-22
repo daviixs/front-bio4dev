@@ -113,7 +113,7 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
         {/* Linha do Tempo */}
         <div className="relative">
           {/* Linha vertical central (visível apenas em desktop) */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-[#887d7a]"></div>
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-[#d8c7b4]"></div>
 
           {/* Items da timeline */}
           <div className="space-y-12">
@@ -220,8 +220,8 @@ export function WorkHistory({ workHistory: apiWorkHistory }: WorkHistoryProps) {
                 </div>
 
                 {/* Ícone central (visível apenas em desktop) */}
-                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-[#a69b98] rounded-full items-center justify-center shadow-[0_18px_36px_-24px_rgba(74,65,62,0.55)] border border-[#887d7a]">
-                  <Briefcase className="w-6 h-6 text-[#4a413e]" />
+                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-[#fffdf9] rounded-full items-center justify-center shadow-[0_18px_36px_-24px_rgba(24,33,43,0.18)] border border-[#d8c7b4]">
+                  <Briefcase className="w-6 h-6 text-[#18212b]" />
                 </div>
 
                 {/* Espaço vazio do outro lado (apenas desktop) */}

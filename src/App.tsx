@@ -12,6 +12,7 @@ import {
   UserTypeSelectionPage,
   CreateProfilePage,
   DeveloperCreateProfilePage,
+  DeveloperDraftEditorPage,
   SetupWizardPage,
   InfluencerOnboardingPage,
   AdminDashboard,
@@ -58,11 +59,12 @@ function AuthSessionBootstrap() {
 function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isLanding = location.pathname === '/' || location.pathname === '/home';
-  const isInfluencerWorkspace =
+  const isWorkspaceWithoutShell =
     location.pathname.startsWith('/onboarding/') ||
-    location.pathname.startsWith('/dashboard/influencer/');
+    location.pathname.startsWith('/dashboard/influencer/') ||
+    location.pathname.startsWith('/dashboard/bio/');
   return (
-    <div className={isLanding || isInfluencerWorkspace ? '' : 'app-shell'}>
+    <div className={isLanding || isWorkspaceWithoutShell ? '' : 'app-shell'}>
       <AuthSessionBootstrap />
       {children}
     </div>
@@ -88,6 +90,10 @@ export default function App() {
           <Route
             path="/profile/create/developer"
             element={<DeveloperCreateProfilePage />}
+          />
+          <Route
+            path="/onboarding/developer/:draftId"
+            element={<DeveloperDraftEditorPage />}
           />
           <Route
             path="/onboarding/:profileId"

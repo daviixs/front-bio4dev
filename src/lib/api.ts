@@ -352,6 +352,89 @@ export const onboardingApi = {
   },
 };
 
+export interface FinalizeDeveloperOnboardingRequest {
+  draftId: string;
+  templateType: Extract<TemplateType, 'template_01' | 'template_02' | 'template_03'>;
+  slug: string;
+  displayName: string;
+  avatarUrl?: string;
+  legenda?: {
+    greeting?: string;
+    legendaFoto?: string;
+    nome: string;
+    titulo: string;
+    subtitulo: string;
+    descricao: string;
+  };
+  social?: Array<{
+    plataforma: string;
+    url: string;
+    ordem?: number;
+  }>;
+  projetos?: Array<{
+    nome: string;
+    descricao: string;
+    demoLink?: string;
+    codeLink?: string;
+    gif?: string;
+    ordem?: number;
+    tags?: string[];
+  }>;
+  techStack?: {
+    title: string;
+    subtitle: string;
+    technologies?: Array<{
+      name: string;
+      icon: string;
+      color: string;
+      ordem?: number;
+    }>;
+  };
+  workHistory?: Array<{
+    company: string;
+    period: string;
+    summary: string;
+    impact?: string;
+    ordem?: number;
+    technologies?: Array<{
+      technology: string;
+    }>;
+    responsibilities?: Array<{
+      responsibility: string;
+      ordem?: number;
+    }>;
+  }>;
+  footer?: {
+    title: string;
+    subtitle: string;
+    email?: string;
+    github?: string;
+    linkedin?: string;
+    twitter?: string;
+    instagram?: string;
+    copyrightName: string;
+    madeWith?: string;
+    resumeUrl?: string;
+  };
+  meta?: Record<string, unknown>;
+}
+
+export interface FinalizeDeveloperOnboardingResponse {
+  profileId: string;
+  templateType: Extract<TemplateType, 'template_01' | 'template_02' | 'template_03'>;
+  redirectTo: string;
+}
+
+export const developerOnboardingApi = {
+  finalize: async (data: FinalizeDeveloperOnboardingRequest) => {
+    const response = await api.post<FinalizeDeveloperOnboardingResponse>(
+      '/developer-onboarding/finalize',
+      data,
+    );
+    return response.data;
+  },
+};
+
 // ============ LEGENDA ============
 export const legendaApi = {
   create: async (data: CreateLegendaDTO) => {

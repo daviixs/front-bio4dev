@@ -38,9 +38,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { TechIcon } from './TechIcon';
 
+type PortfolioMode = 'draft' | 'persisted';
+
 interface EditablePortfolio1Props {
   profile: ProfileComplete;
-  onProfileUpdate?: () => void;
+  mode?: PortfolioMode;
+  onProfileUpdate?: (nextProfile?: ProfileComplete) => void;
 }
 
 interface TechStackProps {
@@ -68,18 +71,6 @@ type LegendaEditableField =
   | 'titulo'
   | 'subtitulo'
   | 'descricao';
-
-const normalizeSlug = (value: string) =>
-  value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 60);
 
 const normalizeExternalUrl = (value: string, label: string) => {
   const trimmedValue = value.trim();
@@ -648,9 +639,9 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent
-        className={`sm:max-w-md ${template01Theme.card} ${template01Theme.textPrimary}`}
-      >
+        <DialogContent
+          className={`sm:max-w-md ${template01Theme.card} ${template01Theme.textPrimary}`}
+        >
         <DialogHeader>
           <DialogTitle>Adicionar tecnologia</DialogTitle>
         </DialogHeader>
@@ -660,7 +651,7 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar tecnologia (ex: React, Python)..."
-            className="bg-[#c5b9b7] border-[#887d7a] text-[#4a413e] placeholder:text-[#887d7a]"
+            className="bg-[#fffdf9] border-[#d8c7b4] text-[#18212b] placeholder:text-[#758292]"
           />
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto">
@@ -668,24 +659,24 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
               <button
                 key={tech.name}
                 onClick={() => setSelected(tech)}
-                className={`flex items-center gap-2 p-2 rounded-xl border border-[#887d7a] bg-[#c5b9b7] hover:bg-[#a69b98] transition-colors ${
+                className={`flex items-center gap-2 p-2 rounded-xl border border-[#d8c7b4] bg-[#fffdf9] hover:bg-[#f3e7db] transition-colors ${
                   selected?.name === tech.name
-                    ? 'border-[#695f5c] bg-[#a69b98]'
+                    ? 'border-[#c9b6a1] bg-[#f3e7db]'
                     : ''
                 }`}
               >
                 <TechIcon
                   icon={tech.icon}
                   size={22}
-                  className="text-[#695f5c]"
+                  className="text-[#435160]"
                 />
-                <span className="text-sm text-[#4a413e] text-left">
+                <span className="text-sm text-[#18212b] text-left">
                   {tech.name}
                 </span>
               </button>
             ))}
             {filtered.length === 0 && (
-              <p className="col-span-full text-sm text-[#695f5c]">
+              <p className="col-span-full text-sm text-[#758292]">
                 Nenhuma tecnologia encontrada.
               </p>
             )}
@@ -697,7 +688,7 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
             <Button
               variant="ghost"
               onClick={() => handleOpenChange(false)}
-              className="text-[#695f5c] hover:bg-[#a69b98]/50"
+              className="text-[#435160] hover:bg-[#f1e8dd]"
             >
               Cancelar
             </Button>
@@ -785,6 +776,7 @@ const DEMO_TECH_STACK: Technology[] = TECH_OPTIONS.map((tech, idx) => ({
 
 export function EditablePortfolio1({
   profile,
+  mode = 'persisted',
   onProfileUpdate,
 }: EditablePortfolio1Props) {
   console.log('EditablePortfolio1 - Profile recebido:', profile);
@@ -852,53 +844,22 @@ export function EditablePortfolio1({
     setLocalProfile(profile);
     setCurrentProfile(profile);
   }, [profile]);
+  const isDraftMode = mode === 'draft';
 
-  // Criar profile se não existir
-  useEffect(() => {
-    console.log(
-      'EditablePortfolio1 - useEffect localProfile.id check:',
-      localProfile.id,
-    );
-    const createProfileIfNeeded = async () => {
-      if (localProfile.id) return;
-
-      console.log('Criando profile para edição');
-      try {
-        if (!profile?.userId) {
-          showPortfolioEditorError('Usuário não encontrado para criar perfil');
-          return;
-        }
-
-        // Criar profile básico
-        const profileData = {
-          userId: profile.userId,
-          username: profile.username || `user_${Date.now()}`,
-          slug:
-            normalizeSlug(`draft-${Date.now().toString(36)}`) ||
-            `draft-${Date.now().toString(36)}`,
-          templateType: 'template_01' as const,
-          published: false,
-        };
-        const response = await profileApi.create(profileData);
-
-        // Carregar dados completos
-        const completeProfile = await profileApi.getComplete(
-          response.profile.id,
-        );
-
-        console.log('Profile criado e carregado:', completeProfile);
-        setLocalProfile(completeProfile);
-        setCurrentProfile(completeProfile);
-      } catch (error) {
-        console.error('Erro ao criar profile:', error);
-        showPortfolioEditorError('Erro ao inicializar perfil');
+  const syncProfileState = (
+    updater: ProfileComplete | ((prev: ProfileComplete) => ProfileComplete),
+    notify = true,
+  ) => {
+    setLocalProfile((prev) => {
+      const nextProfile =
+        typeof updater === 'function' ? updater(prev) : updater;
+      setCurrentProfile(nextProfile);
+      if (notify) {
+        onProfileUpdate?.(nextProfile);
       }
-    };
-
-    if (!localProfile.id) {
-      createProfileIfNeeded();
-    }
-  }, [localProfile.id]);
+      return nextProfile;
+    });
+  };
 
   const handleLegendaUpdate = async (
     field: LegendaEditableField,
@@ -921,6 +882,23 @@ export function EditablePortfolio1({
         subtitulo: legenda?.subtitulo || 'Subtitulo',
         descricao: legenda?.descricao || 'Descrição',
       };
+
+      if (isDraftMode) {
+        const draftLegenda: Legenda = {
+          id: legenda?.id || `draft-legenda-${localProfile.id}`,
+          ...legendaDefaults,
+          createdAt: legenda?.createdAt || new Date().toISOString(),
+          [field]: value,
+        };
+
+        syncProfileState((prev) => ({
+          ...prev,
+          username: field === 'nome' ? value : prev.username,
+          bio: field === 'descricao' ? value : prev.bio,
+          legendas: [draftLegenda],
+        }));
+        return;
+      }
 
       // Se não tem legenda, criar uma
       if (!legendaId) {
@@ -989,6 +967,22 @@ export function EditablePortfolio1({
         descricao: legenda?.descricao || 'Descrição',
       };
 
+      if (isDraftMode) {
+        syncProfileState((prev) => ({
+          ...prev,
+          avatarUrl,
+          legendas: [
+            {
+              id: legenda?.id || `draft-legenda-${localProfile.id}`,
+              ...legendaDefaults,
+              createdAt: legenda?.createdAt || new Date().toISOString(),
+            },
+          ],
+        }));
+        showPortfolioEditorSuccess('Avatar atualizado!');
+        return;
+      }
+
       let syncedLegenda = legenda;
 
       if (legenda?.id) {
@@ -1035,8 +1029,21 @@ export function EditablePortfolio1({
       title: currentProfile.techStack?.title || 'Tech Stack',
       subtitle: currentProfile.techStack?.subtitle || 'Technologies I use',
       ...currentProfile.techStack,
+      id:
+        currentProfile.techStack?.id || `draft-tech-stack-${currentProfile.id}`,
+      profileId: currentProfile.id,
       technologies: newTechnologies,
     };
+
+    if (isDraftMode) {
+      syncProfileState((prev) => ({
+        ...prev,
+        techStack: updatedTechStack as any,
+      }));
+      showPortfolioEditorSuccess('Tech added');
+      return;
+    }
+
     setCurrentProfile({
       ...currentProfile,
       techStack: updatedTechStack as any,
@@ -1093,8 +1100,21 @@ export function EditablePortfolio1({
       title: currentProfile.techStack?.title || 'Tech Stack',
       subtitle: currentProfile.techStack?.subtitle || 'Technologies I use',
       ...currentProfile.techStack,
+      id:
+        currentProfile.techStack?.id || `draft-tech-stack-${currentProfile.id}`,
+      profileId: currentProfile.id,
       technologies: newTechnologies,
     };
+
+    if (isDraftMode) {
+      syncProfileState((prev) => ({
+        ...prev,
+        techStack: updatedTechStack as any,
+      }));
+      showPortfolioEditorSuccess('Tech removed');
+      return;
+    }
+
     setCurrentProfile({
       ...currentProfile,
       techStack: updatedTechStack as any,
@@ -1179,6 +1199,46 @@ export function EditablePortfolio1({
           })),
       };
 
+      if (isDraftMode) {
+        const workId = editingWork?.id || `draft-work-${Date.now()}`;
+        const draftWork: WorkExperience = {
+          id: workId,
+          profileId: localProfile.id,
+          company: basePayload.company,
+          period: basePayload.period,
+          summary: basePayload.summary,
+          impact: basePayload.impact || undefined,
+          ordem: basePayload.ordem,
+          technologies: basePayload.technologies.map((item, index) => ({
+            id:
+              editingWork?.technologies?.[index]?.id ||
+              `${workId}-tech-${index + 1}`,
+            workExperienceId: workId,
+            technology: item.technology,
+          })),
+          responsibilities: basePayload.responsibilities.map((item, index) => ({
+            id:
+              editingWork?.responsibilities?.[index]?.id ||
+              `${workId}-resp-${index + 1}`,
+            workExperienceId: workId,
+            responsibility: item.responsibility,
+            ordem: item.ordem ?? index + 1,
+          })),
+        };
+
+        syncProfileState((prev) => ({
+          ...prev,
+          workHistory: editingWork?.id
+            ? (prev.workHistory || []).map((item) =>
+                item.id === editingWork.id ? draftWork : item,
+              )
+            : [...(prev.workHistory || []), draftWork],
+        }));
+        showPortfolioEditorSuccess('Experiencia atualizada!');
+        setIsWorkModalOpen(false);
+        return;
+      }
+
       let updatedWork: WorkExperience;
       if (editingWork?.id) {
         updatedWork = await workExperienceApi.update(
@@ -1213,6 +1273,17 @@ export function EditablePortfolio1({
 
   const handleWorkDelete = async () => {
     if (!editingWork?.id) return;
+    if (isDraftMode) {
+      syncProfileState((prev) => ({
+        ...prev,
+        workHistory: prev.workHistory?.filter(
+          (item) => item.id !== editingWork.id,
+        ),
+      }));
+      showPortfolioEditorSuccess('Experiencia removida!');
+      setIsWorkModalOpen(false);
+      return;
+    }
     try {
       await workExperienceApi.delete(editingWork.id);
       setLocalProfile((prev) => ({
@@ -1313,6 +1384,35 @@ export function EditablePortfolio1({
         basePayload.tags = tags;
       }
 
+      if (isDraftMode) {
+        const draftProject: Projeto = {
+          id: editingProject?.id || `draft-project-${Date.now()}`,
+          profileId: localProfile.id,
+          nome: basePayload.nome,
+          descricao: basePayload.descricao,
+          demoLink: basePayload.demoLink,
+          codeLink: basePayload.codeLink,
+          ordem: basePayload.ordem,
+          gif: basePayload.gif || '',
+          tags: basePayload.tags || [],
+          createdAt:
+            editingProject?.createdAt || new Date().toISOString(),
+        };
+
+        syncProfileState((prev) => ({
+          ...prev,
+          projetos: editingProject?.id
+            ? (prev.projetos || []).map((item) =>
+                item.id === editingProject.id ? draftProject : item,
+              )
+            : [...(prev.projetos || []), draftProject],
+        }));
+        console.log('handleProjectSave - Salvamento draft concluído');
+        showPortfolioEditorSuccess('Projeto atualizado!');
+        setIsProjectModalOpen(false);
+        return;
+      }
+
       console.log('Payload do projeto:', basePayload);
       console.log('Profile ID:', localProfile.id);
       console.log('Profile ID type:', typeof localProfile.id);
@@ -1389,6 +1489,17 @@ export function EditablePortfolio1({
 
   const handleProjectDelete = async () => {
     if (!editingProject?.id) return;
+    if (isDraftMode) {
+      syncProfileState((prev) => ({
+        ...prev,
+        projetos: prev.projetos?.filter(
+          (item) => item.id !== editingProject.id,
+        ),
+      }));
+      showPortfolioEditorSuccess('Projeto removido!');
+      setIsProjectModalOpen(false);
+      return;
+    }
     try {
       await projetosApi.delete(editingProject.id);
       setLocalProfile((prev) => ({
@@ -1459,6 +1570,30 @@ export function EditablePortfolio1({
           'João Silva',
       };
 
+      if (isDraftMode) {
+        const draftFooter: ProfileFooter = {
+          id: localProfile.footer?.id || `draft-footer-${localProfile.id}`,
+          profileId: localProfile.id,
+          title: basePayload.title,
+          subtitle: basePayload.subtitle,
+          github: basePayload.github || '',
+          linkedin: basePayload.linkedin || '',
+          copyrightName: basePayload.copyrightName,
+          email: localProfile.footer?.email || '',
+          twitter: localProfile.footer?.twitter || '',
+          resumeUrl: localProfile.footer?.resumeUrl || '',
+          madeWith: localProfile.footer?.madeWith || '',
+        };
+
+        syncProfileState((prev) => ({
+          ...prev,
+          footer: draftFooter,
+        }));
+        showPortfolioEditorSuccess('Footer atualizado!');
+        setIsFooterModalOpen(false);
+        return;
+      }
+
       let savedFooter: ProfileFooter | undefined;
       if (localProfile.footer?.id) {
         savedFooter = await footerApi.update(
@@ -1502,6 +1637,12 @@ export function EditablePortfolio1({
 
   const handleFooterDelete = async () => {
     if (!localProfile.footer?.id) return;
+    if (isDraftMode) {
+      syncProfileState((prev) => ({ ...prev, footer: undefined }));
+      showPortfolioEditorSuccess('Footer removido!');
+      setIsFooterModalOpen(false);
+      return;
+    }
     try {
       await footerApi.delete(localProfile.footer.id);
       setLocalProfile((prev) => ({ ...prev, footer: undefined }));

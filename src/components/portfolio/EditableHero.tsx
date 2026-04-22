@@ -133,17 +133,17 @@ export function EditableHero({
           <button
             type="button"
             onClick={handleAvatarClick}
-            className="relative group rounded-full focus:outline-none focus:ring-2 focus:ring-[#a69b98]/60"
+            className="relative group rounded-full focus:outline-none focus:ring-2 focus:ring-[#c9b6a1]/60"
             aria-label="Editar imagem do perfil"
           >
             <img
               src={previewAvatarUrl}
               alt={legenda?.nome || 'Desenvolvedor'}
-              className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-[#a69b98] shadow-[0_24px_48px_-28px_rgba(74,65,62,0.6)] cursor-pointer hover:opacity-80 transition-opacity"
+              className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-[#d8c7b4] shadow-[0_24px_48px_-28px_rgba(24,33,43,0.28)] cursor-pointer hover:opacity-80 transition-opacity"
             />
-            <div className="absolute inset-0 -z-10 rounded-full bg-[#a69b98]"></div>
-            <div className="pointer-events-none absolute inset-0 rounded-full bg-[#4a413e]/0 group-hover:bg-[#4a413e]/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <Pencil className="h-6 w-6 text-[#c5b9b7]" />
+            <div className="absolute inset-0 -z-10 rounded-full bg-[#efe8de]"></div>
+            <div className="pointer-events-none absolute inset-0 rounded-full bg-[#18212b]/0 group-hover:bg-[#18212b]/12 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <Pencil className="h-6 w-6 text-[#fffdf9]" />
             </div>
           </button>
         </div>
@@ -239,7 +239,7 @@ export function EditableHero({
           </DialogHeader>
 
           <div className="space-y-4 py-2">
-            <div className="mx-auto h-28 w-28 overflow-hidden rounded-full border border-[#a69b98]/30 bg-[#f2ecea]">
+            <div className="mx-auto h-28 w-28 overflow-hidden rounded-full border border-[#d8c7b4]/50 bg-[#f7f3ec]">
               <img
                 src={previewAvatarUrl}
                 alt={legenda?.nome || 'Desenvolvedor'}

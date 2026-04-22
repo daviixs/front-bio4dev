@@ -342,6 +342,69 @@ body {
     var(--tw-shadow) !important;
 }
 
+.app-shell .developer-theme-scope.bg-white,
+.app-shell .developer-theme-scope .bg-white {
+  background-color: rgb(255 255 255 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.bg-slate-50,
+.app-shell .developer-theme-scope .bg-slate-50 {
+  background-color: rgb(248 250 252 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.bg-slate-100,
+.app-shell .developer-theme-scope .bg-slate-100 {
+  background-color: rgb(241 245 249 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.text-slate-900,
+.app-shell .developer-theme-scope .text-slate-900 {
+  color: rgb(15 23 42 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.text-slate-800,
+.app-shell .developer-theme-scope .text-slate-800 {
+  color: rgb(30 41 59 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.text-slate-700,
+.app-shell .developer-theme-scope .text-slate-700 {
+  color: rgb(51 65 85 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.text-slate-600,
+.app-shell .developer-theme-scope .text-slate-600 {
+  color: rgb(71 85 105 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.text-slate-500,
+.app-shell .developer-theme-scope .text-slate-500 {
+  color: rgb(100 116 139 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.text-slate-400,
+.app-shell .developer-theme-scope .text-slate-400 {
+  color: rgb(148 163 184 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.border-slate-200,
+.app-shell .developer-theme-scope .border-slate-200 {
+  border-color: rgb(226 232 240 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.border-slate-300,
+.app-shell .developer-theme-scope .border-slate-300 {
+  border-color: rgb(203 213 225 / 1) !important;
+}
+
+.app-shell .developer-theme-scope.shadow-sm,
+.app-shell .developer-theme-scope .shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow) !important;
+}
+
 @keyframes onboard-fade {
   from {
     opacity: 0;

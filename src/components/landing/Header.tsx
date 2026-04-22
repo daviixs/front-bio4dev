@@ -6,10 +6,8 @@ import { List, X, ArrowUpRight } from '@phosphor-icons/react';
 import { cn } from '@/components/ui/utils';
 
 const menuItems = [
-  { label: 'Recursos', href: '#recursos' },
-  { label: 'Templates', href: '#templates' },
-  { label: 'Preços', href: '#precos' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Epic Builder', href: '#recursos' },
+  { label: 'Epic Learn', href: '#templates' },
 ];
 
 export function Header() {
@@ -40,13 +38,12 @@ export function Header() {
           key={item.label}
           href={item.href}
           className={cn(
-            'flex items-center gap-2 px-2 py-1 text-sm font-medium text-[#ece5d9] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+            'flex items-center px-2 py-1 text-sm font-medium text-[#ece5d9] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
             'hover:text-[#c3986b]',
           )}
           style={{ transitionDelay: `${idx * 50}ms` }}
           onClick={() => setOpen(false)}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-[#c3986b]/80" />
           {item.label}
         </a>
       ))}
@@ -56,24 +53,26 @@ export function Header() {
   return (
     <>
       <header className="w-full bg-[var(--surface)]">
-        <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-6 py-5">
-          <Link to="/" className="flex items-center px-0 py-0">
-            <img
-              src="/images/logobio4dev.png"
-              alt="Bio4Dev"
-              className="h-10 w-auto"
-              loading="eager"
-            />
-          </Link>
+        <div className="flex w-full items-center justify-between px-4 py-5 md:px-[3vw] lg:px-[4vw]">
+          <div className="flex flex-1 items-center justify-start">
+            <Link to="/" className="flex items-center px-0 py-0">
+              <img
+                src="/images/logobio4dev.png"
+                alt="Bio4Dev"
+                className="h-10 w-auto"
+                loading="eager"
+              />
+            </Link>
+          </div>
 
           {!shouldHideLanding && (
-            <nav className="hidden flex-1 items-center gap-6 lg:flex">
+            <nav className="hidden items-center justify-center gap-8 lg:flex">
               <LinkSet />
             </nav>
           )}
 
           {!shouldHideLanding && (
-            <div className="ml-auto hidden items-center gap-2 lg:flex">
+            <div className="hidden flex-1 items-center justify-end gap-2 lg:flex">
               <button
                 onClick={handleLogin}
                 className="group flex items-center gap-2 rounded-full border border-[#c3986b]/40 bg-[#2c2621] px-4 py-2 text-sm font-medium text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#3a3028]"
@@ -82,7 +81,7 @@ export function Header() {
               </button>
               <Link
                 to="/profile/type"
-                className="group inline-flex items-center gap-3 rounded-full bg-[#c3986b] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(195,152,107,0.7)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
+                className="group inline-flex items-center gap-3 rounded-full bg-[#c3986b] px-5 py-2.5 text-sm font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f]"
               >
                 Começar agora
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px]">
@@ -124,7 +123,7 @@ export function Header() {
               </button>
               <Link
                 to="/profile/type"
-                className="group inline-flex items-center justify-between gap-3 rounded-full bg-[#c3986b] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_-18px_rgba(195,152,107,0.7)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#b1835f]"
+                className="group inline-flex items-center justify-between gap-3 rounded-full bg-[#c3986b] px-5 py-3 text-sm font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#b1835f]"
                 onClick={() => setOpen(false)}
               >
                 Começar agora

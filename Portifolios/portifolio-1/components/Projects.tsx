@@ -85,7 +85,7 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
               className={`rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 group shadow-[0_24px_48px_-28px_rgba(74,65,62,0.45)] ${template01Theme.card}`}
             >
               {/* GIF do projeto */}
-              <div className="relative overflow-hidden h-56 bg-[#a69b98]">
+              <div className="relative overflow-hidden h-56 bg-[#efe8de]">
                 <img
                   src={project.gif}
                   alt={project.nome}
@@ -120,7 +120,7 @@ export function Projects({ projects: apiProjects }: ProjectsProps) {
                     href={project.codeLink || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#695f5c] text-[#c5b9b7] rounded-lg hover:bg-[#4a413e] transition-colors shadow-[0_20px_40px_-24px_rgba(74,65,62,0.55)]"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#233241] text-[#f9f5ef] rounded-lg hover:bg-[#30465c] transition-colors shadow-[0_20px_40px_-24px_rgba(24,33,43,0.35)]"
                   >
                     <Github size={18} />
                     Ver Código

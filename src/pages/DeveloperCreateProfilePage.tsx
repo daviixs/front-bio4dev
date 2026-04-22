@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { profileApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
 import {
-  hasReachedProfileLimit,
-  PROFILE_LIMIT_MESSAGE,
-} from '@/lib/profile-limits';
-import { useAuthStore } from '@/stores/authStore';
+  createDeveloperDraftId,
+  isDeveloperTemplateType,
+  normalizeDeveloperSlug,
+  type DeveloperTemplateType,
+} from '@/features/developer-create/shared';
+import {
+  createDeveloperDraft,
+  findReusableDeveloperDraft,
+  saveDeveloperDraft,
+} from '@/features/developer-create/storage';
 import { toast } from 'sonner';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { landingTheme } from '@/theme/landingTheme';
 
-const templateImages: Record<string, string> = {
+const templateImages: Record<DeveloperTemplateType, string> = {
   template_01: '/images/templates/Portifolio%201.png',
   template_02: '/images/templates/Portifolio%202.png',
   template_03: '/images/templates/Portifolio%203.png',
@@ -38,146 +44,99 @@ const devTemplates = [
     description: 'Layout executivo para consultores e times tech.',
     highlights: ['Experiencia', 'Resultados', 'Credibilidade'],
   },
-] as const;
+] as const satisfies ReadonlyArray<{
+  id: DeveloperTemplateType;
+  name: string;
+  description: string;
+  highlights: readonly string[];
+}>;
 
 const DEVELOPER_CREATE_PROFILE_TOAST_ID = 'developer-create-profile-toast';
 
 export function DeveloperCreateProfilePage() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<DeveloperTemplateType | null>(null);
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [slugError, setSlugError] = useState<string | null>(null);
-  const [slugValue, setSlugValue] = useState<string | null>(null);
-  const [hasPromptedForSlug, setHasPromptedForSlug] = useState(false);
 
-  const toSlug = (value: string) =>
-    value
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '')
-      .replace(/-+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 60);
-
-  const slugPreview = toSlug(nameInput);
-  const SLUG_REGEX = /^[a-z0-9-]{3,60}$/;
-
-  useEffect(() => {
-    if (!user) {
-      toast.error('Faca login para continuar', {
-        id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
-      });
-      navigate('/');
-    }
-  }, [user, navigate]);
-
-  useEffect(() => {
-    if (hasPromptedForSlug || slugValue) return;
-    setIsSlugModalOpen(true);
-    setHasPromptedForSlug(true);
-  }, [hasPromptedForSlug, slugValue]);
+  const slugPreview = normalizeDeveloperSlug(nameInput);
+  const slugRegex = /^[a-z0-9-]{3,60}$/;
 
   const handleCreate = async (slug: string) => {
-    if (!selectedTemplate) {
+    if (!isDeveloperTemplateType(selectedTemplate)) {
       toast.error('Selecione um template para continuar.', {
         id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
       });
       return;
     }
 
-    const slugIsValid = SLUG_REGEX.test(slug);
-    const displayName = nameInput.trim() || slug;
+    const normalizedSlug = normalizeDeveloperSlug(slug);
+    const displayName = nameInput.trim() || normalizedSlug;
 
-    if (!slugIsValid) {
+    if (!slugRegex.test(normalizedSlug)) {
       setSlugError(
         'Slug inválido. Use 3-60 caracteres, minúsculas, números e hifens.',
       );
-      setIsSlugModalOpen(true);
-      return;
-    }
-
-    const userId = user?.id;
-    if (!userId || userId === 'undefined' || typeof userId !== 'string') {
-      toast.error('Sessao invalida. Faca login novamente.', {
-        id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
-      });
-      navigate('/');
       return;
     }
 
     setIsLoading(true);
+
     try {
-      const reachedLimit = await hasReachedProfileLimit(userId);
-      if (reachedLimit) {
-        toast.error(PROFILE_LIMIT_MESSAGE, {
-          id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
-        });
-        navigate('/dashboard/bio');
+      const availability = await profileApi.checkSlug(normalizedSlug);
+      if (!availability.available) {
+        setSlugError(availability.message || 'Slug ja esta em uso.');
         return;
       }
 
-      const templateData = devTemplates.find(
-        (template) => template.id === selectedTemplate,
-      );
-      const templateType = selectedTemplate;
-
-      const response = await profileApi.create({
-        userId,
-        username: displayName,
-        slug,
-        bio: `Perfil ${templateData?.name ?? 'Dev'}`,
-        avatarUrl: undefined,
-        templateType,
-        published: true,
+      const reusableDraft = findReusableDeveloperDraft({
+        templateType: selectedTemplate,
+        slug: normalizedSlug,
       });
 
-      const profileId = response.profile?.id || response.id;
-      if (!profileId || typeof profileId !== 'string') {
-        toast.error(
-          'Erro: ID do perfil nao foi retornado corretamente pelo servidor',
-          { id: DEVELOPER_CREATE_PROFILE_TOAST_ID },
-        );
+      if (reusableDraft) {
+        const nextDraft = {
+          ...reusableDraft,
+          status: 'collecting' as const,
+          displayName,
+          slug: normalizedSlug,
+          updatedAt: new Date().toISOString(),
+          profile: {
+            ...reusableDraft.profile,
+            username: displayName,
+            slug: normalizedSlug,
+          },
+        };
+
+        saveDeveloperDraft(nextDraft);
+        navigate(`/onboarding/developer/${reusableDraft.draftId}`);
         return;
       }
 
-      localStorage.setItem('bio4dev_profile_id', profileId);
-      localStorage.setItem(`bio4dev_theme_${profileId}`, templateType);
+      const draft = createDeveloperDraft({
+        draftId: createDeveloperDraftId(),
+        templateType: selectedTemplate,
+        slug: normalizedSlug,
+        displayName,
+      });
 
-      toast.success('Perfil criado com sucesso!', {
+      navigate(`/onboarding/developer/${draft.draftId}`);
+    } catch (error: unknown) {
+      console.error('Error creating developer draft:', error);
+      const message =
+        getApiErrorMessage(error) ||
+        (error instanceof Error ? error.message : 'Erro ao iniciar rascunho');
+
+      if (message.toLowerCase().includes('slug')) {
+        setSlugError(message);
+      }
+
+      toast.error(message, {
         id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
       });
-      setTimeout(() => {
-        navigate(`/dashboard/bio/${profileId}`);
-      }, 100);
-    } catch (error: any) {
-      console.error('Error creating profile:', error);
-      const backendMessage = getApiErrorMessage(error);
-      const normalizedMessage = backendMessage.toLowerCase();
-
-      if (error.response?.status === 400 && backendMessage) {
-        if (normalizedMessage.includes('slug')) {
-          setSlugError(backendMessage);
-          setIsSlugModalOpen(true);
-        }
-        toast.error(backendMessage, {
-          id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
-        });
-        if (normalizedMessage.includes('limite')) {
-          navigate('/dashboard/bio');
-        }
-      } else {
-        const errorMessage =
-          backendMessage || error.message || 'Erro ao criar perfil';
-        toast.error(errorMessage, {
-          id: DEVELOPER_CREATE_PROFILE_TOAST_ID,
-        });
-      }
     } finally {
       setIsLoading(false);
     }
@@ -199,7 +158,8 @@ export function DeveloperCreateProfilePage() {
       setSlugError('Informe seu nome.');
       return;
     }
-    if (!slugPreview || !SLUG_REGEX.test(slugPreview)) {
+
+    if (!slugPreview || !slugRegex.test(slugPreview)) {
       setSlugError(
         'Use 3-60 caracteres, apenas letras minúsculas, números e hifens.',
       );
@@ -207,26 +167,26 @@ export function DeveloperCreateProfilePage() {
     }
 
     setSlugError(null);
-    setSlugValue(slugPreview);
-    setIsSlugModalOpen(false);
+    void handleCreate(slugPreview);
   };
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header />
 
-      <div className="flex-1 py-12 px-4 lg:px-6">
-        <div className="max-w-5xl mx-auto space-y-10">
-          <div className="text-center space-y-3">
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-slate-900">
+      <div className="flex-1 px-4 py-12 lg:px-6">
+        <div className="mx-auto max-w-5xl space-y-10">
+          <div className="space-y-3 text-center">
+            <h1 className="text-3xl font-extrabold text-slate-900 lg:text-4xl">
               Selecione um template Dev
             </h1>
             <p className="text-slate-500">
-              Templates otimizados para GitHub, Tech Stack e projetos.
+              Escolha visual, abra rascunho local e edite tudo antes do
+              cadastro.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-6 md:grid-cols-3">
             {devTemplates.map((template) => {
               const previewImage = templateImages[template.id];
               return (
@@ -234,39 +194,35 @@ export function DeveloperCreateProfilePage() {
                   key={template.id}
                   type="button"
                   onClick={() => setSelectedTemplate(template.id)}
-                  className={`group relative overflow-hidden rounded-3xl border bg-white shadow-sm transition-all hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-200 ${
+                  className={`group relative overflow-hidden rounded-3xl border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-200 ${
                     selectedTemplate === template.id
                       ? 'border-blue-500 ring-2 ring-blue-200'
                       : 'border-slate-200'
                   }`}
                 >
                   {previewImage && (
-                    <div className="bg-white flex items-center justify-center px-6 pt-6 pb-4 rounded-2xl overflow-hidden">
+                    <div className="flex items-center justify-center overflow-hidden rounded-2xl bg-white px-6 pb-4 pt-6">
                       <img
                         src={previewImage}
                         alt={`Preview do ${template.name}`}
-                        className="w-full max-h-[360px] object-contain"
+                        className="max-h-[360px] w-full object-contain"
                       />
                     </div>
                   )}
 
-                  <div className="p-6 flex flex-col gap-4 text-left">
+                  <div className="flex flex-col gap-4 p-6 text-left">
                     <div className="text-slate-800">
-                      <div>
-                        <h3 className="text-lg font-semibold">
-                          {template.name}
-                        </h3>
-                        <p className="text-sm text-slate-500">
-                          {template.description}
-                        </p>
-                      </div>
+                      <h3 className="text-lg font-semibold">{template.name}</h3>
+                      <p className="text-sm text-slate-500">
+                        {template.description}
+                      </p>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
                       {template.highlights.map((item) => (
                         <span
                           key={item}
-                          className="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 text-slate-700"
+                          className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700"
                         >
                           {item}
                         </span>
@@ -281,21 +237,19 @@ export function DeveloperCreateProfilePage() {
       </div>
 
       {selectedTemplate && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 transform z-20">
+        <div className="fixed bottom-6 left-1/2 z-20 -translate-x-1/2 transform">
           <button
-            onClick={() =>
-              slugValue ? handleCreate(slugValue) : handleOpenSlugModal()
-            }
+            onClick={handleOpenSlugModal}
             disabled={isLoading}
-            className="rounded-full bg-blue-600 text-white shadow-xl px-6 py-3 flex items-center gap-2 hover:bg-blue-700 transition disabled:opacity-60"
+            className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-white shadow-xl transition hover:bg-blue-700 disabled:opacity-60"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Criando...
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Abrindo editor...
               </>
             ) : (
-              <>Criar com este template</>
+              <>Começar edição</>
             )}
           </button>
         </div>
@@ -357,7 +311,7 @@ export function DeveloperCreateProfilePage() {
                 disabled={isLoading}
                 className={`rounded-full px-5 py-2 text-sm font-semibold transition disabled:opacity-60 ${landingTheme.buttonPrimary}`}
               >
-                Confirmar
+                {isLoading ? 'Abrindo...' : 'Confirmar'}
               </button>
             </div>
           </div>

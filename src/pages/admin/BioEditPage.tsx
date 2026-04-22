@@ -179,7 +179,7 @@ export default function BioEditPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="developer-theme-scope min-h-screen space-y-6 bg-[#f6efe7]">
       {/* Header Fixo */}
       <div className="sticky top-0 z-50 bg-white border-b shadow-sm p-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">

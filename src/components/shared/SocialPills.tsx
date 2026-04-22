@@ -1,4 +1,5 @@
 import { Pencil } from 'lucide-react';
+import { FaLink } from 'react-icons/fa6';
 
 import { cn } from '@/components/ui/utils';
 import type { RenderableSocialLink } from '@/lib/socialIcons';
@@ -14,6 +15,7 @@ interface SocialPillsProps {
   labelClassName?: string;
   iconSize?: number;
   editMode?: boolean;
+  onItemClick?: (item: RenderableSocialLink, index: number) => void;
   onEditItem?: (item: RenderableSocialLink, index: number) => void;
   editButtonClassName?: string;
 }
@@ -38,6 +40,7 @@ export function SocialPills({
   labelClassName,
   iconSize = 18,
   editMode = false,
+  onItemClick,
   onEditItem,
   editButtonClassName,
 }: SocialPillsProps) {
@@ -46,34 +49,50 @@ export function SocialPills({
   return (
     <div className={cn('flex flex-wrap items-center gap-3', className)}>
       {items.map((item, index) => {
-        const Icon = item.Icon;
+        const Icon = typeof item.Icon === 'function' ? item.Icon : FaLink;
+        const isButton = Boolean(onItemClick) || !item.url;
+        const interactiveClassName = cn(
+          'inline-flex min-h-11 items-center gap-2.5 rounded-full border px-4 py-2.5 text-sm font-medium transition-[background-color,border-color,color,transform] duration-200 ease-out hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/30 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
+          SURFACE_STYLES[surface],
+          itemClassName,
+        );
+        const content = (
+          <>
+            <span
+              className={cn(
+                'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
+                ICON_SURFACE_STYLES[surface],
+                iconContainerClassName,
+              )}
+            >
+              <Icon size={iconSize} />
+            </span>
+            <span className={cn('truncate', labelClassName)}>{item.label}</span>
+          </>
+        );
 
         return (
           <div key={item.id} className="relative group">
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                'inline-flex min-h-11 items-center gap-2.5 rounded-full border px-4 py-2.5 text-sm font-medium transition-[background-color,border-color,color,transform] duration-200 ease-out hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/30 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
-                SURFACE_STYLES[surface],
-                itemClassName,
-              )}
-              aria-label={item.label}
-            >
-              <span
-                className={cn(
-                  'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-                  ICON_SURFACE_STYLES[surface],
-                  iconContainerClassName,
-                )}
+            {isButton ? (
+              <button
+                type="button"
+                onClick={() => onItemClick?.(item, index)}
+                className={interactiveClassName}
+                aria-label={item.label}
               >
-                <Icon size={iconSize} />
-              </span>
-              <span className={cn('truncate', labelClassName)}>
-                {item.label}
-              </span>
-            </a>
+                {content}
+              </button>
+            ) : (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={interactiveClassName}
+                aria-label={item.label}
+              >
+                {content}
+              </a>
+            )}
 
             {editMode && onEditItem && (
               <button

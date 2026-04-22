@@ -16,18 +16,16 @@ export function HeroSection() {
       whileInView="show"
       viewport={{ once: true, amount: 0.18 }}
     >
-      <div className="grain-overlay" aria-hidden />
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-6 pb-20 pt-28 text-center">
-        <div className="w-full max-w-3xl">
+      <div className="mx-auto flex w-full flex-col items-center px-4 pb-20 pt-6 text-center sm:px-6">
+        <div className="w-full max-w-4xl">
           <Reveal delay={100}>
-            <h1 className="mt-6 text-4xl font-semibold leading-tight text-[#ece5d9] sm:text-5xl lg:text-[54px] lg:leading-[1.05]">
-              Tudo o que você precisa para construir produtos épicos com IA em
-              um só lugar.
+            <h1 className="mx-auto max-w-3xl font-normal text-[#ece5d9] text-[36px] leading-[1.2] sm:text-[48px] sm:leading-[58px]" style={{ fontFamily: '"Lora", serif' }}>
+              Tudo o que você precisa para construir produtos épicos com IA em um só lugar.
             </h1>
           </Reveal>
 
           <Reveal delay={180}>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#d0c2b4]">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#ece5d9]/70 sm:text-lg">
               O melhor ai app builder do mercado, aulas com didática inigualável
               e a comunidade mais séria de AI builders do Brasil - tudo em uma
               só assinatura.
@@ -35,26 +33,26 @@ export function HeroSection() {
           </Reveal>
 
           <Reveal delay={240}>
-            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <div className="mt-10 flex flex-col items-center gap-3">
               <Link
                 to="/profile/type"
-                className="group inline-flex items-center justify-between gap-3 rounded-full bg-[#c3986b] px-6 py-3 text-base font-semibold text-white shadow-[0_18px_40px_-18px_rgba(195,152,107,0.75)] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] active:scale-[0.98] hover:bg-[#b1835f]"
+                className="inline-flex items-center justify-center rounded-full bg-[#c3986b] px-8 py-3.5 text-sm font-semibold text-[#221e1b] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] hover:bg-[#b1835f] active:scale-[0.98]"
               >
                 Crie sua conta gratuita
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px]">
-                  <ArrowRight size={18} weight="bold" />
-                </span>
               </Link>
+              <span className="mt-1 text-[13px] text-[#ece5d9]/40">
+                Teste grátis sem cartão de crédito.
+              </span>
             </div>
           </Reveal>
         </div>
 
         <Reveal delay={180}>
-          <div className="relative w-full max-w-4xl flex justify-center">
+          <div className="relative mx-auto mt-16 flex w-full max-w-[96vw] justify-center md:max-w-[1600px]">
             <img
               src={customImage}
-              alt="Preview do produto"
-              className="relative z-10 w-full h-auto rounded-[10px] drop-shadow-[0_30px_70px_-40px_rgba(15,23,42,0.5)]"
+              alt="Interface do produto"
+              className="relative z-10 h-auto w-full rounded-[14px] border border-[#c3986b]/10 bg-black/50 shadow-[0_0_80px_rgba(0,0,0,0.6)] md:rounded-[20px] rounded-b-none"
               loading="lazy"
             />
           </div>
