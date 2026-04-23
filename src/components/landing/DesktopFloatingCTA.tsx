@@ -1,10 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from '@phosphor-icons/react';
 
+const PLACEHOLDERS = ['seu-nome'];
+
 export function DesktopFloatingCTA() {
   const [username, setUsername] = useState('');
+  const [placeholder, setPlaceholder] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let timer: NodeJS.Timeout;
+
+    const type = () => {
+      const currentWord = PLACEHOLDERS[wordIndex];
+      
+      if (isDeleting) {
+        setPlaceholder(currentWord.substring(0, charIndex - 1));
+        charIndex--;
+      } else {
+        setPlaceholder(currentWord.substring(0, charIndex + 1));
+        charIndex++;
+      }
+
+      let typeSpeed = isDeleting ? 70 : 150;
+
+      if (!isDeleting && charIndex === currentWord.length) {
+        typeSpeed = 1500; // Pause at end of word
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        wordIndex = (wordIndex + 1) % PLACEHOLDERS.length;
+        typeSpeed = 500; // Pause before new word
+      }
+
+      timer = setTimeout(type, typeSpeed);
+    };
+
+    timer = setTimeout(type, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +62,7 @@ export function DesktopFloatingCTA() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="seu-nome"
+            placeholder={placeholder}
             className="w-48 sm:w-72 bg-transparent text-[#ece5d9] placeholder-[#ece5d9]/30 outline-none border-none focus:ring-0 px-0 ml-0.5"
           />
         </div>
