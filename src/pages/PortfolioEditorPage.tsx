@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { profileApi } from '@/lib/api';
+import { isDeveloperTemplateType } from '@/features/developer-create/shared';
 import { templateRegistry } from '@/pages/influencers/registry';
 import { isInfluencerTemplate } from '@/pages/influencers/shared/templateMap';
 import { Button } from '@/components/ui/button';
@@ -23,27 +24,55 @@ export function PortfolioEditorPage({ mode }: PortfolioEditorPageProps) {
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (!templateId && portfolioId) {
-      setIsRedirecting(true);
-      profileApi
-        .getComplete(portfolioId)
-        .then((profile) => {
-          if (!isInfluencerTemplate(profile.templateType)) {
-            setError('Template nao suportado para influenciadores.');
-            return;
-          }
+    if (templateId || !portfolioId) {
+      return;
+    }
+
+    let isActive = true;
+
+    setIsRedirecting(true);
+    setError(null);
+
+    profileApi
+      .getComplete(portfolioId)
+      .then((profile) => {
+        if (!isActive) {
+          return;
+        }
+
+        if (isDeveloperTemplateType(profile.templateType)) {
+          navigate(`/dashboard/developer/${profile.id}/edit`, { replace: true });
+          return;
+        }
+
+        if (isInfluencerTemplate(profile.templateType)) {
           navigate(
             `/dashboard/influencer/${profile.templateType}/${profile.id}/edit`,
             { replace: true },
           );
-        })
-        .catch((err) => {
-          logError('PortfolioEditorPage', err, { portfolioId });
-          setError('Nao foi possivel carregar o perfil.');
-        })
-        .finally(() => setIsRedirecting(false));
-    }
-  }, [templateId, portfolioId, navigate]);
+          return;
+        }
+
+        setError('Template nao suportado para edicao.');
+      })
+      .catch((err) => {
+        if (!isActive) {
+          return;
+        }
+
+        logError('PortfolioEditorPage', err, { portfolioId, mode });
+        setError('Nao foi possivel carregar o perfil.');
+      })
+      .finally(() => {
+        if (isActive) {
+          setIsRedirecting(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [mode, navigate, portfolioId, templateId]);
 
   if (!templateId) {
     return (

@@ -6,10 +6,13 @@ import { EditablePortfolio1 } from '@/components/portfolio/EditablePortfolio1';
 import { EditablePortfolio2 } from '@/components/portfolio/EditablePortfolio2';
 import { EditablePortfolio3 } from '@/components/portfolio/EditablePortfolio3';
 import {
+  DeveloperPortfolioEditorShell,
+  developerEditorChrome,
+} from '@/components/shared/DeveloperPortfolioEditorShell';
+import {
   GoogleAuthGate,
   type GoogleAuthGateChrome,
 } from '@/components/shared/GoogleAuthGate';
-import { PreviewToolbarCard } from '@/components/shared/PreviewToolbarCard';
 import { developerOnboardingApi, profileApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
 import type { ProfileComplete } from '@/types';
@@ -21,7 +24,6 @@ import {
   setDeveloperDraftAuthIntent,
 } from '@/features/developer-create/storage';
 import {
-  getDeveloperTemplateName,
   normalizeDeveloperDraft,
   normalizeDeveloperSlug,
   toDeveloperFinalizePayload,
@@ -31,19 +33,6 @@ import { persistLegacyProfilePointers } from '@/features/onboarding/storage';
 import { useAuthStore } from '@/stores/authStore';
 
 const DEV_DRAFT_TOAST_ID = 'developer-draft-editor-toast';
-const DEV_EDITOR_CHROME = {
-  root: 'developer-theme-scope flex min-h-screen flex-col bg-white',
-  page: 'bg-[radial-gradient(circle_at_top,rgba(79,70,229,0.12),transparent_34%)] bg-slate-50',
-  previewToolbar:
-    'border border-indigo-200/80 bg-white/94 text-slate-900 shadow-[0_24px_60px_-36px_rgba(79,70,229,0.35)] backdrop-blur',
-  previewToolbarTitle: 'text-slate-900',
-  previewToolbarMeta: 'text-slate-500',
-  previewToolbarPrimary:
-    'border border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700',
-  previewToolbarSecondary:
-    'border border-slate-200 bg-white text-slate-900 hover:bg-slate-100',
-};
-
 const DEV_GOOGLE_GATE_CHROME: GoogleAuthGateChrome = {
   modalBackdrop: 'bg-slate-950/45 backdrop-blur-[2px]',
   modalCard:
@@ -336,61 +325,48 @@ export function DeveloperDraftEditorPage() {
   }
 
   return (
-    <div className={DEV_EDITOR_CHROME.root}>
-      <div className={`px-4 pt-5 sm:px-6 sm:pt-6 ${DEV_EDITOR_CHROME.page}`}>
-        <PreviewToolbarCard
-          title="Preview do template"
-          meta={
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span>{getDeveloperTemplateName(draft.templateType)}</span>
-              <span className="text-slate-300">·</span>
-              <span className="font-mono text-[13px]">
-                bio4.dev/{draft.slug}
-              </span>
-              <span className="text-slate-300">·</span>
-            </div>
-          }
-          className={DEV_EDITOR_CHROME.previewToolbar}
-          titleClassName={DEV_EDITOR_CHROME.previewToolbarTitle}
-          metaClassName={DEV_EDITOR_CHROME.previewToolbarMeta}
-          actions={
-            <>
-              <button
-                type="button"
-                disabled={isFinalizing}
-                onClick={() => void handleFinalize()}
-                className={`inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold transition ${DEV_EDITOR_CHROME.previewToolbarPrimary} disabled:cursor-not-allowed disabled:opacity-60`}
-              >
-                {isFinalizing
-                  ? 'Salvando...'
-                  : authStatus === 'authenticated'
-                    ? 'Salvar portfólio'
-                    : 'Criar conta e salvar'}
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/profile/create/developer')}
-                className={`inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold transition ${DEV_EDITOR_CHROME.previewToolbarSecondary}`}
-              >
-                Trocar template
-              </button>
-            </>
-          }
-        />
-      </div>
-
-      <div
-        className={
-          draft.templateType === 'template_02'
-            ? 'bg-[#050505]'
-            : draft.templateType === 'template_03'
-              ? 'bg-[#0d0d0d]'
-              : 'bg-[#c5b9b7]'
+    <>
+      <DeveloperPortfolioEditorShell
+        title="Preview do template"
+        templateType={draft.templateType}
+        slug={draft.slug}
+        metaNote={
+          <>
+            <span>Rascunho local</span>
+            <span className="text-slate-300">·</span>
+            <span>
+              {lastSavedAt
+                ? `Salvo ${formatSavedAt(lastSavedAt)}`
+                : formatSavedAt(lastSavedAt)}
+            </span>
+          </>
+        }
+        actions={
+          <>
+            <button
+              type="button"
+              disabled={isFinalizing}
+              onClick={() => void handleFinalize()}
+              className={`inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold transition ${developerEditorChrome.previewToolbarPrimary} disabled:cursor-not-allowed disabled:opacity-60`}
+            >
+              {isFinalizing
+                ? 'Salvando...'
+                : authStatus === 'authenticated'
+                  ? 'Salvar portfólio'
+                  : 'Criar conta e salvar'}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/profile/create/developer')}
+              className={`inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold transition ${developerEditorChrome.previewToolbarSecondary}`}
+            >
+              Trocar template
+            </button>
+          </>
         }
       >
         {editor}
-      </div>
-
+      </DeveloperPortfolioEditorShell>
       <GoogleAuthGate
         open={isGoogleGateOpen}
         isLoading={isAuthLoading}
@@ -402,6 +378,6 @@ export function DeveloperDraftEditorPage() {
         onClose={closeGoogleGate}
         onContinue={handleStartGoogleAuth}
       />
-    </div>
+    </>
   );
 }

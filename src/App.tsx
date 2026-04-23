@@ -13,6 +13,7 @@ import {
   CreateProfilePage,
   DeveloperCreateProfilePage,
   DeveloperDraftEditorPage,
+  DeveloperPortfolioEditorPage,
   InfluencerOnboardingPage,
   AdminDashboard,
   BioPage,
@@ -90,6 +91,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
   const isLanding = location.pathname === '/' || location.pathname === '/home';
   const isWorkspaceWithoutShell =
     location.pathname.startsWith('/onboarding/') ||
+    location.pathname.startsWith('/dashboard/developer/') ||
     location.pathname.startsWith('/dashboard/influencer/') ||
     location.pathname.startsWith('/dashboard/bio/');
   return (
@@ -151,6 +153,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <PortfolioEditorPage mode="preview" />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/developer/:profileId/edit"
+            element={
+              <ProtectedRoute>
+                <DeveloperPortfolioEditorPage />
               </ProtectedRoute>
             }
           />
