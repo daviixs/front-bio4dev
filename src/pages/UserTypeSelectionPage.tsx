@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Code, Users, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/landing/Footer';
@@ -7,6 +7,7 @@ import { landingTheme } from '@/theme/landingTheme';
 
 export default function UserTypeSelectionPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [selectedType, setSelectedType] = useState<'dev' | 'influencer' | null>(
     null,
   );
@@ -18,8 +19,14 @@ export default function UserTypeSelectionPage() {
     localStorage.setItem('bio4dev_user_type', selectedType);
 
     // Redirecionar para criação de perfil
-    const route =
+    let route =
       selectedType === 'dev' ? '/profile/create/developer' : '/profile/create';
+    
+    const username = searchParams.get('username');
+    if (username) {
+      route += `?username=${encodeURIComponent(username)}`;
+    }
+    
     navigate(route);
   };
 

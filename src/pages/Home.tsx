@@ -7,6 +7,7 @@ import {
   FocusSection,
   FAQSection,
   Footer,
+  DesktopFloatingCTA,
 } from '@/components/landing';
 
 export function Home() {
@@ -21,6 +22,7 @@ export function Home() {
         <FAQSection />
       </main>
       <Footer />
+      <DesktopFloatingCTA />
     </div>
   );
 }

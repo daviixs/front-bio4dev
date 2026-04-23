@@ -6,3 +6,4 @@ export { FocusSection } from './FocusSection';
 export { FAQSection } from './FAQSection';
 export { Footer } from './Footer';
 export { Reveal } from './Reveal';
+export { DesktopFloatingCTA } from './DesktopFloatingCTA';

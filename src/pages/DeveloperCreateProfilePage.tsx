@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { profileApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
@@ -55,11 +55,12 @@ const DEVELOPER_CREATE_PROFILE_TOAST_ID = 'developer-create-profile-toast';
 
 export function DeveloperCreateProfilePage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] =
     useState<DeveloperTemplateType | null>(null);
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
-  const [nameInput, setNameInput] = useState('');
+  const [nameInput, setNameInput] = useState(searchParams.get('username') || '');
   const [slugError, setSlugError] = useState<string | null>(null);
 
   const slugPreview = normalizeDeveloperSlug(nameInput);

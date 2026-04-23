@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2, Palette, Zap, Rocket, Users } from 'lucide-react';
 import { profileApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
@@ -147,11 +147,12 @@ const CREATE_PROFILE_TOAST_ID = 'create-profile-toast';
 
 export function CreateProfilePage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
-  const [nameInput, setNameInput] = useState('');
+  const [nameInput, setNameInput] = useState(searchParams.get('username') || '');
   const [slugError, setSlugError] = useState<string | null>(null);
   const [slugValue, setSlugValue] = useState<string | null>(null);
   const [hasPromptedForSlug, setHasPromptedForSlug] = useState(false);
