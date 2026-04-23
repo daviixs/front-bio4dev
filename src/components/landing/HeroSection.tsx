@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, RocketLaunch, UsersThree } from '@phosphor-icons/react';
+import { ArrowRight } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { sectionFade } from './animations';
-import mockupImage from '@/landingpage-images/mockup-portrait.png';
 import customImage from '@/landingpage-images/image.png';
 import { Reveal } from './Reveal';
 
@@ -23,16 +22,16 @@ export function HeroSection() {
               className="mx-auto max-w-3xl font-normal text-[#ece5d9] text-[36px] leading-[1.2] sm:text-[48px] sm:leading-[58px]"
               style={{ fontFamily: '"Lora", serif' }}
             >
-              Tudo o que você precisa para construir produtos épicos com IA em
-              um só lugar.
+              Crie seu portfólio profissional online com templates feitos para
+              desenvolvedores.
             </h1>
           </Reveal>
 
           <Reveal delay={180}>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#ece5d9]/70 sm:text-lg">
-              O melhor ai app builder do mercado, aulas com didática inigualável
-              e a comunidade mais séria de AI builders do Brasil - tudo em uma
-              só assinatura.
+              Monte sua bio, projetos, experiências, stack tecnológica e redes
+              sociais em uma página responsiva, com personalização avançada e
+              preview antes da publicação.
             </p>
           </Reveal>
 
@@ -45,7 +44,7 @@ export function HeroSection() {
                 Crie sua conta gratuita
               </Link>
               <span className="mt-1 text-[13px] text-[#ece5d9]/40">
-                Teste grátis sem cartão de crédito.
+                Comece grátis e crie seu portfólio em minutos.
               </span>
             </div>
           </Reveal>
@@ -55,7 +54,7 @@ export function HeroSection() {
           <div className="relative mx-auto mt-16 flex w-full max-w-[96vw] justify-center md:max-w-[1600px]">
             <img
               src={customImage}
-              alt="Interface do produto"
+              alt="Preview do editor de portfólio da Bio4Dev"
               className="relative z-10 h-auto w-full rounded-[14px] border border-[#c3986b]/10 bg-black/50 shadow-[0_0_80px_rgba(0,0,0,0.6)] md:rounded-[20px] rounded-b-none"
               loading="lazy"
             />
@@ -66,18 +65,25 @@ export function HeroSection() {
       <Reveal delay={260}>
         <div className="mx-auto mt-6 flex w-full max-w-6xl flex-col gap-4 px-6 pb-6 text-center">
           <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#c3986b]">
-            Confiado por mais de 5.000 builders de empresas que constroem
-            softwares de ponta
+            Recursos para tirar seu portfólio do rascunho e publicar com
+            clareza
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-            {['itau', 'mercadolivre', 'brex', 'g4', 'vtex', 'stone'].map(
+            {[
+              'Templates',
+              'Projetos',
+              'Experiências',
+              'GitHub',
+              'Preview',
+              'Analytics',
+            ].map(
               (name, idx) => (
                 <div
                   key={name}
                   className="flex items-center justify-center rounded-2xl border border-[#c3986b]/25 bg-[#2c2621] px-4 py-3 text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:border-[#c3986b]/50"
                   style={{ transitionDelay: `${idx * 50}ms` }}
                 >
-                  <LogoMark brand={name} />
+                  <span className="text-sm font-semibold">{name}</span>
                 </div>
               ),
             )}
@@ -87,7 +93,7 @@ export function HeroSection() {
 
       <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex w-full max-w-3xl items-center justify-between gap-3 rounded-full border border-[#c3986b]/35 bg-white/90 px-4 py-3 shadow-[0_18px_40px_-26px_rgba(195,152,107,0.6)] backdrop-blur-xl lg:hidden">
         <div className="text-sm font-semibold text-slate-800">
-          Pronto para montar sua bio agora?
+          Pronto para criar seu portfólio?
         </div>
         <Link
           to="/profile/type"
@@ -99,65 +105,4 @@ export function HeroSection() {
       </div>
     </motion.section>
   );
-}
-
-function LogoMark({ brand }: { brand: string }) {
-  const common = 'h-5 w-auto fill-current';
-  switch (brand) {
-    case 'itau':
-      return (
-        <svg viewBox="0 0 64 64" className={common} aria-label="Itaú">
-          <rect x="6" y="6" width="52" height="52" rx="12" ry="12" />
-          <text x="20" y="40" fontSize="24" fontWeight="700" fill="#2c2621">
-            it
-          </text>
-        </svg>
-      );
-    case 'mercadolivre':
-      return (
-        <svg viewBox="0 0 64 32" className={common} aria-label="Mercado Livre">
-          <path d="M4 16c0-6.6 5.4-12 12-12h16c6.6 0 12 5.4 12 12s-5.4 12-12 12H16C9.4 28 4 22.6 4 16Z" />
-          <path
-            d="M16 14c2-2 6-2 8 0m8 0c2-2 6-2 8 0"
-            stroke="#2c2621"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-          />
-        </svg>
-      );
-    case 'brex':
-      return (
-        <svg viewBox="0 0 64 24" className={common} aria-label="Brex">
-          <path d="M6 20V4h8c3 0 5 2 5 4.5S17 13 14 13h-5" />
-          <path d="M19 20V4h7c3 0 5 1.8 5 4s-1.4 4-4.2 4.5L36 20" />
-          <path d="M36 20V4h12" />
-          <path d="M42 12h6" />
-        </svg>
-      );
-    case 'g4':
-      return (
-        <svg viewBox="0 0 48 24" className={common} aria-label="G4 Educação">
-          <text x="2" y="17" fontSize="16" fontWeight="700" letterSpacing="1">
-            G4
-          </text>
-        </svg>
-      );
-    case 'vtex':
-      return (
-        <svg viewBox="0 0 48 24" className={common} aria-label="VTEX">
-          <path d="M4 4h8l4 16h-6zM18 4h6l-4 16h-6zM28 4h6l-4 16h-6z" />
-        </svg>
-      );
-    case 'stone':
-      return (
-        <svg viewBox="0 0 56 20" className={common} aria-label="Stone">
-          <text x="2" y="15" fontSize="14" fontWeight="700" letterSpacing="0.5">
-            stone
-          </text>
-        </svg>
-      );
-    default:
-      return <span className="text-sm font-semibold capitalize">{brand}</span>;
-  }
 }

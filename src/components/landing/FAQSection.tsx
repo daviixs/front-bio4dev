@@ -4,29 +4,29 @@ import { sectionFade } from './animations';
 
 const faqs = [
   {
-    question: 'O Bio4Dev é gratuito?',
+    question: 'O que posso adicionar no meu portfólio?',
     answer:
-      'Sim! Você pode criar sua conta e montar sua bio/portfólio completamente grátis. Oferecemos todos os templates e funcionalidades essenciais sem custo. Planos premium virão com extras avançados.',
+      'Você pode adicionar bio, projetos, experiências profissionais, stack tecnológica, redes sociais e links personalizados.',
   },
   {
-    question: 'Preciso saber programar para usar?',
+    question: 'Posso visualizar antes de publicar?',
     answer:
-      'Não. Basta preencher suas informações, adicionar mídia curta e links. O builder faz o resto e publica em segundos.',
+      'Sim. A Bio4Dev permite visualizar o portfólio antes da publicação e compartilhar previews temporários com tokens seguros que expiram em 24 horas.',
   },
   {
-    question: 'Posso usar meu próprio domínio?',
+    question: 'Posso integrar GitHub e redes sociais?',
     answer:
-      'Hoje sua página fica em bio4dev.com/seuusername. Conexão de domínio customizado chegará nos planos pagos.',
-  },
-  {
-    question: 'Quantos projetos posso adicionar?',
-    answer:
-      'Sem limite. Recomendamos destacar 4-6 para manter foco e conversão nos CTAs.',
+      'Sim. Você pode importar projetos do GitHub e conectar plataformas como LinkedIn, Twitter e outras redes sociais.',
   },
   {
     question: 'Meu portfólio funciona em dispositivos móveis?',
     answer:
-      'Sim. Os templates são mobile-first, com CTA fixo e mídia otimizada para toque.',
+      'Sim. Os templates são responsivos e foram otimizados para desktop, tablet e mobile.',
+  },
+  {
+    question: 'Posso manter meu portfólio privado?',
+    answer:
+      'Sim. Você pode publicar ou manter o portfólio privado, com controle de privacidade e autenticação robusta.',
   },
 ];
 
@@ -53,7 +53,7 @@ export function FAQSection() {
             className="text-[42px] font-normal leading-tight text-[#ece5d9] md:text-[48px]"
             style={{ fontFamily: '"Lora", serif' }}
           >
-            Tudo o que você precisa saber antes de começar
+            Tudo o que você precisa saber para criar seu portfólio
           </h2>
         </div>
 

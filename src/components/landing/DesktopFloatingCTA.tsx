@@ -70,7 +70,7 @@ export function DesktopFloatingCTA() {
           type="submit"
           className="inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-8 py-3.5 text-base font-bold text-[#221e1b] transition-all duration-300 hover:bg-[#b1835f] active:scale-95"
         >
-          Criar agora
+          Criar portfólio
           <ArrowRight size={22} weight="bold" />
         </button>
       </form>

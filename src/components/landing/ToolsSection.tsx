@@ -3,26 +3,27 @@ import { Reveal } from './Reveal';
 import { motion } from 'framer-motion';
 import { sectionFade } from './animations';
 
-const testimonials = [
+const features = [
   {
-    quote:
-      'Hoje a ÚNICA pessoa que está falando sobre vibecoding de forma tão lúcida! Deborah, você é como um raio de luz do meio dessa escuridão de informações vazias de topo de funil, continue… seu conteúdo é IMPECÁVEL',
-    name: 'Benicio SaaS',
-    handle: '@BenicioSaaS',
-    initials: 'BS',
+    title: 'Templates personalizáveis',
+    description:
+      'Escolha entre modelos minimalista, criativo e corporativo e ajuste cores, temas e layout ao seu contexto profissional.',
+    label: 'Templates',
+    initials: 'TP',
   },
   {
-    quote:
-      'Nunca pensei que um conteúdo tão técnico e avançado pudesse ser comunicado de maneira tão eficiente e prática. Entrega muito e sem enrolação.',
-    name: 'Harlem Trevisan',
-    handle: '@HarlemTrevisan',
-    initials: 'HT',
+    title: 'Preview antes da publicação',
+    description:
+      'Visualize seu portfólio antes de publicar e compartilhe previews temporários com tokens seguros que expiram em 24 horas.',
+    label: 'Preview',
+    initials: 'PP',
   },
   {
-    quote: 'Deborah, sua didática precisa ser estudada e replicada. Parabéns!',
-    name: 'Igor Baldarena',
-    handle: '@igorbaldarena',
-    initials: 'IB',
+    title: 'Integrações e analytics',
+    description:
+      'Importe projetos do GitHub, conecte redes sociais e acompanhe visualizações e engajamento do seu portfólio.',
+    label: 'Dados',
+    initials: 'IA',
   },
 ];
 
@@ -40,37 +41,38 @@ export function ToolsSection() {
         <Reveal>
           <div className="flex flex-col items-center gap-2 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c3986b]">
-              Prova real
+              Recursos principais
             </p>
             <h2
               className="text-3xl font-normal text-[#ece5d9] sm:text-4xl"
               style={{ fontFamily: '"Lora", serif' }}
             >
-              Criadores que escalam suas bios com a Bio4Dev
+              Recursos para criar seu portfólio profissional com mais rapidez
             </h2>
             <p className="text-sm text-[#ece5d9]/60">
-              Templates mobile, CTA quente e mídia curta rodando ao vivo.
+              Tudo o que você precisa para organizar seu conteúdo e publicar com
+              clareza.
             </p>
           </div>
         </Reveal>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {testimonials.map((t, idx) => (
-            <Reveal key={t.name} delay={idx * 80}>
+          {features.map((feature, idx) => (
+            <Reveal key={feature.title} delay={idx * 80}>
               <div className="h-full rounded-[14px] border border-white/10 bg-[#2a2520] p-7 shadow-[0_18px_60px_-40px_rgba(0,0,0,0.6)]">
                 <p className="text-sm leading-[1.75] text-[#ece5d9]">
-                  “{t.quote}”
+                  {feature.description}
                 </p>
                 <div className="mt-6 flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#3a342e] text-sm font-semibold text-[#c3986b]">
-                    {t.initials}
+                    {feature.initials}
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold text-[#ece5d9] leading-tight">
-                      {t.name}
+                      {feature.title}
                     </span>
                     <span className="text-xs text-[#ece5d9]/40 leading-tight">
-                      {t.handle}
+                      {feature.label}
                     </span>
                   </div>
                 </div>

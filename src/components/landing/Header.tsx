@@ -6,8 +6,8 @@ import { List, X, ArrowUpRight } from '@phosphor-icons/react';
 import { cn } from '@/components/ui/utils';
 
 const menuItems = [
-  { label: 'Epic Builder', href: '#recursos' },
-  { label: 'Epic Learn', href: '#templates' },
+  { label: 'Recursos', href: '#recursos' },
+  { label: 'Templates', href: '#templates' },
 ];
 
 export function Header() {

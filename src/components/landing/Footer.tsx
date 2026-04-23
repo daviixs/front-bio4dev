@@ -11,7 +11,7 @@ export function Footer() {
       >
         <img
           src="/images/Imagefooter.jpg"
-          alt="Paisagem com dispositivo destacando o produto"
+          alt="Preview de portfólio profissional criado na Bio4Dev"
           className="h-full w-full object-cover"
         />
         {/* Gradient dissolve */}
@@ -29,28 +29,28 @@ export function Footer() {
           </p>
           <div className="flex flex-wrap gap-x-3 gap-y-2 text-[13px] text-[#ece5d9]/50">
             <a
-              href="#comunidade"
-              className="hover:text-[#ece5d9] transition-colors duration-300"
-            >
-              Comunidade
-            </a>
-            <a
-              href="#aulas"
-              className="hover:text-[#ece5d9] transition-colors duration-300"
-            >
-              Aulas Gravadas
-            </a>
-            <a
               href="#recursos"
               className="hover:text-[#ece5d9] transition-colors duration-300"
             >
-              Recursos Exclusivos
+              Recursos
             </a>
             <a
-              href="#mentoria"
+              href="#como-funciona"
               className="hover:text-[#ece5d9] transition-colors duration-300"
             >
-              Mentoria ao Vivo
+              Como funciona
+            </a>
+            <a
+              href="#templates"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
+              Templates
+            </a>
+            <a
+              href="#faq"
+              className="hover:text-[#ece5d9] transition-colors duration-300"
+            >
+              FAQ
             </a>
           </div>
         </div>

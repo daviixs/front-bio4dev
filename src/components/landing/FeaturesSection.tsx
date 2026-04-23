@@ -35,22 +35,22 @@ export function FeaturesSection() {
               {/* Text column */}
               <div className="flex flex-1 flex-col items-start gap-5 lg:flex-[1]">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c3986b]">
-                  Bio4Dev Suite
+                  Bio4Dev
                 </p>
                 <h3
                   className="text-[32px] font-normal leading-[1.2] text-[#ece5d9] md:text-[34px]"
                   style={{ fontFamily: '"Lora", serif' }}
                 >
-                  Tudo para criar bios e portfólios épicos em um só lugar
+                  Tudo para criar, personalizar e publicar seu portfólio
+                  profissional.
                 </h3>
                 <p className="max-w-xl text-sm leading-[1.75] text-[#ece5d9]/60">
-                  Monte sua bio com IA, media curta, CTA quente e templates
-                  mobile-first. Atualize links em minutos, teste mensagens de
-                  contato e acompanhe cliques em tempo real — tudo dentro do
-                  painel Bio4Dev.
+                  Escolha um template, adicione bio, projetos, experiências,
+                  stack e links personalizados. Visualize antes de publicar e
+                  compartilhe seu portfólio com mais confiança.
                 </p>
                 <button className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#c3986b] px-8 py-3 text-sm font-medium text-[#221e1b] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[1px] active:scale-[0.98]">
-                  Ver como funciona
+                  Ver recursos
                 </button>
               </div>
             </div>
