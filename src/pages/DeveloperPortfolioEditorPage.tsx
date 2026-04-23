@@ -156,7 +156,8 @@ export default function DeveloperPortfolioEditorPage() {
     try {
       setIsGeneratingPreview(true);
 
-      const { token } = await profileApi.generatePreviewToken(resolvedProfileId);
+      const { token } =
+        await profileApi.generatePreviewToken(resolvedProfileId);
       const previewUrl = `/${profile.slug}?preview=${token}`;
 
       window.open(previewUrl, '_blank', 'noopener,noreferrer');

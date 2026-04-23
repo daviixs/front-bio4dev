@@ -780,7 +780,9 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
           <div
             className={`mx-auto mb-6 max-w-2xl rounded-[28px] border border-dashed ${template01Theme.border} bg-[#f9f6f1] px-6 py-8 text-center`}
           >
-            <p className={`text-base font-medium ${template01Theme.textSecondary}`}>
+            <p
+              className={`text-base font-medium ${template01Theme.textSecondary}`}
+            >
               Nenhuma tecnologia adicionada ainda.
             </p>
             <p className={`mt-2 text-sm ${template01Theme.textMuted}`}>

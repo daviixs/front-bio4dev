@@ -51,7 +51,9 @@ export function DeveloperPortfolioEditorShell({
 }: DeveloperPortfolioEditorShellProps) {
   return (
     <div className={developerEditorChrome.root}>
-      <div className={`px-4 pt-5 sm:px-6 sm:pt-6 ${developerEditorChrome.page}`}>
+      <div
+        className={`px-4 pt-5 sm:px-6 sm:pt-6 ${developerEditorChrome.page}`}
+      >
         <PreviewToolbarCard
           title={title}
           meta={

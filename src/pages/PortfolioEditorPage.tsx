@@ -41,7 +41,9 @@ export function PortfolioEditorPage({ mode }: PortfolioEditorPageProps) {
         }
 
         if (isDeveloperTemplateType(profile.templateType)) {
-          navigate(`/dashboard/developer/${profile.id}/edit`, { replace: true });
+          navigate(`/dashboard/developer/${profile.id}/edit`, {
+            replace: true,
+          });
           return;
         }
 
