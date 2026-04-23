@@ -13,7 +13,6 @@ import {
   CreateProfilePage,
   DeveloperCreateProfilePage,
   DeveloperDraftEditorPage,
-  SetupWizardPage,
   InfluencerOnboardingPage,
   AdminDashboard,
   BioPage,
@@ -31,19 +30,18 @@ import { toast } from 'sonner';
 
 const AUTH_SESSION_TOAST_ID = 'auth-session-expired';
 
-function ProtectedRouteFallback() {
-  return (
-    <div className="min-h-screen bg-[#120f0d] flex items-center justify-center px-6">
-      <div className="rounded-3xl border border-[rgba(236,229,217,0.12)] bg-[#1d1714]/95 px-6 py-5 text-center text-[#ece5d9] shadow-[0_24px_60px_-36px_rgba(0,0,0,0.75)] backdrop-blur">
-        Restaurando sua sessão...
-      </div>
-    </div>
-  );
-}
+const logAuthRoute = (message: string, details?: Record<string, unknown>) => {
+  if (!import.meta.env.DEV) return;
+  console.log(`[auth][ProtectedRoute] ${message}`, details ?? {});
+};
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const authStatus = useAuthStore((state) => state.authStatus);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
   const authRedirectMessage = useAuthStore(
     (state) => state.authRedirectMessage,
   );
@@ -53,11 +51,43 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    if (!hasHydrated) return;
+    logAuthRoute('state changed', {
+      path: location.pathname,
+      hasHydrated,
+      authStatus,
+      isAuthenticated,
+      hasAccessToken: Boolean(accessToken),
+      hasUser: Boolean(user),
+      userId: user?.id ?? null,
+    });
+  }, [
+    accessToken,
+    authStatus,
+    hasHydrated,
+    isAuthenticated,
+    location.pathname,
+    user,
+  ]);
+
+  useEffect(() => {
+    if (!hasHydrated) {
+      logAuthRoute('waiting for persisted auth hydration', {
+        path: location.pathname,
+      });
+      return;
+    }
     if (authStatus !== 'booting') return;
 
-    void bootstrapAuth();
-  }, [authStatus, bootstrapAuth, hasHydrated]);
+    logAuthRoute('starting auth bootstrap while dashboard renders', {
+      path: location.pathname,
+    });
+    void bootstrapAuth().then((status) => {
+      logAuthRoute('auth bootstrap finished', {
+        path: location.pathname,
+        status,
+      });
+    });
+  }, [authStatus, bootstrapAuth, hasHydrated, location.pathname]);
 
   useEffect(() => {
     if (authStatus !== 'guest' || !authRedirectMessage) return;
@@ -68,16 +98,20 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     toast.error(message, { id: AUTH_SESSION_TOAST_ID });
   }, [authStatus, authRedirectMessage, consumeAuthRedirectMessage]);
 
-  if (!hasHydrated) {
-    return <ProtectedRouteFallback />;
-  }
+  useEffect(() => {
+    if (authStatus !== 'guest') return;
 
-  if (authStatus === 'booting') {
-    return <ProtectedRouteFallback />;
+    logAuthRoute('redirecting guest away from protected route', {
+      path: location.pathname,
+    });
+  }, [authStatus, location.pathname]);
+
+  if (!hasHydrated || authStatus === 'booting') {
+    return <>{children}</>;
   }
 
   if (authStatus === 'guest') {
-    return <Navigate to="/profile/type" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
@@ -170,14 +204,6 @@ export default function App() {
             }
           />
 
-          <Route
-            path="/setup"
-            element={
-              <ProtectedRoute>
-                <SetupWizardPage />
-              </ProtectedRoute>
-            }
-          />
 
           <Route
             path="/dashboard/bio/:id"
@@ -202,10 +228,7 @@ export default function App() {
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
 
-          <Route
-            path="/dashboard-old"
-            element={<Navigate to="/dashboard" replace />}
-          />
+
 
           <Route path="/portifolio-1/:slug" element={<PublicProfilePage />} />
           <Route path="/:slug" element={<PublicProfilePage />} />

@@ -69,7 +69,7 @@ export function AuthCallbackPage() {
       if (status !== 'success') {
         throw new Error(
           AUTH_CALLBACK_MESSAGES[reason] ||
-            'Não foi possível autenticar. Tente novamente.',
+          'Não foi possível autenticar. Tente novamente.',
         );
       }
 
@@ -99,7 +99,6 @@ export function AuthCallbackPage() {
           persistLegacyProfilePointers(result.profileId, result.templateType);
           clearDraft(draft.draftId);
           clearAuthIntent();
-          localStorage.removeItem('bio4dev_post_auth_redirect');
           hydrateProfile();
 
           if (result.skippedPlatforms.length > 0) {
@@ -144,7 +143,6 @@ export function AuthCallbackPage() {
       }
 
       if (developerDraftIntent) {
-        localStorage.removeItem('bio4dev_post_auth_redirect');
 
         try {
           const draft = loadDeveloperDraft(developerDraftIntent.draftId);
@@ -188,14 +186,6 @@ export function AuthCallbackPage() {
           });
           return;
         }
-      }
-
-      const storedRedirect = localStorage.getItem('bio4dev_post_auth_redirect');
-      if (storedRedirect) {
-        localStorage.removeItem('bio4dev_post_auth_redirect');
-        hydrateProfile();
-        navigate(storedRedirect, { replace: true });
-        return;
       }
 
       hydrateProfile();

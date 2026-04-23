@@ -23,6 +23,14 @@ const getErrorMessage = (err: any) => {
   return err?.message || 'Erro ao buscar dados';
 };
 
+const warnDashboardData = (
+  message: string,
+  details?: Record<string, unknown>,
+) => {
+  if (!import.meta.env.DEV) return;
+  console.warn(`[dashboard][data] ${message}`, details ?? {});
+};
+
 export const useProfilesByUser = (userId?: string): DataState<Profile[]> => {
   const abortRef = useRef<AbortController | null>(null);
   const [state, setState] = useState<DataState<Profile[]>>({
@@ -35,6 +43,7 @@ export const useProfilesByUser = (userId?: string): DataState<Profile[]> => {
 
   const fetchData = useCallback(() => {
     if (!userId) {
+      warnDashboardData('profiles fetch skipped because userId is missing');
       setState((prev) => ({
         ...prev,
         loading: false,
@@ -61,6 +70,12 @@ export const useProfilesByUser = (userId?: string): DataState<Profile[]> => {
       })
       .catch((err) => {
         if (controller.signal.aborted) return;
+        warnDashboardData('profiles fetch failed', {
+          userId,
+          error: getErrorMessage(err),
+          status: err?.response?.status,
+          data: err?.response?.data,
+        });
         setState((prev) => ({
           ...prev,
           error: getErrorMessage(err),
@@ -107,6 +122,11 @@ const useAnalyticsFetcher = <T>(
       })
       .catch((err) => {
         if (controller.signal.aborted) return;
+        warnDashboardData('analytics fetch failed', {
+          error: getErrorMessage(err),
+          status: err?.response?.status,
+          data: err?.response?.data,
+        });
         setState((prev) => ({
           ...prev,
           error: getErrorMessage(err),
@@ -128,7 +148,12 @@ export const useOverviewData = (
   range: string = 'last30d',
 ): DataState<OverviewResponse> =>
   useAnalyticsFetcher<OverviewResponse>(async () => {
-    if (!profileId) throw new Error('Perfil não encontrado');
+    if (!profileId) {
+      warnDashboardData('overview fetch blocked because profileId is missing', {
+        range,
+      });
+      throw new Error('Perfil não encontrado');
+    }
     const data = await analyticsApi.getOverview(profileId, range);
     return data;
   }, [profileId, range]);
@@ -139,7 +164,13 @@ export const useTimeseriesData = (
   range: string = 'last90d',
 ): DataState<TimeseriesPoint[]> =>
   useAnalyticsFetcher<TimeseriesPoint[]>(async () => {
-    if (!profileId) throw new Error('Perfil não encontrado');
+    if (!profileId) {
+      warnDashboardData('timeseries fetch blocked because profileId is missing', {
+        interval,
+        range,
+      });
+      throw new Error('Perfil não encontrado');
+    }
     const data = await analyticsApi.getTimeseries(profileId, interval, range);
     return data;
   }, [profileId, interval, range]);
@@ -150,7 +181,13 @@ export const useTopPagesData = (
   range: string = 'last30d',
 ): DataState<TopPage[]> =>
   useAnalyticsFetcher<TopPage[]>(async () => {
-    if (!profileId) throw new Error('Perfil não encontrado');
+    if (!profileId) {
+      warnDashboardData('top pages fetch blocked because profileId is missing', {
+        limit,
+        range,
+      });
+      throw new Error('Perfil não encontrado');
+    }
     const data = await analyticsApi.getTopPages(profileId, limit, range);
     return data;
   }, [profileId, limit, range]);
@@ -160,7 +197,12 @@ export const useDevicesData = (
   range: string = 'last30d',
 ): DataState<DeviceBreakdown[]> =>
   useAnalyticsFetcher<DeviceBreakdown[]>(async () => {
-    if (!profileId) throw new Error('Perfil não encontrado');
+    if (!profileId) {
+      warnDashboardData('devices fetch blocked because profileId is missing', {
+        range,
+      });
+      throw new Error('Perfil não encontrado');
+    }
     const data = await analyticsApi.getDevices(profileId, range);
     return data;
   }, [profileId, range]);

@@ -53,6 +53,37 @@ let logoutHandler: LogoutHandler | null = null;
 let refreshPromise: Promise<string | null> | null = null;
 let interceptorsConfigured = false;
 
+const getApiErrorDetails = (error: unknown) => {
+  if (error instanceof Error) {
+    const maybeAxiosError = error as Error & {
+      code?: string;
+      response?: { status?: number; data?: unknown };
+      config?: { url?: string; method?: string };
+    };
+    return {
+      name: error.name,
+      message: error.message,
+      code: maybeAxiosError.code,
+      status: maybeAxiosError.response?.status,
+      data: maybeAxiosError.response?.data,
+      url: maybeAxiosError.config?.url,
+      method: maybeAxiosError.config?.method,
+    };
+  }
+
+  return { error };
+};
+
+const logApiAuth = (message: string, details?: Record<string, unknown>) => {
+  if (!import.meta.env.DEV) return;
+  console.log(`[auth][api] ${message}`, details ?? {});
+};
+
+const warnApiAuth = (message: string, details?: Record<string, unknown>) => {
+  if (!import.meta.env.DEV) return;
+  console.warn(`[auth][api] ${message}`, details ?? {});
+};
+
 export function configureAuthInterceptors(options: {
   getAccessToken: AccessTokenProvider;
   refreshAccessToken: RefreshHandler;
@@ -66,6 +97,12 @@ export function configureAuthInterceptors(options: {
 
   api.interceptors.request.use((config) => {
     const token = getAccessToken?.();
+    logApiAuth('request', {
+      method: config.method?.toUpperCase() ?? 'GET',
+      url: config.url,
+      hasAccessToken: Boolean(token),
+      withCredentials: config.withCredentials ?? true,
+    });
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
@@ -84,17 +121,38 @@ export function configureAuthInterceptors(options: {
       const originalRequest: any = error.config || {};
 
       if (status === 401 && !originalRequest._retry && refreshHandler) {
+        warnApiAuth('401 received; trying refresh before retry', {
+          method: originalRequest.method?.toUpperCase() ?? 'GET',
+          url: originalRequest.url,
+          responseData: error.response?.data,
+        });
         originalRequest._retry = true;
         try {
           const newToken = await queueRefresh();
           if (newToken) {
+            logApiAuth('refresh succeeded after 401; retrying request', {
+              method: originalRequest.method?.toUpperCase() ?? 'GET',
+              url: originalRequest.url,
+            });
             originalRequest.headers = originalRequest.headers || {};
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return api(originalRequest);
           }
+          warnApiAuth('refresh returned no token after 401', {
+            method: originalRequest.method?.toUpperCase() ?? 'GET',
+            url: originalRequest.url,
+          });
         } catch (refreshError) {
-          // fallthrough to logout
+          warnApiAuth('refresh threw after 401', {
+            method: originalRequest.method?.toUpperCase() ?? 'GET',
+            url: originalRequest.url,
+            error: getApiErrorDetails(refreshError),
+          });
         }
+        warnApiAuth('logging out after unauthorized request', {
+          method: originalRequest.method?.toUpperCase() ?? 'GET',
+          url: originalRequest.url,
+        });
         logoutHandler?.();
       }
 
