@@ -30,18 +30,9 @@ import { toast } from 'sonner';
 
 const AUTH_SESSION_TOAST_ID = 'auth-session-expired';
 
-const logAuthRoute = (message: string, details?: Record<string, unknown>) => {
-  if (!import.meta.env.DEV) return;
-  console.log(`[auth][ProtectedRoute] ${message}`, details ?? {});
-};
-
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const location = useLocation();
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const authStatus = useAuthStore((state) => state.authStatus);
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const user = useAuthStore((state) => state.user);
   const authRedirectMessage = useAuthStore(
     (state) => state.authRedirectMessage,
   );
@@ -51,43 +42,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    logAuthRoute('state changed', {
-      path: location.pathname,
-      hasHydrated,
-      authStatus,
-      isAuthenticated,
-      hasAccessToken: Boolean(accessToken),
-      hasUser: Boolean(user),
-      userId: user?.id ?? null,
-    });
-  }, [
-    accessToken,
-    authStatus,
-    hasHydrated,
-    isAuthenticated,
-    location.pathname,
-    user,
-  ]);
-
-  useEffect(() => {
-    if (!hasHydrated) {
-      logAuthRoute('waiting for persisted auth hydration', {
-        path: location.pathname,
-      });
-      return;
-    }
+    if (!hasHydrated) return;
     if (authStatus !== 'booting') return;
 
-    logAuthRoute('starting auth bootstrap while dashboard renders', {
-      path: location.pathname,
-    });
-    void bootstrapAuth().then((status) => {
-      logAuthRoute('auth bootstrap finished', {
-        path: location.pathname,
-        status,
-      });
-    });
-  }, [authStatus, bootstrapAuth, hasHydrated, location.pathname]);
+    void bootstrapAuth();
+  }, [authStatus, bootstrapAuth, hasHydrated]);
 
   useEffect(() => {
     if (authStatus !== 'guest' || !authRedirectMessage) return;
@@ -97,14 +56,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
     toast.error(message, { id: AUTH_SESSION_TOAST_ID });
   }, [authStatus, authRedirectMessage, consumeAuthRedirectMessage]);
-
-  useEffect(() => {
-    if (authStatus !== 'guest') return;
-
-    logAuthRoute('redirecting guest away from protected route', {
-      path: location.pathname,
-    });
-  }, [authStatus, location.pathname]);
 
   if (!hasHydrated || authStatus === 'booting') {
     return <>{children}</>;

@@ -30,11 +30,6 @@ const getAuthErrorDetails = (error: unknown) => {
   return { error };
 };
 
-const logAuthStore = (message: string, details?: Record<string, unknown>) => {
-  if (!import.meta.env.DEV) return;
-  console.log(`[auth][store] ${message}`, details ?? {});
-};
-
 const warnAuthStore = (message: string, details?: Record<string, unknown>) => {
   if (!import.meta.env.DEV) return;
   console.warn(`[auth][store] ${message}`, details ?? {});
@@ -112,12 +107,6 @@ export const useAuthStore = create<AuthState>()(
           SESSION_REQUEST_TIMEOUT_MS,
         );
 
-        logAuthStore('refresh request started', {
-          markAuthenticated,
-          invalidateOnFailure,
-          url: buildApiUrl('/auth/refresh'),
-        });
-
         try {
           const response = await fetch(buildApiUrl('/auth/refresh'), {
             method: 'POST',
@@ -134,12 +123,6 @@ export const useAuthStore = create<AuthState>()(
           }
 
           const data = await response.json();
-          logAuthStore('refresh request succeeded', {
-            hasAccessToken: Boolean(data.accessToken),
-            responseUserId: data.user?.id ?? null,
-            previousUserId: get().user?.id ?? null,
-            markAuthenticated,
-          });
           set({
             accessToken: data.accessToken,
             user: data.user ?? get().user,
@@ -198,29 +181,15 @@ export const useAuthStore = create<AuthState>()(
             accessToken || isAuthenticated || user,
           );
 
-          logAuthStore('bootstrap requested', {
-            authStatus,
-            hasAccessToken: Boolean(accessToken),
-            isAuthenticated,
-            hasUser: Boolean(user),
-            userId: user?.id ?? null,
-            hasSessionHint,
-          });
-
           if (authStatus === 'authenticated' && accessToken && user) {
-            logAuthStore('bootstrap skipped because session is already valid', {
-              userId: user.id,
-            });
             return 'authenticated';
           }
 
           if (authStatus === 'guest' && !hasSessionHint) {
-            logAuthStore('bootstrap skipped because state is a clean guest');
             return 'guest';
           }
 
           if (bootstrapAuthPromise) {
-            logAuthStore('bootstrap joined existing request');
             return bootstrapAuthPromise;
           }
 
@@ -229,12 +198,8 @@ export const useAuthStore = create<AuthState>()(
           bootstrapAuthPromise = (async () => {
             const syncCurrentUser = async () => {
               try {
-                logAuthStore('syncing current user via /users/me');
                 const response = await api.get<User>('/users/me', {
                   timeout: SESSION_REQUEST_TIMEOUT_MS,
-                });
-                logAuthStore('/users/me succeeded', {
-                  userId: response.data.id,
                 });
                 set({ user: response.data, error: null });
                 return response.data;
@@ -247,7 +212,6 @@ export const useAuthStore = create<AuthState>()(
             };
 
             if (get().accessToken) {
-              logAuthStore('bootstrap using existing access token');
               const currentUser = await syncCurrentUser();
               if (!currentUser) {
                 warnAuthStore(
@@ -264,7 +228,6 @@ export const useAuthStore = create<AuthState>()(
               return 'authenticated' as const;
             }
 
-            logAuthStore('bootstrap trying refresh cookie');
             const token = await get().refreshAccessToken({
               markAuthenticated: false,
               invalidateOnFailure: false,
@@ -300,7 +263,6 @@ export const useAuthStore = create<AuthState>()(
               return 'guest' as const;
             })
             .finally(() => {
-              logAuthStore('bootstrap request finished');
               bootstrapAuthPromise = null;
             });
 
@@ -359,13 +321,6 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'bio4dev-auth',
       onRehydrateStorage: () => (state, error) => {
-        logAuthStore('persisted auth rehydrated', {
-          hasError: Boolean(error),
-          error: error ? getAuthErrorDetails(error) : null,
-          hasPersistedUser: Boolean(state?.user),
-          persistedUserId: state?.user?.id ?? null,
-          persistedIsAuthenticated: Boolean(state?.isAuthenticated),
-        });
         useAuthStore.setState({
           hasHydrated: true,
           authStatus: error ? 'guest' : 'booting',

@@ -74,11 +74,6 @@ const getApiErrorDetails = (error: unknown) => {
   return { error };
 };
 
-const logApiAuth = (message: string, details?: Record<string, unknown>) => {
-  if (!import.meta.env.DEV) return;
-  console.log(`[auth][api] ${message}`, details ?? {});
-};
-
 const warnApiAuth = (message: string, details?: Record<string, unknown>) => {
   if (!import.meta.env.DEV) return;
   console.warn(`[auth][api] ${message}`, details ?? {});
@@ -97,12 +92,6 @@ export function configureAuthInterceptors(options: {
 
   api.interceptors.request.use((config) => {
     const token = getAccessToken?.();
-    logApiAuth('request', {
-      method: config.method?.toUpperCase() ?? 'GET',
-      url: config.url,
-      hasAccessToken: Boolean(token),
-      withCredentials: config.withCredentials ?? true,
-    });
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
@@ -130,10 +119,6 @@ export function configureAuthInterceptors(options: {
         try {
           const newToken = await queueRefresh();
           if (newToken) {
-            logApiAuth('refresh succeeded after 401; retrying request', {
-              method: originalRequest.method?.toUpperCase() ?? 'GET',
-              url: originalRequest.url,
-            });
             originalRequest.headers = originalRequest.headers || {};
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return api(originalRequest);
