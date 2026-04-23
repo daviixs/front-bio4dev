@@ -69,7 +69,7 @@ export function AuthCallbackPage() {
       if (status !== 'success') {
         throw new Error(
           AUTH_CALLBACK_MESSAGES[reason] ||
-          'Não foi possível autenticar. Tente novamente.',
+            'Não foi possível autenticar. Tente novamente.',
         );
       }
 
@@ -143,7 +143,6 @@ export function AuthCallbackPage() {
       }
 
       if (developerDraftIntent) {
-
         try {
           const draft = loadDeveloperDraft(developerDraftIntent.draftId);
           if (!draft) {

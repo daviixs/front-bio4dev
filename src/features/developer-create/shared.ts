@@ -72,7 +72,10 @@ export function normalizeDeveloperSlug(value: string) {
 }
 
 export function createDeveloperDraftId() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+  if (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
+  ) {
     return `draft-${crypto.randomUUID()}`;
   }
 
@@ -299,9 +302,7 @@ function normalizeProjects(draftId: string, raw?: Projeto[]): Projeto[] {
     }));
 }
 
-function normalizeTechnologies(
-  raw?: Technology[],
-): Technology[] {
+function normalizeTechnologies(raw?: Technology[]): Technology[] {
   return (raw || [])
     .filter((item) => item?.name && item?.icon)
     .map((item, index) => ({
@@ -370,10 +371,12 @@ function normalizeWorkHistory(
       id: item.id || `draft-work-${index + 1}`,
       profileId: draftId,
       ordem: typeof item.ordem === 'number' ? item.ordem : index,
-      technologies: normalizeWorkTechnologies(item.technologies).map((tech) => ({
-        ...tech,
-        workExperienceId: item.id || `draft-work-${index + 1}`,
-      })),
+      technologies: normalizeWorkTechnologies(item.technologies).map(
+        (tech) => ({
+          ...tech,
+          workExperienceId: item.id || `draft-work-${index + 1}`,
+        }),
+      ),
       responsibilities: normalizeResponsibilities(item.responsibilities).map(
         (responsibility) => ({
           ...responsibility,
@@ -447,7 +450,11 @@ export function normalizeDeveloperProfileSnapshot(
       typeof raw?.createdAt === 'string' && raw.createdAt.trim()
         ? raw.createdAt
         : defaults.createdAt,
-    legendas: normalizeLegenda(input.draftId, defaults.legendas?.[0]!, raw?.legendas),
+    legendas: normalizeLegenda(
+      input.draftId,
+      defaults.legendas?.[0]!,
+      raw?.legendas,
+    ),
     social: normalizeSocials(input.draftId, raw?.social),
     projetos: normalizeProjects(input.draftId, raw?.projetos),
     techStack: normalizeTechStack(
@@ -467,7 +474,9 @@ export function buildDeveloperDraft(input: {
   displayName: string;
 }): DeveloperDraft {
   const normalizedSlug =
-    normalizeDeveloperSlug(input.slug) || normalizeDeveloperSlug(input.displayName) || 'meu-portfolio';
+    normalizeDeveloperSlug(input.slug) ||
+    normalizeDeveloperSlug(input.displayName) ||
+    'meu-portfolio';
   const displayName = input.displayName.trim() || normalizedSlug;
   const now = new Date().toISOString();
 
@@ -617,7 +626,8 @@ export function toDeveloperFinalizePayload(draft: DeveloperDraft) {
       : undefined,
     workHistory: (draft.profile.workHistory || [])
       .filter(
-        (item) => item.company?.trim() && item.period?.trim() && item.summary?.trim(),
+        (item) =>
+          item.company?.trim() && item.period?.trim() && item.summary?.trim(),
       )
       .map((item, index) => ({
         company: item.company.trim(),

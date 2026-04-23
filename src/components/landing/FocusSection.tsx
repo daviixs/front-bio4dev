@@ -26,7 +26,10 @@ export function FocusSection() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#c3986b]">
                   Epic Builder
                 </p>
-                <h3 className="text-[38px] font-normal leading-[1.2] text-[#ece5d9] md:text-[40px]" style={{ fontFamily: '"Lora", serif' }}>
+                <h3
+                  className="text-[38px] font-normal leading-[1.2] text-[#ece5d9] md:text-[40px]"
+                  style={{ fontFamily: '"Lora", serif' }}
+                >
                   O único builder de bios com IA que não quebra o que já estava
                   funcionando.
                 </h3>

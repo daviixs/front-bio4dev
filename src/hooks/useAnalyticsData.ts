@@ -165,10 +165,13 @@ export const useTimeseriesData = (
 ): DataState<TimeseriesPoint[]> =>
   useAnalyticsFetcher<TimeseriesPoint[]>(async () => {
     if (!profileId) {
-      warnDashboardData('timeseries fetch blocked because profileId is missing', {
-        interval,
-        range,
-      });
+      warnDashboardData(
+        'timeseries fetch blocked because profileId is missing',
+        {
+          interval,
+          range,
+        },
+      );
       throw new Error('Perfil não encontrado');
     }
     const data = await analyticsApi.getTimeseries(profileId, interval, range);
@@ -182,10 +185,13 @@ export const useTopPagesData = (
 ): DataState<TopPage[]> =>
   useAnalyticsFetcher<TopPage[]>(async () => {
     if (!profileId) {
-      warnDashboardData('top pages fetch blocked because profileId is missing', {
-        limit,
-        range,
-      });
+      warnDashboardData(
+        'top pages fetch blocked because profileId is missing',
+        {
+          limit,
+          range,
+        },
+      );
       throw new Error('Perfil não encontrado');
     }
     const data = await analyticsApi.getTopPages(profileId, limit, range);

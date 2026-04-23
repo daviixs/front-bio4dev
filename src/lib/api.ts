@@ -412,7 +412,10 @@ export const onboardingApi = {
 
 export interface FinalizeDeveloperOnboardingRequest {
   draftId: string;
-  templateType: Extract<TemplateType, 'template_01' | 'template_02' | 'template_03'>;
+  templateType: Extract<
+    TemplateType,
+    'template_01' | 'template_02' | 'template_03'
+  >;
   slug: string;
   displayName: string;
   avatarUrl?: string;
@@ -479,7 +482,10 @@ export interface FinalizeDeveloperOnboardingRequest {
 
 export interface FinalizeDeveloperOnboardingResponse {
   profileId: string;
-  templateType: Extract<TemplateType, 'template_01' | 'template_02' | 'template_03'>;
+  templateType: Extract<
+    TemplateType,
+    'template_01' | 'template_02' | 'template_03'
+  >;
   redirectTo: string;
 }
 

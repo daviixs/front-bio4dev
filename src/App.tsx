@@ -204,7 +204,6 @@ export default function App() {
             }
           />
 
-
           <Route
             path="/dashboard/bio/:id"
             element={
@@ -227,8 +226,6 @@ export default function App() {
             <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
-
-
 
           <Route path="/portifolio-1/:slug" element={<PublicProfilePage />} />
           <Route path="/:slug" element={<PublicProfilePage />} />

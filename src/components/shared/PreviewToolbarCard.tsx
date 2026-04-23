@@ -27,9 +27,13 @@ export function PreviewToolbarCard({
         <h1 className={`text-lg font-semibold ${titleClassName || ''}`}>
           {title}
         </h1>
-        {meta ? <div className={`text-sm ${metaClassName || ''}`}>{meta}</div> : null}
+        {meta ? (
+          <div className={`text-sm ${metaClassName || ''}`}>{meta}</div>
+        ) : null}
       </div>
-      <div className={`flex flex-col gap-3 sm:flex-row ${actionsClassName || ''}`}>
+      <div
+        className={`flex flex-col gap-3 sm:flex-row ${actionsClassName || ''}`}
+      >
         {actions}
       </div>
     </div>

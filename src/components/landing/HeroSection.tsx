@@ -19,8 +19,12 @@ export function HeroSection() {
       <div className="mx-auto flex w-full flex-col items-center px-4 pb-20 pt-6 text-center sm:px-6">
         <div className="w-full max-w-4xl">
           <Reveal delay={100}>
-            <h1 className="mx-auto max-w-3xl font-normal text-[#ece5d9] text-[36px] leading-[1.2] sm:text-[48px] sm:leading-[58px]" style={{ fontFamily: '"Lora", serif' }}>
-              Tudo o que você precisa para construir produtos épicos com IA em um só lugar.
+            <h1
+              className="mx-auto max-w-3xl font-normal text-[#ece5d9] text-[36px] leading-[1.2] sm:text-[48px] sm:leading-[58px]"
+              style={{ fontFamily: '"Lora", serif' }}
+            >
+              Tudo o que você precisa para construir produtos épicos com IA em
+              um só lugar.
             </h1>
           </Reveal>
 

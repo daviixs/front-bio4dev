@@ -463,8 +463,7 @@ export function EditablePortfolio3({
           label: existing?.url ? slot.label : `Adicionar ${slot.label}`,
           url: existing?.url || '',
           Icon: slot.icon,
-          order:
-            typeof existing?.ordem === 'number' ? existing.ordem : index,
+          order: typeof existing?.ordem === 'number' ? existing.ordem : index,
         };
       }),
     [localProfile.social],
@@ -886,7 +885,7 @@ export function EditablePortfolio3({
         icon: item.icon,
         color: item.color || 'text-[#FF6B35]',
         ordem: index,
-        })),
+      })),
     };
 
     try {
@@ -951,7 +950,7 @@ export function EditablePortfolio3({
         icon: item.icon,
         color: item.color || 'text-[#FF6B35]',
         ordem: index,
-        })),
+      })),
     };
 
     try {
@@ -1076,8 +1075,7 @@ export function EditablePortfolio3({
         const createdProject = {
           id: editingProject?.id || `draft-project-${Date.now()}`,
           profileId: localProfile.id,
-          createdAt:
-            editingProject?.createdAt || new Date().toISOString(),
+          createdAt: editingProject?.createdAt || new Date().toISOString(),
           ...payload,
         };
 
@@ -1385,7 +1383,9 @@ export function EditablePortfolio3({
 
       if (isDraftMode) {
         if (existing) {
-          const index = nextSocials.findIndex((item) => item.id === existing.id);
+          const index = nextSocials.findIndex(
+            (item) => item.id === existing.id,
+          );
           if (index >= 0) {
             nextSocials[index] = {
               ...existing,

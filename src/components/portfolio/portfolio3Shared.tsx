@@ -552,10 +552,7 @@ interface Portfolio3FooterSectionProps {
   description: ReactNode;
   email: ReactNode;
   socialLinks: Portfolio3FooterSocialLink[];
-  onSocialClick?: (
-    item: Portfolio3FooterSocialLink,
-    index: number,
-  ) => void;
+  onSocialClick?: (item: Portfolio3FooterSocialLink, index: number) => void;
 }
 
 export function Portfolio3FooterSection({

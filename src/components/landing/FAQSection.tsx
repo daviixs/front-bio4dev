@@ -49,7 +49,10 @@ export function FAQSection() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#c3986b]">
             Perguntas frequentes
           </p>
-          <h2 className="text-[42px] font-normal leading-tight text-[#ece5d9] md:text-[48px]" style={{ fontFamily: '"Lora", serif' }}>
+          <h2
+            className="text-[42px] font-normal leading-tight text-[#ece5d9] md:text-[48px]"
+            style={{ fontFamily: '"Lora", serif' }}
+          >
             Tudo o que você precisa saber antes de começar
           </h2>
         </div>

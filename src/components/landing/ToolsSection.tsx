@@ -42,7 +42,10 @@ export function ToolsSection() {
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c3986b]">
               Prova real
             </p>
-            <h2 className="text-3xl font-normal text-[#ece5d9] sm:text-4xl" style={{ fontFamily: '"Lora", serif' }}>
+            <h2
+              className="text-3xl font-normal text-[#ece5d9] sm:text-4xl"
+              style={{ fontFamily: '"Lora", serif' }}
+            >
               Criadores que escalam suas bios com a Bio4Dev
             </h2>
             <p className="text-sm text-[#ece5d9]/60">

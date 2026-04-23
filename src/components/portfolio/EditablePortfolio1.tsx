@@ -639,9 +639,9 @@ const AddTechDialog: React.FC<AddTechDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent
-          className={`sm:max-w-md ${template01Theme.card} ${template01Theme.textPrimary}`}
-        >
+      <DialogContent
+        className={`sm:max-w-md ${template01Theme.card} ${template01Theme.textPrimary}`}
+      >
         <DialogHeader>
           <DialogTitle>Adicionar tecnologia</DialogTitle>
         </DialogHeader>
@@ -1395,8 +1395,7 @@ export function EditablePortfolio1({
           ordem: basePayload.ordem,
           gif: basePayload.gif || '',
           tags: basePayload.tags || [],
-          createdAt:
-            editingProject?.createdAt || new Date().toISOString(),
+          createdAt: editingProject?.createdAt || new Date().toISOString(),
         };
 
         syncProfileState((prev) => ({

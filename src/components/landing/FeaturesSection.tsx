@@ -34,7 +34,10 @@ export function FeaturesSection() {
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c3986b]">
                   Bio4Dev Suite
                 </p>
-                <h3 className="text-[32px] font-normal leading-[1.2] text-[#ece5d9] md:text-[34px]" style={{ fontFamily: '"Lora", serif' }}>
+                <h3
+                  className="text-[32px] font-normal leading-[1.2] text-[#ece5d9] md:text-[34px]"
+                  style={{ fontFamily: '"Lora", serif' }}
+                >
                   Tudo para criar bios e portfólios épicos em um só lugar
                 </h3>
                 <p className="max-w-xl text-sm leading-[1.75] text-[#ece5d9]/60">

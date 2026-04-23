@@ -130,9 +130,7 @@ export function findReusableDeveloperDraft(input: {
     }
   }
 
-  matches.sort((left, right) =>
-    right.updatedAt.localeCompare(left.updatedAt),
-  );
+  matches.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
 
   return matches[0] || null;
 }

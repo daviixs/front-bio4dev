@@ -344,7 +344,9 @@ export function DeveloperDraftEditorPage() {
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span>{getDeveloperTemplateName(draft.templateType)}</span>
               <span className="text-slate-300">·</span>
-              <span className="font-mono text-[13px]">bio4.dev/{draft.slug}</span>
+              <span className="font-mono text-[13px]">
+                bio4.dev/{draft.slug}
+              </span>
               <span className="text-slate-300">·</span>
             </div>
           }

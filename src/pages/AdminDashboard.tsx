@@ -281,8 +281,8 @@ export default function AdminDashboard() {
                 Your Portfolios
               </h2>
               <p className="text-sm text-foreground/50 mt-0.5">
-                {publishedBios} published · {userProfiles.length - publishedBios}{' '}
-                draft
+                {publishedBios} published ·{' '}
+                {userProfiles.length - publishedBios} draft
               </p>
             </div>
             <button

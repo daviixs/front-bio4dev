@@ -2135,11 +2135,11 @@ export function EditablePortfolio2({
           company: newWork.company,
           period: newWork.period,
           summary: newWork.summary,
-          ordem:
-            editingExp
-              ? currentProfile.workHistory?.find((item) => item.id === editingExp.id)
-                  ?.ordem || 0
-              : currentProfile.workHistory?.length || 0,
+          ordem: editingExp
+            ? currentProfile.workHistory?.find(
+                (item) => item.id === editingExp.id,
+              )?.ordem || 0
+            : currentProfile.workHistory?.length || 0,
           technologies: [],
           responsibilities: [],
         };
