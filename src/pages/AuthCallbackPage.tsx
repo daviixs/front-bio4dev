@@ -10,8 +10,9 @@ import {
 } from '@/features/developer-create/storage';
 import { toDeveloperFinalizePayload } from '@/features/developer-create/shared';
 import {
+  clearAuthIntent,
   clearDraft,
-  consumeAuthIntent,
+  getAuthIntent,
   loadDraft,
   persistLegacyProfilePointers,
   toFinalizeOnboardingPayload,
@@ -42,6 +43,27 @@ export function AuthCallbackPage() {
     };
     const status = params.get('status');
     const reason = params.get('reason') || '';
+    const onboardingIntent = getAuthIntent();
+    const developerIntentState = readDeveloperDraftAuthIntent();
+    const developerDraftIntent = developerIntentState.intent;
+
+    const resolveFailureRoute = () => {
+      if (developerDraftIntent?.returnTo) {
+        return developerDraftIntent.returnTo;
+      }
+
+      if (onboardingIntent?.intent === 'onboarding_finalize') {
+        return (
+          onboardingIntent.returnTo || `/onboarding/${onboardingIntent.draftId}`
+        );
+      }
+
+      if (developerIntentState.hasInvalidData) {
+        return '/profile/create/developer';
+      }
+
+      return '/profile/type';
+    };
 
     const completeAuthRedirect = async () => {
       if (status !== 'success') {
@@ -58,11 +80,10 @@ export function AuthCallbackPage() {
         );
       }
 
-      const authIntent = consumeAuthIntent();
-
-      if (authIntent?.intent === 'onboarding_finalize') {
-        const draft = loadDraft(authIntent.draftId);
+      if (onboardingIntent?.intent === 'onboarding_finalize') {
+        const draft = loadDraft(onboardingIntent.draftId);
         if (!draft) {
+          clearAuthIntent();
           toast.error('Rascunho do onboarding não encontrado.', {
             id: AUTH_CALLBACK_TOAST_ID,
           });
@@ -77,6 +98,7 @@ export function AuthCallbackPage() {
 
           persistLegacyProfilePointers(result.profileId, result.templateType);
           clearDraft(draft.draftId);
+          clearAuthIntent();
           localStorage.removeItem('bio4dev_post_auth_redirect');
           hydrateProfile();
 
@@ -97,18 +119,22 @@ export function AuthCallbackPage() {
           toast.error(message, { id: AUTH_CALLBACK_TOAST_ID });
 
           if (message.toLowerCase().includes('limite')) {
-            navigate('/dashboard/bio', { replace: true });
+            clearAuthIntent();
+            navigate('/dashboard', { replace: true });
             return;
           }
 
-          navigate(authIntent.returnTo || `/onboarding/${draft.draftId}`, {
-            replace: true,
-          });
+          clearAuthIntent();
+          navigate(
+            onboardingIntent.returnTo || `/onboarding/${draft.draftId}`,
+            {
+              replace: true,
+            },
+          );
           return;
         }
       }
 
-      const developerIntentState = readDeveloperDraftAuthIntent();
       if (developerIntentState.hasInvalidData) {
         toast.error('Dados do rascunho dev expiraram. Tente novamente.', {
           id: AUTH_CALLBACK_TOAST_ID,
@@ -117,7 +143,6 @@ export function AuthCallbackPage() {
         return;
       }
 
-      const developerDraftIntent = developerIntentState.intent;
       if (developerDraftIntent) {
         localStorage.removeItem('bio4dev_post_auth_redirect');
 
@@ -152,10 +177,12 @@ export function AuthCallbackPage() {
           toast.error(message, { id: AUTH_CALLBACK_TOAST_ID });
 
           if (message.toLowerCase().includes('limite')) {
-            navigate('/dashboard/bio', { replace: true });
+            clearDeveloperDraftAuthIntent();
+            navigate('/dashboard', { replace: true });
             return;
           }
 
+          clearDeveloperDraftAuthIntent();
           navigate(developerDraftIntent.returnTo, {
             replace: true,
           });
@@ -182,8 +209,7 @@ export function AuthCallbackPage() {
             ? error.message
             : 'Não foi possível autenticar. Tente novamente.';
         toast.error(message, { id: AUTH_CALLBACK_TOAST_ID });
-        clearDeveloperDraftAuthIntent();
-        void navigate('/profile/type', { replace: true });
+        void navigate(resolveFailureRoute(), { replace: true });
       })
       .finally(() => setProcessing(false));
   }, [bootstrapAuth, navigate, params]);

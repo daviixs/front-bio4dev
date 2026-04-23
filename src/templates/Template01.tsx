@@ -3,6 +3,7 @@ import {
   ExternalLink,
   Briefcase,
   Calendar,
+  Github,
 } from 'lucide-react';
 import { TechIcon } from '@/components/portfolio/TechIcon';
 import { SocialPills } from '@/components/shared/SocialPills';

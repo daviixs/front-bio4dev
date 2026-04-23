@@ -27,11 +27,55 @@ import {
 import { AdminLayoutWrapper } from './components/admin/AdminLayoutWrapper';
 import { AppToaster } from '@/components/ui/sonner';
 import { useAuthStore } from '@/stores/authStore';
+import { toast } from 'sonner';
+
+const AUTH_SESSION_TOAST_ID = 'auth-session-expired';
+
+function ProtectedRouteFallback() {
+  return (
+    <div className="min-h-screen bg-[#120f0d] flex items-center justify-center px-6">
+      <div className="rounded-3xl border border-[rgba(236,229,217,0.12)] bg-[#1d1714]/95 px-6 py-5 text-center text-[#ece5d9] shadow-[0_24px_60px_-36px_rgba(0,0,0,0.75)] backdrop-blur">
+        Restaurando sua sessão...
+      </div>
+    </div>
+  );
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const authStatus = useAuthStore((state) => state.authStatus);
+  const authRedirectMessage = useAuthStore(
+    (state) => state.authRedirectMessage,
+  );
+  const bootstrapAuth = useAuthStore((state) => state.bootstrapAuth);
+  const consumeAuthRedirectMessage = useAuthStore(
+    (state) => state.consumeAuthRedirectMessage,
+  );
 
-  if (authStatus === 'booting') return null;
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (authStatus !== 'booting') return;
+
+    void bootstrapAuth();
+  }, [authStatus, bootstrapAuth, hasHydrated]);
+
+  useEffect(() => {
+    if (authStatus !== 'guest' || !authRedirectMessage) return;
+
+    const message = consumeAuthRedirectMessage();
+    if (!message) return;
+
+    toast.error(message, { id: AUTH_SESSION_TOAST_ID });
+  }, [authStatus, authRedirectMessage, consumeAuthRedirectMessage]);
+
+  if (!hasHydrated) {
+    return <ProtectedRouteFallback />;
+  }
+
+  if (authStatus === 'booting') {
+    return <ProtectedRouteFallback />;
+  }
+
   if (authStatus === 'guest') {
     return <Navigate to="/profile/type" replace />;
   }
