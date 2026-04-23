@@ -350,9 +350,15 @@ export function Portfolio3TechStackSection({
       {items.length > 0 ? (
         <div className="flex flex-wrap justify-center gap-3 md:justify-start">
           {items.map((item) => (
-            <div key={item.id} className="group/item relative">
+            <article
+              key={item.id || item.name}
+              className={cn(
+                'flex min-w-[168px] max-w-full items-center gap-3 rounded-xl border border-[#333] bg-[#1a1a1a] px-3 py-2.5 transition-[border-color,background-color,transform] duration-150 hover:-translate-y-0.5 hover:border-[#555] hover:bg-[#202020]',
+                onRemoveTech ? 'pr-2' : '',
+              )}
+            >
               <div
-                className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#333] bg-[#1a1a1a] text-[12px] font-bold transition-colors hover:border-[#555]"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#2d2d2d] bg-[#121212] text-[12px] font-bold"
                 title={item.name}
               >
                 <TechIcon
@@ -362,17 +368,26 @@ export function Portfolio3TechStackSection({
                 />
               </div>
 
+              <div className="min-w-0 flex-1 text-left">
+                <div className="truncate text-[11px] font-bold uppercase tracking-[1.4px] text-[#f0f0f0]">
+                  {item.name}
+                </div>
+                <div className="text-[9px] uppercase tracking-[2px] text-[#727272]">
+                  Selected
+                </div>
+              </div>
+
               {onRemoveTech && (
                 <button
                   type="button"
                   onClick={() => onRemoveTech(item)}
-                  className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF6B35] text-white opacity-0 shadow-md transition-opacity group-hover/item:opacity-100"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#3b3b3b] bg-[#141414] text-[#8f8f8f] transition-[border-color,color,background-color] duration-150 hover:border-[#FF6B35]/50 hover:bg-[#FF6B35]/10 hover:text-[#FF6B35]"
                   aria-label={`Remover ${item.name}`}
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-3.5 w-3.5" />
                 </button>
               )}
-            </div>
+            </article>
           ))}
         </div>
       ) : (

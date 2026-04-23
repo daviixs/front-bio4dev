@@ -1209,11 +1209,17 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
 
   return (
     <div className="bg-[#121318] rounded-[2rem] p-6 border border-white/5">
-      <div className="flex items-center justify-between gap-4">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <span className="w-2 h-6 bg-yellow-500 rounded-full inline-block"></span>
-          Tech Stack
-        </h2>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <span className="w-2 h-6 bg-yellow-500 rounded-full inline-block"></span>
+            Tech Stack
+          </h2>
+          <p className="mt-2 text-sm text-gray-500">
+            As tecnologias selecionadas precisam ficar visíveis durante a
+            edição.
+          </p>
+        </div>
 
         {onAdd && onRemove && (
           <>
@@ -1238,6 +1244,54 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
           </>
         )}
       </div>
+
+      {data.length > 0 ? (
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {data.map((tech) => (
+            <article
+              key={tech.id || tech.name}
+              className="flex items-center gap-3 rounded-2xl border border-white/8 bg-[#0f0f12] px-4 py-3 transition-[border-color,background-color,transform] duration-150 hover:-translate-y-0.5 hover:border-yellow-500/30 hover:bg-[#15161b]"
+            >
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-[#18181b]">
+                <TechIcon
+                  icon={tech.icon || 'lucide:code-2'}
+                  size={20}
+                  className={tech.color || 'text-gray-300'}
+                />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-white">
+                  {tech.name}
+                </p>
+                <p className="text-[11px] text-gray-500">
+                  Selecionada para este portfólio
+                </p>
+              </div>
+
+              {onRemove && (
+                <button
+                  type="button"
+                  onClick={() => onRemove(tech)}
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/20 text-gray-500 transition-colors duration-150 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300"
+                  aria-label={`Remover ${tech.name}`}
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-6 rounded-2xl border border-dashed border-white/10 bg-[#0f0f12] px-5 py-6 text-center">
+          <p className="text-sm font-medium text-gray-300">
+            Nenhuma tecnologia adicionada ainda.
+          </p>
+          <p className="mt-1 text-xs text-gray-500">
+            Use o botão acima para montar a stack exibida no editor.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
@@ -1332,15 +1386,6 @@ const DEMO_SOCIAL_LINKS: SocialLink[] = [
     colSpan: 1,
   },
 ];
-
-const DEMO_TECH_STACK: Technology[] = TECH_OPTIONS.map((tech, idx) => ({
-  id: `demo-${idx}`,
-  techStackId: 'demo',
-  name: tech.name,
-  icon: tech.icon,
-  color: tech.color || 'text-gray-700',
-  ordem: idx,
-}));
 
 const DEMO_EXPERIENCE_DATA: Experience[] = [
   {

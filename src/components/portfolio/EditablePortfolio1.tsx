@@ -725,7 +725,7 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
           </p>
         </div>
 
-        {data && data.length > 0 && (
+        {data.length > 0 && (
           <div className="text-center mb-6">
             <p className={`text-sm ${template01Theme.textMuted}`}>
               {data.length === 1
@@ -735,16 +735,62 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
           </div>
         )}
 
-        {data && data.length === 0 && (
-          <div className="text-center mb-6">
-            <span className={`text-sm ${template01Theme.textMuted}`}>
+        {data.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {data.map((tech) => (
+              <article
+                key={tech.id || tech.name}
+                className={`flex items-center gap-4 rounded-[28px] px-5 py-4 ${template01Theme.card} shadow-[0_24px_50px_-34px_rgba(24,33,43,0.24)] transition-[transform,border-color,box-shadow] duration-150 hover:-translate-y-0.5`}
+              >
+                <div
+                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${template01Theme.cardAlt}`}
+                >
+                  <TechIcon
+                    icon={tech.icon || 'lucide:code-2'}
+                    size={22}
+                    className={tech.color || 'text-[#695f5c]'}
+                  />
+                </div>
+
+                <div className="min-w-0 flex-1 text-left">
+                  <p
+                    className={`truncate text-base font-semibold ${template01Theme.textPrimary}`}
+                  >
+                    {tech.name}
+                  </p>
+                  <p className={`text-xs ${template01Theme.textMuted}`}>
+                    Selecionada para este portfólio
+                  </p>
+                </div>
+
+                {onRemove && (
+                  <button
+                    type="button"
+                    onClick={() => onRemove(tech)}
+                    className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${template01Theme.border} bg-[#fffdf9] ${template01Theme.textMuted} transition-colors duration-150 hover:bg-[#f1e8dd] hover:text-[#18212b]`}
+                    aria-label={`Remover ${tech.name}`}
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div
+            className={`mx-auto mb-6 max-w-2xl rounded-[28px] border border-dashed ${template01Theme.border} bg-[#f9f6f1] px-6 py-8 text-center`}
+          >
+            <p className={`text-base font-medium ${template01Theme.textSecondary}`}>
               Nenhuma tecnologia adicionada ainda.
-            </span>
+            </p>
+            <p className={`mt-2 text-sm ${template01Theme.textMuted}`}>
+              Adicione a stack real para ela aparecer nesta edição.
+            </p>
           </div>
         )}
 
         {onAdd && (
-          <>
+          <div className="mt-8 flex justify-center">
             <Button
               size="sm"
               onClick={() => setIsDialogOpen(true)}
@@ -758,21 +804,12 @@ const TechStack: React.FC<TechStackProps> = ({ data, onAdd, onRemove }) => {
               onOpenChange={setIsDialogOpen}
               onAdd={onAdd}
             />
-          </>
+          </div>
         )}
       </div>
     </section>
   );
 };
-
-const DEMO_TECH_STACK: Technology[] = TECH_OPTIONS.map((tech, idx) => ({
-  id: `demo-${idx}`,
-  techStackId: 'demo',
-  name: tech.name,
-  icon: tech.icon,
-  color: tech.color || 'text-[#695f5c]',
-  ordem: idx,
-}));
 
 export function EditablePortfolio1({
   profile,
@@ -1662,8 +1699,7 @@ export function EditablePortfolio1({
       color: tech.color || 'text-[#695f5c]',
       ordem: tech.ordem ?? idx,
     })) || [];
-  const techStackData =
-    mappedTechStack.length > 0 ? mappedTechStack : DEMO_TECH_STACK;
+  const techStackData = mappedTechStack;
 
   try {
     // Verificação adicional de segurança
