@@ -2,6 +2,7 @@ import React from 'react';
 import { Reveal } from './Reveal';
 import { motion } from 'framer-motion';
 import { sectionFade } from './animations';
+import VideoLP from '../../../lp-images/VideoLP.mp4';
 
 export function FeaturesSection() {
   return (
@@ -17,15 +18,17 @@ export function FeaturesSection() {
         <Reveal>
           <div className="w-full rounded-[24px] border border-white/12 bg-[#221e1b] px-6 py-14 shadow-[0_35px_100px_-50px_rgba(0,0,0,0.8)] md:px-14 md:py-24">
             <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-12">
-              {/* Video / iframe placeholder */}
+              {/* Video Player */}
               <div className="relative w-full flex-1 lg:flex-[1.1]">
                 <div className="aspect-[16/10] overflow-hidden rounded-[10px] border border-white/12 bg-[#2e2824]">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(195,152,107,0.18),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(236,229,217,0.12),transparent_34%)]" />
-                  <div className="relative flex h-full w-full items-center justify-center text-[#ece5d9]/70 text-sm font-semibold">
-                    <span className="rounded-full border border-white/20 px-3 py-1">
-                      Vídeo do produto (16:10)
-                    </span>
-                  </div>
+                  <video
+                    src={VideoLP}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               </div>
 
