@@ -6,6 +6,7 @@ import {
   Navigate,
   useLocation,
 } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Home,
   SignupPage,
@@ -102,11 +103,29 @@ function AppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
+function AnimatedRoutes() {
+  const location = useLocation();
   return (
-    <BrowserRouter>
-      <AppShell>
-        <Routes>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -15 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="flex w-full flex-col min-h-[100dvh]"
+      >
+        <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
 
@@ -194,6 +213,17 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <ScrollToTop />
+      <AppShell>
+        <AnimatedRoutes />
       </AppShell>
       <AppToaster />
     </BrowserRouter>

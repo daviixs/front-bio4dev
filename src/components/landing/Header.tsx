@@ -57,7 +57,7 @@ export function Header() {
           <div className="flex flex-1 items-center justify-start">
             <Link to="/" className="flex items-center px-0 py-0">
               <img
-                src="/images/logobio4dev.png"
+                src="/images/logo.png"
                 alt="Bio4Dev"
                 className="h-10 w-auto"
                 loading="eager"

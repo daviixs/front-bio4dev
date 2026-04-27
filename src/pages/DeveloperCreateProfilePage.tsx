@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { profileApi } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
@@ -256,68 +257,80 @@ export function DeveloperCreateProfilePage() {
         </div>
       )}
 
-      {isSlugModalOpen && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-slate-900/40 px-4 py-6">
-          <div
-            className={`w-full max-w-[400px] rounded-3xl p-6 shadow-2xl ${landingTheme.card}`}
+      <AnimatePresence>
+        {isSlugModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-30 flex items-center justify-center bg-slate-900/40 px-4 py-6"
           >
-            <h2 className="text-xl font-semibold text-slate-900">
-              Escolha seu Nome
-            </h2>
-            <div className="mt-4 space-y-3">
-              <label
-                htmlFor="slug-name"
-                className="text-sm font-semibold text-slate-700"
-              >
-                Nome
-              </label>
-              <input
-                id="slug-name"
-                value={nameInput}
-                onChange={(event) => {
-                  setNameInput(event.target.value);
-                  setSlugError(null);
-                }}
-                placeholder="Digite seu nome"
-                disabled={isLoading}
-                className={`h-11 w-full rounded-xl border px-4 text-sm focus:outline-none focus:ring-2 ${landingTheme.input}`}
-              />
-              <p className={`text-xs ${landingTheme.textMuted}`}>
-                Este nome sera usado para gerar seu link personalizado:
-                bio4.dev/seunome
-              </p>
-              <p className={`text-sm ${landingTheme.textSecondary}`}>
-                Seu link sera:{' '}
-                <span className="font-semibold text-slate-900">
-                  bio4.dev/{slugPreview || 'seunome'}
-                </span>
-              </p>
-              {slugError && (
-                <p className={`text-sm ${landingTheme.errorText}`}>
-                  {slugError}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className={`w-full max-w-[400px] rounded-3xl p-6 shadow-2xl ${landingTheme.card}`}
+            >
+              <h2 className="text-xl font-semibold text-slate-900">
+                Escolha seu Nome
+              </h2>
+              <div className="mt-4 space-y-3">
+                <label
+                  htmlFor="slug-name"
+                  className="text-sm font-semibold text-slate-700"
+                >
+                  Nome
+                </label>
+                <input
+                  id="slug-name"
+                  value={nameInput}
+                  onChange={(event) => {
+                    setNameInput(event.target.value);
+                    setSlugError(null);
+                  }}
+                  placeholder="Digite seu nome"
+                  disabled={isLoading}
+                  className={`h-11 w-full rounded-xl border px-4 text-sm focus:outline-none focus:ring-2 ${landingTheme.input}`}
+                />
+                <p className={`text-xs ${landingTheme.textMuted}`}>
+                  Este nome sera usado para gerar seu link personalizado:
+                  bio4.dev/seunome
                 </p>
-              )}
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={handleCloseSlugModal}
-                className={`rounded-full px-4 py-2 text-sm transition ${landingTheme.buttonSecondary}`}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmSlug}
-                disabled={isLoading}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition disabled:opacity-60 ${landingTheme.buttonPrimary}`}
-              >
-                {isLoading ? 'Abrindo...' : 'Confirmar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                <p className={`text-sm ${landingTheme.textSecondary}`}>
+                  Seu link sera:{' '}
+                  <span className="font-semibold text-slate-900">
+                    bio4.dev/{slugPreview || 'seunome'}
+                  </span>
+                </p>
+                {slugError && (
+                  <p className={`text-sm ${landingTheme.errorText}`}>
+                    {slugError}
+                  </p>
+                )}
+              </div>
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={handleCloseSlugModal}
+                  className={`rounded-full px-4 py-2 text-sm transition ${landingTheme.buttonSecondary}`}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmSlug}
+                  disabled={isLoading}
+                  className={`rounded-full px-5 py-2 text-sm font-semibold transition disabled:opacity-60 ${landingTheme.buttonPrimary}`}
+                >
+                  {isLoading ? 'Abrindo...' : 'Confirmar'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>
