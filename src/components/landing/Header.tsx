@@ -38,7 +38,7 @@ export function Header() {
           key={item.label}
           href={item.href}
           className={cn(
-            'flex items-center px-2 py-1 text-sm font-medium text-[#ece5d9] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+            'flex items-center px-2 py-1 text-base font-medium text-[#ece5d9] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
             'hover:text-[#c3986b]',
           )}
           style={{ transitionDelay: `${idx * 50}ms` }}

@@ -6,6 +6,7 @@ import { sectionFade } from './animations';
 import customImage from '@/landingpage-images/image.png';
 import { Reveal } from './Reveal';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
+import { FeatureShowcase } from './FeatureShowcase';
 
 export function HeroSection() {
   return (
@@ -65,32 +66,7 @@ export function HeroSection() {
       </div>
 
       <Reveal delay={260}>
-        <div className="mx-auto mt-6 flex w-full max-w-6xl flex-col gap-4 px-6 pb-6 text-center">
-          <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#c3986b]">
-            Recursos para tirar seu portfólio do rascunho e publicar com
-            clareza
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-            {[
-              'Templates',
-              'Projetos',
-              'Experiências',
-              'GitHub',
-              'Preview',
-              'Analytics',
-            ].map(
-              (name, idx) => (
-                <div
-                  key={name}
-                  className="flex items-center justify-center rounded-2xl border border-[#c3986b]/25 bg-[#2c2621] px-4 py-3 text-[#ece5d9] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:border-[#c3986b]/50"
-                  style={{ transitionDelay: `${idx * 50}ms` }}
-                >
-                  <span className="text-sm font-semibold">{name}</span>
-                </div>
-              ),
-            )}
-          </div>
-        </div>
+        <FeatureShowcase />
       </Reveal>
 
       <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex w-full max-w-3xl items-center justify-between gap-3 rounded-full border border-[#c3986b]/35 bg-white/90 px-4 py-3 shadow-[0_18px_40px_-26px_rgba(195,152,107,0.6)] backdrop-blur-xl lg:hidden">

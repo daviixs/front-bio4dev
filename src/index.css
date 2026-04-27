@@ -55,6 +55,8 @@
     --surface: #2c2621;
     --surface-strong: #241f1b;
     --surface-soft: #332b25;
+    --gradient-color: #c3986b;
+    --sparkles-color: #c3986b;
   }
 
   body {
