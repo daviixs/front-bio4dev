@@ -21,9 +21,9 @@ import { Footer } from '@/components/landing/Footer';
 import { landingTheme } from '@/theme/landingTheme';
 
 const templateImages: Record<DeveloperTemplateType, string> = {
-  template_01: '/images/templates/Portifolio%201.png',
+  template_01: '/Portifolios/portifolio-1/ImagePortifolio1.png',
   template_02: '/images/templates/Portifolio%202.png',
-  template_03: '/images/templates/Portifolio%203.png',
+  template_03: '/lp-images/PortifolioLP.png',
 };
 
 const devTemplates = [
@@ -31,7 +31,7 @@ const devTemplates = [
     id: 'template_01',
     name: 'Portfolio Minimalista Dev',
     description: 'Foco total em projetos, GitHub e stack principal.',
-    highlights: ['GitHub Integration', 'Tech Stack', 'Experiencia'],
+    highlights: ['Tech Stack', 'Experiencia'],
   },
   {
     id: 'template_02',
@@ -196,11 +196,10 @@ export function DeveloperCreateProfilePage() {
                   key={template.id}
                   type="button"
                   onClick={() => setSelectedTemplate(template.id)}
-                  className={`group relative overflow-hidden rounded-3xl border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-200 ${
-                    selectedTemplate === template.id
-                      ? 'border-blue-500 ring-2 ring-blue-200'
-                      : 'border-slate-200'
-                  }`}
+                  className={`group relative overflow-hidden rounded-3xl border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-200 ${selectedTemplate === template.id
+                    ? 'border-blue-500 ring-2 ring-blue-200'
+                    : 'border-slate-200'
+                    }`}
                 >
                   {previewImage && (
                     <div className="flex items-center justify-center overflow-hidden rounded-2xl bg-white px-6 pb-4 pt-6">

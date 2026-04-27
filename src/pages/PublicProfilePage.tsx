@@ -35,12 +35,12 @@ export function PublicProfilePage() {
           previewToken || undefined,
         );
 
-        // Se tem token de preview, marca como preview
         if (previewToken) {
           setIsPreview(true);
         }
 
         setProfile(data);
+        document.title = `${data.username} | Bio4Dev`;
       } catch (err: any) {
         console.error('Erro ao carregar perfil:', err);
 

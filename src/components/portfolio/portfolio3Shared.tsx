@@ -372,9 +372,11 @@ export function Portfolio3TechStackSection({
                 <div className="truncate text-[11px] font-bold uppercase tracking-[1.4px] text-[#f0f0f0]">
                   {item.name}
                 </div>
-                <div className="text-[9px] uppercase tracking-[2px] text-[#727272]">
-                  Selected
-                </div>
+                {onRemoveTech && (
+                  <div className="text-[9px] uppercase tracking-[2px] text-[#727272]">
+                    Selected
+                  </div>
+                )}
               </div>
 
               {onRemoveTech && (
@@ -522,6 +524,8 @@ export function Portfolio3ExperienceSection({
                     )}
                   </div>
                   <div className="mb-1.5 text-xs text-[#a0a0a0]">
+                    <span className="font-medium text-[#d0d0d0]">{item.company}</span>
+                    <span className="mx-1.5">•</span>
                     {item.period}
                   </div>
                   <p className="text-[11px] leading-relaxed text-[#888]">

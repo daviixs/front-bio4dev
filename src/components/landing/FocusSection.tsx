@@ -1,6 +1,6 @@
 import React from 'react';
 import { Reveal } from './Reveal';
-import screenshot from '@/landingpage-images/mockup-image2.png';
+import screenshot from '../../../lp-images/PortifolioLP.png';
 import { motion } from 'framer-motion';
 import { sectionFade } from './animations';
 
