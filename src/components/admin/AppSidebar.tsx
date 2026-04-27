@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/components/ui/utils';
 import { useAuthStore } from '@/stores/authStore';
+import { toast } from 'sonner';
 
 export function AppSidebar() {
   const location = useLocation();
@@ -20,7 +21,7 @@ export function AppSidebar() {
     { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
     { icon: User, label: 'Bio', href: '/dashboard/bio' },
     { icon: BarChart2, label: 'Analytics', href: '/dashboard/analytics' },
-    { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
+    { icon: Settings, label: 'Settings', href: '#', isWIP: true },
   ];
 
   const bottomItems = [
@@ -44,11 +45,18 @@ export function AppSidebar() {
           const isActive =
             location.pathname === item.href ||
             (item.href !== '/dashboard' &&
+              item.href !== '#' &&
               location.pathname.startsWith(item.href));
           return (
             <Link
-              key={item.href}
+              key={item.label}
               to={item.href}
+              onClick={(e) => {
+                if (item.isWIP) {
+                  e.preventDefault();
+                  toast.info('Funcionalidade ainda não disponível');
+                }
+              }}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
                 isActive
