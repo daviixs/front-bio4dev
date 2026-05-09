@@ -1,21 +1,28 @@
 import type { TemplateType } from '@/types';
 
-export type PlatformId =
-  | 'instagram'
-  | 'whatsapp'
-  | 'tiktok'
-  | 'youtube'
-  | 'website'
-  | 'spotify'
-  | 'threads'
-  | 'facebook'
-  | 'x'
-  | 'soundcloud'
-  | 'snapchat'
-  | 'pinterest'
-  | 'patreon'
-  | 'twitch'
-  | 'applemusic';
+export const ONBOARDING_PLATFORM_IDS = [
+  'instagram',
+  'whatsapp',
+  'tiktok',
+  'youtube',
+  'website',
+  'spotify',
+  'threads',
+  'facebook',
+  'x',
+  'soundcloud',
+  'snapchat',
+  'pinterest',
+  'patreon',
+  'twitch',
+  'applemusic',
+] as const;
+
+export type PlatformId = (typeof ONBOARDING_PLATFORM_IDS)[number];
+
+export const ONBOARDING_SUPPORTED_PLATFORM_SET: ReadonlySet<string> = new Set(
+  ONBOARDING_PLATFORM_IDS,
+);
 
 export type AdditionalLink = {
   id: string;

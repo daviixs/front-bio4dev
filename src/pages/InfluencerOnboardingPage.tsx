@@ -38,6 +38,7 @@ import {
 } from '@/features/onboarding/storage';
 import {
   createDefaultOnboardingState,
+  ONBOARDING_SUPPORTED_PLATFORM_SET,
   type AdditionalLink,
   type OnboardingDraft,
   type OnboardingState,
@@ -231,16 +232,6 @@ const PLATFORM_SOCIAL_MAP: Record<PlatformId, string> = {
   twitch: 'twitch',
   applemusic: 'applemusic',
 };
-
-// API ainda nao aceita todas as plataformas do onboarding.
-const API_SUPPORTED_PLATFORMS = new Set<PlatformId>([
-  'instagram',
-  'whatsapp',
-  'tiktok',
-  'youtube',
-  'facebook',
-  'pinterest',
-]);
 
 const ONBOARDING_LIMIT_TOAST_ID = 'influencer-onboarding-limit-toast';
 const ONBOARDING_LINKS_TOAST_ID = 'influencer-onboarding-links-toast';
@@ -1136,7 +1127,7 @@ export function InfluencerOnboardingPage({
     const skippedPlatforms: PlatformId[] = [];
     const selected = state.selectedPlatforms
       .map((platformId) => {
-        if (!API_SUPPORTED_PLATFORMS.has(platformId)) {
+        if (!ONBOARDING_SUPPORTED_PLATFORM_SET.has(platformId)) {
           const rawValue = state.platformLinks[platformId] || '';
           if (rawValue.trim()) {
             skippedPlatforms.push(platformId);

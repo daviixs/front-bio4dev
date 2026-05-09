@@ -1,18 +1,11 @@
 import type { ProfileComplete, TemplateType } from '@/types';
+import { ONBOARDING_SUPPORTED_PLATFORM_SET } from '@/features/onboarding/types';
 import { legendaApi, linkButtonsApi, profileApi, socialApi } from '@/lib/api';
 import type { InfluencerTemplateData } from './types';
 import { mapProfileCompleteToInfluencerData } from './mappers';
 import { logError } from '@/lib/logger';
 
 const DEFAULT_AVATAR_URL = 'https://api.dicebear.com/7.x/avataaars/svg';
-const API_SUPPORTED_PLATFORMS = new Set([
-  'instagram',
-  'whatsapp',
-  'tiktok',
-  'youtube',
-  'facebook',
-  'pinterest',
-]);
 
 /**
  * Example: load(profileId)
@@ -111,7 +104,7 @@ async function replaceSocials(
       continue;
     }
     const platform = social.platform.toLowerCase();
-    if (!API_SUPPORTED_PLATFORMS.has(platform)) {
+    if (!ONBOARDING_SUPPORTED_PLATFORM_SET.has(platform)) {
       skippedPlatforms.add(platform);
       continue;
     }
