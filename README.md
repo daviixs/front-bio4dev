@@ -1,6 +1,29 @@
-# 🚀 Bio4Dev - Frontend
+<p align="center">
+  <img src="docs/logo.svg" alt="Bio4Dev" width="96">
+</p>
 
-Plataforma de criação de páginas de bio para desenvolvedores.
+<h1 align="center">Bio4Dev Frontend</h1>
+
+<p align="center"><b>Crie e publique o seu portfólio de dev em minutos, com templates prontos e preview antes de publicar.</b></p>
+
+<p align="center">
+  <a href="#-instalação">Instalação</a> ·
+  <a href="#️-stack-tecnológica">Stack</a> ·
+  <a href="#-estrutura-do-projeto">Estrutura</a> ·
+  <a href="#-funcionalidades">Funcionalidades</a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" alt="React 18">
+  <img src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white" alt="Vite 6">
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4">
+</p>
+
+## Descrição
+
+**Bio4Dev** é uma plataforma inovadora que permite aos desenvolvedores criar, personalizar e publicar portfólios profissionais online de forma intuitiva e eficiente. Resolva o desafio de construir uma presença online impactante com templates pré-configurados, personalização avançada e integração com redes sociais, tudo em minutos.
 
 ## 📋 Pré-requisitos
 
